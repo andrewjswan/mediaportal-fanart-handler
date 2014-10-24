@@ -595,7 +595,7 @@ cul8er</Value>
   <ProjectSettings>
     <FolderGroups />
     <ProjectFilename>fanarthandler.xmp2</ProjectFilename>
-    <UpdatePath1>update-{VERSION}.xml</UpdatePath1>
+    <UpdatePath1>fanarthandler-{VERSION}.xml</UpdatePath1>
     <UpdatePath2 />
     <UpdatePath3 />
   </ProjectSettings>
