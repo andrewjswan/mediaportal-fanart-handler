@@ -37,7 +37,7 @@ namespace FanartHandler
     using System.Xml.XPath;
 
     /// <summary>
-    /// Class handling scraping of fanart from htbackdrops.com.
+    /// Class handling scraping of fanart from htbackdrops.org.
     /// </summary>
     class Scraper
     {
@@ -48,7 +48,7 @@ namespace FanartHandler
         
 
         /// <summary>
-        /// Scrapes the "new" pages on htbackdrops.com.
+        /// Scrapes the "new" pages on htbackdrops.org.
         /// </summary>
         public void GetNewImages(int iMax, DatabaseManager dbm)
         {
@@ -69,7 +69,7 @@ namespace FanartHandler
                     sTimestamp = "1284008400";
                 }
 
-                HttpWebRequest objRequest = (HttpWebRequest)WebRequest.Create("http://htbackdrops.com/api/02274c29b2cc898a726664b96dcc0e76/searchXML?");
+                HttpWebRequest objRequest = (HttpWebRequest)WebRequest.Create("http://htbackdrops.org/api/02274c29b2cc898a726664b96dcc0e76/searchXML?");
 /*                if (Utils.GetUseProxy() != null && Utils.GetUseProxy().Equals("True", StringComparison.CurrentCulture))
                 {
                     proxy = new WebProxy(Utils.GetProxyHostname() + ":" + Utils.GetProxyPort());
@@ -134,7 +134,7 @@ namespace FanartHandler
                     }
                 }
 
-                logger.Info("Found " + alSearchResults.Count + " new images on htbackdrops.com");
+                logger.Info("Found " + alSearchResults.Count + " new images on htbackdrops.org");
                 int iCount = 0;                    
                 int iCountThumb = 0;
                 dbm.TotArtistsBeingScraped = alSearchResults.Count;                    
@@ -186,7 +186,7 @@ namespace FanartHandler
                         {
                             //Artist Fanart
                             logger.Debug("Matched fanart for artist " + sArtist + ".");
-                            sourceFilename = "http://htbackdrops.com/api/02274c29b2cc898a726664b96dcc0e76/download/" + ((SearchResults)alSearchResults[x]).Id + "/fullsize";
+                            sourceFilename = "http://htbackdrops.org/api/02274c29b2cc898a726664b96dcc0e76/download/" + ((SearchResults)alSearchResults[x]).Id + "/fullsize";
                             if (dbm.SourceImageExist(dbArtist, ((SearchResults)alSearchResults[x]).Id) == false)
                             {
                                 if (DownloadImage(ref dbArtist, null, ref sourceFilename, ref path, ref filename, ref requestPic, ref responsePic, "MusicFanart Scraper"))
@@ -224,7 +224,7 @@ namespace FanartHandler
                         {
                             //Artist Thumbnail
                             logger.Debug("Found thumbnail for artist " + sArtist + ".");
-                            sourceFilename = "http://htbackdrops.com/api/02274c29b2cc898a726664b96dcc0e76/download/" + ((SearchResults)alSearchResults[x]).Id + "/fullsize";
+                            sourceFilename = "http://htbackdrops.org/api/02274c29b2cc898a726664b96dcc0e76/download/" + ((SearchResults)alSearchResults[x]).Id + "/fullsize";
                             if (DownloadImage(ref sArtist, null, ref sourceFilename, ref path, ref filename, ref requestPic, ref responsePic, "MusicArtistThumbs"))
                             {
                                 //dbm.LoadMusicFanart(dbArtist, filename, ((SearchResults)alSearchResults[x]).Id, "MusicThumbnails", 0);                               
@@ -259,7 +259,7 @@ namespace FanartHandler
                 }
                 if (!foundNewImages)
                 {
-                    logger.Info("Found no new images on htbackdrops.com");
+                    logger.Info("Found no new images on htbackdrops.org");
                 }
                 //if (!foundThumb)
                 //{
@@ -352,7 +352,7 @@ namespace FanartHandler
         }
 
         /// <summary>
-        /// Downloads and saves images from htbackdrops.com.
+        /// Downloads and saves images from htbackdrops.org.
         /// </summary>
         private bool DownloadImage(ref string sArtist, string album, ref string sourceFilename, ref string path, ref string filename, ref HttpWebRequest requestPic, ref WebResponse responsePic, string type)
         {
@@ -819,7 +819,7 @@ namespace FanartHandler
                     string path = null;
                     bool foundThumb = false;
                     string filename = null;
-                    HttpWebRequest objRequest = (HttpWebRequest)WebRequest.Create("http://htbackdrops.com/api/02274c29b2cc898a726664b96dcc0e76/searchXML?");
+                    HttpWebRequest objRequest = (HttpWebRequest)WebRequest.Create("http://htbackdrops.org/api/02274c29b2cc898a726664b96dcc0e76/searchXML?");
                     /*if (Utils.GetUseProxy() != null && Utils.GetUseProxy().Equals("True", StringComparison.CurrentCulture))
                     {
                         proxy = new WebProxy(Utils.GetProxyHostname() + ":" + Utils.GetProxyPort());
@@ -902,7 +902,7 @@ namespace FanartHandler
                                     {
                                         //Artist Thumbnail
                                         logger.Debug("Found thumbnail for artist " + artist + ".");
-                                        sourceFilename = "http://htbackdrops.com/api/02274c29b2cc898a726664b96dcc0e76/download/" + ((SearchResults)alSearchResults[x]).Id + "/fullsize";
+                                        sourceFilename = "http://htbackdrops.org/api/02274c29b2cc898a726664b96dcc0e76/download/" + ((SearchResults)alSearchResults[x]).Id + "/fullsize";
                                         if (DownloadImage(ref artist, null, ref sourceFilename, ref path, ref filename, ref requestPic, ref responsePic, "MusicArtistThumbs"))
                                         {                                            
                                             dbm.SetSuccessfulScrapeThumb(dbArtist, 2);
@@ -950,7 +950,7 @@ namespace FanartHandler
 
 
         /// <summary>
-        /// Scrapes image for a specific artist on htbackdrops.com.
+        /// Scrapes image for a specific artist on htbackdrops.org.
         /// </summary>
         public int GetImages(string artist, int iMax, DatabaseManager dbm, bool reportProgress, bool doTriggerRefresh, bool externalAccess)
         {
@@ -965,7 +965,7 @@ namespace FanartHandler
                     string path = null;
                     bool foundThumb = false;
                     string filename = null;
-                    HttpWebRequest objRequest = (HttpWebRequest)WebRequest.Create("http://htbackdrops.com/api/02274c29b2cc898a726664b96dcc0e76/searchXML?");
+                    HttpWebRequest objRequest = (HttpWebRequest)WebRequest.Create("http://htbackdrops.org/api/02274c29b2cc898a726664b96dcc0e76/searchXML?");
 
                     try
                     {
@@ -1049,7 +1049,7 @@ namespace FanartHandler
                                     {
                                         //Artist Fanart
                                         logger.Debug("Found fanart for artist " + artist + ".");
-                                        sourceFilename = "http://htbackdrops.com/api/02274c29b2cc898a726664b96dcc0e76/download/" + ((SearchResults)alSearchResults[x]).Id + "/fullsize";
+                                        sourceFilename = "http://htbackdrops.org/api/02274c29b2cc898a726664b96dcc0e76/download/" + ((SearchResults)alSearchResults[x]).Id + "/fullsize";
                                         if (dbm.SourceImageExist(dbArtist, ((SearchResults)alSearchResults[x]).Id) == false)
                                         {
                                             if (DownloadImage(ref dbArtist, null, ref sourceFilename, ref path, ref filename, ref requestPic, ref responsePic, "MusicFanart Scraper"))
@@ -1089,7 +1089,7 @@ namespace FanartHandler
                                     {
                                         //Artist Thumbnail
                                         logger.Debug("Found thumbnail for artist " + artist + ".");
-                                        sourceFilename = "http://htbackdrops.com/api/02274c29b2cc898a726664b96dcc0e76/download/" + ((SearchResults)alSearchResults[x]).Id + "/fullsize";
+                                        sourceFilename = "http://htbackdrops.org/api/02274c29b2cc898a726664b96dcc0e76/download/" + ((SearchResults)alSearchResults[x]).Id + "/fullsize";
                                         if (DownloadImage(ref artist, null, ref sourceFilename, ref path, ref filename, ref requestPic, ref responsePic, "MusicArtistThumbs"))
                                         {
                                             dbm.SetSuccessfulScrapeThumb(dbArtist, 2);

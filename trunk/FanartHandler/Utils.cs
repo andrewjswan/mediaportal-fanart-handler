@@ -800,7 +800,7 @@ namespace FanartHandler
 
         /// <summary>
         /// Remove resolution information from artist names. Due to some
-        /// images at htbackdrops.com containing for example trailing _720P...
+        /// images at htbackdrops.org containing for example trailing _720P...
         /// </summary>    
         public static string RemoveResolutionFromArtistName(string s)
         {

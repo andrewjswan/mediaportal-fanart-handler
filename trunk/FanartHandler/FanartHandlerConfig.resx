@@ -179,7 +179,7 @@ property.</value>
   </data>
   <data name="checkBoxScraperMusicPlaying.ToolTip" xml:space="preserve">
     <value>Check this option if you want this plugin to automatically
-search the internet site www.htbackdrops.com for
+search the internet site www.htbackdrops.org for
 fanart/backdrops mathing every song you play in
 MediaPortal and then downloading the found images 
 to your harddrive (to the "thumbs/Skin Fanart/music" 
@@ -193,7 +193,7 @@ collection can use quite alot of harddisk space.</value>
   </data>
   <data name="checkBoxEnableScraperMPDatabase.ToolTip" xml:space="preserve">
     <value>Check this option if you want this plugin to automatically
-search the internet site www.htbackdrops.com for
+search the internet site www.htbackdrops.org for
 fanart/backdrops mathing all the artists that you have 
 allready in your MediaPortal music database and then 
 downloading the found images to your harddrive (to 
