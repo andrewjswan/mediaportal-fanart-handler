@@ -11,6 +11,8 @@
 //***********************************************************************
 
 using System.Globalization;
+using MediaPortal.LastFM;
+
 namespace FanartHandler
 {
     using MediaPortal.Configuration;
@@ -1140,8 +1142,8 @@ namespace FanartHandler
                         {
                             return totalImages;
                         }
-                        string urlArtist = MediaPortal.Music.Database.AudioscrobblerBase.getValidURLLastFMString(MediaPortal.Music.Database.AudioscrobblerBase.UndoArtistPrefix(artist));
-                        string urlAlbum = MediaPortal.Music.Database.AudioscrobblerBase.getValidURLLastFMString(album);
+                        var urlArtist = LastFMLibrary.GetArtistInfo(MediaPortal.Util.Utils.UndoArtistPrefix(artist)).ArtistURL;
+                        var urlAlbum = LastFMLibrary.GetAlbumInfo(artist, album).AlbumURL;
                         urlArtist = Utils.GetArtist(urlArtist, "MusicFanart Scraper");
                         urlAlbum = Utils.GetArtist(urlAlbum, "MusicFanart Scraper");
                         InsertNewMusicAlbum(urlArtist, urlAlbum);
@@ -1237,8 +1239,8 @@ namespace FanartHandler
                     {                        
                         album = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[i].Album).Trim();
                         artist = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[i].Artist).Trim();
-                        string urlArtist = MediaPortal.Music.Database.AudioscrobblerBase.getValidURLLastFMString(MediaPortal.Music.Database.AudioscrobblerBase.UndoArtistPrefix(artist));
-                        string urlAlbum = MediaPortal.Music.Database.AudioscrobblerBase.getValidURLLastFMString(album);
+                        var urlArtist = LastFMLibrary.GetArtistInfo(MediaPortal.Util.Utils.UndoArtistPrefix(artist)).ArtistURL;
+                        var urlAlbum = LastFMLibrary.GetAlbumInfo(artist, album).AlbumURL;
                         urlArtist = Utils.GetArtist(urlArtist, "MusicFanart Scraper");
                         urlAlbum = Utils.GetArtist(urlAlbum, "MusicFanart Scraper");
                         InsertNewMusicAlbum(urlArtist, urlAlbum);
@@ -1320,8 +1322,8 @@ namespace FanartHandler
                     {
                         album = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[i].Album).Trim();
                         artist = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[i].Artist).Trim();
-                        string urlArtist = MediaPortal.Music.Database.AudioscrobblerBase.getValidURLLastFMString(MediaPortal.Music.Database.AudioscrobblerBase.UndoArtistPrefix(artist));
-                        string urlAlbum = MediaPortal.Music.Database.AudioscrobblerBase.getValidURLLastFMString(album);
+                        var urlArtist = LastFMLibrary.GetArtistInfo(MediaPortal.Util.Utils.UndoArtistPrefix(artist)).ArtistURL;
+                        var urlAlbum = LastFMLibrary.GetAlbumInfo(artist, album).AlbumURL;
                         urlArtist = Utils.GetArtist(urlArtist, "MusicFanart Scraper");
                         urlAlbum = Utils.GetArtist(urlAlbum, "MusicFanart Scraper");
                         InsertNewMusicAlbum(urlArtist, urlAlbum);
