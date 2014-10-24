@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <data name="checkBoxThumbsArtist.ToolTip" xml:space="preserve">
+    <value>Check this option if you want the artist thumbnail images that
+MediaPortal automatically downloads for an artist to be used
+when you select a music artist/album/track in MediaPortal. These
+images are often in low resolution (=bad quality) but setting the 
+"Minimum Resolution For Images" option can solve this problem.</value>
+  </data>
+  <data name="checkBoxThumbsAlbum.ToolTip" xml:space="preserve">
+    <value>Check this option if you want the album thumbnail images that
+MediaPortal automatically downloads for an albun to be used
+when you select a music artist/album/track in MediaPortal. These
+images are often in low resolution (=bad quality) but setting the 
+"Minimum Resolution For Images" option can solve this problem.</value>
+  </data>
+  <data name="checkBoxXFactorFanart.ToolTip" xml:space="preserve">
+    <value>Check this option if you want the fanart/backdrop images that
+you have donwloaded/created and put in the "/thumbs/Skin Fanart/music"
+folder or the fanart/backdrops that this plugin downloads (if scraper
+is enabled) to be used when you select a music artist/album/track 
+in MediaPortal. Enabling this option is recommended.</value>
+  </data>
+  <data name="checkBoxThumbsDisabled.ToolTip" xml:space="preserve">
+    <value>Check this opton if you have enabled the option
+"MP Artist Thumbs" or "MP Album Thumbs" above 
+but does not want these images available when 
+a skin puts random images as backdrops for 
+example when selecting a menu like pictures. 
+This option exists because some may think that 
+artist thumb are of good enough quality when 
+browsing the music collection but not good enough
+ when displaying random music images for their 
+music menu.</value>
+  </data>
+  <data name="checkBoxEnableMusicFanart.ToolTip" xml:space="preserve">
+    <value>Check this option to enable fanart for selected items 
+anywhere in a skin when browsing your music collection.
+Like in myMusic plugin, music playlist, Music Videos or Last FM.
+Checking this option is highly recommended.</value>
+  </data>
+  <data name="checkBoxAspectRatio.ToolTip" xml:space="preserve">
+    <value>Check this opton if you have only want the fanart
+handler to display wide images. Wide being
+images with aspect ratio equal or greater than
+1.3 (like 16:10 and 16:9). This option is used together
+with the minimum pixels property. The minimum pixel 
+property is validated first.</value>
+  </data>
+  <data name="comboBoxMinResolution.ToolTip" xml:space="preserve">
+    <value>Select the  minimum image resolution (quality) you want
+for fanart/backdrops/thumbs. Setting this to "0x0" will
+allow all images. If you have enabled "MP Artist Thumbs" 
+or "MP Album Thumbs" you may want to leave this to 
+"400x400" (because most of these thumbs are below 
+"600x600" in resolution). This option is used together
+with the "Display Only Wide Images (Aspect Ratio &gt;= 1.55)" 
+property.</value>
+  </data>
+  <data name="checkBoxScraperMusicPlaying.ToolTip" xml:space="preserve">
+    <value>Check this option if you want this plugin to automatically
+search the internet site www.htbackdrops.com for
+fanart/backdrops mathing every song you play in
+MediaPortal and then downloading the found images 
+to your harddrive (to the "thumbs/Skin Fanart/music" 
+folder). Leaving this option unchecked will disable 
+now playing scraping and you will have to manually 
+add your fanart images to the "thumbs/Skin Fanart/music" 
+folder.
+
+Warning; Using this option if you have a large music
+collection can use quite alot of harddisk space.</value>
+  </data>
+  <data name="checkBoxEnableScraperMPDatabase.ToolTip" xml:space="preserve">
+    <value>Check this option if you want this plugin to automatically
+search the internet site www.htbackdrops.com for
+fanart/backdrops mathing all the artists that you have 
+allready in your MediaPortal music database and then 
+downloading the found images to your harddrive (to 
+the "thumbs/Skin Fanart/music" folder). Leaving this 
+option unchecked will disable scraping and you will 
+have to manually add your fanart images to the
+"thumbs/Skin Fanart/music" folder.
+
+Warning; Using this option if you have a large music
+collection can use quite alot of harddisk space.</value>
+  </data>
+  <data name="button4.ToolTip" xml:space="preserve">
+    <value>Press this button to enable or disable the use of the
+selected fanart/backdrop. Enabled means that the
+image will be used by the plugin in MediaPortal.
+Disabled means that MediaPortal will not use the
+image. The difference between pressing this button
+and the "Delete Selected Fanart" is that this button
+keeps the image on your harddrive but also in the
+fanart database and this also means that the scraper
+will NOT download it again. Pressing the delete button
+will delete the image but it can re-appear because the
+scraper can find the image on a future scrape.</value>
+  </data>
+  <data name="button3.ToolTip" xml:space="preserve">
+    <value>WARNING: Pressing this button will delete all images
+stored on your harddrive in the "thumbs/Skin Fanart/music"
+folder and also from the fanart database.
+
+The purpose of this button is to reset everything and
+allow for a complete new initial scrape. </value>
+  </data>
+  <data name="button2.ToolTip" xml:space="preserve">
+    <value>Press this button to delete the selected fanart/backdrop
+from the fanart database but also from your harddrive. 
+The difference between pressing this button
+and the "Enable/Disable Selected Fanart" button is that 
+this button deletes the image from your harddrive and
+the fanart database and this saves harddisk space but 
+the image can re-appear because the scraper can find 
+the image on a future scrape.</value>
+  </data>
+  <data name="button1.ToolTip" xml:space="preserve">
+    <value>The first time you open MediaPortal after enabling the scraper
+will cause a big search for fanart matching every artist you
+have in your MediaPortal music database. This is only done once.
+After this MediaPortal will perorm this "initial scrape" only for
+new added artists. If you at a later stage decided that you for 
+example want to increase the number of imges per artis
+you will have to press this button to initiate a new intitial scrape
+the next time you start MediaPortal. After the initial scrape this
+plugin will only scrape the htbackdrop site for new images.</value>
+  </data>
+  <data name="button38.ToolTip" xml:space="preserve">
+    <value>The first time you open MediaPortal after enabling the scraper
+will cause a big search for fanart matching every artist you
+have in your MediaPortal music database. This is only done once.
+After this MediaPortal will perorm this "initial scrape" only for
+new added artists. If you at a later stage decided that you for 
+example want to increase the number of imges per artis
+you will have to press this button to initiate a new intitial scrape
+the next time you start MediaPortal. After the initial scrape this
+plugin will only scrape the htbackdrop site for new images.</value>
+  </data>
+  <data name="button42.ToolTip" xml:space="preserve">
+    <value>WARNING: Pressing this button will delete all images
+stored on your harddrive in the "thumbs/Skin Fanart/music"
+folder and also from the fanart database.
+
+The purpose of this button is to reset everything and
+allow for a complete new initial scrape. </value>
+  </data>
+  <data name="button41.ToolTip" xml:space="preserve">
+    <value>Press this button to delete the selected fanart/backdrop
+from the fanart database but also from your harddrive. 
+The difference between pressing this button
+and the "Enable/Disable Selected Fanart" button is that 
+this button deletes the image from your harddrive and
+the fanart database and this saves harddisk space but 
+the image can re-appear because the scraper can find 
+the image on a future scrape.</value>
+  </data>
+  <data name="button8.ToolTip" xml:space="preserve">
+    <value>Press this button to enable or disable the use of the
+selected fanart/backdrop. Enabled means that the
+image will be used by the plugin in MediaPortal.
+Disabled means that MediaPortal will not use the
+image. The difference between pressing this button
+and the "Delete Selected Fanart" is that this button
+keeps the image on your harddrive but also in the
+fanart database and this also means that the scraper
+will NOT download it again. Pressing the delete button
+will delete the image but it can re-appear because the
+scraper can find the image on a future scrape.</value>
+  </data>
+  <data name="button9.ToolTip" xml:space="preserve">
+    <value>WARNING: Pressing this button will delete all images
+stored on your harddrive in the "thumbs/Skin Fanart/music"
+folder and also from the fanart database.
+
+The purpose of this button is to reset everything and
+allow for a complete new initial scrape. </value>
+  </data>
+  <data name="button10.ToolTip" xml:space="preserve">
+    <value>Press this button to delete the selected fanart/backdrop
+from the fanart database but also from your harddrive. 
+The difference between pressing this button
+and the "Enable/Disable Selected Fanart" button is that 
+this button deletes the image from your harddrive and
+the fanart database and this saves harddisk space but 
+the image can re-appear because the scraper can find 
+the image on a future scrape.</value>
+  </data>
+  <data name="button12.ToolTip" xml:space="preserve">
+    <value>Press this button to enable or disable the use of the
+selected fanart/backdrop. Enabled means that the
+image will be used by the plugin in MediaPortal.
+Disabled means that MediaPortal will not use the
+image. The difference between pressing this button
+and the "Delete Selected Fanart" is that this button
+keeps the image on your harddrive but also in the
+fanart database and this also means that the scraper
+will NOT download it again. Pressing the delete button
+will delete the image but it can re-appear because the
+scraper can find the image on a future scrape.</value>
+  </data>
+  <data name="button13.ToolTip" xml:space="preserve">
+    <value>WARNING: Pressing this button will delete all images
+stored on your harddrive in the "thumbs/Skin Fanart/music"
+folder and also from the fanart database.
+
+The purpose of this button is to reset everything and
+allow for a complete new initial scrape. </value>
+  </data>
+  <data name="button14.ToolTip" xml:space="preserve">
+    <value>Press this button to delete the selected fanart/backdrop
+from the fanart database but also from your harddrive. 
+The difference between pressing this button
+and the "Enable/Disable Selected Fanart" button is that 
+this button deletes the image from your harddrive and
+the fanart database and this saves harddisk space but 
+the image can re-appear because the scraper can find 
+the image on a future scrape.</value>
+  </data>
+  <data name="button20.ToolTip" xml:space="preserve">
+    <value>Press this button to enable or disable the use of the
+selected fanart/backdrop. Enabled means that the
+image will be used by the plugin in MediaPortal.
+Disabled means that MediaPortal will not use the
+image. The difference between pressing this button
+and the "Delete Selected Fanart" is that this button
+keeps the image on your harddrive but also in the
+fanart database and this also means that the scraper
+will NOT download it again. Pressing the delete button
+will delete the image but it can re-appear because the
+scraper can find the image on a future scrape.</value>
+  </data>
+  <data name="button21.ToolTip" xml:space="preserve">
+    <value>WARNING: Pressing this button will delete all images
+stored on your harddrive in the "thumbs/Skin Fanart/music"
+folder and also from the fanart database.
+
+The purpose of this button is to reset everything and
+allow for a complete new initial scrape. </value>
+  </data>
+  <data name="button22.ToolTip" xml:space="preserve">
+    <value>Press this button to delete the selected fanart/backdrop
+from the fanart database but also from your harddrive. 
+The difference between pressing this button
+and the "Enable/Disable Selected Fanart" button is that 
+this button deletes the image from your harddrive and
+the fanart database and this saves harddisk space but 
+the image can re-appear because the scraper can find 
+the image on a future scrape.</value>
+  </data>
+  <data name="button25.ToolTip" xml:space="preserve">
+    <value>Press this button to enable or disable the use of the
+selected fanart/backdrop. Enabled means that the
+image will be used by the plugin in MediaPortal.
+Disabled means that MediaPortal will not use the
+image. The difference between pressing this button
+and the "Delete Selected Fanart" is that this button
+keeps the image on your harddrive but also in the
+fanart database and this also means that the scraper
+will NOT download it again. Pressing the delete button
+will delete the image but it can re-appear because the
+scraper can find the image on a future scrape.</value>
+  </data>
+  <data name="button26.ToolTip" xml:space="preserve">
+    <value>WARNING: Pressing this button will delete all images
+stored on your harddrive in the "thumbs/Skin Fanart/music"
+folder and also from the fanart database.
+
+The purpose of this button is to reset everything and
+allow for a complete new initial scrape. </value>
+  </data>
+  <data name="button27.ToolTip" xml:space="preserve">
+    <value>Press this button to delete the selected fanart/backdrop
+from the fanart database but also from your harddrive. 
+The difference between pressing this button
+and the "Enable/Disable Selected Fanart" button is that 
+this button deletes the image from your harddrive and
+the fanart database and this saves harddisk space but 
+the image can re-appear because the scraper can find 
+the image on a future scrape.</value>
+  </data>
+  <data name="button30.ToolTip" xml:space="preserve">
+    <value>Press this button to enable or disable the use of the
+selected fanart/backdrop. Enabled means that the
+image will be used by the plugin in MediaPortal.
+Disabled means that MediaPortal will not use the
+image. The difference between pressing this button
+and the "Delete Selected Fanart" is that this button
+keeps the image on your harddrive but also in the
+fanart database and this also means that the scraper
+will NOT download it again. Pressing the delete button
+will delete the image but it can re-appear because the
+scraper can find the image on a future scrape.</value>
+  </data>
+  <data name="button31.ToolTip" xml:space="preserve">
+    <value>WARNING: Pressing this button will delete all images
+stored on your harddrive in the "thumbs/Skin Fanart/music"
+folder and also from the fanart database.
+
+The purpose of this button is to reset everything and
+allow for a complete new initial scrape. </value>
+  </data>
+  <data name="button32.ToolTip" xml:space="preserve">
+    <value>Press this button to delete the selected fanart/backdrop
+from the fanart database but also from your harddrive. 
+The difference between pressing this button
+and the "Enable/Disable Selected Fanart" button is that 
+this button deletes the image from your harddrive and
+the fanart database and this saves harddisk space but 
+the image can re-appear because the scraper can find 
+the image on a future scrape.</value>
+  </data>
+  <data name="button35.ToolTip" xml:space="preserve">
+    <value>Press this button to enable or disable the use of the
+selected fanart/backdrop. Enabled means that the
+image will be used by the plugin in MediaPortal.
+Disabled means that MediaPortal will not use the
+image. The difference between pressing this button
+and the "Delete Selected Fanart" is that this button
+keeps the image on your harddrive but also in the
+fanart database and this also means that the scraper
+will NOT download it again. Pressing the delete button
+will delete the image but it can re-appear because the
+scraper can find the image on a future scrape.</value>
+  </data>
+  <data name="button36.ToolTip" xml:space="preserve">
+    <value>WARNING: Pressing this button will delete all images
+stored on your harddrive in the "thumbs/Skin Fanart/music"
+folder and also from the fanart database.
+
+The purpose of this button is to reset everything and
+allow for a complete new initial scrape. </value>
+  </data>
+  <data name="button37.ToolTip" xml:space="preserve">
+    <value>Press this button to delete the selected fanart/backdrop
+from the fanart database but also from your harddrive. 
+The difference between pressing this button
+and the "Enable/Disable Selected Fanart" button is that 
+this button deletes the image from your harddrive and
+the fanart database and this saves harddisk space but 
+the image can re-appear because the scraper can find 
+the image on a future scrape.</value>
+  </data>
+  <data name="richTextBox1.Text" xml:space="preserve">
+    <value>Fanart Handler is a plugin for MediaPortal (MP). The plugin has two main purposes;
+* Search and download music fanart (scrape) from the htbackdrops site (link).
+   * for all artists stored in your MP music database, for any artist currently being played (on the fly).
+* Push fanart that you store on your local harddrive to the current used MP skin.
+   * push fanart for now played music, push fanart for selected music or movie,  push random images from selected folders
+
+The scope of this plugin are
+* scrape htbackdrops site for music fanart for all artists stored in your MP music database.
+* scrape htbackdrops site for music fanart for currently played artist.
+* Push music fanart for now played music track (artist images)
+* Push music fanart for browsed music artist in myMusic plugin
+* Push music fanart for browsed music artist in GlobalSearch plugin
+* Push music fanart for browsed music artist in Music Videos plugin
+* Push music fanart for browsed music artist in mVidsplugin
+* Push music fanart for browsed music artist in YouTube.FM plugin
+* Push movie fanart for browsed video title in myVideo plugin
+* Push scorecenter fanart for browsed category in myScoreCenter plugin
+* Push cycling fanart from the following folders for use anywhere in a skin for
+   * thumbs\MovingPictures\Backdrops\FullSize
+   * thumbs\Fan Art\fanart\original
+   * thumbs\Skin Fanart\games
+   * thumbs\Skin Fanart\movies
+   * thumbs\Skin Fanart\music
+   * thumbs\Skin Fanart\pictures
+   * thumbs\Skin Fanart\plugins
+   * thumbs\Skin Fanart\scorecenter
+   * thumbs\Skin Fanart\tv</value>
+  </data>
+  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>34</value>
+  </metadata>
+</root>

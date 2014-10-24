@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<profile>
+  <section name="FanartHandler">
+    <entry name="useFanart">True</entry>
+    <entry name="useAlbum">False</entry>
+    <entry name="useArtist">False</entry>
+    <entry name="useOverlayFanart">True</entry>
+    <entry name="useMusicFanart">True</entry>
+    <entry name="useVideoFanart">True</entry>
+    <entry name="useScoreCenterFanart">True</entry>
+    <entry name="imageInterval">20</entry>
+    <entry name="minResolution">400x400</entry>
+    <entry name="defaultBackdrop"></entry>
+    <entry name="scraperMaxImages">3</entry>
+    <entry name="scraperMusicPlaying">False</entry>
+    <entry name="scraperMPDatabase">False</entry>
+    <entry name="scraperInterval">24</entry>
+    <entry name="useAspectRatio">False</entry>
+    <entry name="skipWhenHighResAvailable">True</entry>
+    <entry name="disableMPTumbsForRandom">True</entry>
+    <entry name="defaultBackdropIsImage">True</entry>
+	<entry name="useDefaultBackdrop">True</entry>
+  </section>
+</profile>

@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PackageClass xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Version>2.0</Version>
+  <Groups>
+    <Items>
+      <GroupItem Name="Default">
+        <ParentGroup />
+        <DisplayName>Default</DisplayName>
+        <DefaulChecked>true</DefaulChecked>
+        <Description>Default</Description>
+        <Files>
+          <Items>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>AlwaysOverwrite</UpdateOption>
+              <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\UserDef\games\readme.txt</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{c29da043-e371-4b61-b8f8-20533db51b67}-readme.txt</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\games\readme.txt</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>AlwaysOverwrite</UpdateOption>
+              <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\UserDef\movies\readme.txt</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{4dbfffbc-3b73-40c0-baa2-48b8da6256b4}-readme.txt</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\movies\readme.txt</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>AlwaysOverwrite</UpdateOption>
+              <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\UserDef\music\readme.txt</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{da351ddd-2e4d-4ca8-ae47-99a56f5a385d}-readme.txt</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\music\readme.txt</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>AlwaysOverwrite</UpdateOption>
+              <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\UserDef\pictures\readme.txt</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{8c0ea8cf-6d51-426b-92b1-5a2aa62b4ec3}-readme.txt</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\pictures\readme.txt</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>AlwaysOverwrite</UpdateOption>
+              <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\UserDef\plugins\readme.txt</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{7de6c6f2-326c-4b52-9810-3d0dbd824d96}-readme.txt</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\plugins\readme.txt</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>AlwaysOverwrite</UpdateOption>
+              <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\UserDef\scorecenter\readme.txt</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{e0c69898-7658-4cc3-9a35-8dbaa36e46da}-readme.txt</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\scorecenter\readme.txt</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>AlwaysOverwrite</UpdateOption>
+              <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\UserDef\tv\readme.txt</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{f4a68c7d-74b0-4da5-adc4-ab0907d078a1}-readme.txt</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\tv\readme.txt</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>AlwaysOverwrite</UpdateOption>
+              <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\FanartHandler.org</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{216864ea-ea6a-486c-a1a1-45b8e36c0987}-FanartHandler.org</ZipFileName>
+              <DestinationFilename>%Config%\FanartHandler.org</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>AlwaysOverwrite</UpdateOption>
+              <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\database\FanartHandler.org</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{db90f458-5b8b-48e6-80c9-061dba6896a2}-FanartHandler.org</ZipFileName>
+              <DestinationFilename>%Database%\FanartHandler.org</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>AlwaysOverwrite</UpdateOption>
+              <LocalFileName>C:\Program Files\Team MediaPortal\MediaPortal\plugins\process\FanartHandler.dll</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{19ff6fb3-f128-4ab2-8c3b-7ccec2210fe2}-FanartHandler.dll</ZipFileName>
+              <DestinationFilename>%Plugins%\process\FanartHandler.dll</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>NeverOverwrite</UpdateOption>
+              <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\UserDef\music\default.jpg</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{70f349ac-b6d3-4646-9552-b94404a0008b}-default.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\music\default.jpg</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>AlwaysOverwrite</UpdateOption>
+              <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\thumbs\Skin FanArt\transparent.png</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{0f391274-9682-42ab-bab6-55d2a7296417}-transparent.png</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin FanArt\transparent.png</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>AlwaysOverwrite</UpdateOption>
+              <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\Scraper\movies\readme.txt</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{a8976feb-2c4f-45aa-9bf0-886a55bed635}-readme.txt</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin FanArt\Scraper\movies\readme.txt</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>AlwaysOverwrite</UpdateOption>
+              <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\Scraper\music\readme.txt</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{84381102-aa3e-443c-8e9a-8a547a5e00d9}-readme.txt</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin FanArt\Scraper\music\readme.txt</DestinationFilename>
+            </FileItem>
+          </Items>
+        </Files>
+      </GroupItem>
+      <GroupItem Name="Images">
+        <ParentGroup />
+        <DisplayName>Skin FanArt Images</DisplayName>
+        <DefaulChecked>true</DefaulChecked>
+        <Description>Please select this if you want the included Fanart images to be installed (optional option).</Description>
+        <Files>
+          <Items>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>NeverOverwrite</UpdateOption>
+              <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\UserDef\games\default.jpg</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{7da307cf-9428-4cd2-8b29-19d271ca26a0}-default.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\games\default.jpg</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>NeverOverwrite</UpdateOption>
+              <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\UserDef\movies\default.jpg</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{de6cf782-8471-4d3b-a6f0-4b4200761708}-default.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\movies\default.jpg</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>NeverOverwrite</UpdateOption>
+              <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\UserDef\pictures\default1.jpg</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{6b5c8f3d-1126-4493-b79f-448f9d1dacf8}-default1.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\pictures\default1.jpg</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>NeverOverwrite</UpdateOption>
+              <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\UserDef\plugins\default1.jpg</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{a0176f51-89eb-4110-a851-63f400394a8f}-default1.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\plugins\default1.jpg</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>NeverOverwrite</UpdateOption>
+              <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\UserDef\scorecenter\football.jpg</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{bc6e8efe-a970-481d-9c2d-c40211c7b05b}-football.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\scorecenter\football.jpg</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>NeverOverwrite</UpdateOption>
+              <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\UserDef\tv\default1.jpg</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{48791211-90b7-46b0-ad7d-a81b5e37ea69}-default1.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\tv\default1.jpg</DestinationFilename>
+            </FileItem>
+          </Items>
+        </Files>
+      </GroupItem>
+    </Items>
+  </Groups>
+  <Sections>
+    <Items>
+      <SectionItem Guid="b770d7d5-f63a-41d7-b6b8-0220a1775440" Name="Welcome Screen" ConditionGroup="">
+        <Params>
+          <Items>
+            <SectionParam Name="Header text">
+              <Value>Welcome to the Extension Installer for [Name].
+
+</Value>
+              <ValueType>String</ValueType>
+              <Description />
+            </SectionParam>
+            <SectionParam Name="Description">
+              <Value>This will install [Name] version [Version] on your computer.
+It is recommended that you close all other applications before continuing.
+Click Next to continue or Cancel to exit Setup.
+
+Best Regards
+cul8er</Value>
+              <ValueType>String</ValueType>
+              <Description />
+            </SectionParam>
+            <SectionParam Name="Left part image">
+              <Value />
+              <ValueType>File</ValueType>
+              <Description />
+            </SectionParam>
+            <SectionParam Name="Header image">
+              <Value>FanartHandler_Icon.png</Value>
+              <ValueType>File</ValueType>
+              <Description>Image in upper right part</Description>
+            </SectionParam>
+          </Items>
+        </Params>
+        <Actions>
+          <Items />
+        </Actions>
+        <IncludedGroups />
+        <PanelName>Welcome Screen</PanelName>
+        <WizardButtonsEnum>NextCancel</WizardButtonsEnum>
+      </SectionItem>
+      <SectionItem Guid="7c466564-1819-4011-92ef-6dc2a449d8e5" Name="Tree View Selector" ConditionGroup="">
+        <Params>
+          <Items>
+            <SectionParam Name="Header Title">
+              <Value>Please select what files to install...</Value>
+              <ValueType>String</ValueType>
+              <Description>Header title</Description>
+            </SectionParam>
+            <SectionParam Name="Header description">
+              <Value />
+              <ValueType>String</ValueType>
+              <Description>Description of section, shown in under section title</Description>
+            </SectionParam>
+            <SectionParam Name="Header image">
+              <Value>FanartHandler_Icon.png</Value>
+              <ValueType>File</ValueType>
+              <Description>Image in upper right part</Description>
+            </SectionParam>
+            <SectionParam Name="Description ">
+              <Value />
+              <ValueType>String</ValueType>
+              <Description>Description of this operation</Description>
+            </SectionParam>
+          </Items>
+        </Params>
+        <Actions>
+          <Items />
+        </Actions>
+        <IncludedGroups>
+          <string>Images</string>
+        </IncludedGroups>
+        <PanelName>Tree View Selector</PanelName>
+        <WizardButtonsEnum>BackNextCancel</WizardButtonsEnum>
+      </SectionItem>
+      <SectionItem Guid="0188a113-f17c-430b-aa7d-5c26614eb2b5" Name="Install Section" ConditionGroup="">
+        <Params>
+          <Items>
+            <SectionParam Name="Header Title">
+              <Value>Installing the [Name] extension...</Value>
+              <ValueType>String</ValueType>
+              <Description>Header title</Description>
+            </SectionParam>
+            <SectionParam Name="Header description">
+              <Value />
+              <ValueType>String</ValueType>
+              <Description>Description of section, shown in under section title</Description>
+            </SectionParam>
+            <SectionParam Name="Header image">
+              <Value>FanartHandler_Icon.png</Value>
+              <ValueType>File</ValueType>
+              <Description>Image in upper right part</Description>
+            </SectionParam>
+          </Items>
+        </Params>
+        <Actions>
+          <Items>
+            <ActionItem Name="InstallFiles" ActionType="InstallFiles" ConditionGroup="">
+              <Params>
+                <Items />
+              </Params>
+              <ExecuteLocation>AfterPanelShow</ExecuteLocation>
+            </ActionItem>
+          </Items>
+        </Actions>
+        <IncludedGroups>
+          <string>Images</string>
+        </IncludedGroups>
+        <PanelName>Install Section</PanelName>
+        <WizardButtonsEnum>Next</WizardButtonsEnum>
+      </SectionItem>
+      <SectionItem Guid="40cda7e4-74e7-4326-aa2f-5634e5c1d081" Name="Setup Complete" ConditionGroup="">
+        <Params>
+          <Items>
+            <SectionParam Name="Header text">
+              <Value>The Extension Installer Wizard has successfully installed [Name].</Value>
+              <ValueType>String</ValueType>
+              <Description />
+            </SectionParam>
+            <SectionParam Name="Left part image">
+              <Value />
+              <ValueType>File</ValueType>
+              <Description />
+            </SectionParam>
+            <SectionParam Name="Header image">
+              <Value>FanartHandler_Icon.png</Value>
+              <ValueType>File</ValueType>
+              <Description>Image in upper right part</Description>
+            </SectionParam>
+          </Items>
+        </Params>
+        <Actions>
+          <Items />
+        </Actions>
+        <IncludedGroups />
+        <PanelName>Setup Complete</PanelName>
+        <WizardButtonsEnum>Finish</WizardButtonsEnum>
+      </SectionItem>
+    </Items>
+  </Sections>
+  <Dependencies>
+    <Items>
+      <DependencyItem>
+        <Type>MediaPortal</Type>
+        <Id />
+        <MinVersion>
+          <Major>1</Major>
+          <Minor>1</Minor>
+          <Build>6</Build>
+          <Revision>27644</Revision>
+        </MinVersion>
+        <MaxVersion>
+          <Major>1</Major>
+          <Minor>1</Minor>
+          <Build>6</Build>
+          <Revision>27644</Revision>
+        </MaxVersion>
+        <WarnOnly>false</WarnOnly>
+        <Message>requires MediaPortal version 1.2 RC.</Message>
+        <Name>MediaPortal</Name>
+      </DependencyItem>
+    </Items>
+  </Dependencies>
+  <PluginDependencies>
+    <Items>
+      <PluginDependencyItem AssemblyName="FanartHandler.dll">
+        <CompatibleVersion>
+          <Items>
+            <CompatibleVersionItem>
+              <MinRequiredVersion>1.1.6.27644</MinRequiredVersion>
+              <DesignedForVersion>1.1.6.27644</DesignedForVersion>
+            </CompatibleVersionItem>
+          </Items>
+        </CompatibleVersion>
+        <SubSystemsUsed>
+          <Items />
+        </SubSystemsUsed>
+      </PluginDependencyItem>
+    </Items>
+  </PluginDependencies>
+  <GeneralInfo>
+    <Name>Fanart Handler</Name>
+    <Id>814a6918-0183-4323-a3b4-c00fac11b4f6</Id>
+    <Author>cul8er</Author>
+    <HomePage>http://code.google.com/p/fanart-handler/</HomePage>
+    <ForumPage>http://forum.team-mediaportal.com/fanart-handler-535/</ForumPage>
+    <UpdateUrl>http://fanart-handler.googlecode.com/svn/trunk/fanarthandler.xml</UpdateUrl>
+    <Version>
+      <Major>2</Major>
+      <Minor>3</Minor>
+      <Build>1</Build>
+      <Revision>531</Revision>
+    </Version>
+    <ExtensionDescription>Fanart Handler is a plugin for MediaPortal (MP). The plugin basically supports;
+
+
+
+    * Search and download music artist fanart or artist thumbnails (scrape) from the htbackdrops site (link).
+
+    * for all artists stored in your MP music database.
+
+    * for any artist currently being played (on the fly).
+
+    * Push fanart that you store on your local harddrive to the current used MP skin.
+
+    * push fanart for now played music
+
+    * push fanart for selected music or movie
+
+    * push random images from selected folders
+
+ 
+
+</ExtensionDescription>
+    <VersionDescription>Added support for mvCentral SmartDJ screen.</VersionDescription>
+    <DevelopmentStatus>Stable</DevelopmentStatus>
+    <OnlineLocation>http://fanart-handler.googlecode.com/svn/trunk/fanarthandler.mpe1</OnlineLocation>
+    <ReleaseDate>2012-03-07T15:04:24</ReleaseDate>
+    <Tags>fanart,music,scraper</Tags>
+    <Location>E:\Visual Studio 2008\Projects\FanartHandler\fanarthandler.mpe1</Location>
+    <Params>
+      <Items>
+        <SectionParam Name="Icon">
+          <Value>FanartHandler_Icon.png</Value>
+          <ValueType>File</ValueType>
+          <Description>The icon file of the package (jpg,png,bmp)</Description>
+        </SectionParam>
+        <SectionParam Name="Online Icon">
+          <Value>http://fanart-handler.googlecode.com/svn/trunk/FanartHandler_Icon.png</Value>
+          <ValueType>String</ValueType>
+          <Description>The icon file of the package stored online (jpg,png,bmp)</Description>
+        </SectionParam>
+        <SectionParam Name="Configuration file">
+          <Value>%Plugins%\process\fanarthandler.dll</Value>
+          <ValueType>Template</ValueType>
+          <Description>The file used to configure the extension.
+ If have .exe extension the will be executed
+ If have .dll extension used like MP plugin configuration</Description>
+        </SectionParam>
+        <SectionParam Name="Online Screenshots">
+          <Value>http://x-factor.googlecode.com/svn/wiki/img/xfactorfanarthandler_plugin3.jpg</Value>
+          <ValueType>String</ValueType>
+          <Description>Online stored screenshot urls separated by ; </Description>
+        </SectionParam>
+        <SectionParam Name="Force to uninstall on update">
+          <Value>yes</Value>
+          <ValueType>Bool</ValueType>
+          <Description>Show dialog and force to uninstall previous version when updating an extension. Should only be disabled if you are using an NSIS/MSI installer.</Description>
+        </SectionParam>
+      </Items>
+    </Params>
+  </GeneralInfo>
+  <UniqueFileList>
+    <Items>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>AlwaysOverwrite</UpdateOption>
+        <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\UserDef\games\readme.txt</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{c29da043-e371-4b61-b8f8-20533db51b67}-readme.txt</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\games\readme.txt</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>AlwaysOverwrite</UpdateOption>
+        <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\UserDef\movies\readme.txt</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{4dbfffbc-3b73-40c0-baa2-48b8da6256b4}-readme.txt</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\movies\readme.txt</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>AlwaysOverwrite</UpdateOption>
+        <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\UserDef\music\readme.txt</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{da351ddd-2e4d-4ca8-ae47-99a56f5a385d}-readme.txt</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\music\readme.txt</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>AlwaysOverwrite</UpdateOption>
+        <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\UserDef\pictures\readme.txt</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{8c0ea8cf-6d51-426b-92b1-5a2aa62b4ec3}-readme.txt</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\pictures\readme.txt</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>AlwaysOverwrite</UpdateOption>
+        <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\UserDef\plugins\readme.txt</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{7de6c6f2-326c-4b52-9810-3d0dbd824d96}-readme.txt</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\plugins\readme.txt</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>AlwaysOverwrite</UpdateOption>
+        <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\UserDef\scorecenter\readme.txt</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{e0c69898-7658-4cc3-9a35-8dbaa36e46da}-readme.txt</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\scorecenter\readme.txt</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>AlwaysOverwrite</UpdateOption>
+        <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\UserDef\tv\readme.txt</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{f4a68c7d-74b0-4da5-adc4-ab0907d078a1}-readme.txt</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\tv\readme.txt</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>AlwaysOverwrite</UpdateOption>
+        <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\FanartHandler.org</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{216864ea-ea6a-486c-a1a1-45b8e36c0987}-FanartHandler.org</ZipFileName>
+        <DestinationFilename>%Config%\FanartHandler.org</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>AlwaysOverwrite</UpdateOption>
+        <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\database\FanartHandler.org</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{db90f458-5b8b-48e6-80c9-061dba6896a2}-FanartHandler.org</ZipFileName>
+        <DestinationFilename>%Database%\FanartHandler.org</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>AlwaysOverwrite</UpdateOption>
+        <LocalFileName>C:\Program Files\Team MediaPortal\MediaPortal\plugins\process\FanartHandler.dll</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{19ff6fb3-f128-4ab2-8c3b-7ccec2210fe2}-FanartHandler.dll</ZipFileName>
+        <DestinationFilename>%Plugins%\process\FanartHandler.dll</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>NeverOverwrite</UpdateOption>
+        <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\UserDef\music\default.jpg</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{70f349ac-b6d3-4646-9552-b94404a0008b}-default.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\music\default.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>AlwaysOverwrite</UpdateOption>
+        <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\thumbs\Skin FanArt\transparent.png</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{0f391274-9682-42ab-bab6-55d2a7296417}-transparent.png</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin FanArt\transparent.png</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>AlwaysOverwrite</UpdateOption>
+        <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\Scraper\movies\readme.txt</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{a8976feb-2c4f-45aa-9bf0-886a55bed635}-readme.txt</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin FanArt\Scraper\movies\readme.txt</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>AlwaysOverwrite</UpdateOption>
+        <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\Scraper\music\readme.txt</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{84381102-aa3e-443c-8e9a-8a547a5e00d9}-readme.txt</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin FanArt\Scraper\music\readme.txt</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>NeverOverwrite</UpdateOption>
+        <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\UserDef\games\default.jpg</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{7da307cf-9428-4cd2-8b29-19d271ca26a0}-default.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\games\default.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>NeverOverwrite</UpdateOption>
+        <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\UserDef\movies\default.jpg</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{de6cf782-8471-4d3b-a6f0-4b4200761708}-default.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\movies\default.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>NeverOverwrite</UpdateOption>
+        <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\UserDef\pictures\default1.jpg</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{6b5c8f3d-1126-4493-b79f-448f9d1dacf8}-default1.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\pictures\default1.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>NeverOverwrite</UpdateOption>
+        <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\UserDef\plugins\default1.jpg</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{a0176f51-89eb-4110-a851-63f400394a8f}-default1.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\plugins\default1.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>NeverOverwrite</UpdateOption>
+        <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\UserDef\scorecenter\football.jpg</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{bc6e8efe-a970-481d-9c2d-c40211c7b05b}-football.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\scorecenter\football.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>NeverOverwrite</UpdateOption>
+        <LocalFileName>C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\Thumbs\Skin FanArt\UserDef\tv\default1.jpg</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{48791211-90b7-46b0-ad7d-a81b5e37ea69}-default1.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\tv\default1.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="true" Modified="true">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>FanartHandler_Icon.png</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{546c5068-b28e-40a2-a4c5-90858f770626}-FanartHandler_Icon.png</ZipFileName>
+        <DestinationFilename />
+      </FileItem>
+    </Items>
+  </UniqueFileList>
+  <ProjectSettings>
+    <FolderGroups />
+    <ProjectFilename>fanarthandler.xmp2</ProjectFilename>
+    <UpdatePath1>E:\Visual Studio 2008\Projects\FanartHandler\fanarthandler.xml</UpdatePath1>
+    <UpdatePath2 />
+    <UpdatePath3 />
+  </ProjectSettings>
+  <IsSkin>false</IsSkin>
+</PackageClass>
