@@ -269,6 +269,10 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>"$(TargetDir)merge.bat"</PostBuildEvent>
+    <PostBuildEvent>svn revert ..\..\Properties\AssemblyInfo.cs
+::"$(TargetDir)merge.bat"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>subwcrev ..\..\..\.. ..\..\Properties\AssemblyInfo.cs ..\..\Properties\AssemblyInfo.cs</PreBuildEvent>
   </PropertyGroup>
 </Project>
