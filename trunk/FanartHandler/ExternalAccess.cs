@@ -72,9 +72,7 @@ namespace FanartHandler
         /// <summary>
         /// Returns a hashtable with all found fanart for tvshow
         /// </summary>
-        /// <param name="artist"></param>
-        /// <param name="type"></param>
-        /// <param name="restricted"></param>
+        /// <param name="tvshow">TV Show</param>
         /// <returns></returns>
         public static Hashtable GetTVFanart(string tvshow)
         {

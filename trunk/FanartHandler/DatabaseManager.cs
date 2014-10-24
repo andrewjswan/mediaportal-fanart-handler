@@ -244,11 +244,11 @@ namespace FanartHandler
             }
         }
 
-                /// <summary>
+        /// <summary>
         /// Performs a scrape for artist now being played in MediaPortal.
         /// </summary>
         /// <param name="artist">Name of the artist</param>
-        /// <param name="swnp">ScraperWorkerNowPlaying object</param>
+        /// <param name="album">Name of the album</param>
         /// <returns>True if scraping has occured successfully</returns>
         public bool ArtistAlbumScrape(string artist, string album)
         {
@@ -279,7 +279,7 @@ namespace FanartHandler
         /// Performs a scrape for artist now being played in MediaPortal.
         /// </summary>
         /// <param name="artist">Name of the artist</param>
-        /// <param name="swnp">ScraperWorkerNowPlaying object</param>
+        /// <param name="album">Name of the album</param>
         /// <returns>True if scraping has occured successfully</returns>
         public bool NowPlayingScrape(string artist, string album)
         {
@@ -704,7 +704,6 @@ namespace FanartHandler
         /// Return the current number of images an artist has.
         /// </summary>
         /// <param name="artist">The artist name</param>
-        /// <param name="dbArtist">The db artist name</param>
         /// <returns>Get total number of images an artist has.</returns>
         public bool HasArtistThumb(string artist)
         {
@@ -734,7 +733,7 @@ namespace FanartHandler
         /// Return the current number of images an artist has.
         /// </summary>
         /// <param name="artist">The artist name</param>
-        /// <param name="dbArtist">The db artist name</param>
+        /// <param name="album">Name of the album</param>
         /// <returns>Get total number of images an artist has.</returns>
         public bool HasAlbumThumb(string artist, string album)
         {
@@ -904,9 +903,6 @@ namespace FanartHandler
         /// Performs the scrape (now playing or initial).
         /// </summary>
         /// <param name="artist">Artist name</param>
-        /// <param name="useSuccessfulScrape">Use the successfuls scrape flag in db or not</param>
-        /// <param name="useStopScraper">Use the stop scraper parameter or not</param>
-        /// <param name="swnp">ScraperWorkerNowPlaying object</param>
         /// <returns>Number of scraped images</returns>
         public int DoScrape(string artist)
         {
@@ -1089,9 +1085,8 @@ namespace FanartHandler
         /// Performs the scrape (now playing or initial).
         /// </summary>
         /// <param name="artist">Artist name</param>
-        /// <param name="useSuccessfulScrape">Use the successfuls scrape flag in db or not</param>
-        /// <param name="useStopScraper">Use the stop scraper parameter or not</param>
-        /// <param name="swnp">ScraperWorkerNowPlaying object</param>
+        /// <param name="album">Name of the album</param>
+        /// <param name="externalAccess">External access</param>
         /// <returns>Number of scraped images</returns>
         public int DoScrapeNew(string artist, string album, bool externalAccess)
         {
@@ -1179,8 +1174,6 @@ namespace FanartHandler
         /// /// Performs the intitial scrape (on htbackdrops.com) for any artist in the MP music
         /// database until max images per artist is meet or no more images exist for the artist.
         /// </summary>
-        /// <param name="sw">ScraperWorker object</param>
-        //        public void InitialScrape(FanartHandler.FanartHandlerSetup.ScraperWorker sw)
         public void InitialScrape()
         {
             try
@@ -1899,6 +1892,7 @@ namespace FanartHandler
         /// <summary>
         /// Sets the enabled column in the database. Controls if fanart is enabled or disabled.
         /// </summary>
+        /// <param name="artist">The name of the artist</param>
         /// <param name="diskImage">Filename on disk</param>
         /// <param name="action">Enable or disable</param>
         public void SetThumbLock(string artist, string diskImage, bool action)
@@ -2198,6 +2192,7 @@ namespace FanartHandler
         /// </summary>
         /// <param name="artist">The artist name</param>
         /// <param name="type">The type to run the query on</param>
+        /// <param name="restricted">Restricted</param>
         /// <returns>A hashtable with fanarts</returns>
         public Hashtable GetFanart(string artist, string type, int restricted)
         {
@@ -2247,7 +2242,7 @@ namespace FanartHandler
         /// Returns all images for an artist.
         /// </summary>
         /// <param name="artist">The artist name</param>
-        /// <param name="type">The type to run the query on</param>
+        /// <param name="restricted">Restricted</param>
         /// <returns>A hashtable with fanarts</returns>
         public Hashtable GetHigResFanart(string artist, int restricted)
         {
@@ -2524,6 +2519,7 @@ namespace FanartHandler
         /// </summary>
         /// <param name="type">The type to run the query on</param>
         /// <param name="types">Part of the sql statement</param>
+        /// <param name="restricted">Restricted</param>
         /// <returns>A hashtable with random fanart</returns>
         public Hashtable GetAnyFanart(string type, string types, int restricted)
         {
@@ -2585,6 +2581,7 @@ namespace FanartHandler
         /// <param name="diskImage">Filename on disk</param>
         /// <param name="sourceImage">Filename at source</param>
         /// <param name="type">The type to run the query on</param>
+        /// <param name="restricted">Restricted</param>
         public void LoadFanart(string artist, string diskImage, string sourceImage, string type, int restricted)
         {
             try
@@ -2624,6 +2621,7 @@ namespace FanartHandler
         /// <param name="diskImage">Filename on disk</param>
         /// <param name="sourceImage">Filename at source</param>
         /// <param name="type">The type to run the query on</param>
+        /// <param name="restricted">Restricted</param>
         public void LoadFanartExternal(string artist, string diskImage, string sourceImage, string type, int restricted)
         {
             try
@@ -2661,7 +2659,6 @@ namespace FanartHandler
         /// </summary>
         /// <param name="artist">The artist name</param>
         /// <param name="sourceImage">Filename at source</param>
-        /// <param name="type">The type to run the query on</param>
         /// <returns>Returns if an image exists or not</returns>
         public bool SourceImageExist(string artist, string sourceImage)
         {
@@ -2693,6 +2690,7 @@ namespace FanartHandler
         /// <param name="diskImage">Filename on disk</param>
         /// <param name="sourceImage">Filename at source</param>
         /// <param name="type">The type to run the query on</param>
+        /// <param name="restricted">Restricted</param>
         public void LoadMusicFanart(string artist, string diskImage, string sourceImage, string type, int restricted)
         {
             try
@@ -2759,12 +2757,11 @@ namespace FanartHandler
         }
 
 
-
         /// <summary>
         /// Inserts a new artist into the database.
         /// </summary>
         /// <param name="artist">The artist name</param>
-        /// <param name="type">The type to run the query on</param>
+        /// <param name="album">The name of the album</param>
         public void InsertNewMusicAlbum(string artist, string album)
         {
             try
@@ -2793,7 +2790,6 @@ namespace FanartHandler
         /// Inserts a new artist into the database.
         /// </summary>
         /// <param name="artist">The artist name</param>
-        /// <param name="type">The type to run the query on</param>
         public void InsertNewMusicArtist(string artist)
         {
             try
@@ -2822,6 +2818,7 @@ namespace FanartHandler
         /// Flags an artist as being done with the thumb scrape.
         /// </summary>
         /// <param name="artist">The artist name</param>
+        /// <param name="value">Value</param>
         public void SetSuccessfulScrapeThumb(string artist, int value)
         {         
             try
@@ -2845,11 +2842,13 @@ namespace FanartHandler
             }
         }
 
-        
+
         /// <summary>
         /// Flags an artist as being done with the initial scrape.
         /// </summary>
         /// <param name="artist">The artist name</param>
+        /// <param name="album">The name of the album</param>
+        /// <param name="value">Value</param>
         public void SetSuccessfulAlbumScrape(string artist, string album, string value)
         {
             try
