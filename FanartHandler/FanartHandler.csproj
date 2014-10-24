@@ -269,7 +269,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>svn revert ..\Properties\AssemblyInfo.cs
+    <PostBuildEvent>svn revert ..\..\Properties\AssemblyInfo.cs
 ::"$(TargetDir)merge.bat"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
