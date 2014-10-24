@@ -11,6 +11,8 @@
 //***********************************************************************
 
 using System.Globalization;
+using MediaPortal.LastFM;
+
 namespace FanartHandler
 {
     using MediaPortal.ExtensionMethods;
@@ -1166,7 +1168,7 @@ namespace FanartHandler
                 int iCount = 0;
                 if (artist != null && artist.Length > 0)
                 {
-                    string urlArtist = MediaPortal.Music.Database.AudioscrobblerBase.getValidURLLastFMString(MediaPortal.Music.Database.AudioscrobblerBase.UndoArtistPrefix(artist));
+                    var urlArtist = LastFMLibrary.GetArtistInfo(MediaPortal.Util.Utils.UndoArtistPrefix(artist)).ArtistURL;
                     Encoding enc = Encoding.GetEncoding("iso-8859-1");
                     string strResult = null;
                     string dbArtist = null;
@@ -1270,8 +1272,8 @@ namespace FanartHandler
                 int iCount = 0;
                 if (artist != null && artist.Length > 0 && album != null && album.Length > 0)
                 {
-                    string urlArtist = MediaPortal.Music.Database.AudioscrobblerBase.getValidURLLastFMString(MediaPortal.Music.Database.AudioscrobblerBase.UndoArtistPrefix(artist));
-                    string urlAlbum = MediaPortal.Music.Database.AudioscrobblerBase.getValidURLLastFMString(album);                    
+                    var urlArtist = LastFMLibrary.GetArtistInfo(MediaPortal.Util.Utils.UndoArtistPrefix(artist)).ArtistURL;
+                    var urlAlbum = LastFMLibrary.GetAlbumInfo(artist, album).AlbumURL;
                     Encoding enc = Encoding.GetEncoding("iso-8859-1");
                     string strResult = null;
                     string dbArtist = null;

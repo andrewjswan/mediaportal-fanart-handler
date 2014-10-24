@@ -110,6 +110,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>External\Gentle.Framework.dll</HintPath>
     </Reference>
+    <Reference Include="LastFMLibrary">
+      <HintPath>External\LastFMLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="MovingPictures, Version=1.2.0.1188, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>External\MovingPictures.dll</HintPath>
