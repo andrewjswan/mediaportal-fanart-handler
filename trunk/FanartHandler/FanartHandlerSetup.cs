@@ -105,7 +105,7 @@ namespace FanartHandler
         // Returns the author of the plugin which is shown in the plugin menu
         public string Author()
         {
-            return "cul8er";
+            return "cul8er (Maintained by yoavain)";
         }
 
         // show the setup dialog
