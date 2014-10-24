@@ -55,63 +55,63 @@
   <ItemGroup>
     <Reference Include="Common.Utils, Version=1.1.6.27644, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\External\MP12\Common.Utils.dll</HintPath>
+      <HintPath>External\Common.Utils.dll</HintPath>
     </Reference>
     <Reference Include="Core">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\External\MP12\Core.dll</HintPath>
+      <HintPath>External\Core.dll</HintPath>
     </Reference>
     <Reference Include="Cornerstone, Version=1.2.0.1188, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\External\MP12\Cornerstone.dll</HintPath>
+      <HintPath>External\Cornerstone.dll</HintPath>
     </Reference>
     <Reference Include="Databases">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\External\MP12\Databases.dll</HintPath>
+      <HintPath>External\Databases.dll</HintPath>
     </Reference>
     <Reference Include="Dialogs">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\External\MP12\Dialogs.dll</HintPath>
+      <HintPath>External\Dialogs.dll</HintPath>
     </Reference>
     <Reference Include="ForTheRecord.Entities, Version=1.5.1.0, Culture=neutral, PublicKeyToken=a9a5dfc20b8d6175, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\External\MP12\ForTheRecord.Entities.dll</HintPath>
+      <HintPath>External\ForTheRecord.Entities.dll</HintPath>
     </Reference>
     <Reference Include="ForTheRecord.ServiceAgents, Version=1.5.1.0, Culture=neutral, PublicKeyToken=a9a5dfc20b8d6175, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\External\MP12\ForTheRecord.ServiceAgents.dll</HintPath>
+      <HintPath>External\ForTheRecord.ServiceAgents.dll</HintPath>
     </Reference>
     <Reference Include="ForTheRecord.ServiceContracts, Version=1.5.1.0, Culture=neutral, PublicKeyToken=a9a5dfc20b8d6175, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\External\MP12\ForTheRecord.ServiceContracts.dll</HintPath>
+      <HintPath>External\ForTheRecord.ServiceContracts.dll</HintPath>
     </Reference>
     <Reference Include="ForTheRecord.UI.MediaPortal, Version=1.5.1.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\External\MP12\ForTheRecord.UI.MediaPortal.dll</HintPath>
+      <HintPath>External\ForTheRecord.UI.MediaPortal.dll</HintPath>
     </Reference>
     <Reference Include="ForTheRecord.UI.Process, Version=1.5.1.0, Culture=neutral, PublicKeyToken=a9a5dfc20b8d6175, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\External\MP12\ForTheRecord.UI.Process.dll</HintPath>
+      <HintPath>External\ForTheRecord.UI.Process.dll</HintPath>
     </Reference>
     <Reference Include="Gentle.Common">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\External\MP12\Gentle.Common.dll</HintPath>
+      <HintPath>External\Gentle.Common.dll</HintPath>
     </Reference>
     <Reference Include="Gentle.Framework">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\External\MP12\Gentle.Framework.dll</HintPath>
+      <HintPath>External\Gentle.Framework.dll</HintPath>
     </Reference>
     <Reference Include="MovingPictures, Version=1.2.0.1188, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\External\MP12\MovingPictures.dll</HintPath>
+      <HintPath>External\MovingPictures.dll</HintPath>
     </Reference>
     <Reference Include="MP-TVSeries">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\External\MP12\MP-TVSeries.dll</HintPath>
+      <HintPath>External\MP-TVSeries.dll</HintPath>
     </Reference>
     <Reference Include="NLog">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\External\MP12\NLog.dll</HintPath>
+      <HintPath>External\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -131,27 +131,27 @@
     <Reference Include="System.Xml" />
     <Reference Include="TvControl, Version=1.1.6.19737, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\External\MP12\TvControl.dll</HintPath>
+      <HintPath>External\TvControl.dll</HintPath>
     </Reference>
     <Reference Include="TVDatabase">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\External\MP12\TVDatabase.dll</HintPath>
+      <HintPath>External\TVDatabase.dll</HintPath>
     </Reference>
     <Reference Include="TvLibrary.Interfaces, Version=1.1.6.19736, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\External\MP12\TvLibrary.Interfaces.dll</HintPath>
+      <HintPath>External\TvLibrary.Interfaces.dll</HintPath>
     </Reference>
     <Reference Include="TvPlugin, Version=1.1.6.19738, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\External\MP12\TvPlugin.dll</HintPath>
+      <HintPath>External\TvPlugin.dll</HintPath>
     </Reference>
     <Reference Include="Utils">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\External\MP12\Utils.dll</HintPath>
+      <HintPath>External\Utils.dll</HintPath>
     </Reference>
     <Reference Include="WindowPlugins">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\External\MP12\WindowPlugins.dll</HintPath>
+      <HintPath>External\WindowPlugins.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
