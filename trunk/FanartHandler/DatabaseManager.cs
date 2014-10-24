@@ -816,7 +816,7 @@ namespace FanartHandler
 
 
         /// <summary>
-        /// Performs a scrape on the "new" pages on htbackdrops.com.
+        /// Performs a scrape on the "new" pages on htbackdrops.org.
         /// </summary>
         public void DoNewScrape()
         {
@@ -1171,7 +1171,7 @@ namespace FanartHandler
        
 
         /// <summary>
-        /// /// Performs the intitial scrape (on htbackdrops.com) for any artist in the MP music
+        /// /// Performs the intitial scrape (on htbackdrops.org) for any artist in the MP music
         /// database until max images per artist is meet or no more images exist for the artist.
         /// </summary>
         public void InitialScrape()
@@ -2603,7 +2603,7 @@ namespace FanartHandler
                 }
                 else
                 {
-                    sqlQuery = "INSERT INTO " + GetTableName(type) + " (Id, Artist, Disk_Image, Source_Image, Type, Source, Enabled, Time_Stamp, Restricted) VALUES(null, '" + Utils.PatchSql(artist) + "','" + Utils.PatchSql(diskImage) + "','" + Utils.PatchSql(sourceImage) + "','" + Utils.PatchSql(type) + "','www.htbackdrops.com', 'True', '" + saveNow.ToString(@"yyyyMMdd", CultureInfo.CurrentCulture) + "'," + restricted + ");";
+                    sqlQuery = "INSERT INTO " + GetTableName(type) + " (Id, Artist, Disk_Image, Source_Image, Type, Source, Enabled, Time_Stamp, Restricted) VALUES(null, '" + Utils.PatchSql(artist) + "','" + Utils.PatchSql(diskImage) + "','" + Utils.PatchSql(sourceImage) + "','" + Utils.PatchSql(type) + "','www.htbackdrops.org', 'True', '" + saveNow.ToString(@"yyyyMMdd", CultureInfo.CurrentCulture) + "'," + restricted + ");";
                     lock (lockObject) dbClient.Execute(sqlQuery);
                     logger.Debug("Importing local fanart into fanart handler database (" + diskImage + ").");
                 }
@@ -2704,7 +2704,7 @@ namespace FanartHandler
                 }
                 else
                 {
-                    sqlQuery = "INSERT INTO Music_Fanart (Id, Artist, Disk_Image, Source_Image, Type, Source, Enabled, Time_Stamp, Restricted) VALUES(null, '" + Utils.PatchSql(artist) + "','" + Utils.PatchSql(diskImage) + "','" + Utils.PatchSql(sourceImage) + "','" + Utils.PatchSql(type) + "','www.htbackdrops.com','True','" + saveNow.ToString(@"yyyyMMdd", CultureInfo.CurrentCulture) + "'," + restricted + ");";
+                    sqlQuery = "INSERT INTO Music_Fanart (Id, Artist, Disk_Image, Source_Image, Type, Source, Enabled, Time_Stamp, Restricted) VALUES(null, '" + Utils.PatchSql(artist) + "','" + Utils.PatchSql(diskImage) + "','" + Utils.PatchSql(sourceImage) + "','" + Utils.PatchSql(type) + "','www.htbackdrops.org','True','" + saveNow.ToString(@"yyyyMMdd", CultureInfo.CurrentCulture) + "'," + restricted + ");";
                     lock (lockObject) dbClient.Execute(sqlQuery);
                     logger.Debug("Importing local fanart into fanart handler database (" + diskImage + ").");
                     if (type.Equals("MusicFanart Scraper", StringComparison.CurrentCulture))
