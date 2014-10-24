@@ -29,7 +29,7 @@ SET version=%version:~0,-1%
 :: Temp xmp2 file
 copy fanarthandler.xmp2 fanarthandlerTemp.xmp2
 
-:: Sed "update-{VERSION}.xml" from xmp2 file
+:: Sed "fanarthandler-{VERSION}.xml" from xmp2 file
 Tools\sed.exe -i "s/update-{VERSION}.xml/update-%version%.xml/g" fanarthandlerTemp.xmp2
 
 :: Build MPE1
