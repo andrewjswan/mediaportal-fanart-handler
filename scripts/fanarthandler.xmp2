@@ -367,7 +367,21 @@ cul8er</Value>
     </Items>
   </Dependencies>
   <PluginDependencies>
-    <Items />
+    <Items>
+      <PluginDependencyItem AssemblyName="FanartHandler.dll">
+        <CompatibleVersion>
+          <Items>
+            <CompatibleVersionItem>
+              <MinRequiredVersion>1.1.6.27644</MinRequiredVersion>
+              <DesignedForVersion>1.1.6.27644</DesignedForVersion>
+            </CompatibleVersionItem>
+          </Items>
+        </CompatibleVersion>
+        <SubSystemsUsed>
+          <Items />
+        </SubSystemsUsed>
+      </PluginDependencyItem>
+    </Items>
   </PluginDependencies>
   <GeneralInfo>
     <Name>Fanart Handler</Name>
@@ -375,7 +389,7 @@ cul8er</Value>
     <Author>cul8er (maintained by yoavain)</Author>
     <HomePage>https://code.google.com/p/mediaportal-fanart-handler/</HomePage>
     <ForumPage>http://forum.team-mediaportal.com/fanart-handler-535/</ForumPage>
-    <UpdateUrl>https://mediaportal-fanart-handler.googlecode.com/svn/trunk/fanarthandler.xml</UpdateUrl>
+    <UpdateUrl>https://mediaportal-fanart-handler.googlecode.com/svn/trunk/scripts/fanarthandler.xml</UpdateUrl>
     <Version>
       <Major>4</Major>
       <Minor>0</Minor>
@@ -412,12 +426,12 @@ cul8er</Value>
     <Params>
       <Items>
         <SectionParam Name="Icon">
-          <Value>FanartHandler_Icon.png</Value>
+          <Value>..\FanartHandler_Icon.png</Value>
           <ValueType>File</ValueType>
           <Description>The icon file of the package (jpg,png,bmp)</Description>
         </SectionParam>
         <SectionParam Name="Online Icon">
-          <Value>http://fanart-handler.googlecode.com/svn/trunk/FanartHandler_Icon.png</Value>
+          <Value>https://mediaportal-fanart-handler.googlecode.com/svn/trunk/FanartHandler_Icon.png</Value>
           <ValueType>String</ValueType>
           <Description>The icon file of the package stored online (jpg,png,bmp)</Description>
         </SectionParam>
@@ -434,7 +448,7 @@ cul8er</Value>
           <Description>Online stored screenshot urls separated by ; </Description>
         </SectionParam>
         <SectionParam Name="Force to uninstall on update">
-          <Value>yes</Value>
+          <Value>YES</Value>
           <ValueType>Bool</ValueType>
           <Description>Show dialog and force to uninstall previous version when updating an extension. Should only be disabled if you are using an NSIS/MSI installer.</Description>
         </SectionParam>
@@ -586,8 +600,15 @@ cul8er</Value>
       <FileItem InstallType="CopyFile" SystemFile="true" Modified="true">
         <Param1 />
         <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>FanartHandler_Icon.png</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{1efbd2ed-909f-4f01-9810-b968290259f6}-FanartHandler_Icon.png</ZipFileName>
+        <DestinationFilename />
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="true" Modified="true">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
         <LocalFileName>..\FanartHandler_Icon.png</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{546c5068-b28e-40a2-a4c5-90858f770626}-FanartHandler_Icon.png</ZipFileName>
+        <ZipFileName>Installer{CopyFile}\{65a02716-ca08-4256-b9a2-f336b36289ad}-FanartHandler_Icon.png</ZipFileName>
         <DestinationFilename />
       </FileItem>
     </Items>
