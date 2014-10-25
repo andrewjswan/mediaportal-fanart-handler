@@ -193,7 +193,7 @@ cul8er</Value>
               <Description />
             </SectionParam>
             <SectionParam Name="Header image">
-              <Value>FanartHandler_Icon.png</Value>
+              <Value>..\FanartHandler_Icon.png</Value>
               <ValueType>File</ValueType>
               <Description>Image in upper right part</Description>
             </SectionParam>
@@ -220,7 +220,7 @@ cul8er</Value>
               <Description>Description of section, shown in under section title</Description>
             </SectionParam>
             <SectionParam Name="Header image">
-              <Value>FanartHandler_Icon.png</Value>
+              <Value>..\FanartHandler_Icon.png</Value>
               <ValueType>File</ValueType>
               <Description>Image in upper right part</Description>
             </SectionParam>
@@ -254,7 +254,7 @@ cul8er</Value>
               <Description>Description of section, shown in under section title</Description>
             </SectionParam>
             <SectionParam Name="Header image">
-              <Value>FanartHandler_Icon.png</Value>
+              <Value>..\FanartHandler_Icon.png</Value>
               <ValueType>File</ValueType>
               <Description>Image in upper right part</Description>
             </SectionParam>
@@ -290,7 +290,7 @@ cul8er</Value>
               <Description />
             </SectionParam>
             <SectionParam Name="Header image">
-              <Value>FanartHandler_Icon.png</Value>
+              <Value>..\FanartHandler_Icon.png</Value>
               <ValueType>File</ValueType>
               <Description>Image in upper right part</Description>
             </SectionParam>
@@ -600,15 +600,8 @@ cul8er</Value>
       <FileItem InstallType="CopyFile" SystemFile="true" Modified="true">
         <Param1 />
         <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>FanartHandler_Icon.png</LocalFileName>
+        <LocalFileName>..\anartHandler_Icon.png</LocalFileName>
         <ZipFileName>Installer{CopyFile}\{1efbd2ed-909f-4f01-9810-b968290259f6}-FanartHandler_Icon.png</ZipFileName>
-        <DestinationFilename />
-      </FileItem>
-      <FileItem InstallType="CopyFile" SystemFile="true" Modified="true">
-        <Param1 />
-        <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\FanartHandler_Icon.png</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{65a02716-ca08-4256-b9a2-f336b36289ad}-FanartHandler_Icon.png</ZipFileName>
         <DestinationFilename />
       </FileItem>
     </Items>
