@@ -30,7 +30,7 @@ SET version=%version:~0,-1%
 copy fanarthandler.xmp2 fanarthandlerTemp.xmp2
 
 :: Sed "fanarthandler-{VERSION}.xml" from xmp2 file
-Tools\sed.exe -i "s/update-{VERSION}.xml/update-%version%.xml/g" fanarthandlerTemp.xmp2
+Tools\sed.exe -i "s/fanarthandler-{VERSION}.xml/fanarthandler-%version%.xml/g" fanarthandlerTemp.xmp2
 
 :: Build MPE1
 "%PROGS%\Team MediaPortal\MediaPortal\MPEMaker.exe" fanarthandlerTemp.xmp2 /B /V=%version% /UpdateXML
@@ -38,8 +38,8 @@ Tools\sed.exe -i "s/update-{VERSION}.xml/update-%version%.xml/g" fanarthandlerTe
 :: Cleanup
 del fanarthandlerTemp.xmp2
 
-:: Sed "FanartHandler-{VERSION}.MPE1" from update.xml
-Tools\sed.exe -i "s/FanartHandler-{VERSION}.MPE1/FanartHandler-%version%.MPE1/g" update-%version%.xml
+:: Sed "FanartHandler-{VERSION}.MPE1" from fanarthandler.xml
+Tools\sed.exe -i "s/FanartHandler-{VERSION}.MPE1/FanartHandler-%version%.MPE1/g" fanarthandler-%version%.xml
 
 :: Parse version (Might be needed in the futute)
 FOR /F "tokens=1-4 delims=." %%i IN ("%version%") DO ( 
