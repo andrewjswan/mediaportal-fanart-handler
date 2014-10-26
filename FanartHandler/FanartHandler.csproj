@@ -270,7 +270,11 @@
   -->
   <PropertyGroup>
     <PostBuildEvent>svn revert ..\..\Properties\AssemblyInfo.cs
-::"$(TargetDir)merge.bat"</PostBuildEvent>
+cd $(TargetDir)
+copy $(ProjectDir)\scripts\merge.bat .
+copy $(ProjectDir)\scripts\Tools\ILMerge.exe .
+merge.bat
+del /q merge.bat ILMerge.exe</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>subwcrev ..\..\.. ..\..\Properties\AssemblyInfo.cs ..\..\Properties\AssemblyInfo.cs</PreBuildEvent>
