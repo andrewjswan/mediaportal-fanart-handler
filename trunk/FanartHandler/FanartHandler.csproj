@@ -271,8 +271,8 @@
   <PropertyGroup>
     <PostBuildEvent>svn revert ..\..\Properties\AssemblyInfo.cs
 cd $(TargetDir)
-copy $(ProjectDir)\scripts\merge.bat .
-copy $(ProjectDir)\scripts\Tools\ILMerge.exe .
+copy $(ProjectDir)..\scripts\merge.bat .
+copy $(ProjectDir)..\scripts\Tools\ILMerge.exe .
 merge.bat
 del /q merge.bat ILMerge.exe</PostBuildEvent>
   </PropertyGroup>
