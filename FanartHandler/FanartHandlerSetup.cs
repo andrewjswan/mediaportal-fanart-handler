@@ -10,7 +10,6 @@
 // Copyright        : Open Source software licensed under the GNU/GPL agreement.
 //***********************************************************************
 
-using System.Globalization;
 namespace FanartHandler
 {
     using MediaPortal.Configuration; 

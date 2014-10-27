@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace FanartHandler
+﻿namespace FanartHandler
 {
     partial class FanartHandlerConfig
     {
