@@ -12,7 +12,6 @@
 
 namespace FanartHandler
 {
-    using MediaPortal.Configuration;
     using MediaPortal.GUI.Library;
     using MediaPortal.Music.Database;
 //    using MediaPortal.Player;

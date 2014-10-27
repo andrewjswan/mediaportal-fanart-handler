@@ -29,8 +29,8 @@ namespace FanartHandler
     using System.Collections.Generic;
     using System.IO;
 //    using System.Linq;
-    using System.Text;
- //   using System.Threading;
+
+    //   using System.Threading;
  //   using MediaPortal.Profile;
  //   using MediaPortal.Services;
 //    using MediaPortal.Threading;

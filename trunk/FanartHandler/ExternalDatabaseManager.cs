@@ -20,7 +20,7 @@ namespace FanartHandler
 //    using System.Collections;
     using System.IO;
 //    using System.Linq;   
-    using System.Text;
+
 //    using MediaPortal.Picture.Database;   
   //  using MediaPortal.Util;
 //    using MediaPortal.Profile;
