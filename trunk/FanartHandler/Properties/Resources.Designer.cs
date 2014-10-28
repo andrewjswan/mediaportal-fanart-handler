@@ -76,5 +76,14 @@ namespace FanartHandler.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap splash_small {
+            get {
+                object obj = ResourceManager.GetObject("splash_small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

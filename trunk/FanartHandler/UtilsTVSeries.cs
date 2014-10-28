@@ -1,113 +1,106 @@
-﻿//***********************************************************************
-// Assembly         : FanartHandler
-// Author           : cul8er
-// Created          : 05-09-2010
-//
-// Last Modified By : cul8er
-// Last Modified On : 10-05-2010
-// Description      : 
-//
-// Copyright        : Open Source software licensed under the GNU/GPL agreement.
-//***********************************************************************
+﻿// Type: FanartHandler.UtilsTVSeries
+// Assembly: FanartHandler, Version=3.1.0.0, Culture=neutral, PublicKeyToken=null
+// MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
+// Assembly location: D:\Mes documents\Desktop\FanartHandler.dll
 
+using NLog;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-//using System.Linq;
-//using System.IO;
-//using System.Reflection;
-//using System.Text;
-using NLog;
-//using MediaPortal.Configuration;
-//using MediaPortal.GUI.Library;
-//using MediaPortal.Util;
-//using MediaPortal.Music.Database;
-//using MediaPortal.Player;
-//using MediaPortal.Playlists;
-//using MediaPortal.Plugins.MovingPictures;
-//using MediaPortal.Plugins.MovingPictures.Database;
-//using MediaPortal.Plugins.MovingPictures.MainUI;
-//using Cornerstone.Database;
-//using Cornerstone.Database.Tables;
-//using TvDatabase;
-//using ForTheRecord.Entities;
-//using ForTheRecord.ServiceAgents;
-//using ForTheRecord.ServiceContracts;
-//using ForTheRecord.UI.Process.Recordings;
 using WindowPlugins.GUITVSeries;
-//using System.Globalization;
-
 
 namespace FanartHandler
 {
-    static class UtilsTVSeries 
+  internal static class UtilsTVSeries
+  {
+    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+    static UtilsTVSeries()
     {
-        #region declarations
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-        private static bool _isGetTypeRunningOnThisThread/* = false*/;     
-        #endregion
-
-        internal static bool IsGetTypeRunningOnThisThread
-        {
-            get { return UtilsTVSeries._isGetTypeRunningOnThisThread; }
-            set { UtilsTVSeries._isGetTypeRunningOnThisThread = value; }
-        }
-
-        internal static void SetupTVSeriesLatest()
-        {
-            OnlineParsing.OnlineParsingCompleted += new OnlineParsing.OnlineParsingCompletedHandler(TVSeriesOnObjectInserted);
-        }
-
-        internal static void DisposeTVSeriesLatest()
-        {
-            OnlineParsing.OnlineParsingCompleted -= new OnlineParsing.OnlineParsingCompletedHandler(TVSeriesOnObjectInserted);
-        }
-
-        internal static void TVSeriesOnObjectInserted(bool dataUpdated)
-        {
-            if (dataUpdated)
-            {
-                FanartHandlerSetup.Fh.UpdateDirectoryTimer("TVSeries");
-            }
-        }
-
-        internal static Hashtable GetTVSeriesName(string type)
-        {
-            Hashtable ht = new Hashtable();
-            try
-            {
-                string artist = String.Empty;
-                string seriesId = String.Empty;                                              
-
-                List<DBOnlineSeries> allSeries = DBOnlineSeries.getAllSeries();
-
-                if (allSeries != null)
-                {
-                    foreach (var series in allSeries)
-                    {
-                        artist = Utils.GetArtist(series[DBSeries.cParsedName], type);
-                        seriesId = series[DBSeries.cID];
-                        if (!ht.Contains(seriesId))
-                        {
-                            ht.Add(seriesId, artist);
-                        }
-                    }
-                }
-
-                if (allSeries != null)
-                {
-                    allSeries.Clear();
-                }
-                allSeries = null;                
-            }
-            catch (Exception ex)
-            {
-                logger.Error("GetTVSeriesName: " + ex.ToString());
-            }
-            return ht;
-        }
-
-
     }
 
+    internal static void SetupTVSeriesLatest()
+    {
+      try
+      {
+        // ISSUE: method pointer
+        OnlineParsing.OnlineParsingCompleted += new OnlineParsing.OnlineParsingCompletedHandler(TVSeriesOnObjectInserted);
+      }
+      catch (Exception ex)
+      {
+        logger.Error("SetupTVSeriesLatest: " + ex);
+      }
+    }
+
+    internal static void DisposeTVSeriesLatest()
+    {
+      try
+      {
+        // ISSUE: method pointer
+        OnlineParsing.OnlineParsingCompleted -= new OnlineParsing.OnlineParsingCompletedHandler(TVSeriesOnObjectInserted);
+      }
+      catch (Exception ex)
+      {
+        logger.Error("DisposeTVSeriesLatest: " + ex);
+      }
+    }
+
+    internal static void TVSeriesOnObjectInserted(bool dataUpdated)
+    {
+      try
+      {
+        if (!dataUpdated)
+          return;
+        FanartHandlerSetup.Fh.AddToDirectoryTimerQueue("TVSeries");
+      }
+      catch (Exception ex)
+      {
+        logger.Error("TVSeriesOnObjectInserted: " + ex);
+      }
+    }
+
+    internal static Hashtable GetTVSeriesName(Utils.Category category)
+    {
+      var hashtable = new Hashtable();
+      try
+      {
+        var str1 = string.Empty;
+        var str2 = string.Empty;
+        var allSeries = DBOnlineSeries.getAllSeries();
+        if (allSeries != null)
+        {
+          //using (List<DBOnlineSeries>.Enumerator enumerator = allSeries.GetEnumerator())
+          //{
+          //  while (enumerator.MoveNext())
+          //  {
+          //    DBOnlineSeries current = enumerator.Current;
+          //    string artist = Utils.GetArtist(DBValue.op_Implicit(((DBTable) current).get_Item("Parsed_Name")), category);
+          //    string str3 = DBValue.op_Implicit(((DBTable) current).get_Item("ID"));
+          //    if (!hashtable.Contains((object) str3))
+          //      hashtable.Add((object) str3, (object) artist);
+          //  }
+          //}
+          if (allSeries != null)
+          {
+            foreach (var series in allSeries)
+            {
+              var artist = Utils.GetArtist(series[DBSeries.cParsedName], category);
+              string seriesId = series[DBSeries.cID];
+              if (!hashtable.Contains(seriesId))
+              {
+                hashtable.Add(seriesId, artist);
+              }
+            }
+          }
+        }
+        if (allSeries != null)
+          allSeries.Clear();
+      }
+      catch (Exception ex)
+      {
+        logger.Error("GetTVSeriesName: " + ex);
+      }
+      return hashtable;
+    }
+  }
 }
