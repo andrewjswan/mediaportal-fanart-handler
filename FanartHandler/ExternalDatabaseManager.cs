@@ -1,117 +1,71 @@
-﻿//***********************************************************************
-// Assembly         : FanartHandler
-// Author           : cul8er
-// Created          : 05-09-2010
-//
-// Last Modified By : cul8er
-// Last Modified On : 10-05-2010
-// Description      : 
-//
-// Copyright        : Open Source software licensed under the GNU/GPL agreement.
-//***********************************************************************
+﻿// Type: FanartHandler.ExternalDatabaseManager
+// Assembly: FanartHandler, Version=3.1.0.0, Culture=neutral, PublicKeyToken=null
+// MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
+// Assembly location: D:\Mes documents\Desktop\FanartHandler.dll
+
+using MediaPortal.Configuration;
+using NLog;
+using SQLite.NET;
+using System;
+using System.IO;
 
 namespace FanartHandler
 {
-    using MediaPortal.Configuration;
-    using NLog;    
-    using SQLite.NET;
-    using System;
-//    using System.Collections.Generic;
-//    using System.Collections;
-    using System.IO;
-//    using System.Linq;   
+  internal class ExternalDatabaseManager
+  {
+    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+    private SQLiteClient dbClient;
 
-//    using MediaPortal.Picture.Database;   
-  //  using MediaPortal.Util;
-//    using MediaPortal.Profile;
-  //  using MediaPortal.GUI.Library;
-
-    /// <summary>
-    /// Class handling all external (not fanart handler db) database access.
-    /// </summary>
-    class ExternalDatabaseManager
+    static ExternalDatabaseManager()
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger(); 
-        private SQLiteClient dbClient;
-        //private VirtualDirectory virtualDirectory = new VirtualDirectory();
-
-        /// <summary>
-        /// Initiation of the DatabaseManager.
-        /// </summary>
-        /// <param name="dbFilename">Database filename</param>
-        /// <returns>if database was successfully or not</returns>
-        public bool InitDB(string dbFilename)
-        {
-            try
-            {
-                String path = Config.GetFolder(Config.Dir.Database) + @"\"+ dbFilename;                
-                if (File.Exists(path))
-                {
-                    FileInfo f = new FileInfo(path);
-                    if (f.Length > 0)
-                    {
-                        dbClient = new SQLiteClient(path);
-                        dbClient.Execute("PRAGMA synchronous=OFF");
-                        return true;
-                    }
-                }
-            }
-            catch //(Exception e)
-            {
-                //logger.Error("initDB: Could Not Open Database: " + dbFilename + ". " + e.ToString());
-                dbClient = null;
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Close the database client.
-        /// </summary>
-        public void Close()
-        {
-            try
-            {
-                if (dbClient != null)
-                {
-                    dbClient.Close();
-                }
-
-                dbClient = null;
-            }
-            catch (Exception ex)
-            {
-                logger.Error("close: " + ex.ToString());
-            }
-        }
-
-        /// <summary>
-        /// Returns movie fanart data from Moving Picture or TVSeries db.
-        /// </summary>
-        /// <param name="type">Type of data to fetch</param>
-        /// <returns>Resultset of matching data</returns>
-       public SQLiteResultSet GetData(string type)
-        {
-            SQLiteResultSet result = null;
-            string sqlQuery = null;
-            try
-            {
-                if (type.Equals("TVSeries", StringComparison.CurrentCulture))
-                {
-                    sqlQuery = "select SortName, id from online_series;";
-                }
-                else
-                {
-                    sqlQuery = "select artistName from Artists;";
-                }
-                result = dbClient.Execute(sqlQuery);
-            }
-            catch 
-            {
-            }
-            return result;
-        }          
-        
-
     }
+
+    public bool InitDB(string dbFilename)
+    {
+      try
+      {
+        var str = Config.GetFolder((Config.Dir) 4) + "\\" + dbFilename;
+        if (File.Exists(str))
+        {
+          if (new FileInfo(str).Length > 0L)
+          {
+            dbClient = new SQLiteClient(str);
+            return true;
+          }
+        }
+      }
+      catch
+      {
+        dbClient = null;
+      }
+      return false;
+    }
+
+    public void Close()
+    {
+      try
+      {
+        if (dbClient != null)
+          dbClient.Close();
+        dbClient = null;
+      }
+      catch (Exception ex)
+      {
+        logger.Error("close: " + ex);
+      }
+    }
+
+    public SQLiteResultSet GetData(Utils.Category category)
+    {
+      var sqLiteResultSet = (SQLiteResultSet) null;
+      try
+      {
+        sqLiteResultSet = dbClient.Execute(category != Utils.Category.TvSeriesScraped ? "select artistName from Artists;" : "select SortName, id from online_series;");
+      }
+      catch
+      {
+      }
+      return sqLiteResultSet;
+    }
+  }
 }

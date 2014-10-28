@@ -1,236 +1,207 @@
-﻿//***********************************************************************
-// Assembly         : FanartHandler
-// Author           : cul8er
-// Created          : 05-09-2010
-//
-// Last Modified By : cul8er
-// Last Modified On : 10-05-2010
-// Description      : 
-//
-// Copyright        : Open Source software licensed under the GNU/GPL agreement.
-//***********************************************************************
+﻿// Type: FanartHandler.ExternalAccess
+// Assembly: FanartHandler, Version=3.1.0.0, Culture=neutral, PublicKeyToken=null
+// MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
+// Assembly location: D:\Mes documents\Desktop\FanartHandler.dll
+
+using NLog;
+using System;
+using System.Collections;
+using System.Threading;
 
 namespace FanartHandler
 {
-    //using MediaPortal.Configuration;
-    //using MediaPortal.GUI.Library;
-    //using MediaPortal.Util;
-    using NLog;
-    //using SQLite.NET;
-    using System;
-    using System.Collections;
-    //using System.Collections.Generic;
-    //using System.Drawing;    
-    //using System.Globalization;
-    //using System.IO;
-    //using System.Linq;
-    //using System.Runtime.InteropServices;
-    //using System.Reflection;
-    //using System.Text;
-    //using System.Text.RegularExpressions;
-    using System.Threading;
+  public class ExternalAccess
+  {
+    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
+    public static event ScraperCompletedHandler ScraperCompleted;
 
-    /// <summary>
-    /// External access to some Fanart Handler plugin methods.
-    /// </summary>
-    public class ExternalAccess
+    static ExternalAccess()
     {
-        #region declarations
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-        public delegate void ScraperCompletedHandler(string type, string artist);
-        public static event ScraperCompletedHandler ScraperCompleted;
-        #endregion
+    }
 
-        internal static void InvokeScraperCompleted(string type, string artist)
+    internal static void InvokeScraperCompleted(string type, string artist)
+    {
+      try
+      {
+        if (ScraperCompleted == null)
+          return;
+        ScraperCompleted(type, artist);
+      }
+      catch (Exception ex)
+      {
+        logger.Error("InvokeScraperCompleted: " + ex);
+      }
+    }
+
+    public Hashtable GetFanart(string artist, string type)
+    {
+      return Utils.GetDbm().GetFanart(artist, Utils.Category.MusicFanartScraped, true);
+    }
+
+    public static string GetMyVideoFanart(string title)
+    {
+      var str = string.Empty;
+      try
+      {
+        title = Utils.GetArtist(title, Utils.Category.MovieScraped);
+        var fanart = Utils.GetDbm().GetFanart(title, Utils.Category.MovieScraped, true);
+        if (fanart != null)
         {
+          if (fanart.Count > 0)
+          {
+            var enumerator = fanart.Values.GetEnumerator();
             try
             {
-                if (ScraperCompleted != null)  //we have sunscriber to event
-                {                    
-                    ScraperCompleted.Invoke(type, artist);
-                }
+              if (enumerator.MoveNext())
+                str = ((FanartImage) enumerator.Current).DiskImage;
             }
-            catch (Exception ex)
+            finally
             {
-                logger.Error("InvokeScraperCompleted: " + ex.ToString());
+              var disposable = enumerator as IDisposable;
+              if (disposable != null)
+                disposable.Dispose();
             }
+          }
         }
+      }
+      catch (Exception ex)
+      {
+        logger.Error("GetMyVideoFanart: " + ex);
+      }
+      return str;
+    }
 
-        /// <summary>
-        /// Returns a hashtable with all found fanart for artist
-        /// </summary>
-        /// <param name="artist"></param>
-        /// <param name="type"></param>
-        /// <param name="restricted"></param>
-        /// <returns></returns>
-        public Hashtable GetFanart(string artist, string type, int restricted)
+    public static Hashtable GetTVFanart(string tvshow)
+    {
+      var hashtable = new Hashtable();
+      try
+      {
+        tvshow = Utils.GetArtist(tvshow, Utils.Category.TvManual);
+        var values = Utils.GetDbm().GetFanart(tvshow, Utils.Category.TvManual, false).Values;
+        var num = 0;
+        foreach (FanartImage fanartImage in values)
         {
-            return Utils.GetDbm().GetFanart(artist, type, restricted);
+          if (num < 2)
+          {
+            hashtable.Add(num, fanartImage.DiskImage);
+            checked { ++num; }
+          }
+          else
+            break;
         }
+      }
+      catch (Exception ex)
+      {
+        logger.Error("GetTVFanart: " + ex);
+      }
+      return hashtable;
+    }
 
-        /// <summary>
-        /// Returns a hashtable with all found fanart for tvshow
-        /// </summary>
-        /// <param name="tvshow">TV Show</param>
-        /// <returns></returns>
-        public static Hashtable GetTVFanart(string tvshow)
+    public static string GetFHArtistName(string _artist)
+    {
+      var str = string.Empty;
+      try
+      {
+        str = Utils.GetArtist(_artist, Utils.Category.MusicFanartScraped);
+      }
+      catch (Exception ex)
+      {
+        logger.Error("GetFHArtistName: " + ex);
+      }
+      return str;
+    }
+
+    public static bool ScrapeFanart(string artist, string album)
+    {
+      var flag = true;
+      try
+      {
+        if (!Utils.GetDbm().GetIsScraping())
         {
-            Hashtable sout = new Hashtable();
-            try
-            {
-                tvshow = Utils.GetArtist(tvshow, "TV Section");
-                Hashtable tmp = Utils.GetDbm().GetFanart(tvshow, "TV Section", 1);
-                ICollection valueColl = tmp.Values;
-                int iStop = 0;
-                foreach (FanartImage s in valueColl)
-                {
-                    if (iStop < 2)
-                    {                        
-                        sout.Add(iStop, s.DiskImage);
-                        iStop++;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-                valueColl = null;
-            }
-            catch (Exception ex)
-            {
-                logger.Error("GetTVFanart: " + ex.ToString());
-            }
-            return sout;
+          Utils.AllocateDelayStop("FanartHandlerSetup-StartScraperExternal");
+          if (!Utils.GetIsStopping() && Interlocked.CompareExchange(ref FanartHandlerSetup.Fh.SyncPointScraper, 1, 0) == 0)
+          {
+            Utils.GetDbm().IsScraping = true;
+            Utils.GetDbm().ArtistAlbumScrape(artist, album);
+            Utils.GetDbm().IsScraping = false;
+            FanartHandlerSetup.Fh.SyncPointScraper = 0;
+          }
+          else
+            flag = false;
+          Utils.ReleaseDelayStop("FanartHandlerSetup-StartScraperExternal");
         }
+      }
+      catch (Exception ex)
+      {
+        logger.Error("ScrapeFanart: " + ex);
+        FanartHandlerSetup.Fh.SyncPointScraper = 0;
+        Utils.ReleaseDelayStop("FanartHandlerSetup-StartScraperExternal");
+      }
+      return flag;
+    }
 
-        /// <summary>
-        /// Return artist name as used by FanartHandler.
-        /// </summary>
-        /// <param name="_artist">Name of artist</param>
-        /// <returns>Parsed artist name</returns>
-        public static string GetFHArtistName(string _artist)
+    public static Hashtable GetMusicFanartForLatestMedia(string artist)
+    {
+      var hashtable1 = new Hashtable();
+      try
+      {
+        artist = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
+        var hashtable2 = (Hashtable) null;
+        var fanart1 = Utils.GetDbm().GetFanart(artist, Utils.Category.MusicFanartScraped, true);
+        if (fanart1 != null && fanart1.Count <= 0 && (FanartHandlerSetup.Fh.SkipWhenHighResAvailable != null && FanartHandlerSetup.Fh.SkipWhenHighResAvailable.Equals("True", StringComparison.CurrentCulture)) && (FanartHandlerSetup.Fh.UseArtist.Equals("True", StringComparison.CurrentCulture) || FanartHandlerSetup.Fh.UseAlbum.Equals("True", StringComparison.CurrentCulture)))
+          fanart1 = Utils.GetDbm().GetFanart(artist, Utils.Category.MusicFanartScraped, false);
+        else if (FanartHandlerSetup.Fh.SkipWhenHighResAvailable != null && FanartHandlerSetup.Fh.SkipWhenHighResAvailable.Equals("False", StringComparison.CurrentCulture) && (FanartHandlerSetup.Fh.UseArtist.Equals("True", StringComparison.CurrentCulture) || FanartHandlerSetup.Fh.UseAlbum.Equals("True", StringComparison.CurrentCulture)))
         {
-            string artist = string.Empty;
-            try
+          if (fanart1 != null && fanart1.Count > 0)
+          {
+            var fanart2 = Utils.GetDbm().GetFanart(artist, Utils.Category.MusicFanartScraped, false);
+            var enumerator = fanart2.GetEnumerator();
+            var count = fanart1.Count;
+            while (enumerator.MoveNext())
             {
-                artist = Utils.GetArtist(_artist, "MusicFanart Scraper");
+              fanart1.Add(count, enumerator.Value);
+              checked { ++count; }
             }
-            catch (Exception ex)
-            {
-                logger.Error("GetFHArtistName: " + ex.ToString());
-            }
-            return artist;
+            if (fanart2 != null)
+              fanart2.Clear();
+          }
+          else
+            fanart1 = Utils.GetDbm().GetFanart(artist, Utils.Category.MusicFanartScraped, false);
         }
-
-        /// <summary>
-        /// Scrape artist fanart and album thumbnail for selected artist/album.
-        /// </summary>
-        /// <param name="artist">Name of artist</param>
-        /// <param name="album">Name of album</param>
-        /// <returns>Scraper was busy returns false, if all ok returns true.</returns>
-
-        public static bool ScrapeFanart(string artist, string album)
+        var num = 0;
+        if (fanart1 != null && fanart1.Count > 0)
         {
-            bool _return = true;
-            try
+          foreach (FanartImage fanartImage in fanart1.Values)
+          {
+            if (num < 2)
             {
-                if (Utils.GetDbm().GetIsScraping() == false)
-                {
-                    Utils.AllocateDelayStop("FanartHandlerSetup-StartScraperExternal");
-                    int sync = Interlocked.CompareExchange(ref FanartHandlerSetup.Fh.SyncPointScraper, 1, 0);
-                    if (Utils.GetIsStopping() == false && sync == 0)
-                    {
-                        Utils.GetDbm().IsScraping = true;
-                        Utils.GetDbm().ArtistAlbumScrape(artist, album);
-                        Utils.GetDbm().IsScraping = false;
-                        FanartHandlerSetup.Fh.SyncPointScraper = 0;
-                    }
-                    else
-                    {
-                        _return = false;
-                    }
-                    Utils.ReleaseDelayStop("FanartHandlerSetup-StartScraperExternal");
-                }
+              if (FanartHandlerSetup.Fh.CheckImageResolution(fanartImage.DiskImage, Utils.Category.MusicFanartScraped, FanartHandlerSetup.Fh.UseAspectRatio) && Utils.IsFileValid(fanartImage.DiskImage))
+              {
+                hashtable1.Add(num, fanartImage.DiskImage);
+                checked { ++num; }
+              }
             }
-            catch (Exception ex)
-            {
-                logger.Error("ScrapeFanart: " + ex.ToString());
-                FanartHandlerSetup.Fh.SyncPointScraper = 0;
-                Utils.ReleaseDelayStop("FanartHandlerSetup-StartScraperExternal");
-            }
-            return _return;
+            else
+              break;
+          }
         }
-
-        /// <summary>
-        /// Return artist fanart for an artist.
-        /// </summary>
-        /// <param name="artist">Name of artist</param>
-        /// <returns>Hashtable with key=sequense number and value=filename.</returns>
-        public static Hashtable GetMusicFanartForLatestMedia(string artist)
+        if (num == 0)
         {
-            Hashtable sout = new Hashtable();
-            try
-            {
-                artist = Utils.GetArtist(artist, "MusicFanart Scraper");
-                Hashtable tmp = null;
-                tmp = Utils.GetDbm().GetHigResFanart(artist, 0);
-                if ((tmp != null && tmp.Count <= 0) && FanartHandlerSetup.Fh.SkipWhenHighResAvailable != null && FanartHandlerSetup.Fh.SkipWhenHighResAvailable.Equals("True", StringComparison.CurrentCulture) && ((FanartHandlerSetup.Fh.UseArtist.Equals("True", StringComparison.CurrentCulture)) || (FanartHandlerSetup.Fh.UseAlbum.Equals("True", StringComparison.CurrentCulture))))
-                {
-                    tmp = Utils.GetDbm().GetFanart(artist, "MusicFanart Scraper", 1);
-                }
-                else if (FanartHandlerSetup.Fh.SkipWhenHighResAvailable != null && FanartHandlerSetup.Fh.SkipWhenHighResAvailable.Equals("False", StringComparison.CurrentCulture) && ((FanartHandlerSetup.Fh.UseArtist.Equals("True", StringComparison.CurrentCulture)) || (FanartHandlerSetup.Fh.UseAlbum.Equals("True", StringComparison.CurrentCulture))))
-                {
-                    if (tmp != null && tmp.Count > 0)
-                    {
-                        Hashtable tmp1 = Utils.GetDbm().GetFanart(artist, "MusicFanart Scraper", 1);
-                        IDictionaryEnumerator _enumerator = tmp1.GetEnumerator();
-                        int i = tmp.Count;
-                        while (_enumerator.MoveNext())
-                        {
-                            tmp.Add(i, _enumerator.Value);
-                            i++;
-                        }
-                        if (tmp1 != null)
-                        {
-                            tmp1.Clear();
-                        }
-                        tmp1 = null;
-                    }
-                    else
-                    {
-                        tmp = Utils.GetDbm().GetFanart(artist, "MusicFanart Scraper", 1);
-                    }
-                }
-                if (tmp != null && tmp.Count > 0)
-                {
-                    ICollection valueColl = tmp.Values;
-                    int iStop = 0;
-                    foreach (FanartImage s in valueColl)
-                    {
-                        if (iStop < 2)
-                        {
-                            if (FanartHandlerSetup.Fh.CheckImageResolution(s.DiskImage, "MusicFanart Scraper", FanartHandlerSetup.Fh.UseAspectRatio) && Utils.IsFileValid(s.DiskImage))
-                            {
-                                sout.Add(iStop, s.DiskImage);
-                                iStop++;
-                            }
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-                    valueColl = null;
-                }
-                tmp = null;                
-            }
-            catch (Exception ex)
-            {
-                logger.Error("GetMusicFanartForLatestMedia: " + ex.ToString());
-            }
-            return sout;
+          var currFile = "";
+          var iFilePrev = -1;
+          var randomDefaultBackdrop = FanartHandlerSetup.Fh.GetRandomDefaultBackdrop(ref currFile, ref iFilePrev);
+          hashtable1.Add(0, randomDefaultBackdrop);
         }
+        hashtable2 = null;
+      }
+      catch (Exception ex)
+      {
+        logger.Error("GetMusicFanartForLatestMedia: " + ex);
+      }
+      return hashtable1;
+    }
 
-    }    
+    public delegate void ScraperCompletedHandler(string type, string artist);
+  }
 }

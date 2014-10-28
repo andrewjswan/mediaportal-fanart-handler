@@ -62,9 +62,9 @@
             <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
               <Param1 />
               <UpdateOption>AlwaysOverwrite</UpdateOption>
-              <LocalFileName>..\Installer\config\FanartHandler.org</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{216864ea-ea6a-486c-a1a1-45b8e36c0987}-FanartHandler.org</ZipFileName>
-              <DestinationFilename>%Config%\FanartHandler.org</DestinationFilename>
+              <LocalFileName>..\Installer\config\FanartHandler.xml</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{216864ea-ea6a-486c-a1a1-45b8e36c0987}-FanartHandler.xml</ZipFileName>
+              <DestinationFilename>%Config%\FanartHandler.xml</DestinationFilename>
             </FileItem>
             <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
               <Param1 />
@@ -509,9 +509,9 @@ cul8er</Value>
       <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
         <Param1 />
         <UpdateOption>AlwaysOverwrite</UpdateOption>
-        <LocalFileName>..\Installer\config\FanartHandler.org</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{216864ea-ea6a-486c-a1a1-45b8e36c0987}-FanartHandler.org</ZipFileName>
-        <DestinationFilename>%Config%\FanartHandler.org</DestinationFilename>
+        <LocalFileName>..\Installer\config\FanartHandler.xml</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{216864ea-ea6a-486c-a1a1-45b8e36c0987}-FanartHandler.xml</ZipFileName>
+        <DestinationFilename>%Config%\FanartHandler.xml</DestinationFilename>
       </FileItem>
       <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
         <Param1 />

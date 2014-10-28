@@ -19,6 +19,7 @@ echo PROGS=%PROGS% >> %LOG%
 :: Predefined folders
 set MP_PROG=%PROGS%\Team MediaPortal\MediaPortal
 set MP_PLUG=%MP_PROG%\plugins\Windows
+set MP_PROC=%MP_PROG%\plugins\process
 
 FOR %%i IN (*.dll) DO (
 	echo %%i
@@ -29,6 +30,11 @@ FOR %%i IN (*.dll) DO (
 		if exist !MP_PLUG!\%%i (
 			echo Found %%i in !MP_PLUG! >> %LOG%
 			copy /y "!MP_PLUG!\%%i" . >> %LOG%
+		) else (
+			if exist !MP_PROC!\%%i (
+				echo Found %%i in !MP_PROC! >> %LOG%
+				copy /y "!MP_PROC!\%%i" . >> %LOG%
+			)
 		)
 	)
 )
