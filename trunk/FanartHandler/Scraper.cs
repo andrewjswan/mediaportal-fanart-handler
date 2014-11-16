@@ -33,7 +33,7 @@ namespace FanartHandler
 
         private static Regex[] StackRegExpressions = null;
         private static bool _artistsStripped = false;
-        private static bool _getLastfmCover = true;
+        // private static bool _getLastfmCover = true;
         private static bool _switchArtist = false;
     private static string _artistPrefixes = "The, Les, Die";
 
@@ -186,6 +186,7 @@ namespace FanartHandler
             }
             catch (Exception ex)
             {
+              logger.Debug("Proxy: "+ex);
             }
             requestPic.AddRange(checked ((int) num2));
             requestPic.Timeout = checked (5000 + 1000 * num1);
@@ -449,7 +450,7 @@ label_51:
       if (filename == null)
         return false;
       var image1 = (Image) null;
-      Image image2;
+      // Image image2;
       try
       {
         image1 = CreateNonIndexedImage(filename);
@@ -463,14 +464,14 @@ label_51:
         {
           if (image1 != null)
             ObjectMethods.SafeDispose(image1);
-          image2 = null;
+          // image2 = null;
         }
       }
       catch
       {
         if (image1 != null)
           ObjectMethods.SafeDispose(image1);
-        image2 = null;
+        // image2 = null;
       }
       return false;
     }
@@ -546,6 +547,7 @@ label_51:
           }
           catch (Exception ex)
           {
+            logger.Debug("Proxy: "+ex);
           }
           httpWebRequest.ServicePoint.Expect100Continue = false;
           var str = "keywords=" + artist + "&aid=5" + "&default_operator=and" + "&inc=keywords,mb_aliases";
@@ -687,6 +689,7 @@ label_51:
           }
           catch (Exception ex)
           {
+            logger.Debug("Proxy: "+ex);
           }
           httpWebRequest.ServicePoint.Expect100Continue = false;
           var str = "keywords=" + artist + "&aid=1,5" + "&default_operator=and" + "&inc=keywords,mb_aliases";
@@ -738,7 +741,7 @@ label_51:
           if (alSearchResults != null)
           {
             if (doScrapeFanart)
-              logger.Info("Trying to find fanart for artist " + artist + ".");
+              logger.Info("Trying to find fanart for Artist: " + artist + ".");
             if (!reportProgress && !externalAccess)
             {
               dbm.TotArtistsBeingScraped = checked (alSearchResults.Count + 1);
@@ -757,7 +760,7 @@ label_51:
                 {
                   if (((SearchResults) alSearchResults[index]).Album.Equals("1", StringComparison.CurrentCulture) && doScrapeFanart)
                   {
-                    logger.Info("Found fanart for artist " + artist + ".");
+                    logger.Info("Found fanart for Artist: " + artist + ".");
                     sourceFilename = "http://htbackdrops.org/api/02274c29b2cc898a726664b96dcc0e76/download/" + ((SearchResults) alSearchResults[index]).Id + "/fullsize";
                     if (!dbm.SourceImageExist(artist1, null, null, Utils.Category.MusicFanartScraped, null, Utils.Provider.HtBackdrops, ((SearchResults) alSearchResults[index]).Id))
                     {
@@ -786,7 +789,7 @@ label_51:
                 {
                   if (((SearchResults) alSearchResults[index]).Album.Equals("5", StringComparison.CurrentCulture) && !flag3 && (Utils.ScrapeThumbnails.Equals("True", StringComparison.CurrentCulture) && !Utils.GetDbm().HasArtistThumb(artist1)))
                   {
-                    logger.Info("Found thumbnail for artist " + artist + ".");
+                    logger.Info("Found thumbnail for Artist: " + artist + ".");
                     sourceFilename = "http://htbackdrops.org/api/02274c29b2cc898a726664b96dcc0e76/download/" + ((SearchResults) alSearchResults[index]).Id + "/fullsize";
                     if (DownloadImage(ref artist, null, ref sourceFilename, ref path, ref filename, ref requestPic, ref responsePic, Utils.Category.MusicArtistThumbScraped, ((SearchResults) alSearchResults[index]).Id))
                     {
@@ -1182,7 +1185,7 @@ label_89:
           var str1 = (string) null;
           var path = (string) null;
           var filename = (string) null;
-          var flag = true;
+          var flag = false;
           httpWebRequest = (HttpWebRequest)WebRequest.Create("http://ws.audioscrobbler.com/2.0/?method=artist.getInfo");
           try
           {
@@ -1190,6 +1193,7 @@ label_89:
           }
           catch (Exception ex)
           {
+            logger.Debug("Proxy: "+ex);
           }
           httpWebRequest.ServicePoint.Expect100Continue = false;
           var str2 = "&artist=" + validUrlLastFmString + "&api_key=7d97dee3440eec8b90c9cf5970eef5ca";
@@ -1210,27 +1214,27 @@ label_89:
             ObjectMethods.SafeDispose(webResponse);
           }
           var sourceFilename = (string) null;
-          logger.Info("Trying to find Last.FM thumbnail for artist " + artist + ".");
+          logger.Info("Trying to find Last.FM thumbnail for Artist: " + artist + ".");
           try
           {
-            if (str1 != null)
-            {
-              if (str1.Length > 0)
-              {
-                if (str1.IndexOf("\">http") > 0)
-                {
-                  while (flag)
-                  {
-                    if (str1.Length > 0)
-                    {
-                      sourceFilename = str1.Substring(checked (str1.IndexOf("\">http") + 2), checked (str1.IndexOf("</size>") - str1.IndexOf("\">http") + 2));
-                      if (sourceFilename.ToLower().IndexOf(".jpg") > 0 || sourceFilename.ToLower().IndexOf(".png") > 0)
-                        flag = false;
-                      else
-                        str1 = str1.Substring(checked (str1.IndexOf("</size>") + 7));
-                    }
+            if (str1 != null) {
+              if (str1.Length > 0) {
+                if (str1.IndexOf("\">http") > 0) {
+                  // sourceFilename = str1.Substring(checked (str1.IndexOf("mega\">http") + 6), checked (str1.IndexOf("</image>") - str1.IndexOf("mega\">http") + 6));
+                  sourceFilename = str1.Substring(checked (str1.IndexOf("size=\"mega\">") + 12));
+                  sourceFilename = sourceFilename.Substring(0, sourceFilename.IndexOf("</image>"));
+                  logger.Debug("Last.FM Thumb Mega for Artist: " + artist + " - " + sourceFilename);
+                  if (sourceFilename.ToLower().IndexOf(".jpg") > 0 || sourceFilename.ToLower().IndexOf(".png") > 0)
+                    flag = true ;
+                  else {
+                    // sourceFilename = str1.Substring(checked (str1.IndexOf("extralarge\">http") + 12), checked (str1.IndexOf("</image>") - str1.IndexOf("extralarge\">http") + 12));
+                    sourceFilename = str1.Substring(checked (str1.IndexOf("size=\"extralarge\">") + 18));
+                    sourceFilename = sourceFilename.Substring(0, sourceFilename.IndexOf("</image>"));
+                    logger.Debug("Last.FM Thumb Extra for Artist: " + artist + " - " + sourceFilename);
+                    if (sourceFilename.ToLower().IndexOf(".jpg") > 0 || sourceFilename.ToLower().IndexOf(".png") > 0)
+                      flag = true ;
                     else
-                      break;
+                      flag = false ;
                   }
                 }
               }
@@ -1240,19 +1244,18 @@ label_89:
           {
             logger.Error(ex.ToString());
           }
-          if (sourceFilename != null && !flag && !sourceFilename.Contains("bad_tag"))
-          {
-            var artist1 = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
-            if (DownloadImage(ref artist, null, ref sourceFilename, ref path, ref filename, ref requestPic, ref responsePic, Utils.Category.MusicArtistThumbScraped, null))
-            {
-              if (FanartHandlerSetup.Fh.IsPlaying && !externalAccess)
-              {
-                FanartHandlerSetup.Fh.FP.AddPlayingArtistThumbProperty(FanartHandlerSetup.Fh.CurrentTrackTag, FanartHandlerSetup.Fh.FP.DoShowImageOnePlay);
-                FanartHandlerSetup.Fh.FP.UpdatePropertiesPlay();
+          if (flag) {
+            if (sourceFilename != null && !sourceFilename.Contains("bad_tag")) {
+              var artist1 = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
+              if (DownloadImage(ref artist, null, ref sourceFilename, ref path, ref filename, ref requestPic, ref responsePic, Utils.Category.MusicArtistThumbScraped, null)) {
+                if (FanartHandlerSetup.Fh.IsPlaying && !externalAccess) {
+                  FanartHandlerSetup.Fh.FP.AddPlayingArtistThumbProperty(FanartHandlerSetup.Fh.CurrentTrackTag, FanartHandlerSetup.Fh.FP.DoShowImageOnePlay);
+                  FanartHandlerSetup.Fh.FP.UpdatePropertiesPlay();
+                }
+                dbm.LoadFanart(artist1, filename.Replace("_tmp.jpg", "L.jpg"), sourceFilename, Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.HtBackdrops, null);
+                dbm.LoadFanart(artist1, filename.Replace("_tmp.jpg", ".jpg"), sourceFilename, Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.HtBackdrops, null);
+                ExternalAccess.InvokeScraperCompleted("MusicArtistThumbs", artist1);
               }
-              dbm.LoadFanart(artist1, filename.Replace("_tmp.jpg", "L.jpg"), sourceFilename, Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.HtBackdrops, null);
-              dbm.LoadFanart(artist1, filename.Replace("_tmp.jpg", ".jpg"), sourceFilename, Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.HtBackdrops, null);
-              ExternalAccess.InvokeScraperCompleted("MusicArtistThumbs", artist1);
             }
           }
         }
@@ -1320,7 +1323,7 @@ label_89:
           var str1 = (string) null;
           var path = (string) null;
           var filename = (string) null;
-          var flag = true;
+          var flag = false;
           httpWebRequest = (HttpWebRequest) WebRequest.Create("http://ws.audioscrobbler.com/2.0/?method=album.getinfo");
           try
           {
@@ -1328,6 +1331,7 @@ label_89:
           }
           catch (Exception ex)
           {
+            logger.Debug("Proxy: "+ex);
           }
           httpWebRequest.ServicePoint.Expect100Continue = false;
           var str2 = "&api_key=7d97dee3440eec8b90c9cf5970eef5ca" + "&artist=" + validUrlLastFmString1 + "&album=" + validUrlLastFmString2;
@@ -1345,31 +1349,28 @@ label_89:
           if (webResponse != null)
             webResponse.Close();
           var sourceFilename = (string) null;
-          logger.Info("Trying to find Last.FM thumbnail for artist/album " + artist + "/" + album + ".");
+          logger.Info("Trying to find Last.FM thumbnail for Artist/Album: " + artist + "/" + album + ".");
           try
           {
-            if (str1 != null)
-            {
-              if (str1.Length > 0)
-              {
-                while (flag)
-                {
-                  if (str1.Length > 0)
-                  {
-                    if (str1.IndexOf("size=\"extralarge\">") > 0)
-                    {
-                      sourceFilename = str1.Substring(checked (str1.IndexOf("size=\"extralarge\">") + 18));
-                      sourceFilename = sourceFilename.Substring(0, sourceFilename.IndexOf("</image>"));
-                      if (sourceFilename.ToLower().IndexOf(".jpg") > 0 || sourceFilename.ToLower().IndexOf(".png") > 0)
-                        flag = false;
-                      else
-                        str1 = str1.Substring(checked (str1.IndexOf("</image>") + 8));
-                    }
+            if (str1 != null) {
+              if (str1.Length > 0) {
+                if (str1.IndexOf("\">http") > 0) {
+                  // sourceFilename = str1.Substring(checked (str1.IndexOf("mega\">http") + 6), checked (str1.IndexOf("</image>") - str1.IndexOf("mega\">http") + 6));
+                  sourceFilename = str1.Substring(checked (str1.IndexOf("size=\"mega\">") + 12));
+                  sourceFilename = sourceFilename.Substring(0, sourceFilename.IndexOf("</image>"));
+                  logger.Debug("Last.FM Thumb Mega for Artist/Album: " + artist + "/" + album + " - " + sourceFilename);
+                  if (sourceFilename.ToLower().IndexOf(".jpg") > 0 || sourceFilename.ToLower().IndexOf(".png") > 0)
+                    flag = true ;
+                  else {
+                    // sourceFilename = str1.Substring(checked (str1.IndexOf("extralarge\">http") + 12), checked (str1.IndexOf("</image>") - str1.IndexOf("extralarge\">http") + 12));
+                    sourceFilename = str1.Substring(checked (str1.IndexOf("size=\"extralarge\">") + 18));
+                    sourceFilename = sourceFilename.Substring(0, sourceFilename.IndexOf("</image>"));
+                    logger.Debug("Last.FM Thumb Extra for Artist/Album: " + artist + "/" + album + " - " + sourceFilename);
+                    if (sourceFilename.ToLower().IndexOf(".jpg") > 0 || sourceFilename.ToLower().IndexOf(".png") > 0)
+                      flag = true ;
                     else
-                      break;
+                      flag = false ;
                   }
-                  else
-                    break;
                 }
               }
             }
@@ -1378,21 +1379,20 @@ label_89:
           {
             logger.Error(ex.ToString());
           }
-          if (sourceFilename != null && !flag && !sourceFilename.Contains("bad_tag"))
-          {
-            var artist1 = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
-            if (DownloadImage(ref artist, album, ref sourceFilename, ref path, ref filename, ref requestPic, ref responsePic, Utils.Category.MusicAlbumThumbScraped, null))
-            {
-              if (FanartHandlerSetup.Fh.IsPlaying && !externalAccess)
-              {
-                FanartHandlerSetup.Fh.FP.AddPlayingArtistThumbProperty(FanartHandlerSetup.Fh.CurrentTrackTag, FanartHandlerSetup.Fh.FP.DoShowImageOnePlay);
-                FanartHandlerSetup.Fh.FP.UpdatePropertiesPlay();
+          if (flag) {
+            if (sourceFilename != null && !sourceFilename.Contains("bad_tag")) {
+              var artist1 = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
+              if (DownloadImage(ref artist, album, ref sourceFilename, ref path, ref filename, ref requestPic, ref responsePic, Utils.Category.MusicAlbumThumbScraped, null)) {
+                if (FanartHandlerSetup.Fh.IsPlaying && !externalAccess) {
+                  FanartHandlerSetup.Fh.FP.AddPlayingArtistThumbProperty(FanartHandlerSetup.Fh.CurrentTrackTag, FanartHandlerSetup.Fh.FP.DoShowImageOnePlay);
+                  FanartHandlerSetup.Fh.FP.UpdatePropertiesPlay();
+                }
+                var artist2 = Utils.GetArtist(validUrlLastFmString1, Utils.Category.MusicFanartScraped);
+                var artist3 = Utils.GetArtist(validUrlLastFmString2, Utils.Category.MusicFanartScraped);
+                Utils.GetDbm().LoadFanart(artist2, filename.Replace("_tmp.jpg", "L.jpg"), sourceFilename, Utils.Category.MusicAlbumThumbScraped, artist3, Utils.Provider.HtBackdrops, null);
+                Utils.GetDbm().LoadFanart(artist2, filename.Replace("_tmp.jpg", ".jpg"), sourceFilename, Utils.Category.MusicAlbumThumbScraped, artist3, Utils.Provider.HtBackdrops, null);
+                ExternalAccess.InvokeScraperCompleted("MusicAlbumThumbs", artist1);
               }
-              var artist2 = Utils.GetArtist(validUrlLastFmString1, Utils.Category.MusicFanartScraped);
-              var artist3 = Utils.GetArtist(validUrlLastFmString2, Utils.Category.MusicFanartScraped);
-              Utils.GetDbm().LoadFanart(artist2, filename.Replace("_tmp.jpg", "L.jpg"), sourceFilename, Utils.Category.MusicAlbumThumbScraped, artist3, Utils.Provider.HtBackdrops, null);
-              Utils.GetDbm().LoadFanart(artist2, filename.Replace("_tmp.jpg", ".jpg"), sourceFilename, Utils.Category.MusicAlbumThumbScraped, artist3, Utils.Provider.HtBackdrops, null);
-              ExternalAccess.InvokeScraperCompleted("MusicAlbumThumbs", artist1);
             }
           }
         }

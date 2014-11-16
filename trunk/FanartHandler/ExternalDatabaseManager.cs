@@ -60,7 +60,7 @@ namespace FanartHandler
       var sqLiteResultSet = (SQLiteResultSet) null;
       try
       {
-        sqLiteResultSet = dbClient.Execute(category != Utils.Category.TvSeriesScraped ? "select artistName from Artists;" : "select SortName, id from online_series;");
+        sqLiteResultSet = dbClient.Execute(category != Utils.Category.TvSeriesScraped ? "SELECT artist FROM artist_info WHERE artist is not NULL ORDER by artist;" : "SELECT SortName, id FROM online_series;");
       }
       catch
       {

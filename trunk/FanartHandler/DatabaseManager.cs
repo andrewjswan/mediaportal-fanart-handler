@@ -386,7 +386,7 @@ namespace FanartHandler
                             num1 = scraper.HtBackdropGetFanart(artist, iMax, this, true, false, false, doScrapeFanart);
                             if (num1 == 0)
                             {
-                                logger.Info("No fanart found for artist " + artist + ".");
+                                logger.Info("No fanart found for Artist: " + artist + ".");
                                 InsertDummyItem(artist1, Utils.Category.MusicFanartScraped, null);
                             }
                             if (num1 == 8888 && doScrapeFanart)
@@ -609,9 +609,12 @@ namespace FanartHandler
                 musicDatabaseAlbums = new List<AlbumInfo>();
                 m_db.GetAllArtists(ref musicDatabaseArtists);
                 m_db.GetAllAlbums(ref musicDatabaseAlbums);
-                var musicVideoArtists = Utils.GetMusicVideoArtists("MusicVids.db3");
+                var musicVideoArtists = Utils.GetMusicVideoArtists("mvCentral.db3");
                 if (musicVideoArtists != null && musicVideoArtists.Count > 0)
+                {
+                    logger.Debug("InitialScrape Add Artists from mvCentral ["+musicVideoArtists.Count+"]...");
                     musicDatabaseArtists.AddRange(musicVideoArtists);
+                }
                 if (FanartHandlerSetup.Fh.MyScraperWorker != null)
                     FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, "Start");
                 TotArtistsBeingScraped = checked (musicDatabaseArtists.Count + musicDatabaseAlbums.Count);
@@ -1205,7 +1208,7 @@ namespace FanartHandler
             var filenames = new Hashtable();
             try
             {
-                var str1 = "";
+                // var str1 = "";
                 string str2;
                 if (category == Utils.Category.MusicFanartScraped)
                     str2 = "SELECT Id, Key1, FullPath, SourcePath, Category, Provider FROM Image WHERE Key1 IN (" +
@@ -1231,7 +1234,7 @@ namespace FanartHandler
                     }
                 }
                 Utils.Shuffle(ref filenames);
-                str1 = null;
+                // str1 = null;
             }
             catch (Exception ex)
             {
@@ -1437,8 +1440,7 @@ namespace FanartHandler
                         now.ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "');";
                     lock (lockObject)
                         dbClient.Execute(str3);
-                    logger.Info("Importing local fanart into fanart handler database (" + diskImage +
-                                                ").");
+                    logger.Info("Importing local fanart into fanart handler database (" + diskImage + ").");
                 }
             }
             catch (Exception ex)

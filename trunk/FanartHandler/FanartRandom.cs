@@ -1133,7 +1133,7 @@ namespace FanartHandler
                 else
                   checked { ++num1; }
               }
-              var collection = (ICollection) null;
+              // var collection = (ICollection) null;
               if (num2 == 0)
               {
                 var values2 = htAny.Values;
@@ -1159,7 +1159,7 @@ namespace FanartHandler
                     checked { ++num3; }
                 }
               }
-              collection = null;
+              // collection = null;
             }
           }
         }

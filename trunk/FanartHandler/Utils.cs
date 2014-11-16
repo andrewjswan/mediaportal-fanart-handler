@@ -332,7 +332,7 @@ namespace FanartHandler
     {
       var externalDatabaseManager1 = (ExternalDatabaseManager) null;
       var arrayList = new ArrayList();
-      ExternalDatabaseManager externalDatabaseManager2;
+      // ExternalDatabaseManager externalDatabaseManager2;
       try
       {
         externalDatabaseManager1 = new ExternalDatabaseManager();
@@ -358,14 +358,14 @@ namespace FanartHandler
         catch
         {
         }
-        externalDatabaseManager2 = null;
+        // externalDatabaseManager2 = null;
         return arrayList;
       }
       catch (Exception ex)
       {
         if (externalDatabaseManager1 != null)
           externalDatabaseManager1.Close();
-        externalDatabaseManager2 = null;
+        // externalDatabaseManager2 = null;
         logger.Error("GetMusicVideoArtists: " + ex);
       }
       return null;
@@ -624,7 +624,7 @@ namespace FanartHandler
       }
       catch (Exception ex)
       {
-        logger.Error("Failed to load image from " + filename);
+        logger.Error("Failed to load image from " + filename+ " - " + ex);
         image2 = null;
       }
       return image2;
@@ -634,26 +634,26 @@ namespace FanartHandler
     {
       if (filename == null)
         return false;
-      var image1 = (Image) null;
+      // var image1 = (Image) null;
       try
       {
         var image2 = LoadImageFastFromFile(filename);
         if (image2 != null && image2.Width > 0)
         {
           image2.Dispose();
-          image1 = null;
+          // image1 = null;
           return true;
         }
         else
         {
           if (image2 != null)
             image2.Dispose();
-          image1 = null;
+          // image1 = null;
         }
       }
       catch
       {
-        image1 = null;
+        // image1 = null;
       }
       return false;
     }
