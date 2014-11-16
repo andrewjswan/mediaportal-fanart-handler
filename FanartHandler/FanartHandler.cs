@@ -582,7 +582,7 @@ label_7:
                 else
                   checked { ++num1; }
               }
-              var collection = (ICollection) null;
+              // var collection = (ICollection) null;
               if (num2 == 0)
               {
                 var values2 = filenames.Values;
@@ -602,7 +602,7 @@ label_7:
                     checked { ++num3; }
                 }
               }
-              collection = null;
+              // collection = null;
             }
           }
         }
@@ -649,7 +649,7 @@ label_7:
                   else
                     checked { ++num1; }
                 }
-                var collection = (ICollection) null;
+                // var collection = (ICollection) null;
                 if (num2 == 0)
                 {
                   var values2 = DefaultBackdropImages.Values;
@@ -669,7 +669,7 @@ label_7:
                       checked { ++num3; }
                   }
                 }
-                collection = null;
+                // collection = null;
               }
             }
           }
@@ -1088,7 +1088,7 @@ label_21:;
           fileInfo.Delete();
         }
       }
-      catch (Exception ex)
+      catch // (Exception ex)
       {
       }
       var fileTarget = new FileTarget();

@@ -147,7 +147,7 @@ namespace FanartHandler
       try
       {
         artist = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
-        var hashtable2 = (Hashtable) null;
+        // var hashtable2 = (Hashtable) null;
         var fanart1 = Utils.GetDbm().GetFanart(artist, Utils.Category.MusicFanartScraped, true);
         if (fanart1 != null && fanart1.Count <= 0 && (FanartHandlerSetup.Fh.SkipWhenHighResAvailable != null && FanartHandlerSetup.Fh.SkipWhenHighResAvailable.Equals("True", StringComparison.CurrentCulture)) && (FanartHandlerSetup.Fh.UseArtist.Equals("True", StringComparison.CurrentCulture) || FanartHandlerSetup.Fh.UseAlbum.Equals("True", StringComparison.CurrentCulture)))
           fanart1 = Utils.GetDbm().GetFanart(artist, Utils.Category.MusicFanartScraped, false);
@@ -193,7 +193,7 @@ namespace FanartHandler
           var randomDefaultBackdrop = FanartHandlerSetup.Fh.GetRandomDefaultBackdrop(ref currFile, ref iFilePrev);
           hashtable1.Add(0, randomDefaultBackdrop);
         }
-        hashtable2 = null;
+        // hashtable2 = null;
       }
       catch (Exception ex)
       {

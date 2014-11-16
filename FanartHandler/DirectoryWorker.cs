@@ -164,7 +164,7 @@ namespace FanartHandler
             if (strArray[0].Equals("All") || strArray[0].Contains(s))
             {
               logger.Info("Refreshing local fanart for TVSeries is starting.");
-              var hashtable = (Hashtable) null;
+              // var hashtable = (Hashtable) null;
               try
               {
                 var tvSeriesName = UtilsTVSeries.GetTVSeriesName(Utils.Category.TvSeriesScraped);
@@ -175,7 +175,7 @@ namespace FanartHandler
                   logger.Info("Refreshing local fanart for TVSeries added files.");
                   logger.Info("Refreshing local fanart for TVSeries got Hash.");
                   tvSeriesName.Clear();
-                  hashtable = null;
+                  // hashtable = null;
                   FanartHandlerSetup.Fh.SyncPointDirectoryUpdate = 0;
                 }
                 FanartHandlerSetup.Fh.SyncPointDirectoryUpdate = 1;

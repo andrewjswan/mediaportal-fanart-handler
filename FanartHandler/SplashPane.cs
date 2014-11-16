@@ -16,7 +16,7 @@ namespace FanartHandler
   {
     private static SplashPane splash;
     private static Thread oThread;
-    private IContainer components;
+    // private IContainer components;
     private Label label1;
     private ProgressBar progressBar;
     private Label statusLabel;
@@ -66,8 +66,8 @@ namespace FanartHandler
 
     protected override void Dispose(bool disposing)
     {
-      if (disposing && components != null)
-        components.Dispose();
+      // if (disposing && components != null)
+      //  components.Dispose();
       base.Dispose(disposing);
     }
 

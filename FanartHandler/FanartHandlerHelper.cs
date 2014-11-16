@@ -70,7 +70,7 @@ namespace FanartHandler
       {
         xmlDocument.Load(file);
       }
-      catch (XmlException ex)
+      catch // (XmlException ex)
       {
         return null;
       }

@@ -128,7 +128,7 @@ namespace FanartHandler
     private static bool isStopping;
     public static string oMissing;
     internal static int SyncPointTableUpdate;
-    private DirectoryWorker MyDirectoryWorker;
+    // private DirectoryWorker MyDirectoryWorker;
     private string disableMPTumbsForRandom;
     private string doNotReplaceExistingThumbs;
     private string imageInterval;
@@ -1318,11 +1318,11 @@ namespace FanartHandler
         return;
       var dialogResult = MessageBox.Show("Do you want to save your changes?", "Save Changes?", MessageBoxButtons.YesNo);
       StopScraper();
-      if (MyDirectoryWorker != null)
-      {
-        MyDirectoryWorker.CancelAsync();
-        MyDirectoryWorker.Dispose();
-      }
+      // if (MyDirectoryWorker != null)
+      // {
+      //  MyDirectoryWorker.CancelAsync();
+      //  MyDirectoryWorker.Dispose();
+      // }
       StopThumbScraper("True");
       if (dialogResult == DialogResult.Yes)
         DoSave();
@@ -1776,7 +1776,7 @@ namespace FanartHandler
           fileInfo.Delete();
         }
       }
-      catch (Exception ex)
+      catch // (Exception ex)
       {
       }
       var fileTarget = new FileTarget();
@@ -2446,11 +2446,7 @@ namespace FanartHandler
       try
       {
         myDataTable2.Rows.Clear();
-        var userManagedTable = Utils.GetDbm()
-                                        .GetDataForConfigUserManagedTable(0,
-                                                                          comboBox3
-                                                                                             .SelectedItem
-                                                                                             .ToString());
+        var userManagedTable = Utils.GetDbm().GetDataForConfigUserManagedTable(0,GetCategoryFromExtComboFilter(comboBox3.SelectedItem.ToString()).ToString());
         if (userManagedTable != null && userManagedTable.Rows.Count > 0)
         {
           var num = 0;
@@ -2490,15 +2486,8 @@ namespace FanartHandler
       {
         myDataTable4.Rows.Clear();
         var sqLiteResultSet = comboBox2.SelectedItem == null
-                                    ? Utils.GetDbm()
-                                           .GetDataForConfigUserManagedTable(0,
-
-                                                                               "Games")
-                                    : Utils.GetDbm()
-                                           .GetDataForConfigUserManagedTable(0,
-
-                                                                               comboBox2.SelectedItem
-                                                                                   .ToString());
+                                    ? Utils.GetDbm().GetDataForConfigUserManagedTable(0,"GameManual")
+                                    : Utils.GetDbm().GetDataForConfigUserManagedTable(0,GetCategoryFromComboFilter(comboBox2.SelectedItem.ToString()).ToString());
         if (sqLiteResultSet != null && sqLiteResultSet.Rows.Count > 0)
         {
           var num = 0;

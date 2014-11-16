@@ -84,6 +84,7 @@ namespace FanartHandler
       }
       catch (MissingMethodException ex)
       {
+        logger.Debug("GetMovingPicturesBackdrops: " + ex);
       }
       catch (Exception ex)
       {

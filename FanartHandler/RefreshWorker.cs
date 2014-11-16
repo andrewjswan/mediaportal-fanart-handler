@@ -37,7 +37,7 @@ namespace FanartHandler
 
     protected override void OnDoWork(DoWorkEventArgs e)
     {
-      var num1 = 0;
+      // var num1 = 0;
       Thread.CurrentThread.Priority = !FanartHandlerSetup.Fh.FHThreadPriority.Equals("Lowest", StringComparison.CurrentCulture) ? ThreadPriority.BelowNormal : ThreadPriority.Lowest;
       Thread.CurrentThread.Name = "RefreshWorker";
       Utils.AllocateDelayStop("RefreshWorker-OnDoWork");
@@ -342,7 +342,7 @@ namespace FanartHandler
           FanartHandlerSetup.Fh.UpdateDummyControls();
           Report(e);
           e.Result = 0;
-          num1 = 31;
+          //num1 = 31;
         }
         catch (Exception ex)
         {
@@ -357,7 +357,7 @@ namespace FanartHandler
           }));
         }
       }
-      num1 = 32;
+      // num1 = 32;
     }
 
     internal void OnProgressChanged(object sender, ProgressChangedEventArgs e)
