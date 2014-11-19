@@ -13,17 +13,19 @@ namespace FanartHandler
     public ArrayList Alias = new ArrayList();
     public string Id = string.Empty;
     public string Title = string.Empty;
+    public string MBID = string.Empty;
 
     public SearchResults()
     {
     }
 
-    public SearchResults(string id, string album, string title, ArrayList alias)
+    public SearchResults(string id, string album, string title, ArrayList alias, string mbid)
     {
       Id = id;
       Album = album;
       Title = title;
       Alias = alias;
+      MBID  = mbid;
     }
 
     public void AddAlias(string alias)
