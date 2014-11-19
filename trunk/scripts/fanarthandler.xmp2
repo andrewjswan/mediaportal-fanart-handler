@@ -66,13 +66,13 @@
               <ZipFileName>Installer{CopyFile}\{216864ea-ea6a-486c-a1a1-45b8e36c0987}-FanartHandler.xml</ZipFileName>
               <DestinationFilename>%Config%\FanartHandler.xml</DestinationFilename>
             </FileItem>
-            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+            <!--FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
               <Param1 />
               <UpdateOption>AlwaysOverwrite</UpdateOption>
               <LocalFileName>..\Installer\database\FanartHandler.org</LocalFileName>
               <ZipFileName>Installer{CopyFile}\{db90f458-5b8b-48e6-80c9-061dba6896a2}-FanartHandler.org</ZipFileName>
               <DestinationFilename>%Database%\FanartHandler.org</DestinationFilename>
-            </FileItem>
+            </FileItem-->
             <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
               <Param1 />
               <UpdateOption>AlwaysOverwrite</UpdateOption>
@@ -513,13 +513,13 @@ cul8er</Value>
         <ZipFileName>Installer{CopyFile}\{216864ea-ea6a-486c-a1a1-45b8e36c0987}-FanartHandler.xml</ZipFileName>
         <DestinationFilename>%Config%\FanartHandler.xml</DestinationFilename>
       </FileItem>
-      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+      <!--FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
         <Param1 />
         <UpdateOption>AlwaysOverwrite</UpdateOption>
         <LocalFileName>..\Installer\database\FanartHandler.org</LocalFileName>
         <ZipFileName>Installer{CopyFile}\{db90f458-5b8b-48e6-80c9-061dba6896a2}-FanartHandler.org</ZipFileName>
         <DestinationFilename>%Database%\FanartHandler.org</DestinationFilename>
-      </FileItem>
+      </FileItem-->
       <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
         <Param1 />
         <UpdateOption>AlwaysOverwrite</UpdateOption>

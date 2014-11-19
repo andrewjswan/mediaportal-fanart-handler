@@ -31,11 +31,14 @@ namespace FanartHandler
     private static readonly Logger logger = LogManager.GetCurrentClassLogger();
     private ArrayList alSearchResults;
 
-        private static Regex[] StackRegExpressions = null;
-        private static bool _artistsStripped = false;
-        // private static bool _getLastfmCover = true;
-        private static bool _switchArtist = false;
+    private static Regex[] StackRegExpressions = null;
+    private static bool _artistsStripped = false;
+    // private static bool _getLastfmCover = true;
+    private static bool _switchArtist = false;
     private static string _artistPrefixes = "The, Les, Die";
+    private static string DefUserAgent = "Mozilla/5.0 (compatible; MSIE 8.0; Win32)" ;  // "Mozilla/5.0 (Windows; U; MSIE 7.0; Windows NT 6.0; en-US)";
+    private static string ApiKeyhtBackdrops = "02274c29b2cc898a726664b96dcc0e76" ;
+    private static string ApiKeyLastFM = "7d97dee3440eec8b90c9cf5970eef5ca" ;
 
     static Scraper()
     {
@@ -128,207 +131,6 @@ namespace FanartHandler
       return doDownload;
     }
 
-    private bool DownloadImage(ref string sArtist, string album, ref string sourceFilename, ref string path, ref string filename, ref HttpWebRequest requestPic, ref WebResponse responsePic, Utils.Category category, string id)
-    {
-      var num1 = 0;
-      var num2 = 0L;
-      var str1 = "Resume";
-      var str2 = (string) null;
-      var str3 = (string) null;
-      if (category == Utils.Category.MusicArtistThumbScraped)
-      {
-        path = Config.GetFolder((Config.Dir) 6) + "\\Music\\Artists";
-        filename = path + "\\" + MediaPortal.Util.Utils.MakeFileName(sArtist) + "_tmp.jpg";
-        logger.Info("Downloading artist tumbnail for " + sArtist + " (" + filename + ").");
-        str2 = path + "\\" + MediaPortal.Util.Utils.MakeFileName(sArtist) + "L.jpg";
-        str3 = path + "\\" + MediaPortal.Util.Utils.MakeFileName(sArtist) + ".jpg";
-      }
-      else if (category == Utils.Category.MusicAlbumThumbScraped)
-      {
-        path = Config.GetFolder((Config.Dir) 6) + "\\Music\\Albums";
-        var albumThumbName = MediaPortal.Util.Utils.GetAlbumThumbName(sArtist, album);
-        filename = albumThumbName.Substring(0, albumThumbName.IndexOf(".jpg")) + "_tmp.jpg";
-        logger.Info("Downloading album tumbnail for " + sArtist + " (" + filename + ").");
-        str2 = MediaPortal.Util.Utils.ConvertToLargeCoverArt(albumThumbName);
-        str3 = albumThumbName;
-      }
-      else
-      {
-        path = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\Scraper\\music";
-        filename = path + "\\" + MediaPortal.Util.Utils.MakeFileName(sArtist) + " (" + id + ").jpg";
-        logger.Info("Downloading fanart for " + sArtist + " (" + filename + ").");
-      }
-      while (!str1.Equals("Success", StringComparison.CurrentCulture) && !str1.Equals("Stop", StringComparison.CurrentCulture) && num1 < 10)
-      {
-        var stream = (Stream) null;
-        var fileStream = (FileStream) null;
-        var doDownload = true;
-        str1 = "Success";
-        try
-        {
-          if (category == Utils.Category.MusicArtistThumbScraped || category == Utils.Category.MusicAlbumThumbScraped)
-          {
-            if (File.Exists(str2) && Utils.DoNotReplaceExistingThumbs.Equals("True"))
-              doDownload = false;
-            if (File.Exists(str3) && Utils.DoNotReplaceExistingThumbs.Equals("True"))
-              doDownload = false;
-          }
-          else if (File.Exists(filename))
-            num2 = new FileInfo(filename).Length;
-          checked { ++num1; }
-          if (doDownload)
-          {
-            requestPic = (HttpWebRequest) WebRequest.Create(sourceFilename);
-            requestPic.ServicePoint.Expect100Continue = false;
-            try
-            {
-              requestPic.Proxy.Credentials = CredentialCache.DefaultCredentials;
-            }
-            catch (Exception ex)
-            {
-              logger.Debug("Proxy: "+ex);
-            }
-            requestPic.AddRange(checked ((int) num2));
-            requestPic.Timeout = checked (5000 + 1000 * num1);
-            requestPic.ReadWriteTimeout = 20000;
-            requestPic.UserAgent = "Mozilla/5.0 (Windows; U; MSIE 7.0; Windows NT 6.0; en-US)";
-            responsePic = requestPic.GetResponse();
-            fileStream = num2 != 0L ? new FileStream(filename, FileMode.Append, FileAccess.Write, FileShare.None) : new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
-            stream = responsePic.GetResponseStream();
-            var num3 = checked (responsePic.ContentLength + num2);
-            var buffer = new byte[2048];
-            for (var count = stream.Read(buffer, 0, buffer.Length); count > 0; count = stream.Read(buffer, 0, buffer.Length))
-            {
-              fileStream.Write(buffer, 0, count);
-              var length = fileStream.Length;
-            }
-            if (fileStream != null && fileStream.Length != num3)
-            {
-              fileStream.Close();
-              ObjectMethods.SafeDispose(fileStream);
-              fileStream = null;
-              str1 = "Resume";
-            }
-            else if (fileStream != null)
-            {
-              fileStream.Close();
-              ObjectMethods.SafeDispose(fileStream);
-              fileStream = null;
-            }
-            if (!IsFileValid(filename))
-            {
-              str1 = "Stop";
-              logger.Error("DownloadImage: Deleting downloaded file because it is corrupt.");
-            }
-            if (category != Utils.Category.MusicArtistThumbScraped)
-            {
-              if (category != Utils.Category.MusicAlbumThumbScraped)
-                goto label_51;
-            }
-            if (Utils.GetDbm().IsImageProtectedByUser(str2).Equals("False"))
-            {
-              if (File.Exists(str2) && Utils.DoNotReplaceExistingThumbs.Equals("False"))
-                ReplaceOldThumbnails(str2, filename, ref doDownload, false, category);
-              if (doDownload)
-                CreateThumbnail(filename, true);
-              if (File.Exists(str3) && Utils.DoNotReplaceExistingThumbs.Equals("False") && doDownload)
-                ReplaceOldThumbnails(str3, filename, ref doDownload, false, category);
-              if (doDownload)
-                CreateThumbnail(filename, false);
-            }
-            try
-            {
-              MediaPortal.Util.Utils.FileDelete(filename);
-            }
-            catch (Exception ex)
-            {
-              logger.Error(string.Concat(new object[4]
-              {
-                "DownloadImage: Error deleting temp thumbnail - ",
-                filename,
-                ".",
-                ex
-              }));
-            }
-          }
-        }
-        catch (ExternalException ex)
-        {
-          str1 = "Stop";
-          logger.Error("DownloadImage: " + ex);
-        }
-        catch (UriFormatException ex)
-        {
-          str1 = "Stop";
-          logger.Error("DownloadImage: " + ex);
-        }
-        catch (WebException ex)
-        {
-          if (ex.Message.Contains("404"))
-          {
-            str1 = "Stop";
-            logger.Error("DownloadImage: " + ex);
-          }
-          else
-          {
-            str1 = "Resume";
-            if (num1 >= 10)
-              logger.Error("DownloadImage: " + ex);
-          }
-        }
-        catch (ThreadAbortException ex)
-        {
-          if (fileStream != null)
-          {
-            fileStream.Close();
-            ObjectMethods.SafeDispose(fileStream);
-            fileStream = null;
-          }
-          if (File.Exists(filename))
-            File.Delete(filename);
-          str1 = "Stop";
-          logger.Error("DownloadImage: " + ex);
-        }
-        catch (Exception ex)
-        {
-          logger.Error("DownloadImage: " + ex);
-          str1 = "Stop";
-        }
-label_51:
-        if (fileStream != null && str1.Equals("Stop", StringComparison.CurrentCulture))
-        {
-          fileStream.Close();
-          ObjectMethods.SafeDispose(fileStream);
-          fileStream = null;
-          if (File.Exists(filename))
-            File.Delete(filename);
-        }
-        if (stream != null)
-        {
-          stream.Close();
-          ObjectMethods.SafeDispose(stream);
-        }
-        if (fileStream != null)
-        {
-          fileStream.Close();
-          ObjectMethods.SafeDispose(fileStream);
-        }
-        if (responsePic != null)
-        {
-          responsePic.Close();
-          ObjectMethods.SafeDispose(responsePic);
-        }
-        if (requestPic != null)
-        {
-          requestPic.Abort();
-          ObjectMethods.SafeDispose(requestPic);
-        }
-      }
-      if (!str1.Equals("Success", StringComparison.CurrentCulture) && File.Exists(filename))
-        File.Delete(filename);
-      return str1.Equals("Success", StringComparison.CurrentCulture);
-    }
-
     public bool CreateThumbnail(string aInputFilename, bool bigTumb)
     {
       var bitmap1 = (Bitmap) null;
@@ -336,8 +138,8 @@ label_51:
       var templateWidth = 75;
       var templateHeight = 75;
       string NewFile;
-      if (bigTumb)
-      {
+
+      if (bigTumb) {
         templateWidth = 500;
         templateHeight = 500;
         NewFile = aInputFilename.Substring(0, aInputFilename.IndexOf("_tmp.jpg", StringComparison.CurrentCulture)) + "L.jpg";
@@ -350,7 +152,8 @@ label_51:
       }
       catch (Exception ex)
       {
-        logger.Error("CreateThumbnail: " + ex);
+        logger.Error("CreateThumbnail:");
+        logger.Error(ex);
         return false;
       }
       finally
@@ -429,7 +232,8 @@ label_51:
       }
       catch (Exception ex)
       {
-        logger.Error("CropImage: " + ex);
+        logger.Error("CropImage:");
+        logger.Error(ex);
       }
       finally
       {
@@ -476,6 +280,7 @@ label_51:
       return false;
     }
 
+    #region htBackdrops
     private void GetNodeInfo(XPathNavigator nav1)
     {
       if (nav1 != null && nav1.Name != null && nav1.Name.ToString(CultureInfo.CurrentCulture).Equals("images", StringComparison.CurrentCulture))
@@ -504,6 +309,9 @@ label_51:
                   continue;
                 case "votes":
                   alSearchResults.Add(searchResults);
+                  continue;
+                case "mbid":
+                  searchResults.MBID = xmlReader.ReadString();
                   continue;
                 default:
                   continue;
@@ -535,39 +343,16 @@ label_51:
       {
         if (!dbm.StopScraper)
         {
-          var encoding = Encoding.GetEncoding("iso-8859-1");
           var xml = (string) null;
           var path = (string) null;
           var flag = false;
           var filename = (string) null;
-          var httpWebRequest = (HttpWebRequest) WebRequest.Create("http://htbackdrops.org/api/02274c29b2cc898a726664b96dcc0e76/searchXML?");
-          try
-          {
-            httpWebRequest.Proxy.Credentials = CredentialCache.DefaultCredentials;
-          }
-          catch (Exception ex)
-          {
-            logger.Debug("Proxy: "+ex);
-          }
-          httpWebRequest.ServicePoint.Expect100Continue = false;
-          var str = "keywords=" + artist + "&aid=5" + "&default_operator=and" + "&inc=keywords,mb_aliases";
-          httpWebRequest.Method = "POST";
-          httpWebRequest.ContentType = "application/x-www-form-urlencoded";
-          httpWebRequest.ContentLength = str.Length;
-          using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream(), encoding))
-            streamWriter.Write(str);
-          var response = httpWebRequest.GetResponse();
-          using (var streamReader = new StreamReader(response.GetResponseStream()))
-            xml = streamReader.ReadToEnd();
-          if (response != null)
-          {
-            response.Close();
-            ObjectMethods.SafeDispose(response);
-          }
           var requestPic = (HttpWebRequest) null;
           var responsePic = (WebResponse) null;
           var xmlDocument = (XmlDocument) null;
           var nav1 = (XPathNavigator) null;
+          var str = "keywords=" + artist + "&aid=5" + "&default_operator=and" + "&inc=keywords,mb_aliases";
+          GetHtml("http://htbackdrops.org/api/"+ApiKeyhtBackdrops+"/searchXML?"+str, out xml) ;
           try
           {
             if (xml != null)
@@ -598,7 +383,7 @@ label_51:
           var num = 0;
           if (alSearchResults != null)
           {
-            logger.Info("Trying to find thumbnail for artist " + artist + ".");
+            logger.Info("Trying to find thumbnail for Artist: " + artist + ".");
             var artist1 = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
             var index = 0;
             while (index < alSearchResults.Count && !dbm.StopScraper)
@@ -610,12 +395,12 @@ label_51:
                 {
                   if (((SearchResults) alSearchResults[index]).Album.Equals("5", StringComparison.CurrentCulture) && !flag && (!Utils.GetDbm().HasArtistThumb(artist1) || !onlyMissing))
                   {
-                    logger.Info("Found thumbnail for artist " + artist + ".");
-                    var sourceFilename = "http://htbackdrops.org/api/02274c29b2cc898a726664b96dcc0e76/download/" + ((SearchResults) alSearchResults[index]).Id + "/fullsize";
+                    logger.Info("Found thumbnail for Artist: " + artist + ".");
+                    var sourceFilename = "http://htbackdrops.org/api/"+ApiKeyhtBackdrops+"/download/" + ((SearchResults) alSearchResults[index]).Id + "/fullsize";
                     if (DownloadImage(ref artist, null, ref sourceFilename, ref path, ref filename, ref requestPic, ref responsePic, Utils.Category.MusicArtistThumbScraped, null))
                     {
                       dbm.LoadFanart(artist1, filename.Replace("_tmp.jpg", "L.jpg"), sourceFilename, Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.HtBackdrops, null);
-                      dbm.LoadFanart(artist1, filename.Replace("_tmp.jpg", ".jpg"), sourceFilename, Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.HtBackdrops, null);
+                      // dbm.LoadFanart(artist1, filename.Replace("_tmp.jpg", ".jpg"), sourceFilename, Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.HtBackdrops, null);
                       flag = true;
                       ExternalAccess.InvokeScraperCompleted("MusicArtistThumbs", artist1);
                     }
@@ -632,7 +417,7 @@ label_51:
             {
               dbm.InsertDummyItem(artist1, Utils.Category.MusicArtistThumbScraped, null);
               if (!Utils.GetDbm().HasArtistThumb(artist1) || !onlyMissing)
-                LastFMGetArtistTumbnails(artist, dbm, false);
+                LastFMGetTumbnails(Utils.Category.MusicArtistThumbScraped, artist, null, false);
             }
           }
           if (alSearchResults != null)
@@ -641,8 +426,6 @@ label_51:
             ObjectMethods.SafeDispose(alSearchResults);
           }
           alSearchResults = null;
-          if (httpWebRequest != null)
-            ObjectMethods.SafeDispose(httpWebRequest);
           return num;
         }
       }
@@ -654,7 +437,8 @@ label_51:
           ObjectMethods.SafeDispose(alSearchResults);
         }
         alSearchResults = null;
-        logger.Error("HtBackdropGetThumbsImages: " + ex);
+        logger.Error("HtBackdrop: GetThumbsImages:");
+        logger.Error(ex);
       }
       return 9999;
     }
@@ -663,53 +447,21 @@ label_51:
     {
       var requestPic = (HttpWebRequest) null;
       var responsePic = (WebResponse) null;
-      var httpWebRequest = (HttpWebRequest) null;
-      var webResponse = (WebResponse) null;
       try
       {
         var artist1 = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
         var flag1 = Utils.GetDbm().HasArtistThumb(artist1);
-        if (!dbm.StopScraper)
+        if ((!dbm.StopScraper) && (!flag1) && (doScrapeFanart))
         {
-          if (flag1)
-          {
-            if (!doScrapeFanart)
-              goto label_89;
-          }
-          var encoding = Encoding.GetEncoding("iso-8859-1");
           var flag2 = false;
           var xml = (string) null;
           var path = (string) null;
           var flag3 = false;
           var filename = (string) null;
-          httpWebRequest = (HttpWebRequest) WebRequest.Create("http://htbackdrops.org/api/02274c29b2cc898a726664b96dcc0e76/searchXML?");
-          try
-          {
-            httpWebRequest.Proxy.Credentials = CredentialCache.DefaultCredentials;
-          }
-          catch (Exception ex)
-          {
-            logger.Debug("Proxy: "+ex);
-          }
-          httpWebRequest.ServicePoint.Expect100Continue = false;
-          var str = "keywords=" + artist + "&aid=1,5" + "&default_operator=and" + "&inc=keywords,mb_aliases";
-          httpWebRequest.Method = "POST";
-          httpWebRequest.ContentType = "application/x-www-form-urlencoded";
-          httpWebRequest.ContentLength = str.Length;
-          using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream(), encoding))
-            streamWriter.Write(str);
-          webResponse = httpWebRequest.GetResponse();
-          using (var streamReader = new StreamReader(webResponse.GetResponseStream()))
-            xml = streamReader.ReadToEnd();
-          if (webResponse != null)
-          {
-            webResponse.Close();
-            ObjectMethods.SafeDispose(webResponse);
-          }
-          if (httpWebRequest != null)
-            ObjectMethods.SafeDispose(httpWebRequest);
           var xmlDocument = (XmlDocument) null;
           var nav1 = (XPathNavigator) null;
+          var str = "keywords=" + artist + "&aid=1,5" + "&default_operator=and" + "&inc=keywords,mb_aliases";
+          GetHtml("http://htbackdrops.org/api/"+ApiKeyhtBackdrops+"/searchXML?"+str, out xml) ;
           try
           {
             if (xml != null)
@@ -761,7 +513,7 @@ label_51:
                   if (((SearchResults) alSearchResults[index]).Album.Equals("1", StringComparison.CurrentCulture) && doScrapeFanart)
                   {
                     logger.Info("Found fanart for Artist: " + artist + ".");
-                    sourceFilename = "http://htbackdrops.org/api/02274c29b2cc898a726664b96dcc0e76/download/" + ((SearchResults) alSearchResults[index]).Id + "/fullsize";
+                    sourceFilename = "http://htbackdrops.org/api/"+ApiKeyhtBackdrops+"/download/" + ((SearchResults) alSearchResults[index]).Id + "/fullsize";
                     if (!dbm.SourceImageExist(artist1, null, null, Utils.Category.MusicFanartScraped, null, Utils.Provider.HtBackdrops, ((SearchResults) alSearchResults[index]).Id))
                     {
                       if (DownloadImage(ref artist1, null, ref sourceFilename, ref path, ref filename, ref requestPic, ref responsePic, Utils.Category.MusicFanartScraped, ((SearchResults) alSearchResults[index]).Id))
@@ -790,11 +542,11 @@ label_51:
                   if (((SearchResults) alSearchResults[index]).Album.Equals("5", StringComparison.CurrentCulture) && !flag3 && (Utils.ScrapeThumbnails.Equals("True", StringComparison.CurrentCulture) && !Utils.GetDbm().HasArtistThumb(artist1)))
                   {
                     logger.Info("Found thumbnail for Artist: " + artist + ".");
-                    sourceFilename = "http://htbackdrops.org/api/02274c29b2cc898a726664b96dcc0e76/download/" + ((SearchResults) alSearchResults[index]).Id + "/fullsize";
+                    sourceFilename = "http://htbackdrops.org/api/"+ApiKeyhtBackdrops+"/download/" + ((SearchResults) alSearchResults[index]).Id + "/fullsize";
                     if (DownloadImage(ref artist, null, ref sourceFilename, ref path, ref filename, ref requestPic, ref responsePic, Utils.Category.MusicArtistThumbScraped, ((SearchResults) alSearchResults[index]).Id))
                     {
                       dbm.LoadFanart(artist1, filename.Replace("_tmp.jpg", "L.jpg"), sourceFilename, Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.HtBackdrops, ((SearchResults) alSearchResults[index]).Id);
-                      dbm.LoadFanart(artist1, filename.Replace("_tmp.jpg", ".jpg"), sourceFilename, Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.HtBackdrops, ((SearchResults) alSearchResults[index]).Id);
+                      // dbm.LoadFanart(artist1, filename.Replace("_tmp.jpg", ".jpg"), sourceFilename, Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.HtBackdrops, ((SearchResults) alSearchResults[index]).Id);
                       flag3 = true;
                       if (FanartHandlerSetup.Fh.IsPlaying && !externalAccess)
                       {
@@ -822,7 +574,7 @@ label_51:
             {
               dbm.InsertDummyItem(artist1, Utils.Category.MusicArtistThumbScraped, null);
               if (!Utils.GetDbm().HasArtistThumb(artist1) && Utils.ScrapeThumbnails.Equals("True", StringComparison.CurrentCulture))
-                LastFMGetArtistTumbnails(artist, dbm, externalAccess);
+                LastFMGetTumbnails(Utils.Category.MusicArtistThumbScraped, artist, null, externalAccess);
             }
             if (!reportProgress && !externalAccess)
             {
@@ -844,13 +596,6 @@ label_51:
             responsePic.Close();
             ObjectMethods.SafeDispose(responsePic);
           }
-          if (httpWebRequest != null)
-            ObjectMethods.SafeDispose(httpWebRequest);
-          if (webResponse != null)
-          {
-            webResponse.Close();
-            ObjectMethods.SafeDispose(webResponse);
-          }
           return num;
         }
       }
@@ -862,7 +607,8 @@ label_51:
           ObjectMethods.SafeDispose(alSearchResults);
         }
         alSearchResults = null;
-        logger.Error("getImages: " + ex);
+        logger.Error("HtBackdrop: GetFanart:");
+        logger.Error(ex);
       }
       finally
       {
@@ -873,21 +619,12 @@ label_51:
           responsePic.Close();
           ObjectMethods.SafeDispose(responsePic);
         }
-        if (httpWebRequest != null)
-          ObjectMethods.SafeDispose(httpWebRequest);
-        if (webResponse != null)
-        {
-          webResponse.Close();
-          ObjectMethods.SafeDispose(webResponse);
-        }
       }
-label_89:
       return 9999;
     }
+    #endregion
 
-
-
-
+    #region Last.FM
 
     public static void RemoveStackEndings(ref string strFileName)
     {
@@ -981,26 +718,22 @@ label_89:
         }
         // remove [DJ Spacko MIX (2000)]
         dotIndex = cleanString.IndexOf("[");
-        if (dotIndex > 0)
-        {
+        if (dotIndex > 0) {
           cleanString = cleanString.Remove(dotIndex);
         }
         dotIndex = cleanString.IndexOf("(");
-        if (dotIndex > 0)
-        {
+        if (dotIndex > 0) {
           cleanString = cleanString.Remove(dotIndex);
         }
         dotIndex = cleanString.IndexOf("feat.");
-        if (dotIndex > 0)
-        {
+        if (dotIndex > 0) {
           cleanString = cleanString.Remove(dotIndex);
         }
 
         // TODO: build REGEX here
         // replace our artist concatenation
         // cleanString = cleanString.Replace("|", "&");
-        if (cleanString.Contains("|"))
-        {
+        if (cleanString.Contains("|")) {
           cleanString = cleanString.Remove(cleanString.IndexOf("|"));
         }
         // substitute "&" with "and" <-- as long as needed
@@ -1013,20 +746,16 @@ label_89:
         cleanString = cleanString.Replace("OST ", " ");
         cleanString = cleanString.Replace("Soundtrack - ", " ");
 
-        if (cleanString.EndsWith("Soundtrack"))
-        {
+        if (cleanString.EndsWith("Soundtrack")) {
           cleanString = cleanString.Remove(cleanString.IndexOf("Soundtrack"));
         }
-        if (cleanString.EndsWith("OST"))
-        {
+        if (cleanString.EndsWith("OST")) {
           cleanString = cleanString.Remove(cleanString.IndexOf("OST"));
         }
-        if (cleanString.EndsWith(" EP"))
-        {
+        if (cleanString.EndsWith(" EP")) {
           cleanString = cleanString.Remove(cleanString.IndexOf(" EP"));
         }
-        if (cleanString.EndsWith(" (EP)"))
-        {
+        if (cleanString.EndsWith(" (EP)")) {
           cleanString = cleanString.Remove(cleanString.IndexOf(" (EP)"));
         }
       }
@@ -1063,8 +792,7 @@ label_89:
       {
         outString = removeInvalidChars(lastFMString);
 
-        if (!string.IsNullOrEmpty(outString))
-        {
+        if (!string.IsNullOrEmpty(outString)) {
           urlString = HttpUtility.UrlEncode(removeEndingChars(outString));
         }
 
@@ -1079,14 +807,12 @@ label_89:
         foreach (var singleChar in invalidSingleChars)
         {
           // do not loop unless needed
-          if (urlString.IndexOf(singleChar) > 0)
-          {
+          if (urlString.IndexOf(singleChar) > 0) {
             // check each letter of the string
             for (var s = 0; s < urlString.Length; s++)
             {
               // the evil char has been detected
-              if (urlString[s] == singleChar)
-              {
+              if (urlString[s] == singleChar) {
                 outString = urlString.Insert(s + 1, "+");
                 urlString = outString;
                 // skip checking the just inserted position
@@ -1162,285 +888,419 @@ label_89:
       return aStrippedArtist;
     }
 
-
-
-
-
-
-
-
-    public int LastFMGetArtistTumbnails(string artist, DatabaseManager dbm, bool externalAccess)
+    // Begin: Last.FM Get Tumbnails for Artist or Artist/Album
+    public int LastFMGetTumbnails(Utils.Category category, string artist, string album, bool externalAccess)
     {
-      var httpWebRequest = (HttpWebRequest) null;
-      var webResponse = (WebResponse) null;
       var requestPic = (HttpWebRequest) null;
       var responsePic = (WebResponse) null;
+
+      var Method = (string) null;
+      var URL = (string) null;
+      var POST = (string) null;
+      var validUrlLastFmString1 = (string) null;
+      var validUrlLastFmString2 = (string) null;
+
+      URL = "http://ws.audioscrobbler.com/2.0/?method=";
+      POST = "&autocorrect=1&api_key="+ApiKeyLastFM;
+
+      // Last.FM get Artist Tumbnails
+      if (category == Utils.Category.MusicArtistThumbScraped) {
+        if (string.IsNullOrEmpty(artist)) {
+          logger.Debug("LastFM: GetTumbnails - Artist - Empty.");
+          return -1 ;
+        }
+        Method = "Artist: "+artist ;
+        validUrlLastFmString1 = getValidURLLastFMString(UndoArtistPrefix(artist));
+        URL = URL + "artist.getInfo" ;
+        POST = POST + "&artist=" + validUrlLastFmString1;
+      // Last.FM get Artist/Album Tumbnails
+      } else if (category == Utils.Category.MusicAlbumThumbScraped) {
+          if (string.IsNullOrEmpty(artist) && string.IsNullOrEmpty(album)) {
+            logger.Debug("LastFM: GetTumbnails - Artist/Album - Empty.");
+            return -1 ;
+          }
+          Method = "Artist/Album: "+artist+" - "+album ;
+          validUrlLastFmString1 = getValidURLLastFMString(UndoArtistPrefix(artist));
+          validUrlLastFmString2 = getValidURLLastFMString(album);
+          URL = URL + "album.getInfo" ;
+          POST = POST + "&artist=" + validUrlLastFmString1 + "&album=" + validUrlLastFmString2;
+      // Last.FM wrong Category ...
+      } else {
+        logger.Debug("LastFM: GetTumbnails - wrong category - " + category.ToString() + ".");
+        return -1;
+      }
+
       try
       {
         var num = 0;
-        if (!string.IsNullOrEmpty(artist))
+        var str1 = (string) null;
+        var path = (string) null;
+        var filename = (string) null;
+        var sourceFilename = (string) null;
+        var flag = false;
+        logger.Info("Trying to find Last.FM thumbnail for "+Method+".");
+        GetHtml(URL+POST, out str1) ;
+        try
         {
-          var validUrlLastFmString = getValidURLLastFMString(UndoArtistPrefix(artist));
-          var encoding = Encoding.GetEncoding("iso-8859-1");
-          var str1 = (string) null;
-          var path = (string) null;
-          var filename = (string) null;
-          var flag = false;
-          httpWebRequest = (HttpWebRequest)WebRequest.Create("http://ws.audioscrobbler.com/2.0/?method=artist.getInfo");
-          try
-          {
-            httpWebRequest.Proxy.Credentials = CredentialCache.DefaultCredentials;
-          }
-          catch (Exception ex)
-          {
-            logger.Debug("Proxy: "+ex);
-          }
-          httpWebRequest.ServicePoint.Expect100Continue = false;
-          var str2 = "&artist=" + validUrlLastFmString + "&api_key=7d97dee3440eec8b90c9cf5970eef5ca";
-          httpWebRequest.Method = "POST";
-          httpWebRequest.ContentType = "application/x-www-form-urlencoded";
-          httpWebRequest.ContentLength = str2.Length;
-          using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream(), encoding))
-            streamWriter.Write(str2);
-          webResponse = httpWebRequest.GetResponse();
-          using (var streamReader = new StreamReader(webResponse.GetResponseStream()))
-          {
-            str1 = streamReader.ReadToEnd();
-            streamReader.Close();
-          }
-          if (webResponse != null)
-          {
-            webResponse.Close();
-            ObjectMethods.SafeDispose(webResponse);
-          }
-          var sourceFilename = (string) null;
-          logger.Info("Trying to find Last.FM thumbnail for Artist: " + artist + ".");
-          try
-          {
-            if (str1 != null) {
-              if (str1.Length > 0) {
-                if (str1.IndexOf("\">http") > 0) {
-                  // sourceFilename = str1.Substring(checked (str1.IndexOf("mega\">http") + 6), checked (str1.IndexOf("</image>") - str1.IndexOf("mega\">http") + 6));
-                  sourceFilename = str1.Substring(checked (str1.IndexOf("size=\"mega\">") + 12));
+          if (str1 != null) {
+            if (str1.Length > 0) {
+              if (str1.IndexOf("\">http") > 0) {
+                sourceFilename = str1.Substring(checked (str1.IndexOf("size=\"mega\">") + 12));
+                sourceFilename = sourceFilename.Substring(0, sourceFilename.IndexOf("</image>"));
+                logger.Debug("Last.FM Thumb Mega for " + Method + " - " + sourceFilename);
+                if (sourceFilename.ToLower().IndexOf(".jpg") > 0 || sourceFilename.ToLower().IndexOf(".png") > 0)
+                  flag = true ;
+                else {
+                  sourceFilename = str1.Substring(checked (str1.IndexOf("size=\"extralarge\">") + 18));
                   sourceFilename = sourceFilename.Substring(0, sourceFilename.IndexOf("</image>"));
-                  logger.Debug("Last.FM Thumb Mega for Artist: " + artist + " - " + sourceFilename);
+                  logger.Debug("Last.FM Thumb Extra for " + Method + " - " + sourceFilename);
                   if (sourceFilename.ToLower().IndexOf(".jpg") > 0 || sourceFilename.ToLower().IndexOf(".png") > 0)
                     flag = true ;
-                  else {
-                    // sourceFilename = str1.Substring(checked (str1.IndexOf("extralarge\">http") + 12), checked (str1.IndexOf("</image>") - str1.IndexOf("extralarge\">http") + 12));
-                    sourceFilename = str1.Substring(checked (str1.IndexOf("size=\"extralarge\">") + 18));
-                    sourceFilename = sourceFilename.Substring(0, sourceFilename.IndexOf("</image>"));
-                    logger.Debug("Last.FM Thumb Extra for Artist: " + artist + " - " + sourceFilename);
-                    if (sourceFilename.ToLower().IndexOf(".jpg") > 0 || sourceFilename.ToLower().IndexOf(".png") > 0)
-                      flag = true ;
-                    else
-                      flag = false ;
-                  }
+                  else
+                    flag = false ;
                 }
-              }
-            }
-          }
-          catch (Exception ex)
-          {
-            logger.Error(ex.ToString());
-          }
-          if (flag) {
-            if (sourceFilename != null && !sourceFilename.Contains("bad_tag")) {
-              var artist1 = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
-              if (DownloadImage(ref artist, null, ref sourceFilename, ref path, ref filename, ref requestPic, ref responsePic, Utils.Category.MusicArtistThumbScraped, null)) {
-                if (FanartHandlerSetup.Fh.IsPlaying && !externalAccess) {
-                  FanartHandlerSetup.Fh.FP.AddPlayingArtistThumbProperty(FanartHandlerSetup.Fh.CurrentTrackTag, FanartHandlerSetup.Fh.FP.DoShowImageOnePlay);
-                  FanartHandlerSetup.Fh.FP.UpdatePropertiesPlay();
-                }
-                dbm.LoadFanart(artist1, filename.Replace("_tmp.jpg", "L.jpg"), sourceFilename, Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.HtBackdrops, null);
-                dbm.LoadFanart(artist1, filename.Replace("_tmp.jpg", ".jpg"), sourceFilename, Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.HtBackdrops, null);
-                ExternalAccess.InvokeScraperCompleted("MusicArtistThumbs", artist1);
               }
             }
           }
         }
+        catch (Exception ex)
+        {
+          logger.Error(ex.ToString());
+        }
+
+        if (flag) {
+          if (sourceFilename != null && !sourceFilename.Contains("bad_tag")) {
+            var artist1 = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
+            // logger.Debug("*** " + artist + " | " + artist1 + " | ["+ ((category == Utils.Category.MusicArtistThumbScraped) ? "" : album) +"]");
+            if (DownloadImage(ref artist, (category == Utils.Category.MusicArtistThumbScraped) ? null : album, ref sourceFilename, ref path, ref filename, ref requestPic, ref responsePic, category, null)) {
+              if (FanartHandlerSetup.Fh.IsPlaying && !externalAccess) {
+                FanartHandlerSetup.Fh.FP.AddPlayingArtistThumbProperty(FanartHandlerSetup.Fh.CurrentTrackTag, FanartHandlerSetup.Fh.FP.DoShowImageOnePlay);
+                FanartHandlerSetup.Fh.FP.UpdatePropertiesPlay();
+              }
+              if (category == Utils.Category.MusicArtistThumbScraped) {
+                // logger.Debug("*** Artist *** " + artist + " | " + artist1);
+                Utils.GetDbm().LoadFanart(artist1, filename.Replace("_tmp.jpg", "L.jpg"), sourceFilename, Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.LastFM, null);
+                // Utils.GetDbm().LoadFanart(artist1, filename.Replace("_tmp.jpg", ".jpg"), sourceFilename, Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.LastFM, null);
+              } else {
+                // var artist2 = Utils.GetArtist(validUrlLastFmString1, Utils.Category.MusicFanartScraped);
+                var artist2 = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
+                // var artist3 = Utils.GetArtist(validUrlLastFmString2, Utils.Category.MusicFanartScraped);
+                var artist3 = Utils.GetAlbum(album, Utils.Category.MusicFanartScraped);
+                // logger.Debug("*** Album *** " + artist + " > " + artist2 + " | " + validUrlLastFmString1);
+                // logger.Debug("*** Album *** " + album  + " > " + artist3 + " | " + validUrlLastFmString2);
+                Utils.GetDbm().LoadFanart(artist2, filename.Replace("_tmp.jpg", "L.jpg"), sourceFilename, Utils.Category.MusicAlbumThumbScraped, artist3, Utils.Provider.LastFM, null);
+                // Utils.GetDbm().LoadFanart(artist2, filename.Replace("_tmp.jpg", ".jpg"), sourceFilename, Utils.Category.MusicAlbumThumbScraped, artist3, Utils.Provider.LastFM, null);
+              }
+              ExternalAccess.InvokeScraperCompleted(category.ToString(), artist1);
+            }
+          }
+        }
+        
         if (requestPic != null)
           ObjectMethods.SafeDispose(requestPic);
-        if (responsePic != null)
-        {
+        if (responsePic != null) {
           responsePic.Close();
           ObjectMethods.SafeDispose(responsePic);
         }
-        if (httpWebRequest != null)
-          ObjectMethods.SafeDispose(httpWebRequest);
-        if (webResponse != null)
-        {
-          webResponse.Close();
-          ObjectMethods.SafeDispose(webResponse);
-        }
         return num;
       }
-      catch (WebException ex)
-      {
-        ex.Message.Contains("400");
-      }
-      catch (Exception ex)
-      {
+      catch (Exception ex) {
         if (alSearchResults != null)
           alSearchResults.Clear();
         alSearchResults = null;
-        logger.Error("LastFMGetArtistTumbnails: " + ex);
+        logger.Error("LastFM: GetTumbnails: " + Method + " - " + ex);
       }
       finally
       {
         if (requestPic != null)
           ObjectMethods.SafeDispose(requestPic);
-        if (responsePic != null)
-        {
+        if (responsePic != null) {
           responsePic.Close();
           ObjectMethods.SafeDispose(responsePic);
-        }
-        if (httpWebRequest != null)
-          ObjectMethods.SafeDispose(httpWebRequest);
-        if (webResponse != null)
-        {
-          webResponse.Close();
-          ObjectMethods.SafeDispose(webResponse);
         }
       }
       return 9999;
     }
+    // End: Last.FM Get Tumbnails for Artist or Artist/Album
+    #endregion
 
-    public int LastFMGetAlbumTumbnails(string artist, string album, bool externalAccess)
+    #region HTTP
+    // Begin GetHtml
+
+    private static bool GetHtml(string strURL, out string strHtml)
     {
-      var httpWebRequest = (HttpWebRequest) null;
-      var webResponse = (WebResponse) null;
-      var requestPic = (HttpWebRequest) null;
-      var responsePic = (WebResponse) null;
+      strHtml = string.Empty;
       try
       {
-        var num = 0;
-        if (!string.IsNullOrEmpty(artist) && !string.IsNullOrEmpty(album))
+        var w = (HttpWebRequest)WebRequest.Create(strURL);
+        try
         {
-          var validUrlLastFmString1 = getValidURLLastFMString(UndoArtistPrefix(artist));
-          var validUrlLastFmString2 = getValidURLLastFMString(album);
-          var encoding = Encoding.GetEncoding("iso-8859-1");
-          var str1 = (string) null;
-          var path = (string) null;
-          var filename = (string) null;
-          var flag = false;
-          httpWebRequest = (HttpWebRequest) WebRequest.Create("http://ws.audioscrobbler.com/2.0/?method=album.getinfo");
-          try
+          w.Proxy.Credentials = CredentialCache.DefaultCredentials;
+        }
+        catch (Exception ex)
+        {
+          logger.Error("GetHtml Proxy Error: ");
+          logger.Error(ex);
+        }
+
+        w.ServicePoint.Expect100Continue = false;
+        w.UserAgent = DefUserAgent ;
+        // w.Referer = "www.lastfm.ru" ;
+        w.ContentType = "application/x-www-form-urlencoded";
+        w.ProtocolVersion = HttpVersion.Version11;
+        w.Timeout = 30000;
+        w.AllowAutoRedirect = false;
+
+        using (var r = (HttpWebResponse)w.GetResponse())
+        {
+          using (var s = r.GetResponseStream())
           {
-            httpWebRequest.Proxy.Credentials = CredentialCache.DefaultCredentials;
-          }
-          catch (Exception ex)
-          {
-            logger.Debug("Proxy: "+ex);
-          }
-          httpWebRequest.ServicePoint.Expect100Continue = false;
-          var str2 = "&api_key=7d97dee3440eec8b90c9cf5970eef5ca" + "&artist=" + validUrlLastFmString1 + "&album=" + validUrlLastFmString2;
-          httpWebRequest.Method = "POST";
-          httpWebRequest.ContentType = "application/x-www-form-urlencoded";
-          httpWebRequest.ContentLength = str2.Length;
-          using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream(), encoding))
-            streamWriter.Write(str2);
-          webResponse = httpWebRequest.GetResponse();
-          using (var streamReader = new StreamReader(webResponse.GetResponseStream()))
-          {
-            str1 = streamReader.ReadToEnd();
-            streamReader.Close();
-          }
-          if (webResponse != null)
-            webResponse.Close();
-          var sourceFilename = (string) null;
-          logger.Info("Trying to find Last.FM thumbnail for Artist/Album: " + artist + "/" + album + ".");
-          try
-          {
-            if (str1 != null) {
-              if (str1.Length > 0) {
-                if (str1.IndexOf("\">http") > 0) {
-                  // sourceFilename = str1.Substring(checked (str1.IndexOf("mega\">http") + 6), checked (str1.IndexOf("</image>") - str1.IndexOf("mega\">http") + 6));
-                  sourceFilename = str1.Substring(checked (str1.IndexOf("size=\"mega\">") + 12));
-                  sourceFilename = sourceFilename.Substring(0, sourceFilename.IndexOf("</image>"));
-                  logger.Debug("Last.FM Thumb Mega for Artist/Album: " + artist + "/" + album + " - " + sourceFilename);
-                  if (sourceFilename.ToLower().IndexOf(".jpg") > 0 || sourceFilename.ToLower().IndexOf(".png") > 0)
-                    flag = true ;
-                  else {
-                    // sourceFilename = str1.Substring(checked (str1.IndexOf("extralarge\">http") + 12), checked (str1.IndexOf("</image>") - str1.IndexOf("extralarge\">http") + 12));
-                    sourceFilename = str1.Substring(checked (str1.IndexOf("size=\"extralarge\">") + 18));
-                    sourceFilename = sourceFilename.Substring(0, sourceFilename.IndexOf("</image>"));
-                    logger.Debug("Last.FM Thumb Extra for Artist/Album: " + artist + "/" + album + " - " + sourceFilename);
-                    if (sourceFilename.ToLower().IndexOf(".jpg") > 0 || sourceFilename.ToLower().IndexOf(".png") > 0)
-                      flag = true ;
-                    else
-                      flag = false ;
-                  }
-                }
-              }
+            if (s == null)
+            {
+              w.Abort();
+              r.Close();
+              return false;
             }
-          }
-          catch (Exception ex)
-          {
-            logger.Error(ex.ToString());
-          }
-          if (flag) {
-            if (sourceFilename != null && !sourceFilename.Contains("bad_tag")) {
-              var artist1 = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
-              if (DownloadImage(ref artist, album, ref sourceFilename, ref path, ref filename, ref requestPic, ref responsePic, Utils.Category.MusicAlbumThumbScraped, null)) {
-                if (FanartHandlerSetup.Fh.IsPlaying && !externalAccess) {
-                  FanartHandlerSetup.Fh.FP.AddPlayingArtistThumbProperty(FanartHandlerSetup.Fh.CurrentTrackTag, FanartHandlerSetup.Fh.FP.DoShowImageOnePlay);
-                  FanartHandlerSetup.Fh.FP.UpdatePropertiesPlay();
-                }
-                var artist2 = Utils.GetArtist(validUrlLastFmString1, Utils.Category.MusicFanartScraped);
-                var artist3 = Utils.GetArtist(validUrlLastFmString2, Utils.Category.MusicFanartScraped);
-                Utils.GetDbm().LoadFanart(artist2, filename.Replace("_tmp.jpg", "L.jpg"), sourceFilename, Utils.Category.MusicAlbumThumbScraped, artist3, Utils.Provider.HtBackdrops, null);
-                Utils.GetDbm().LoadFanart(artist2, filename.Replace("_tmp.jpg", ".jpg"), sourceFilename, Utils.Category.MusicAlbumThumbScraped, artist3, Utils.Provider.HtBackdrops, null);
-                ExternalAccess.InvokeScraperCompleted("MusicAlbumThumbs", artist1);
-              }
+            using (var sr = new StreamReader(s, Encoding.UTF8))
+            {
+              strHtml = sr.ReadToEnd();
             }
+
+            // logger.Debug("******************************************************************************************************* ");
+            // logger.Debug("*** URL:"+strURL.Replace(ApiKeyhtBackdrops, "***").Replace(ApiKeyLastFM,"***"));
+            // logger.Debug("*** RES:"+strHtml);
+            // logger.Debug("******************************************************************************************************* ");
+            s.Close();
+            w.Abort();
+            r.Close();
           }
         }
-        if (requestPic != null)
-          ObjectMethods.SafeDispose(requestPic);
-        if (responsePic != null)
-        {
-          responsePic.Close();
-          ObjectMethods.SafeDispose(responsePic);
-        }
-        if (httpWebRequest != null)
-          ObjectMethods.SafeDispose(httpWebRequest);
-        if (webResponse != null)
-        {
-          webResponse.Close();
-          ObjectMethods.SafeDispose(webResponse);
-        }
-        return num;
-      }
-      catch (WebException ex)
-      {
-        ex.Message.Contains("400");
       }
       catch (Exception ex)
       {
-        if (alSearchResults != null)
-          alSearchResults.Clear();
-        alSearchResults = null;
-        logger.Error("LastFMGetAlbumTumbnails: " + ex);
+        logger.Error("HTML: Error retrieving html for: {0}", strURL.Replace(ApiKeyhtBackdrops, "***").Replace(ApiKeyLastFM,"***"));
+        logger.Error(ex);
+        return false;
       }
-      finally
+
+      return true;
+    }
+    // End: GetHtml
+
+    // Begin: Download Image
+    private bool DownloadImage(ref string sArtist, string album, ref string sourceFilename, ref string path, ref string filename, ref HttpWebRequest requestPic, ref WebResponse responsePic, Utils.Category category, string id)
+    {
+      var num1 = 0;
+      var num2 = 0L;
+      var str1 = "Resume";
+      var str2 = (string) null;
+      var str3 = (string) null;
+
+      if (category == Utils.Category.MusicArtistThumbScraped)
       {
-        if (requestPic != null)
-          ObjectMethods.SafeDispose(requestPic);
+        path = Config.GetFolder((Config.Dir) 6) + "\\Music\\Artists";
+        filename = path + "\\" + MediaPortal.Util.Utils.MakeFileName(sArtist) + "_tmp.jpg";
+        logger.Info("Downloading artist tumbnail for " + sArtist + " (" + filename + ").");
+        str2 = path + "\\" + MediaPortal.Util.Utils.MakeFileName(sArtist) + "L.jpg";
+        str3 = path + "\\" + MediaPortal.Util.Utils.MakeFileName(sArtist) + ".jpg";
+      }
+      else if (category == Utils.Category.MusicAlbumThumbScraped)
+      {
+        path = Config.GetFolder((Config.Dir) 6) + "\\Music\\Albums";
+        var albumThumbName = MediaPortal.Util.Utils.GetAlbumThumbName(sArtist, album);
+        filename = albumThumbName.Substring(0, albumThumbName.IndexOf(".jpg")) + "_tmp.jpg";
+        logger.Info("Downloading album tumbnail for " + sArtist + " (" + filename + ").");
+        str2 = MediaPortal.Util.Utils.ConvertToLargeCoverArt(albumThumbName);
+        str3 = albumThumbName;
+      }
+      else
+      {
+        path = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\Scraper\\music";
+        filename = path + "\\" + MediaPortal.Util.Utils.MakeFileName(sArtist) + " (" + id + ").jpg";
+        logger.Info("Downloading fanart for " + sArtist + " (" + filename + ").");
+      }
+
+      while (!str1.Equals("Success", StringComparison.CurrentCulture) && !str1.Equals("Stop", StringComparison.CurrentCulture) && num1 < 10)
+      {
+        var stream = (Stream) null;
+        var fileStream = (FileStream) null;
+        var doDownload = true;
+        str1 = "Success";
+        try
+        {
+          if (category == Utils.Category.MusicArtistThumbScraped || category == Utils.Category.MusicAlbumThumbScraped)
+          {
+            if (File.Exists(str2) && Utils.DoNotReplaceExistingThumbs.Equals("True"))
+              doDownload = false;
+            if (File.Exists(str3) && Utils.DoNotReplaceExistingThumbs.Equals("True"))
+              doDownload = false;
+          }
+          else if (File.Exists(filename))
+            num2 = new FileInfo(filename).Length;
+          checked { ++num1; }
+          if (doDownload)
+          {
+            requestPic = (HttpWebRequest) WebRequest.Create(sourceFilename);
+            requestPic.ServicePoint.Expect100Continue = false;
+            try
+            {
+              requestPic.Proxy.Credentials = CredentialCache.DefaultCredentials;
+            }
+            catch (Exception ex)
+            {
+              logger.Debug("Proxy: "+ex);
+            }
+            requestPic.AddRange(checked ((int) num2));
+            requestPic.Timeout = checked (5000 + 1000 * num1);
+            requestPic.ReadWriteTimeout = 20000;
+            requestPic.UserAgent = DefUserAgent ;
+            requestPic.ProtocolVersion = HttpVersion.Version11;
+            responsePic = requestPic.GetResponse();
+            fileStream = num2 != 0L ? new FileStream(filename, FileMode.Append, FileAccess.Write, FileShare.None) : new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
+            logger.Debug("Downloading image for " + sArtist + " (" + filename + "): "+(num2 != 0L ? "" : "Start")+"...");
+            stream = responsePic.GetResponseStream();
+            var num3 = checked (responsePic.ContentLength + num2);
+            var buffer = new byte[2048];
+            for (var count = stream.Read(buffer, 0, buffer.Length); count > 0; count = stream.Read(buffer, 0, buffer.Length))
+            {
+              fileStream.Write(buffer, 0, count);
+              var length = fileStream.Length;
+            }
+            if (fileStream != null && fileStream.Length != num3)
+            {
+              fileStream.Close();
+              ObjectMethods.SafeDispose(fileStream);
+              fileStream = null;
+              str1 = "Resume";
+            }
+            else if (fileStream != null)
+            {
+              fileStream.Close();
+              ObjectMethods.SafeDispose(fileStream);
+              fileStream = null;
+            }
+            if (!IsFileValid(filename))
+            {
+              str1 = "Stop";
+              logger.Error("DownloadImage: Deleting downloaded file because it is corrupt.");
+            }
+            /*
+            if (category != Utils.Category.MusicArtistThumbScraped)
+            {
+              if (category != Utils.Category.MusicAlbumThumbScraped)
+                goto label_51;
+            }
+            */
+            if ((category != Utils.Category.MusicArtistThumbScraped) && (category != Utils.Category.MusicAlbumThumbScraped))
+            { }
+            else {
+              if (Utils.GetDbm().IsImageProtectedByUser(str2).Equals("False"))
+              {
+                if (File.Exists(str2) && Utils.DoNotReplaceExistingThumbs.Equals("False"))
+                  ReplaceOldThumbnails(str2, filename, ref doDownload, false, category);
+                if (doDownload)
+                  CreateThumbnail(filename, true);
+                if (File.Exists(str3) && Utils.DoNotReplaceExistingThumbs.Equals("False") && doDownload)
+                  ReplaceOldThumbnails(str3, filename, ref doDownload, false, category);
+                if (doDownload)
+                  CreateThumbnail(filename, false);
+              }
+              try
+              {
+                MediaPortal.Util.Utils.FileDelete(filename);
+              }
+              catch (Exception ex)
+              {
+                logger.Error(string.Concat(new object[4]
+                {
+                  "DownloadImage: Error deleting temp thumbnail - ",
+                  filename,
+                  ".",
+                  ex
+                }));
+              }
+            }
+          }
+        }
+        catch (ExternalException ex)
+        {
+          str1 = "Stop";
+          logger.Error("DownloadImage: " + ex);
+        }
+        catch (UriFormatException ex)
+        {
+          str1 = "Stop";
+          logger.Error("DownloadImage: " + ex);
+        }
+        catch (WebException ex)
+        {
+          if (ex.Message.Contains("404"))
+          {
+            str1 = "Stop";
+            logger.Error("DownloadImage: " + ex);
+          }
+          else
+          {
+            str1 = "Resume";
+            if (num1 >= 10)
+              logger.Error("DownloadImage: " + ex);
+          }
+        }
+        catch (ThreadAbortException ex)
+        {
+          if (fileStream != null)
+          {
+            fileStream.Close();
+            ObjectMethods.SafeDispose(fileStream);
+            fileStream = null;
+          }
+          if (File.Exists(filename))
+            File.Delete(filename);
+          str1 = "Stop";
+          logger.Error("DownloadImage: " + ex);
+        }
+        catch (Exception ex)
+        {
+          logger.Error("DownloadImage: " + ex);
+          str1 = "Stop";
+        }
+// label_51:
+        if (fileStream != null && str1.Equals("Stop", StringComparison.CurrentCulture))
+        {
+          fileStream.Close();
+          ObjectMethods.SafeDispose(fileStream);
+          fileStream = null;
+          if (File.Exists(filename))
+            File.Delete(filename);
+        }
+        if (stream != null)
+        {
+          stream.Close();
+          ObjectMethods.SafeDispose(stream);
+        }
+        if (fileStream != null)
+        {
+          fileStream.Close();
+          ObjectMethods.SafeDispose(fileStream);
+        }
         if (responsePic != null)
         {
           responsePic.Close();
           ObjectMethods.SafeDispose(responsePic);
         }
-        if (httpWebRequest != null)
-          ObjectMethods.SafeDispose(httpWebRequest);
-        if (webResponse != null)
+        if (requestPic != null)
         {
-          webResponse.Close();
-          ObjectMethods.SafeDispose(webResponse);
+          requestPic.Abort();
+          ObjectMethods.SafeDispose(requestPic);
         }
       }
-      return 9999;
+      if (!str1.Equals("Success", StringComparison.CurrentCulture) && File.Exists(filename))
+        File.Delete(filename);
+      if (str1.Equals("Success", StringComparison.CurrentCulture) && File.Exists(filename))
+        logger.Debug("Downloading image for " + sArtist + " (" + filename + "): Comlete.");
+      return str1.Equals("Success", StringComparison.CurrentCulture);
     }
+    // End: Download Image
+    #endregion
   }
 }

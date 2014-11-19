@@ -151,7 +151,36 @@ namespace FanartHandler
       if (string.IsNullOrEmpty(self))
         return string.Empty;
       else
-        return Utils.TrimWhiteSpace(Regex.Replace(Regex.Replace(Regex.Replace(Regex.Replace(Regex.Replace(Regex.Replace(Regex.Replace(Regex.Replace(Regex.Replace(Regex.Replace(Regex.Replace(Regex.Replace(Utils.RemoveDiacritics(Regex.Replace(Regex.Replace(Regex.Replace(self.ToLowerInvariant(), "({)([0-9]+)(})$", string.Empty).Trim(), "(\\()([0-9]+)(\\))$", string.Empty).Trim(), "[^\\w|;&]", " ")), "\\b(and|und|en|et|y)\\b", " & "), "\\si(\\b)", " 1$1"), "\\sii(\\b)", " 2$1"), "\\siii(\\b)", " 3$1"), "\\siv(\\b)", " 4$1"), "\\sv(\\b)", " 5$1"), "\\svi(\\b)", " 6$1"), "\\svii(\\b)", " 7$1"), "\\sviii(\\b)", " 8$1"), "\\six(\\b)", " 9$1"), "\\s(1)$", string.Empty), "[^\\w|;&]", " "));
+        return Utils.TrimWhiteSpace(Regex.Replace(
+                                      Regex.Replace(
+                                        Regex.Replace(
+                                          Regex.Replace(
+                                            Regex.Replace(
+                                              Regex.Replace(
+                                                Regex.Replace(
+                                                  Regex.Replace(
+                                                    Regex.Replace(
+                                                      Regex.Replace(
+                                                        Regex.Replace(
+                                                          Regex.Replace(
+                                                            Utils.RemoveDiacritics(
+                                                              Regex.Replace(
+                                                                Regex.Replace(
+                                                                  Regex.Replace(self.ToLowerInvariant(), "({)([0-9]+)(})$", string.Empty).Trim(), 
+                                                                "(\\()([0-9]+)(\\))$", string.Empty).Trim(), 
+                                                              "[^\\w|;&]", " ")), 
+                                                          "\\b(and|und|en|et|y)\\b", " & "), 
+                                                        "\\si(\\b)", " 1$1"), 
+                                                      "\\sii(\\b)", " 2$1"), 
+                                                    "\\siii(\\b)", " 3$1"), 
+                                                  "\\siv(\\b)", " 4$1"), 
+                                                "\\sv(\\b)", " 5$1"), 
+                                              "\\svi(\\b)", " 6$1"), 
+                                            "\\svii(\\b)", " 7$1"), 
+                                          "\\sviii(\\b)", " 8$1"), 
+                                        "\\six(\\b)", " 9$1"), 
+                                      "\\s(1)$", string.Empty), 
+                                    "[^\\w|;&]", " "));
     }
 
     public static string RemoveDiacritics(this string self)
@@ -679,11 +708,14 @@ namespace FanartHandler
     public enum Provider
     {
       HtBackdrops,
+      LastFM, 
+      FanartTV,
       MyVideos,
       MovingPictures,
       TVSeries,
       MyFilms,
       Local,
+      Dummy, 
     }
   }
 }

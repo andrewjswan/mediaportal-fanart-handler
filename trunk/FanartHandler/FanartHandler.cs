@@ -453,10 +453,13 @@ namespace FanartHandler
       {
         if (!Utils.GetIsStopping())
         {
-          if (!FR.WindowsUsingFanartRandom.ContainsKey(windowId) && !FS.WindowsUsingFanartSelectedMusic.ContainsKey(windowId) && (!FS.WindowsUsingFanartSelectedScoreCenter.ContainsKey(windowId) && !FS.WindowsUsingFanartSelectedMovie.ContainsKey(windowId)))
-          {
+          if (!FR.WindowsUsingFanartRandom.ContainsKey(windowId) && 
+              !FS.WindowsUsingFanartSelectedMusic.ContainsKey(windowId) && 
+              (!FS.WindowsUsingFanartSelectedScoreCenter.ContainsKey(windowId) && !FS.WindowsUsingFanartSelectedMovie.ContainsKey(windowId))
+             ) {
             if (!FP.WindowsUsingFanartPlay.ContainsKey(windowId))
-              goto label_7;
+              // goto label_7;
+              return flag;   
           }
           if (AllowFanartInThisWindow(windowId))
             flag = true;
@@ -466,7 +469,7 @@ namespace FanartHandler
       {
         logger.Error("CheckValidWindowsForDirectoryTimerQueue: " + ex);
       }
-label_7:
+// label_7:
       return flag;
     }
 
@@ -511,7 +514,12 @@ label_7:
       try
       {
         var windowId = string.Empty + GUIWindowManager.ActiveWindow;
-        if (!FR.WindowsUsingFanartRandom.ContainsKey(windowId) && !FS.WindowsUsingFanartSelectedMusic.ContainsKey(windowId) && (!FS.WindowsUsingFanartSelectedScoreCenter.ContainsKey(windowId) && !FS.WindowsUsingFanartSelectedMovie.ContainsKey(windowId)) && !FP.WindowsUsingFanartPlay.ContainsKey(windowId) || (!AllowFanartInThisWindow(windowId) || ScraperMPDatabase == null || (!ScraperMPDatabase.Equals("True", StringComparison.CurrentCulture) || Utils.GetDbm().GetIsScraping())))
+        if (!FR.WindowsUsingFanartRandom.ContainsKey(windowId) && 
+            !FS.WindowsUsingFanartSelectedMusic.ContainsKey(windowId) && 
+            (!FS.WindowsUsingFanartSelectedScoreCenter.ContainsKey(windowId) && !FS.WindowsUsingFanartSelectedMovie.ContainsKey(windowId)) && 
+            !FP.WindowsUsingFanartPlay.ContainsKey(windowId) || 
+            (!AllowFanartInThisWindow(windowId) || ScraperMPDatabase == null || (!ScraperMPDatabase.Equals("True", StringComparison.CurrentCulture) || Utils.GetDbm().GetIsScraping()))
+           )
           return;
         StartScraper();
       }
@@ -534,9 +542,20 @@ label_7:
           {
             if (isMusic)
               filenames = Utils.GetDbm().GetFanart(key, category, true);
-            if (isMusic && filenames != null && (filenames.Count <= 0 && skipWhenHighResAvailable != null) && (skipWhenHighResAvailable.Equals("True", StringComparison.CurrentCulture) && (FanartHandlerSetup.Fh.UseArtist.Equals("True", StringComparison.CurrentCulture) || FanartHandlerSetup.Fh.UseAlbum.Equals("True", StringComparison.CurrentCulture))))
+            if (isMusic && 
+                filenames != null && 
+                (filenames.Count <= 0 && skipWhenHighResAvailable != null) && 
+                (skipWhenHighResAvailable.Equals("True", StringComparison.CurrentCulture) && 
+                  (FanartHandlerSetup.Fh.UseArtist.Equals("True", StringComparison.CurrentCulture) || 
+                   FanartHandlerSetup.Fh.UseAlbum.Equals("True", StringComparison.CurrentCulture))
+                )
+                )
               filenames = Utils.GetDbm().GetFanart(key, category, false);
-            else if (isMusic && skipWhenHighResAvailable != null && skipWhenHighResAvailable.Equals("False", StringComparison.CurrentCulture) && (FanartHandlerSetup.Fh.UseArtist.Equals("True", StringComparison.CurrentCulture) || FanartHandlerSetup.Fh.UseAlbum.Equals("True", StringComparison.CurrentCulture)))
+            else if (isMusic && 
+                     skipWhenHighResAvailable != null && 
+                     skipWhenHighResAvailable.Equals("False", StringComparison.CurrentCulture) && 
+                     (FanartHandlerSetup.Fh.UseArtist.Equals("True", StringComparison.CurrentCulture) || FanartHandlerSetup.Fh.UseAlbum.Equals("True", StringComparison.CurrentCulture))
+                    )
             {
               if (filenames != null && filenames.Count > 0)
               {
@@ -571,7 +590,10 @@ label_7:
               var num2 = 0;
               foreach (FanartImage fanartImage in values1)
               {
-                if ((num1 > iFilePrev || iFilePrev == -1) && (num2 == 0 && CheckImageResolution(fanartImage.DiskImage, category, UseAspectRatio)) && Utils.IsFileValid(fanartImage.DiskImage))
+                if ((num1 > iFilePrev || iFilePrev == -1) && 
+                    (num2 == 0 && CheckImageResolution(fanartImage.DiskImage, category, UseAspectRatio)) && 
+                    Utils.IsFileValid(fanartImage.DiskImage)
+                   )
                 {
                   str = fanartImage.DiskImage;
                   iFilePrev = num1;
@@ -591,7 +613,10 @@ label_7:
                 var num4 = 0;
                 foreach (FanartImage fanartImage in values2)
                 {
-                  if ((num3 > iFilePrev || iFilePrev == -1) && (num4 == 0 && CheckImageResolution(fanartImage.DiskImage, category, UseAspectRatio)) && Utils.IsFileValid(fanartImage.DiskImage))
+                  if ((num3 > iFilePrev || iFilePrev == -1) && 
+                      (num4 == 0 && CheckImageResolution(fanartImage.DiskImage, category, UseAspectRatio)) && 
+                      Utils.IsFileValid(fanartImage.DiskImage)
+                     )
                   {
                     str = fanartImage.DiskImage;
                     iFilePrev = num3;
@@ -638,7 +663,10 @@ label_7:
                 var num2 = 0;
                 foreach (string filename in values1)
                 {
-                  if ((num1 > iFilePrev || iFilePrev == -1) && (num2 == 0 && CheckImageResolution(filename, Utils.Category.MusicFanartScraped, UseAspectRatio)) && Utils.IsFileValid(filename))
+                  if ((num1 > iFilePrev || iFilePrev == -1) && 
+                      (num2 == 0 && CheckImageResolution(filename, Utils.Category.MusicFanartScraped, UseAspectRatio)) && 
+                      Utils.IsFileValid(filename)
+                     )
                   {
                     str = filename;
                     iFilePrev = num1;
@@ -658,7 +686,10 @@ label_7:
                   var num4 = 0;
                   foreach (string filename in values2)
                   {
-                    if ((num3 > iFilePrev || iFilePrev == -1) && (num4 == 0 && CheckImageResolution(filename, Utils.Category.MusicFanartScraped, UseAspectRatio)) && Utils.IsFileValid(filename))
+                    if ((num3 > iFilePrev || iFilePrev == -1) && 
+                        (num4 == 0 && CheckImageResolution(filename, Utils.Category.MusicFanartScraped, UseAspectRatio)) && 
+                        Utils.IsFileValid(filename)
+                       )
                     {
                       str = filename;
                       iFilePrev = num3;
@@ -1079,12 +1110,12 @@ label_21:;
       var loggingConfiguration = LogManager.Configuration ?? new LoggingConfiguration();
       try
       {
-        var fileInfo = new FileInfo(Config.GetFile((Config.Dir) 1, "FanartHandler.log"));
+        var fileInfo = new FileInfo(Config.GetFile((Config.Dir) 1, LogFileName));
         if (fileInfo.Exists)
         {
-          if (File.Exists(Config.GetFile((Config.Dir) 1, "FanartHandler.old.log")))
-            File.Delete(Config.GetFile((Config.Dir) 1, "FanartHandler.old.log"));
-          fileInfo.CopyTo(Config.GetFile((Config.Dir) 1, "FanartHandler.old.log"));
+          if (File.Exists(Config.GetFile((Config.Dir) 1, OldLogFileName)))
+            File.Delete(Config.GetFile((Config.Dir) 1, OldLogFileName));
+          fileInfo.CopyTo(Config.GetFile((Config.Dir) 1, OldLogFileName));
           fileInfo.Delete();
         }
       }
@@ -1092,8 +1123,9 @@ label_21:;
       {
       }
       var fileTarget = new FileTarget();
-      fileTarget.FileName = Config.GetFile((Config.Dir) 1, "FanartHandler.log");
+      fileTarget.FileName = Config.GetFile((Config.Dir) 1, LogFileName);
       fileTarget.Layout = "${date:format=dd-MMM-yyyy HH\\:mm\\:ss} ${level:fixedLength=true:padding=5} [${logger:fixedLength=true:padding=20:shortName=true}]: ${message} ${exception:format=tostring}";
+      // fileTarget.Encoding = Encoding.UTF8.ToString();
       loggingConfiguration.AddTarget("file", fileTarget);
       var settings = new Settings(Config.GetFile((Config.Dir) 10, "MediaPortal.xml"));
       var str = settings.GetValue("general", "ThreadPriority");
@@ -1186,7 +1218,8 @@ label_21:;
           imageInterval = "30";
         if (string.IsNullOrEmpty(minResolution))
           minResolution = "0x0";
-        defaultBackdrop = string.IsNullOrEmpty(defaultBackdrop) ? Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\UserDef\\music\\default.jpg" : defaultBackdrop.Replace("\\Skin FanArt\\music\\default.jpg", "\\Skin FanArt\\UserDef\\music\\default.jpg");
+        defaultBackdrop = string.IsNullOrEmpty(defaultBackdrop) ? Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\UserDef\\music\\default.jpg" 
+                                                                : defaultBackdrop.Replace("\\Skin FanArt\\music\\default.jpg", "\\Skin FanArt\\UserDef\\music\\default.jpg");
         if (string.IsNullOrEmpty(ScraperMaxImages))
           ScraperMaxImages = "2";
         if (string.IsNullOrEmpty(ScraperMusicPlaying))
