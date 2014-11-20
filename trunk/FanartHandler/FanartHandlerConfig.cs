@@ -1570,12 +1570,19 @@ namespace FanartHandler
         useAspectRatio = "False";
         checkBoxAspectRatio.Checked = false;
       }
+      lastID = 0;
       try
       {
-        lastID = 0;
         InitLogger();
         logger.Info("Fanart Handler configuration is starting.");
         logger.Info("Fanart Handler version is " + Utils.GetAllVersionNumber());
+      }
+      catch (Exception ex)
+      {
+        logger.Error("FanartHandlerConfig_Load: Logger: " + ex);
+      }
+      try
+      {
         FanartHandlerSetup.Fh = new FanartHandler();
         FanartHandlerSetup.Fh.SetupDirectories();
         Utils.SetScraperMaxImages(scraperMaxImages);
@@ -1714,6 +1721,7 @@ namespace FanartHandler
       Thread.Sleep(200);
       SplashPane.CloseForm();
       logger.Info("Fanart Handler configuration is started.");
+      logger.Debug("Current Culture: {0}", CultureInfo.CurrentCulture.Name);
     }
 
     private static void FilterThumbGrid(int startCount)
@@ -1795,8 +1803,8 @@ namespace FanartHandler
       }
       var fileTarget = new FileTarget();
       fileTarget.FileName = Config.GetFile((Config.Dir) 1, LogFileName);
+      fileTarget.Encoding = "utf-8";
       fileTarget.Layout = "${date:format=dd-MMM-yyyy HH\\:mm\\:ss} ${level:fixedLength=true:padding=5} [${logger:fixedLength=true:padding=20:shortName=true}]: ${message} ${exception:format=tostring}";
-      // fileTarget.Encoding = Encoding.UTF8.ToString();
       loggingConfiguration.AddTarget("file", fileTarget);
       LogLevel minLevel;
       switch ((int) (Level) new Settings(Config.GetFile((Config.Dir) 10, "MediaPortal.xml")).GetValueAsInt("general", "loglevel", 0))
@@ -2218,6 +2226,34 @@ namespace FanartHandler
       {
         logger.Error("CleanupMusicFanart: " + ex);
       }
+      try
+      {
+        logger.Debug("CleanupMusicFanart: UpdateTables...");
+        UpdateFanartTableOnStartup(1);
+        var category = new Utils.Category[2];
+        if (comboBox1.SelectedItem.ToString().Equals("Artists and Albums"))
+        {
+          category[0] = Utils.Category.MusicAlbumThumbScraped;
+          category[1] = Utils.Category.MusicArtistThumbScraped;
+        }
+        else if (comboBox1.SelectedItem.ToString().Equals("Albums"))
+          category = new Utils.Category[1]
+          {
+            Utils.Category.MusicAlbumThumbScraped
+          };
+        else if (comboBox1.SelectedItem.ToString().Equals("Artists"))
+          category = new Utils.Category[1]
+          {
+            Utils.Category.MusicArtistThumbScraped
+          };
+        UpdateThumbnailTableOnStartup(category, 0);
+        UpdateFanartUserManagedTable();
+        UpdateFanartExternalTable();
+      }
+      catch (Exception ex)
+      {
+        logger.Error("CleanupMusicFanart: UpdateTable:" + ex);
+      }
     }
 
     private void button6_Click(object sender, EventArgs e)
@@ -2237,7 +2273,7 @@ namespace FanartHandler
           if (useFanart.Equals("True", StringComparison.CurrentCulture))
             FanartHandlerSetup.Fh.SetupFilenames(Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\Scraper\\music", "*.jpg", Utils.Category.MusicFanartScraped, null, Utils.Provider.Local);
           dataGridView1.Enabled = false;
-          button6.Text = "Stop Scraper";
+          button6.Text = "Stop Scraper [S]";
           button2.Enabled = false;
           button3.Enabled = false;
           button4.Enabled = false;
@@ -3065,14 +3101,7 @@ namespace FanartHandler
 
     private void button19_Click(object sender, EventArgs e)
     {
-      try
-      {
-        var num = (int) MessageBox.Show("Successfully synchronised your fanart database. Removed " + Utils.GetDbm().DeleteRecordsWhereFileIsMissing() + " entries from your fanart database.");
-      }
-      catch (Exception ex)
-      {
-        logger.Error("button19_Click: " + ex);
-      }
+      CleanupMusicFanart();
     }
 
     private void button18_Click(object sender, EventArgs e)
@@ -3139,7 +3168,7 @@ namespace FanartHandler
         var fileName = openFileDialog.FileName;
         if (doInsert)
         {
-          Utils.GetDbm().LoadFanart(dataGridView1.CurrentRow.Cells[0].Value.ToString(), fileName, fileName, Utils.Category.MusicFanartManual, null, Utils.Provider.Local, null);
+          Utils.GetDbm().LoadFanart(dataGridView1.CurrentRow.Cells[0].Value.ToString(), fileName, fileName, Utils.Category.MusicFanartManual, null, Utils.Provider.Local, null, null);
           var row = myDataTable.NewRow();
           row["Artist"] = dataGridView1.CurrentRow.Cells[0].Value.ToString();
           row["Enabled"] = "True";
@@ -3151,7 +3180,7 @@ namespace FanartHandler
         else
         {
           dataGridView1.CurrentRow.Cells[4].Value = fileName;
-          Utils.GetDbm().LoadFanart(dataGridView1.CurrentRow.Cells[0].Value.ToString(), fileName, fileName, Utils.Category.MusicFanartManual, null, Utils.Provider.Local, null);
+          Utils.GetDbm().LoadFanart(dataGridView1.CurrentRow.Cells[0].Value.ToString(), fileName, fileName, Utils.Category.MusicFanartManual, null, Utils.Provider.Local, null, null);
           var str2 = dataGridView1.CurrentRow.Cells[4].Value.ToString();
           if (File.Exists(str2))
           {

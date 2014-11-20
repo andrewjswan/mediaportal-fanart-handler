@@ -1464,7 +1464,7 @@ namespace FanartHandler
             return str;
         }
 
-        public void LoadFanart(string artist, string diskImage, string sourceImage, Utils.Category category, string album, Utils.Provider provider, string _id/*, string mbid*/)
+        public void LoadFanart(string artist, string diskImage, string sourceImage, Utils.Category category, string album, Utils.Provider provider, string _id, string mbid)
         {
             try
             {
@@ -1497,7 +1497,7 @@ namespace FanartHandler
                                      Utils.PatchSql(((object) provider).ToString()) + "','" + Utils.PatchSql(artist) + "','" +
                                      Utils.PatchSql(album) + "','" + Utils.PatchSql(diskImage) + "','" + Utils.PatchSql(sourceImage) +
                                      "', 'True', 'True', 'False', '" +
-                                     now.ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "','"+/*Utils.PatchSql(mbid)+*/"');";
+                                     now.ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "','"+Utils.PatchSql(mbid)+"');";
                     lock (lockObject)
                         dbClient.Execute(str3);
                     logger.Info("Importing local fanart into fanart handler database (" + diskImage + ").");

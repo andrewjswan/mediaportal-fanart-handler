@@ -153,7 +153,11 @@ namespace FanartHandler
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#selecteditem");
         if (FanartHandlerSetup.Fh.SelectedItem != null && FanartHandlerSetup.Fh.SelectedItem.Trim().Length > 0)
         {
-          if (GUIWindowManager.ActiveWindow == 4755 && GUIWindowManager.GetWindow(4755).GetControl(51).IsVisible || (GUIWindowManager.ActiveWindow == 6 || GUIWindowManager.ActiveWindow == 25) && FanartHandlerSetup.Fh.SelectedItem.Equals("..", StringComparison.CurrentCulture))
+          if (GUIWindowManager.ActiveWindow == 4755 && 
+              GUIWindowManager.GetWindow(4755).GetControl(51).IsVisible || 
+              (GUIWindowManager.ActiveWindow == 6 || GUIWindowManager.ActiveWindow == 25) && 
+              FanartHandlerSetup.Fh.SelectedItem.Equals("..", StringComparison.CurrentCulture)
+             )
             return;
           if (!currSelectedGenericTitle.Equals(FanartHandlerSetup.Fh.SelectedItem, StringComparison.CurrentCulture))
           {
@@ -237,7 +241,13 @@ namespace FanartHandler
         }
         else
         {
-          if (FanartHandlerSetup.Fh.SelectedItem != null && (GUIWindowManager.ActiveWindow == 4755 && GUIWindowManager.GetWindow(4755).GetControl(51).IsVisible || (GUIWindowManager.ActiveWindow == 6 || GUIWindowManager.ActiveWindow == 25) && FanartHandlerSetup.Fh.SelectedItem.Equals("..", StringComparison.CurrentCulture)))
+          if (FanartHandlerSetup.Fh.SelectedItem != null && 
+              (GUIWindowManager.ActiveWindow == 4755 && 
+               GUIWindowManager.GetWindow(4755).GetControl(51).IsVisible || 
+               (GUIWindowManager.ActiveWindow == 6 || GUIWindowManager.ActiveWindow == 25) && 
+               FanartHandlerSetup.Fh.SelectedItem.Equals("..", StringComparison.CurrentCulture)
+              )
+             )
             return;
           currSelectedGeneric = string.Empty;
           PrevSelectedGeneric = -1;

@@ -149,9 +149,16 @@ namespace FanartHandler
         artist = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
         // var hashtable2 = (Hashtable) null;
         var fanart1 = Utils.GetDbm().GetFanart(artist, Utils.Category.MusicFanartScraped, true);
-        if (fanart1 != null && fanart1.Count <= 0 && (FanartHandlerSetup.Fh.SkipWhenHighResAvailable != null && FanartHandlerSetup.Fh.SkipWhenHighResAvailable.Equals("True", StringComparison.CurrentCulture)) && (FanartHandlerSetup.Fh.UseArtist.Equals("True", StringComparison.CurrentCulture) || FanartHandlerSetup.Fh.UseAlbum.Equals("True", StringComparison.CurrentCulture)))
+        if (fanart1 != null && 
+            fanart1.Count <= 0 && 
+            (FanartHandlerSetup.Fh.SkipWhenHighResAvailable != null && FanartHandlerSetup.Fh.SkipWhenHighResAvailable.Equals("True", StringComparison.CurrentCulture)) && 
+            (FanartHandlerSetup.Fh.UseArtist.Equals("True", StringComparison.CurrentCulture) || FanartHandlerSetup.Fh.UseAlbum.Equals("True", StringComparison.CurrentCulture))
+           )
           fanart1 = Utils.GetDbm().GetFanart(artist, Utils.Category.MusicFanartScraped, false);
-        else if (FanartHandlerSetup.Fh.SkipWhenHighResAvailable != null && FanartHandlerSetup.Fh.SkipWhenHighResAvailable.Equals("False", StringComparison.CurrentCulture) && (FanartHandlerSetup.Fh.UseArtist.Equals("True", StringComparison.CurrentCulture) || FanartHandlerSetup.Fh.UseAlbum.Equals("True", StringComparison.CurrentCulture)))
+        else if (FanartHandlerSetup.Fh.SkipWhenHighResAvailable != null && 
+                 FanartHandlerSetup.Fh.SkipWhenHighResAvailable.Equals("False", StringComparison.CurrentCulture) && 
+                 (FanartHandlerSetup.Fh.UseArtist.Equals("True", StringComparison.CurrentCulture) || FanartHandlerSetup.Fh.UseAlbum.Equals("True", StringComparison.CurrentCulture))
+                )
         {
           if (fanart1 != null && fanart1.Count > 0)
           {
@@ -176,7 +183,9 @@ namespace FanartHandler
           {
             if (num < 2)
             {
-              if (FanartHandlerSetup.Fh.CheckImageResolution(fanartImage.DiskImage, Utils.Category.MusicFanartScraped, FanartHandlerSetup.Fh.UseAspectRatio) && Utils.IsFileValid(fanartImage.DiskImage))
+              if (FanartHandlerSetup.Fh.CheckImageResolution(fanartImage.DiskImage, Utils.Category.MusicFanartScraped, FanartHandlerSetup.Fh.UseAspectRatio) && 
+                  Utils.IsFileValid(fanartImage.DiskImage)
+                 )
               {
                 hashtable1.Add(num, fanartImage.DiskImage);
                 checked { ++num; }

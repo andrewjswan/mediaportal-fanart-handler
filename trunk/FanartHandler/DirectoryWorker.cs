@@ -80,35 +80,35 @@ namespace FanartHandler
               FanartHandlerSetup.Fh.SyncPointDirectoryUpdate = 0;
               logger.Info("Refreshing local fanart for Movies (Scraper) is done.");
             }
-            ReportProgress(20, "Importing loacal fanart for Music (albums)...");
+            ReportProgress(20, "Importing local fanart for Music (Albums)...");
             var s4 = Config.GetFolder((Config.Dir) 6) + "\\Music\\Albums";
             if (strArray[0].Equals("All") || strArray[0].Contains(s4))
             {
-              logger.Info("Refreshing local fanart for Music Albums is starting.");
+              logger.Info("Refreshing local fanart for Music (Albums) is starting.");
               FanartHandlerSetup.Fh.SetupFilenames(s4, "*L.jpg", Utils.Category.MusicAlbumThumbScraped, null, Utils.Provider.Local);
               logger.Info("Refreshing local fanart for Music Albums is done.");
             }
-            ReportProgress(30, "Importing loacal fanart for Music (artists)...");
+            ReportProgress(30, "Importing local fanart for Music (Artists)...");
             var s5 = Config.GetFolder((Config.Dir) 6) + "\\Music\\Artists";
             if (strArray[0].Equals("All") || strArray[0].Contains(s5))
             {
-              logger.Info("Refreshing local fanart for Music Artists is starting.");
+              logger.Info("Refreshing local fanart for Music (Artists) is starting.");
               FanartHandlerSetup.Fh.SetupFilenames(s5, "*L.jpg", Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.Local);
               logger.Info("Refreshing local fanart for Music Artists is done.");
             }
-            ReportProgress(40, "Importing loacal fanart for Music (user fanart)...");
+            ReportProgress(40, "Importing local fanart for Music (User fanart)...");
             var s6 = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\UserDef\\music";
             if (strArray[0].Equals("All") || strArray[0].Contains(s6))
             {
-              logger.Info("Refreshing local fanart for Music (User) is starting.");
+              logger.Info("Refreshing local fanart for Music (User fanart) is starting.");
               FanartHandlerSetup.Fh.SetupFilenames(s6, "*.jpg", Utils.Category.MusicFanartManual, null, Utils.Provider.Local);
               FanartHandlerSetup.Fh.SyncPointDirectoryUpdate = 1;
               if (Utils.GetDbm().HtAnyFanart.ContainsKey(Utils.Category.MusicFanartManual))
                 Utils.GetDbm().HtAnyFanart.Remove(Utils.Category.MusicFanartManual);
               FanartHandlerSetup.Fh.SyncPointDirectoryUpdate = 0;
-              logger.Info("Refreshing local fanart for Music (User) is done.");
+              logger.Info("Refreshing local fanart for Music (User fanart) is done.");
             }
-            ReportProgress(50, "Importing loacal fanart for Pictures...");
+            ReportProgress(50, "Importing local fanart for Pictures...");
             var s7 = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\UserDef\\pictures";
             if (strArray[0].Equals("All") || strArray[0].Contains(s7))
             {
@@ -120,7 +120,7 @@ namespace FanartHandler
               FanartHandlerSetup.Fh.SyncPointDirectoryUpdate = 0;
               logger.Info("Refreshing local fanart for Pictures is done.");
             }
-            ReportProgress(55, "Importing loacal fanart for Scorecenter...");
+            ReportProgress(55, "Importing local fanart for Scorecenter...");
             var s8 = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\UserDef\\scorecenter";
             if (strArray[0].Equals("All") || strArray[0].Contains(s8))
             {
@@ -132,7 +132,7 @@ namespace FanartHandler
               FanartHandlerSetup.Fh.SyncPointDirectoryUpdate = 0;
               logger.Info("Refreshing local fanart for ScoreCenter is done.");
             }
-            ReportProgress(60, "Importing loacal fanart for TV...");
+            ReportProgress(60, "Importing local fanart for TV...");
             var s9 = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\UserDef\\tv";
             if (strArray[0].Equals("All") || strArray[0].Contains(s9))
             {
@@ -144,7 +144,7 @@ namespace FanartHandler
               FanartHandlerSetup.Fh.SyncPointDirectoryUpdate = 0;
               logger.Info("Refreshing local fanart for TV is done.");
             }
-            ReportProgress(70, "Importing loacal fanart for Plugins...");
+            ReportProgress(70, "Importing local fanart for Plugins...");
             var s10 = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\UserDef\\plugins";
             if (strArray[0].Equals("All") || strArray[0].Contains(s10))
             {
@@ -157,7 +157,7 @@ namespace FanartHandler
               logger.Info("Refreshing local fanart for Plugins is done.");
             }
           }
-          ReportProgress(80, "Importing loacal fanart for TVSeries...");
+          ReportProgress(80, "Importing local fanart for TVSeries...");
           if (FanartHandlerHelper.IsAssemblyAvailable("MP-TVSeries", new Version(2, 6, 5, 1265), Path.Combine(Path.Combine(Config.GetFolder((Config.Dir) 5), "windows"), "MP-TVSeries.dll")) && (strArray != null && strArray[0].Equals("TVSeries") || strArray[0].Equals("All")))
           {
             var s = Config.GetFolder((Config.Dir) 6) + "\\Fan Art\\fanart\\original";

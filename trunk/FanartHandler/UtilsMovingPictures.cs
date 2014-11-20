@@ -74,7 +74,7 @@ namespace FanartHandler
             var current = enumerator.Current;
             var backdropFullPath = current.BackdropFullPath;
             if (backdropFullPath != null && backdropFullPath.Trim().Length > 0 && (allFilenames == null || !allFilenames.Contains(backdropFullPath)))
-              Utils.GetDbm().LoadFanart(Utils.GetArtist(current.Title, Utils.Category.MovingPictureManual), backdropFullPath, backdropFullPath, Utils.Category.MovingPictureManual, null, Utils.Provider.MovingPictures, null);
+              Utils.GetDbm().LoadFanart(Utils.GetArtist(current.Title, Utils.Category.MovingPictureManual), backdropFullPath, backdropFullPath, Utils.Category.MovingPictureManual, null, Utils.Provider.MovingPictures, null, null);
           }
         }
         if (all != null)

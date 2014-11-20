@@ -395,11 +395,11 @@ namespace FanartHandler
                 {
                   if (((SearchResults) alSearchResults[index]).Album.Equals("5", StringComparison.CurrentCulture) && !flag && (!Utils.GetDbm().HasArtistThumb(artist1) || !onlyMissing))
                   {
-                    logger.Info("Found thumbnail for Artist: " + artist + ".");
+                    logger.Info("Found thumbnail for Artist: " + artist + ". MBID: "+((SearchResults) alSearchResults[index]).MBID);
                     var sourceFilename = "http://htbackdrops.org/api/"+ApiKeyhtBackdrops+"/download/" + ((SearchResults) alSearchResults[index]).Id + "/fullsize";
                     if (DownloadImage(ref artist, null, ref sourceFilename, ref path, ref filename, ref requestPic, ref responsePic, Utils.Category.MusicArtistThumbScraped, null))
                     {
-                      dbm.LoadFanart(artist1, filename.Replace("_tmp.jpg", "L.jpg"), sourceFilename, Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.HtBackdrops, null);
+                      dbm.LoadFanart(artist1, filename.Replace("_tmp.jpg", "L.jpg"), sourceFilename, Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.HtBackdrops, null, ((SearchResults) alSearchResults[index]).MBID);
                       // dbm.LoadFanart(artist1, filename.Replace("_tmp.jpg", ".jpg"), sourceFilename, Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.HtBackdrops, null);
                       flag = true;
                       ExternalAccess.InvokeScraperCompleted("MusicArtistThumbs", artist1);
@@ -512,14 +512,14 @@ namespace FanartHandler
                 {
                   if (((SearchResults) alSearchResults[index]).Album.Equals("1", StringComparison.CurrentCulture) && doScrapeFanart)
                   {
-                    logger.Info("Found fanart for Artist: " + artist + ".");
+                    logger.Info("Found fanart for Artist: " + artist + ". MBID: "+((SearchResults) alSearchResults[index]).MBID);
                     sourceFilename = "http://htbackdrops.org/api/"+ApiKeyhtBackdrops+"/download/" + ((SearchResults) alSearchResults[index]).Id + "/fullsize";
                     if (!dbm.SourceImageExist(artist1, null, null, Utils.Category.MusicFanartScraped, null, Utils.Provider.HtBackdrops, ((SearchResults) alSearchResults[index]).Id))
                     {
                       if (DownloadImage(ref artist1, null, ref sourceFilename, ref path, ref filename, ref requestPic, ref responsePic, Utils.Category.MusicFanartScraped, ((SearchResults) alSearchResults[index]).Id))
                       {
                         checked { ++num; }
-                        dbm.LoadFanart(artist1, filename, sourceFilename, Utils.Category.MusicFanartScraped, null, Utils.Provider.HtBackdrops, ((SearchResults) alSearchResults[index]).Id);
+                        dbm.LoadFanart(artist1, filename, sourceFilename, Utils.Category.MusicFanartScraped, null, Utils.Provider.HtBackdrops, ((SearchResults) alSearchResults[index]).Id, ((SearchResults) alSearchResults[index]).MBID);
                         if (FanartHandlerSetup.Fh.MyScraperNowWorker != null && doTriggerRefresh && !externalAccess)
                         {
                           FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh = true;
@@ -541,11 +541,11 @@ namespace FanartHandler
                 {
                   if (((SearchResults) alSearchResults[index]).Album.Equals("5", StringComparison.CurrentCulture) && !flag3 && (Utils.ScrapeThumbnails.Equals("True", StringComparison.CurrentCulture) && !Utils.GetDbm().HasArtistThumb(artist1)))
                   {
-                    logger.Info("Found thumbnail for Artist: " + artist + ".");
+                    logger.Info("Found thumbnail for Artist: " + artist + ". MBID: "+((SearchResults) alSearchResults[index]).MBID);
                     sourceFilename = "http://htbackdrops.org/api/"+ApiKeyhtBackdrops+"/download/" + ((SearchResults) alSearchResults[index]).Id + "/fullsize";
                     if (DownloadImage(ref artist, null, ref sourceFilename, ref path, ref filename, ref requestPic, ref responsePic, Utils.Category.MusicArtistThumbScraped, ((SearchResults) alSearchResults[index]).Id))
                     {
-                      dbm.LoadFanart(artist1, filename.Replace("_tmp.jpg", "L.jpg"), sourceFilename, Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.HtBackdrops, ((SearchResults) alSearchResults[index]).Id);
+                      dbm.LoadFanart(artist1, filename.Replace("_tmp.jpg", "L.jpg"), sourceFilename, Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.HtBackdrops, ((SearchResults) alSearchResults[index]).Id, ((SearchResults) alSearchResults[index]).MBID);
                       // dbm.LoadFanart(artist1, filename.Replace("_tmp.jpg", ".jpg"), sourceFilename, Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.HtBackdrops, ((SearchResults) alSearchResults[index]).Id);
                       flag3 = true;
                       if (FanartHandlerSetup.Fh.IsPlaying && !externalAccess)
@@ -937,6 +937,7 @@ namespace FanartHandler
         var path = (string) null;
         var filename = (string) null;
         var sourceFilename = (string) null;
+        var mbid = (string) null;
         var flag = false;
         logger.Info("Trying to find Last.FM thumbnail for "+Method+".");
         GetHtml(URL+POST, out str1) ;
@@ -944,7 +945,8 @@ namespace FanartHandler
         {
           if (str1 != null) {
             if (str1.Length > 0) {
-              if (str1.IndexOf("\">http") > 0) {
+              if (str1.IndexOf("\">http") > 0) 
+              {
                 sourceFilename = str1.Substring(checked (str1.IndexOf("size=\"mega\">") + 12));
                 sourceFilename = sourceFilename.Substring(0, sourceFilename.IndexOf("</image>"));
                 logger.Debug("Last.FM Thumb Mega for " + Method + " - " + sourceFilename);
@@ -959,6 +961,14 @@ namespace FanartHandler
                   else
                     flag = false ;
                 }
+              }
+              if (str1.IndexOf("<mbid>") > 0) 
+              {
+                mbid = str1.Substring(checked (str1.IndexOf("<mbid>") + 6));
+                mbid = mbid.Substring(0, mbid.IndexOf("</mbid>"));
+                logger.Debug("Last.FM MBID for " + Method + " - " + mbid);
+                if (mbid.Length == 0)
+                  mbid = null;
               }
             }
           }
@@ -979,7 +989,7 @@ namespace FanartHandler
               }
               if (category == Utils.Category.MusicArtistThumbScraped) {
                 // logger.Debug("*** Artist *** " + artist + " | " + artist1);
-                Utils.GetDbm().LoadFanart(artist1, filename.Replace("_tmp.jpg", "L.jpg"), sourceFilename, Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.LastFM, null);
+                Utils.GetDbm().LoadFanart(artist1, filename.Replace("_tmp.jpg", "L.jpg"), sourceFilename, Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.LastFM, null, mbid);
                 // Utils.GetDbm().LoadFanart(artist1, filename.Replace("_tmp.jpg", ".jpg"), sourceFilename, Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.LastFM, null);
               } else {
                 // var artist2 = Utils.GetArtist(validUrlLastFmString1, Utils.Category.MusicFanartScraped);
@@ -988,7 +998,7 @@ namespace FanartHandler
                 var artist3 = Utils.GetAlbum(album, Utils.Category.MusicFanartScraped);
                 // logger.Debug("*** Album *** " + artist + " > " + artist2 + " | " + validUrlLastFmString1);
                 // logger.Debug("*** Album *** " + album  + " > " + artist3 + " | " + validUrlLastFmString2);
-                Utils.GetDbm().LoadFanart(artist2, filename.Replace("_tmp.jpg", "L.jpg"), sourceFilename, Utils.Category.MusicAlbumThumbScraped, artist3, Utils.Provider.LastFM, null);
+                Utils.GetDbm().LoadFanart(artist2, filename.Replace("_tmp.jpg", "L.jpg"), sourceFilename, Utils.Category.MusicAlbumThumbScraped, artist3, Utils.Provider.LastFM, null, mbid);
                 // Utils.GetDbm().LoadFanart(artist2, filename.Replace("_tmp.jpg", ".jpg"), sourceFilename, Utils.Category.MusicAlbumThumbScraped, artist3, Utils.Provider.LastFM, null);
               }
               ExternalAccess.InvokeScraperCompleted(category.ToString(), artist1);
