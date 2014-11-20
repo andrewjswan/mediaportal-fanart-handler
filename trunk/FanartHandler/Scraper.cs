@@ -39,6 +39,7 @@ namespace FanartHandler
     private static string DefUserAgent = "Mozilla/5.0 (compatible; MSIE 8.0; Win32)" ;  // "Mozilla/5.0 (Windows; U; MSIE 7.0; Windows NT 6.0; en-US)";
     private static string ApiKeyhtBackdrops = "02274c29b2cc898a726664b96dcc0e76" ;
     private static string ApiKeyLastFM = "7d97dee3440eec8b90c9cf5970eef5ca" ;
+    // private static string ApiKeyFanartTV = "" ;
 
     static Scraper()
     {
@@ -415,7 +416,7 @@ namespace FanartHandler
               return num;
             if (!flag)
             {
-              dbm.InsertDummyItem(artist1, Utils.Category.MusicArtistThumbScraped, null);
+              dbm.InsertDummyItem(artist1, Utils.Category.MusicArtistThumbScraped, null, null);
               if (!Utils.GetDbm().HasArtistThumb(artist1) || !onlyMissing)
                 LastFMGetTumbnails(Utils.Category.MusicArtistThumbScraped, artist, null, false);
             }
@@ -572,7 +573,7 @@ namespace FanartHandler
               return num;
             if (!flag3)
             {
-              dbm.InsertDummyItem(artist1, Utils.Category.MusicArtistThumbScraped, null);
+              dbm.InsertDummyItem(artist1, Utils.Category.MusicArtistThumbScraped, null, null);
               if (!Utils.GetDbm().HasArtistThumb(artist1) && Utils.ScrapeThumbnails.Equals("True", StringComparison.CurrentCulture))
                 LastFMGetTumbnails(Utils.Category.MusicArtistThumbScraped, artist, null, externalAccess);
             }
@@ -1077,7 +1078,7 @@ namespace FanartHandler
             }
 
             // logger.Debug("******************************************************************************************************* ");
-            // logger.Debug("*** URL:"+strURL.Replace(ApiKeyhtBackdrops, "***").Replace(ApiKeyLastFM,"***"));
+            // logger.Debug("*** URL:"+strURL.Replace(ApiKeyhtBackdrops, "***").Replace(ApiKeyLastFM,"***")/*.Replace(ApiKeyFanartTV,"***")*/);
             // logger.Debug("*** RES:"+strHtml);
             // logger.Debug("******************************************************************************************************* ");
             s.Close();
@@ -1086,9 +1087,13 @@ namespace FanartHandler
           }
         }
       }
+      catch (WebException ex)
+      {
+        ex.Message.Contains("400");
+      }
       catch (Exception ex)
       {
-        logger.Error("HTML: Error retrieving html for: {0}", strURL.Replace(ApiKeyhtBackdrops, "***").Replace(ApiKeyLastFM,"***"));
+        logger.Error("HTML: Error retrieving html for: {0}", strURL.Replace(ApiKeyhtBackdrops, "***").Replace(ApiKeyLastFM,"***")/*.Replace(ApiKeyFanartTV,"***")*/);
         logger.Error(ex);
         return false;
       }

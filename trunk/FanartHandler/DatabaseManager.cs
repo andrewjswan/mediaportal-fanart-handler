@@ -393,7 +393,7 @@ namespace FanartHandler
                             if (num1 == 0)
                             {
                                 logger.Info("No fanart found for Artist: " + artist + ".");
-                                InsertDummyItem(artist1, Utils.Category.MusicFanartScraped, null);
+                                InsertDummyItem(artist1, Utils.Category.MusicFanartScraped, null, null);
                             }
                             if (num1 == 8888 && doScrapeFanart)
                                 logger.Info("Artist: " + artist + " has already maximum number of images. Will not download anymore images for this artist.");
@@ -429,7 +429,7 @@ namespace FanartHandler
             }
         }
 
-        public void InsertDummyItem(string artist, Utils.Category category, string album/*, string mbid*/)
+        public void InsertDummyItem(string artist, Utils.Category category, string album, string mbid)
         {
             try
             {
@@ -468,7 +468,7 @@ namespace FanartHandler
                                                Utils.PatchSql(s) + "', '" + Utils.PatchSql((category).ToString()) + "','" +
                                                Utils.PatchSql((Utils.Provider.Dummy).ToString()) + "','" + Utils.PatchSql(artist) + "','" +
                                                Utils.PatchSql(album) + "',null, null, 'True', 'True', 'True', '" +
-                                               now.ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "','"+/*Utils.PatchSql(mbid)+*/"');";
+                                               now.ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "','"+Utils.PatchSql(mbid)+"');";
                 lock (lockObject)
                     dbClient.Execute(str4);
             }
@@ -569,7 +569,8 @@ namespace FanartHandler
                             Utils.GetDbm().InsertDummyItem(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped),
                                                            Utils.Category.MusicAlbumThumbScraped,
                         //                                   Utils.GetArtist(album, Utils.Category.MusicFanartScraped));
-                                                           Utils.GetAlbum(album, Utils.Category.MusicFanartScraped));
+                                                           Utils.GetAlbum(album, Utils.Category.MusicFanartScraped), 
+                                                           null);
                             scraper.LastFMGetTumbnails(Utils.Category.MusicAlbumThumbScraped, artist, album, externalAccess);
                         }
                         scraper = null;
@@ -717,7 +718,7 @@ namespace FanartHandler
                                     num4 = int.Parse((string)hashtable2[Utils.PatchSql(artist2) + "-" + Utils.PatchSql(artist3)],CultureInfo.CurrentCulture);
                                 if (num4 < 1) {
                                     if (!StopScraper && !Utils.GetIsStopping()) {
-                                        InsertDummyItem(artist2, Utils.Category.MusicAlbumThumbScraped, artist3);
+                                        InsertDummyItem(artist2, Utils.Category.MusicAlbumThumbScraped, artist3, null);
                                         scraper.LastFMGetTumbnails(Utils.Category.MusicAlbumThumbScraped, artist1, album, false);
                                     }
                                     else
@@ -809,7 +810,7 @@ namespace FanartHandler
                                 sqLiteResultSet = dbClient.Execute(str);
                             if (int.Parse(sqLiteResultSet.GetField(0, 0), CultureInfo.CurrentCulture) < 1 || !onlyMissing) {
                                 if (!StopScraper && !Utils.GetIsStopping()) {
-                                    Utils.GetDbm().InsertDummyItem(artist2, Utils.Category.MusicAlbumThumbScraped, artist3);
+                                    Utils.GetDbm().InsertDummyItem(artist2, Utils.Category.MusicAlbumThumbScraped, artist3, null);
                                     scraper.LastFMGetTumbnails(Utils.Category.MusicAlbumThumbScraped, artist1, album, false);
                                 }
                                 else
