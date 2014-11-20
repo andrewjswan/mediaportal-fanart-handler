@@ -1358,7 +1358,15 @@ namespace FanartHandler
             }
             try
             {
-              if (skinFile.UseRandomGamesFanartUser.Equals("False", StringComparison.CurrentCulture) && skinFile.UseRandomMoviesFanartUser.Equals("False", StringComparison.CurrentCulture) && (skinFile.UseRandomMoviesFanartScraper.Equals("False", StringComparison.CurrentCulture) && skinFile.UseRandomMovingPicturesFanart.Equals("False", StringComparison.CurrentCulture)) && (skinFile.UseRandomMusicFanartUser.Equals("False", StringComparison.CurrentCulture) && skinFile.UseRandomMusicFanartScraper.Equals("False", StringComparison.CurrentCulture) && (skinFile.UseRandomPicturesFanartUser.Equals("False", StringComparison.CurrentCulture) && skinFile.UseRandomScoreCenterFanartUser.Equals("False", StringComparison.CurrentCulture))) && (skinFile.UseRandomTVSeriesFanart.Equals("False", StringComparison.CurrentCulture) && skinFile.UseRandomTVFanartUser.Equals("False", StringComparison.CurrentCulture)))
+              if (skinFile.UseRandomGamesFanartUser.Equals("False", StringComparison.CurrentCulture) && 
+                  skinFile.UseRandomMoviesFanartUser.Equals("False", StringComparison.CurrentCulture) && 
+                  (skinFile.UseRandomMoviesFanartScraper.Equals("False", StringComparison.CurrentCulture) && skinFile.UseRandomMovingPicturesFanart.Equals("False", StringComparison.CurrentCulture)) && 
+                  (skinFile.UseRandomMusicFanartUser.Equals("False", StringComparison.CurrentCulture) && 
+                   skinFile.UseRandomMusicFanartScraper.Equals("False", StringComparison.CurrentCulture) && 
+                   (skinFile.UseRandomPicturesFanartUser.Equals("False", StringComparison.CurrentCulture) && skinFile.UseRandomScoreCenterFanartUser.Equals("False", StringComparison.CurrentCulture))
+                  ) && 
+                  (skinFile.UseRandomTVSeriesFanart.Equals("False", StringComparison.CurrentCulture) && skinFile.UseRandomTVFanartUser.Equals("False", StringComparison.CurrentCulture))
+                 )
               {
                 if (skinFile.UseRandomPluginsFanartUser.Equals("False", StringComparison.CurrentCulture))
                   continue;

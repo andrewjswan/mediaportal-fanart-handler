@@ -22,6 +22,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Timers;
 using System.Xml;
@@ -327,12 +328,11 @@ namespace FanartHandler
         if (Directory.Exists(s))
         {
           var allFilenames = Utils.GetDbm().GetAllFilenames(category);
+          filter = string.Format("^{0}$", filter.Replace(".", @"\.").Replace("*", ".*").Replace("?", ".").Replace("jpg", "(j|J)(p|P)(e|E)?(g|G)").Trim());
+          // logger.Debug("*** SetupFilenames: filter: " + filter);
           foreach (var str3 in Enumerable.Select<FileInfo, string>(Enumerable.Where<FileInfo>(new DirectoryInfo(s).GetFiles("*.*", SearchOption.AllDirectories), fi =>
           {
-              if (!fi.Extension.Equals(".jpg", StringComparison.CurrentCulture))
-                  return fi.Extension.Equals(".jpeg", StringComparison.CurrentCulture);
-              else
-                  return true;
+            return Regex.IsMatch(fi.FullName, filter,RegexOptions.CultureInvariant) ;
           }), fi => fi.FullName))
           {
             if (allFilenames == null || !allFilenames.Contains(str3))
@@ -342,9 +342,9 @@ namespace FanartHandler
                 var artist = Utils.GetArtist(str3, category);
                 var album = Utils.GetAlbum(str3, category);
                 if (ht != null && ht.Contains(artist))
-                  Utils.GetDbm().LoadFanart(ht[artist].ToString(), str3, str3, category, album, provider, null);
+                  Utils.GetDbm().LoadFanart(ht[artist].ToString(), str3, str3, category, album, provider, null, null);
                 else
-                  Utils.GetDbm().LoadFanart(artist, str3, str3, category, album, provider, null);
+                  Utils.GetDbm().LoadFanart(artist, str3, str3, category, album, provider, null, null);
               }
               else
                 break;
@@ -1124,8 +1124,8 @@ label_21:;
       }
       var fileTarget = new FileTarget();
       fileTarget.FileName = Config.GetFile((Config.Dir) 1, LogFileName);
+      fileTarget.Encoding = "utf-8";
       fileTarget.Layout = "${date:format=dd-MMM-yyyy HH\\:mm\\:ss} ${level:fixedLength=true:padding=5} [${logger:fixedLength=true:padding=20:shortName=true}]: ${message} ${exception:format=tostring}";
-      // fileTarget.Encoding = Encoding.UTF8.ToString();
       loggingConfiguration.AddTarget("file", fileTarget);
       var settings = new Settings(Config.GetFile((Config.Dir) 10, "MediaPortal.xml"));
       var str = settings.GetValue("general", "ThreadPriority");
@@ -1271,7 +1271,11 @@ label_21:;
         refreshTimer = new Timer(250.0);
         refreshTimer.Elapsed += new ElapsedEventHandler(UpdateImageTimer);
         refreshTimer.Interval = 250.0;
-        if (FR.WindowsUsingFanartRandom.ContainsKey("35") || FS.WindowsUsingFanartSelectedMusic.ContainsKey("35") || (FS.WindowsUsingFanartSelectedScoreCenter.ContainsKey("35") || FS.WindowsUsingFanartSelectedMovie.ContainsKey("35")) || (FP.WindowsUsingFanartPlay.ContainsKey("35") || UseOverlayFanart != null && UseOverlayFanart.Equals("True", StringComparison.CurrentCulture)))
+        if (FR.WindowsUsingFanartRandom.ContainsKey("35") || 
+            FS.WindowsUsingFanartSelectedMusic.ContainsKey("35") || 
+            (FS.WindowsUsingFanartSelectedScoreCenter.ContainsKey("35") || FS.WindowsUsingFanartSelectedMovie.ContainsKey("35")) || 
+            (FP.WindowsUsingFanartPlay.ContainsKey("35") || UseOverlayFanart != null && UseOverlayFanart.Equals("True", StringComparison.CurrentCulture))
+           )
           refreshTimer.Start();
         MyFileWatcher = new FileSystemWatcher();
         MyFileWatcher.Path = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt";
@@ -1295,6 +1299,7 @@ label_21:;
         {
         }
         logger.Info("Fanart Handler is started.");
+        logger.Debug("Current Culture: {0}", CultureInfo.CurrentCulture.Name);
       }
       catch (Exception ex)
       {
