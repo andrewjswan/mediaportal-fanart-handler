@@ -215,7 +215,7 @@ namespace FanartHandler
             }
             catch (Exception ex)
             {
-                logger.Error("HasArtistThumb: " + ex);
+                logger.Error("GetNumberOfFanartImages: " + ex);
             }
             return 0;
         }
@@ -376,20 +376,16 @@ namespace FanartHandler
                         var num2 = int.Parse(Utils.GetScraperMaxImages());
                         var num3 = 0;
                         if (htFanart.Contains(Utils.PatchSql(artist1)))
-                            num3 = int.Parse((string) htFanart[Utils.PatchSql(artist1)],
-                                CultureInfo.CurrentCulture);
+                            num3 = int.Parse((string) htFanart[Utils.PatchSql(artist1)],CultureInfo.CurrentCulture);
                         if (num3 < 1)
                         {
                             var numberOfFanartImages = GetNumberOfFanartImages(artist1);
                             DeleteDummyItem(artist1, Utils.Category.MusicFanartScraped);
-                            var iMax =
-                                checked (
-                                    Convert.ToInt32(Utils.GetScraperMaxImages(),
-                                        CultureInfo.CurrentCulture) - numberOfFanartImages);
+                            var iMax = checked (Convert.ToInt32(Utils.GetScraperMaxImages(),CultureInfo.CurrentCulture) - numberOfFanartImages);
                             var doScrapeFanart = false;
                             if (numberOfFanartImages < num2)
                                 doScrapeFanart = true;
-                            num1 = scraper.HtBackdropGetFanart(artist, iMax, this, true, false, false, doScrapeFanart);
+                            num1 = scraper.GetArtistFanart(artist, iMax, this, true, false, false, doScrapeFanart);
                             if (num1 == 0)
                             {
                                 logger.Info("No fanart found for Artist: " + artist + ".");
@@ -500,7 +496,7 @@ namespace FanartHandler
                             sqLiteResultSet = dbClient.Execute(str);
                         if (int.Parse(sqLiteResultSet.GetField(0, 0), CultureInfo.CurrentCulture) < 1 || !onlyMissing)
                         {
-                            num = scraper.HtBackdropGetThumbsImages(artist, this, onlyMissing);
+                            num = scraper.GetArtistThumbs(artist, this, onlyMissing);
                             if (num == 0)
                                 logger.Info("No fanart found for artist " + artist + ".");
                         }
@@ -544,7 +540,7 @@ namespace FanartHandler
                         var iMax = checked (Convert.ToInt32(Utils.GetScraperMaxImages(),CultureInfo.CurrentCulture) - num2);
                         if (iMax < 0)
                             iMax = 0;
-                        num1 = scraper.HtBackdropGetFanart(artist, iMax, this, false, doTriggerRefresh, externalAccess, true);
+                        num1 = scraper.GetArtistFanart(artist, iMax, this, false, doTriggerRefresh, externalAccess, true);
                         switch (num1)
                         {
                             case 0:
@@ -564,7 +560,8 @@ namespace FanartHandler
                         // Utils.GetArtist(validUrlLastFmString2, Utils.Category.MusicFanartScraped);
                         //if (!Utils.GetDbm().HasAlbumThumb(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped),Utils.GetArtist(album, Utils.Category.MusicFanartScraped)) && 
                         if (!Utils.GetDbm().HasAlbumThumb(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped),Utils.GetAlbum(album, Utils.Category.MusicFanartScraped)) && 
-                             Utils.ScrapeThumbnailsAlbum.Equals("True", StringComparison.CurrentCulture))
+                             Utils.ScrapeThumbnailsAlbum.Equals("True", StringComparison.CurrentCulture)
+                           )
                         {
                             Utils.GetDbm().InsertDummyItem(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped),
                                                            Utils.Category.MusicAlbumThumbScraped,
