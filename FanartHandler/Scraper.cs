@@ -39,7 +39,7 @@ namespace FanartHandler
     private static string DefUserAgent = "Mozilla/5.0 (compatible; MSIE 8.0; Win32)" ;  // "Mozilla/5.0 (Windows; U; MSIE 7.0; Windows NT 6.0; en-US)";
     private static string ApiKeyhtBackdrops = "02274c29b2cc898a726664b96dcc0e76" ;
     private static string ApiKeyLastFM = "7d97dee3440eec8b90c9cf5970eef5ca" ;
-    private static string ApiKeyFanartTV = "***" ;
+    private static string ApiKeyFanartTV = "###" ;
 
     static Scraper()
     {
@@ -281,34 +281,90 @@ namespace FanartHandler
       return false;
     }
 
+    #region MuzicBrainz
+    // Begin: Extract MuzicBrainz ID
+    public string ExtractMID (string AInputString)
+    {
+      const string URLRE = @"id=\""(.+?)\""" ;
+      var Result = (string) null ;         
+
+      if ((AInputString == null) || (AInputString == "null"))
+        return Result ;
+
+      Regex ru = new Regex(URLRE,RegexOptions.IgnoreCase);
+      MatchCollection mcu = ru.Matches(AInputString) ;
+      foreach(Match mu in mcu)
+      {
+        Result = mu.Groups[1].Value.ToString();
+        if (Result.Length > 10)
+        {
+          logger.Debug("Extract MID -  " + Result) ;
+          break;
+        }
+      }
+      return Result ;
+    }
+    // End: Extract MuzicBrainz ID
+
+    // Begin: GetMuzicBrainzID
+    private string GetMuzicBrainzID(string artist, string album)
+    {
+      var res = Utils.GetDbm().GetDBMuzicBrainzID(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped), (album == null) ? null : Utils.GetAlbum(album, Utils.Category.MusicFanartScraped)) ;
+      if ((res != null) && (res.Length > 10))
+        return res ;
+
+      const string MBURL    = "http://www.musicbrainz.org/ws/2" ;
+      const string MIDURL   = "/artist/?query=artist:" ;
+      const string MIDURLA  = "/release-group/?query=artist:" ;
+
+      var URL  = MBURL + ((album == null) ? MIDURL + HttpUtility.UrlEncode(artist) : MIDURLA + HttpUtility.UrlEncode(artist + " " + album)) ;
+      var html = (string) null ;
+      
+      GetHtml(URL, out html) ;
+
+      return ExtractMID (html) ;
+    }
+    // End: GetMuzicBrainzID
+    #endregion
+
     #region Artist Backdrops/Thumbs  
     // Begin: GetArtistFanart (Fanart.TV, htBackdrops)
     public int GetArtistFanart(string artist, int iMax, DatabaseManager dbm, bool reportProgress, bool doTriggerRefresh, bool externalAccess, bool doScrapeFanart)
     {
       var res = 0;
       var flag = true;
+      var mbid = (string) null;
 
       logger.Debug("Trying to find Fanart for Artist: " + artist + ".");
 
-      // ** Get MBID & Search result from htBackdrop
-      if (alSearchResults == null)
-        flag = GethtBackdropsSearchResult(artist, "1,5");
+      mbid = GetMuzicBrainzID(artist, null) ;
+      if ((mbid == null) || (mbid.Length < 10))
+        // ** Get MBID & Search result from htBackdrop
+        if (alSearchResults == null)
+          flag = GethtBackdropsSearchResult(artist, "1,5");
 
       while (true)
       {
         // *** Fanart.TV
-        /*
         // Get MBID (from DB or [htBackdrops -> GethtBackdropsSearchResult -> alSearchResults -> ((SearchResults) alSearchResults[???]).MBID])
         if (flag) 
           {
-            res = FanartTVGetBackdrops(artist, dbm, mbid) ;
+            if (alSearchResults != null) 
+              if (alSearchResults.Count > 0)
+                mbid = ((SearchResults) alSearchResults[0]).MBID ;
+            if (mbid != null)
+              if (mbid.Length > 10)
+                res = FanartTVGetPictures(Utils.Category.MusicFanartScraped, mbid, artist, null, iMax, doTriggerRefresh, externalAccess, doScrapeFanart) ;
           }
-        */
         if (dbm.StopScraper)
           break;
 
+        // ** Get MBID & Search result from htBackdrop
+        if (alSearchResults == null)
+          flag = GethtBackdropsSearchResult(artist, "1,5");
+
         // *** htBackdrops
-        if (res == 0)
+        if ((res == 0) || (res < iMax))
         {
           if (flag)
             res = HtBackdropGetFanart(artist, iMax, dbm, reportProgress, doTriggerRefresh, externalAccess, doScrapeFanart);
@@ -339,6 +395,7 @@ namespace FanartHandler
     {
       var res = 0;
       var flag = true;
+      var mbid = (string) null;
 
       if (!Utils.ScrapeThumbnails.Equals("True", StringComparison.CurrentCulture))
       {
@@ -347,23 +404,32 @@ namespace FanartHandler
       }
       logger.Debug("Trying to find Thumbs for Artist: " + artist + ".");
 
-      // ** Get MBID & Search result from htBackdrop
-      if (alSearchResults == null)
-        flag = GethtBackdropsSearchResult(artist,"5");
+      mbid = GetMuzicBrainzID(artist, null) ;
+      if ((mbid == null) || (mbid.Length < 10))
+        // ** Get MBID & Search result from htBackdrop
+        if (alSearchResults == null)
+          flag = GethtBackdropsSearchResult(artist,"5");
       //
       while (true)
       {
         // *** Fanart.TV
-        /*
         // Get MBID (from DB or [htBackdrops -> GethtBackdropsSearchResult -> alSearchResults -> ((SearchResults) alSearchResults[???]).MBID])
         if (flag) 
           {
-            res = FanartTVGetThumb(artist, dbm, mbid) ;
+            if (alSearchResults != null) 
+              if (alSearchResults.Count > 0)
+                mbid = ((SearchResults) alSearchResults[0]).MBID ;
+            if (mbid != null)
+              if (mbid.Length > 10)
+                if (!Utils.GetDbm().HasArtistThumb(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped)) || !onlyMissing)
+                  res = FanartTVGetPictures(Utils.Category.MusicArtistThumbScraped, mbid, artist, null, 1, false, false, true) ;
           }
-        */
         if (dbm.StopScraper)
           break;
 
+        // ** Get MBID & Search result from htBackdrop
+        if (alSearchResults == null)
+          flag = GethtBackdropsSearchResult(artist,"5");
         // *** htBackdrops
         if (res == 0)
         {
@@ -376,7 +442,7 @@ namespace FanartHandler
         // *** Last.FM
         if (res == 0) 
         {
-          dbm.InsertDummyItem(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped), Utils.Category.MusicArtistThumbScraped, null, null);
+          // dbm.InsertDummyItem(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped), Utils.Category.MusicArtistThumbScraped, null, null);
           if (!Utils.GetDbm().HasArtistThumb(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped)) || !onlyMissing)
             res = LastFMGetTumbnails(Utils.Category.MusicArtistThumbScraped, artist, null, false);
         }
@@ -392,6 +458,49 @@ namespace FanartHandler
       return res;
     }
     // End: GetArtistThumbs
+
+    // Begin: GetArtistAlbumThumbs (Fanart.TV, htBackdrops, Last.FM)
+    public int GetArtistAlbumThumbs(string artist, string album, bool onlyMissing, bool externalAccess)
+    {
+      var res = 0;
+      var flag = true;
+      var mbid = (string) null;
+
+      if (!Utils.ScrapeThumbnailsAlbum.Equals("True", StringComparison.CurrentCulture))
+      {
+        logger.Debug("Artist/Album Thumbnails - Disabled.");
+        return res ;
+      }
+      logger.Debug("Trying to find Thumbs for Artist/Album: " + artist + " - " + album + ".");
+
+      mbid = GetMuzicBrainzID(artist, album) ;
+      //
+      while (true)
+      {
+        // *** Fanart.TV
+        // Get MBID (from DB or [htBackdrops -> GethtBackdropsSearchResult -> alSearchResults -> ((SearchResults) alSearchResults[???]).MBID])
+        if (flag) 
+          {
+            if (mbid != null)
+              if (mbid.Length > 10)
+                if (!Utils.GetDbm().HasAlbumThumb(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped), Utils.GetAlbum(album, Utils.Category.MusicFanartScraped)) || !onlyMissing)
+                  res = FanartTVGetPictures(Utils.Category.MusicAlbumThumbScraped, mbid, artist, album, 1, false, externalAccess, true) ;
+          }
+        if (Utils.GetDbm().StopScraper)
+          break;
+
+        // *** Last.FM
+        if (res == 0) 
+        {
+          // dbm.InsertDummyItem(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped), Utils.Category.MusicArtistThumbScraped, null, null);
+          if (!Utils.GetDbm().HasAlbumThumb(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped), Utils.GetAlbum(album, Utils.Category.MusicFanartScraped)) || !onlyMissing)
+            res = LastFMGetTumbnails(Utils.Category.MusicAlbumThumbScraped, artist, album, externalAccess);
+        }
+        break;
+      } // while
+      return res;
+    }
+    // End: GetArtistAlbumThumbs
     #endregion
 
     #region htBackdrops
@@ -461,7 +570,7 @@ namespace FanartHandler
       var nav1 = (XPathNavigator) null;
       var res = false ;
 
-      if (GetHtml("http://htbackdrops.org/api/"+ApiKeyhtBackdrops+"/searchXML?keywords=" + str + "&aid="+ type + "&default_operator=and" + "&inc=keywords,mb_aliases", out xml))
+      if (GetHtml("http://htbackdrops.org/api/"+ApiKeyhtBackdrops+"/searchXML?keywords=" + HttpUtility.UrlEncode(str) + "&aid="+ type + "&default_operator=and" + "&inc=keywords,mb_aliases", out xml))
       {
         try
         {
@@ -642,6 +751,8 @@ namespace FanartHandler
           var path = (string) null;
           // var flag3 = false;
           var filename = (string) null;
+
+          iMax = iMax - facount ;
           // var xmlDocument = (XmlDocument) null;
           // var nav1 = (XPathNavigator) null;
           // var str = "keywords=" + artist + "&aid=1,5" + "&default_operator=and" + "&inc=keywords,mb_aliases";
@@ -829,7 +940,6 @@ namespace FanartHandler
     #endregion
 
     #region Last.FM
-
     public static void RemoveStackEndings(ref string strFileName)
     {
       if (strFileName == null) return;
@@ -1250,19 +1360,63 @@ namespace FanartHandler
     #endregion
 
     #region Fanart.TV
-    // Begin: Fanart.TV Get Fanart/Tumbnails for Artist or Artist/Album
-    public int FanartTVGetPictures(Utils.Category category, string artist, string album, bool externalAccess)
+    // Begin: Extract Fanart.TV URL
+    public List<string> ExtractURL (string Sec, string AInputString)
     {
-      return 0;
-      /* TODO: Fanart.TV support...
+      const string SECRE = @"\""%1.+?\[([^\]]+?)\]" ;
+      // const string URLRE = @"url.\:[^}]*?\""([^}]+?)\""[^}]+?(.lang.\:[^}]?\""(%1)\"")" ; // URL
+      const string URLRE = @"\""id.\:[^}]*?\""([^}]+?)\""[^}]+?url.\:[^}]*?\""([^}]+?)\""([^}]+?lang.\:[^}]*?\""(%1)\"")" ; // Id URL
+               
+      var B       = (string) null;
+      var URLList = new List<string>() ;  
+
+      if ((AInputString == null) || (AInputString == "null"))
+        return URLList ;
+
+      Regex r = new Regex(SECRE.Replace("%1",Sec),RegexOptions.IgnoreCase);
+      MatchCollection mc = r.Matches(AInputString);
+      foreach(Match m in mc)
+      {
+        B = m.Value;
+        break;
+      }
+
+      if (B != null)
+        if (B.Length > 0)
+        {
+          Regex ru = new Regex(URLRE.Replace("%1","[^}]+?")+"?",RegexOptions.IgnoreCase);
+          MatchCollection mcu = ru.Matches(B) ;
+          foreach(Match mu in mcu)
+          {
+            URLList.Add(mu.Groups[1]+"|"+mu.Groups[2]);
+          }
+          logger.Debug("Extract URL - URLs Found: " + URLList.Count) ;
+        }
+      return URLList;
+    }
+    // End: Extract Fanart.TV URL
+
+    // Begin: Fanart.TV Get Fanart/Tumbnails for Artist or Artist/Album
+    public int FanartTVGetPictures(Utils.Category category, string mbid, string artist, string album, int iMax, bool doTriggerRefresh, bool externalAccess, bool doScrapeFanart)
+    {
+      if (!doScrapeFanart)
+        return -1 ;
+
       var Method = (string) null;
+      var Section = (string) null;
       var URL = (string) null;
       var FanArtAdd = (string) null;
       var html = (string) null;
       var flag = false;
+      var ScraperFlag = false;
+      var num = 0;
+      var URLList = new List<string>() ; 
 
-      URL       = "http://api.fanart.tv/webservice/";
-      FanArtAdd = "{0}/json/" ;
+      var dbartist = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped) ;
+      var dbalbum  = (category == Utils.Category.MusicAlbumThumbScraped) ? Utils.GetAlbum(album, Utils.Category.MusicFanartScraped) : null ;
+
+      URL       = "http://webservice.fanart.tv/v3/" ;
+      FanArtAdd = "{0}?api_key=" ;
 
       // Fanart.TV get Artist Fanart
       if (category == Utils.Category.MusicFanartScraped) {
@@ -1271,7 +1425,10 @@ namespace FanartHandler
           return -1 ;
         }
         Method = "Artist (Fanart): "+artist ;
-        URL = URL + FanArtAdd ;
+        URL = URL + "music/" + FanArtAdd + ApiKeyFanartTV ;
+        Section = "artistbackground";
+        if ((iMax = iMax - Utils.GetDbm().GetNumberOfFanartImages(dbartist)) <= 0)
+          return 8888 ;
       // Fanart.TV get Artist Tumbnails
       } else if (category == Utils.Category.MusicArtistThumbScraped) {
         if (string.IsNullOrEmpty(artist)) {
@@ -1279,7 +1436,8 @@ namespace FanartHandler
           return -1 ;
         }
         Method = "Artist (Thumbs): "+artist ;
-        URL = URL + FanArtAdd ;
+        URL = URL + "music/" + FanArtAdd + ApiKeyFanartTV ;
+        Section = "artistthumb";
       // Fanart.TV get Artist/Album Tumbnails
       } else if (category == Utils.Category.MusicAlbumThumbScraped) {
         if (string.IsNullOrEmpty(artist) && string.IsNullOrEmpty(album)) {
@@ -1287,7 +1445,8 @@ namespace FanartHandler
           return -1 ;
         }
         Method = "Artist/Album (Thumbs): "+artist+" - "+album ;
-        URL = URL + FanArtAdd ;
+        URL = URL + "music/albums/" + FanArtAdd + ApiKeyFanartTV ;
+        Section = "albumcover";
       // Fanart.TV wrong Category ...
       } else {
         logger.Debug("Fanart.TV: GetPictures - wrong category - " + category.ToString() + ".");
@@ -1297,48 +1456,88 @@ namespace FanartHandler
       try
       {
         logger.Info("Fanart.TV: Trying to find pictures for "+Method+".");
-        GetHtml(URL, out html) ;
+        GetHtml(String.Format(URL,mbid.Trim()), out html) ;
         try
         {
           if (html != null) {
             if (html.Length > 0) 
             {
-              flag = false;
+              URLList = ExtractURL(Section, html);
+              if (URLList != null)
+                flag = (URLList.Count > 0);
             }
           }
         }
         catch (Exception ex)
         {
-          logger.Error(ex.ToString());
+          logger.Error("Fanart.TV: Get URL: "+ex.ToString());
         }
 
         if (flag) {
-          var artist1 = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped) ;
-          var album1  = (category == Utils.Category.MusicAlbumThumbScraped) ? Utils.GetAlbum(album, Utils.Category.MusicFanartScraped) : null;
-          if (DownloadImage(ref artist, (category == Utils.Category.MusicAlbumThumbScraped) ? album : null, ref sourceFilename, ref path, ref filename, category, null)) 
+          var path = (string) null;
+          var filename = (string) null;
+
+          for (int i = 0; i < URLList.Count; i++)
           {
-            checked { ++num; }
-            Utils.GetDbm().LoadFanart(artist1, filename.Replace("_tmp.jpg", "L.jpg"), sourceFilename, category, album1, Utils.Provider.FanartTV, null, mbid);
-            if (FanartHandlerSetup.Fh.IsPlaying && !externalAccess) {
-              FanartHandlerSetup.Fh.FP.AddPlayingArtistThumbProperty(FanartHandlerSetup.Fh.CurrentTrackTag, FanartHandlerSetup.Fh.FP.DoShowImageOnePlay);
-              FanartHandlerSetup.Fh.FP.UpdatePropertiesPlay();
+            var id = URLList[i].Substring(0, URLList[i].IndexOf("|")) ;
+            var sourceFilename = URLList[i].Substring(checked(URLList[i].IndexOf("|") + 1)) ;
+
+            if (num >= iMax)
+              {
+                if (category == Utils.Category.MusicFanartScraped) 
+                  num = 8888;
+                else
+                  num = 9999;
+                break ;
+              }
+            if (category == Utils.Category.MusicFanartScraped)
+              if (Utils.GetDbm().SourceImageExist(dbartist, null, null, category, null, Utils.Provider.FanartTV, id))
+                {
+                  checked { ++num; }
+                  continue;
+                }
+            if (DownloadImage(ref artist, (category == Utils.Category.MusicAlbumThumbScraped) ? album : null, ref sourceFilename, ref path, ref filename, category, id)) 
+            {
+              checked { ++num; }
+              filename = (category == Utils.Category.MusicFanartScraped) ? filename : filename.Replace("_tmp.jpg", "L.jpg") ;
+              Utils.GetDbm().LoadFanart(dbartist, filename, sourceFilename, category, dbalbum, Utils.Provider.FanartTV, id, mbid);
+              //
+              if (category == Utils.Category.MusicFanartScraped)
+                {
+                  if (FanartHandlerSetup.Fh.MyScraperNowWorker != null && doTriggerRefresh && !externalAccess)
+                  {
+                    FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh = true;
+                    doTriggerRefresh = false;
+                    ScraperFlag = true;
+                  }
+                  else if (FanartHandlerSetup.Fh.MyScraperNowWorker != null && ScraperFlag && !externalAccess)
+                    FanartHandlerSetup.Fh.FP.SetCurrentArtistsImageNames(null);
+                }
+              else
+              {
+                if (FanartHandlerSetup.Fh.IsPlaying && !externalAccess) 
+                {
+                  FanartHandlerSetup.Fh.FP.AddPlayingArtistThumbProperty(FanartHandlerSetup.Fh.CurrentTrackTag, FanartHandlerSetup.Fh.FP.DoShowImageOnePlay);
+                  FanartHandlerSetup.Fh.FP.UpdatePropertiesPlay();
+                }
+              }
+              ExternalAccess.InvokeScraperCompleted(category.ToString(), dbartist);
             }
-            ExternalAccess.InvokeScraperCompleted(category.ToString(), artist1);
+            if ((num > 0) && (category != Utils.Category.MusicFanartScraped))
+              break ;
+            if (Utils.GetDbm().StopScraper)
+              break;
           }
         }
         return num;
       }
       catch (Exception ex) {
         logger.Error("Fanart.TV: GetTumbnails: " + Method + " - " + ex);
+        return num;
       }
       finally
-      {
+      { 
       }
-      if (category == Utils.Category.MusicFanartScraped) 
-        return 8888;
-      else
-        return 9999;
-      */
     }
     // End: Fanart.TV Get Fanart/Tumbnails for Artist or Artist/Album
     #endregion

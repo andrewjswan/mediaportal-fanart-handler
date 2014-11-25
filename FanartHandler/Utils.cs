@@ -423,6 +423,7 @@ namespace FanartHandler
     {
       if (key == null)
         return string.Empty;
+      /*
       key = Regex.Replace(key, ".jpg", string.Empty);
       key = Regex.Replace(key, ".JPG", string.Empty);
       key = Regex.Replace(key, ".png", string.Empty);
@@ -433,6 +434,8 @@ namespace FanartHandler
       key = Regex.Replace(key, ".TIF", string.Empty);
       key = Regex.Replace(key, ".gif", string.Empty);
       key = Regex.Replace(key, ".GIF", string.Empty);
+      */
+      key = Regex.Replace(key.Trim(), @"\.(jpe?g|png|bmp|tiff?|gif)$",string.Empty,RegexOptions.IgnoreCase);
       return key;
     }
 
