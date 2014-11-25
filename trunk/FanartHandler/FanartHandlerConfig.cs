@@ -1590,9 +1590,16 @@ namespace FanartHandler
         Utils.ScrapeThumbnailsAlbum = scrapeThumbnailsAlbum;
         Utils.DoNotReplaceExistingThumbs = doNotReplaceExistingThumbs;
         Utils.InitiateDbm("config");
+        FanartHandlerSetup.Fh.UpdateDirectoryTimer("All", false, "Fanart");
+      }
+      catch (Exception ex)
+      {
+        logger.Error("FanartHandlerConfig_Load: Initialize: " + ex);
+      }
+      try
+      {
         button8.Enabled = false;
         button9.Enabled = false;
-        FanartHandlerSetup.Fh.UpdateDirectoryTimer("All", false, "Fanart");
         SplashPane.IncrementProgressBar(20);
         logger.Info("Loading music fanart table (Artists)...");
         myDataTable = new DataTable();
