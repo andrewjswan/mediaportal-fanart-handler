@@ -39,7 +39,7 @@ namespace FanartHandler
     private static string DefUserAgent = "Mozilla/5.0 (compatible; MSIE 8.0; Win32)" ;  // "Mozilla/5.0 (Windows; U; MSIE 7.0; Windows NT 6.0; en-US)";
     private static string ApiKeyhtBackdrops = "02274c29b2cc898a726664b96dcc0e76" ;
     private static string ApiKeyLastFM = "7d97dee3440eec8b90c9cf5970eef5ca" ;
-    private static string ApiKeyFanartTV = "###" ;
+    private static string ApiKeyFanartTV = "e86c27a8ce58787020df5ea68bc72518" ;
 
     static Scraper()
     {
@@ -298,7 +298,7 @@ namespace FanartHandler
         Result = mu.Groups[1].Value.ToString();
         if (Result.Length > 10)
         {
-          logger.Debug("Extract MID -  " + Result) ;
+          logger.Debug("MuzicBrainz: Extract ID: " + Result) ;
           break;
         }
       }
@@ -311,7 +311,10 @@ namespace FanartHandler
     {
       var res = Utils.GetDbm().GetDBMuzicBrainzID(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped), (album == null) ? null : Utils.GetAlbum(album, Utils.Category.MusicFanartScraped)) ;
       if ((res != null) && (res.Length > 10))
+      {
+        logger.Debug("MuzicBrainz: DB ID: " + res) ;
         return res ;
+      }
 
       const string MBURL    = "http://www.musicbrainz.org/ws/2" ;
       const string MIDURL   = "/artist/?query=artist:" ;
@@ -327,6 +330,29 @@ namespace FanartHandler
     // End: GetMuzicBrainzID
     #endregion
 
+    #region ReportProgress
+    public void ReportProgress (double Total, DatabaseManager dbm, bool reportProgress, bool externalAccess)
+    {
+      if (!reportProgress && !externalAccess)
+      {
+        if (Total > 0.0)
+        {
+            dbm.TotArtistsBeingScraped  = Total;
+            dbm.CurrArtistsBeingScraped = 0.0;
+            if (FanartHandlerSetup.Fh.MyScraperNowWorker != null)
+              FanartHandlerSetup.Fh.MyScraperNowWorker.ReportProgress(0, "Ongoing");
+        }
+        else
+        {
+            ++dbm.CurrArtistsBeingScraped;
+            if (dbm.CurrArtistsBeingScraped > dbm.TotArtistsBeingScraped) dbm.TotArtistsBeingScraped = dbm.CurrArtistsBeingScraped;
+            if (dbm.TotArtistsBeingScraped > 0.0 && FanartHandlerSetup.Fh.MyScraperNowWorker != null)
+              FanartHandlerSetup.Fh.MyScraperNowWorker.ReportProgress(Convert.ToInt32(dbm.CurrArtistsBeingScraped / dbm.TotArtistsBeingScraped * 100.0), "Ongoing");
+        }
+      }
+    }
+    #endregion
+
     #region Artist Backdrops/Thumbs  
     // Begin: GetArtistFanart (Fanart.TV, htBackdrops)
     public int GetArtistFanart(string artist, int iMax, DatabaseManager dbm, bool reportProgress, bool doTriggerRefresh, bool externalAccess, bool doScrapeFanart)
@@ -337,12 +363,15 @@ namespace FanartHandler
 
       logger.Debug("Trying to find Fanart for Artist: " + artist + ".");
 
+      ReportProgress (5.0, dbm, reportProgress, externalAccess) ;
+
       mbid = GetMuzicBrainzID(artist, null) ;
       if ((mbid == null) || (mbid.Length < 10))
         // ** Get MBID & Search result from htBackdrop
         if (alSearchResults == null)
           flag = GethtBackdropsSearchResult(artist, "1,5");
 
+      ReportProgress (0.0, dbm, reportProgress, externalAccess) ;
       while (true)
       {
         // *** Fanart.TV
@@ -356,19 +385,22 @@ namespace FanartHandler
               if (mbid.Length > 10)
                 res = FanartTVGetPictures(Utils.Category.MusicFanartScraped, mbid, artist, null, iMax, doTriggerRefresh, externalAccess, doScrapeFanart) ;
           }
+        ReportProgress (0.0, dbm, reportProgress, externalAccess) ;
         if (dbm.StopScraper)
           break;
 
         // ** Get MBID & Search result from htBackdrop
         if (alSearchResults == null)
           flag = GethtBackdropsSearchResult(artist, "1,5");
+        ReportProgress (0.0, dbm, reportProgress, externalAccess) ;
 
         // *** htBackdrops
         if ((res == 0) || (res < iMax))
         {
           if (flag)
-            res = HtBackdropGetFanart(artist, iMax, dbm, reportProgress, doTriggerRefresh, externalAccess, doScrapeFanart);
+            res = HtBackdropGetFanart(artist, iMax, dbm, /*reportProgress,*/ doTriggerRefresh, externalAccess, doScrapeFanart);
         }
+        ReportProgress (0.0, dbm, reportProgress, externalAccess) ;
         if (dbm.StopScraper)
           break;
 
@@ -377,6 +409,7 @@ namespace FanartHandler
         {
           GetArtistThumbs(artist, dbm, true) ;
         }
+        ReportProgress (0.0, dbm, reportProgress, externalAccess) ;
         break ;
       } // while
       if (alSearchResults != null)
@@ -686,7 +719,7 @@ namespace FanartHandler
                       dbm.LoadFanart(artist1, filename.Replace("_tmp.jpg", "L.jpg"), sourceFilename, Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.HtBackdrops, null, mbid);
                       // dbm.LoadFanart(artist1, filename.Replace("_tmp.jpg", ".jpg"), sourceFilename, Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.HtBackdrops, null);
                       // flag = true;
-                      ExternalAccess.InvokeScraperCompleted("MusicArtistThumbs", artist1);
+                      ExternalAccess.InvokeScraperCompleted(Utils.Category.MusicArtistThumbScraped.ToString(), artist1);
                       break;
                     }
                   }
@@ -734,7 +767,7 @@ namespace FanartHandler
       return 9999;
     }
 
-    public int HtBackdropGetFanart(string artist, int iMax, DatabaseManager dbm, bool reportProgress, bool doTriggerRefresh, bool externalAccess, bool doScrapeFanart)
+    public int HtBackdropGetFanart(string artist, int iMax, DatabaseManager dbm, /*bool reportProgress,*/ bool doTriggerRefresh, bool externalAccess, bool doScrapeFanart)
     {
       // var requestPic = (HttpWebRequest) null;
       // var responsePic = (WebResponse) null;
@@ -791,6 +824,7 @@ namespace FanartHandler
           {
             if (doScrapeFanart)
               logger.Info("Trying to find fanart (htBackdrops) for Artist: " + artist + ".");
+            /*
             if (!reportProgress && !externalAccess)
             {
               dbm.TotArtistsBeingScraped = checked (alSearchResults.Count + 1);
@@ -798,6 +832,7 @@ namespace FanartHandler
               if (FanartHandlerSetup.Fh.MyScraperNowWorker != null)
                 FanartHandlerSetup.Fh.MyScraperNowWorker.ReportProgress(0, "Ongoing");
             }
+            */
             var index = 0;
             while (index < alSearchResults.Count && !dbm.StopScraper)
             {
@@ -826,7 +861,7 @@ namespace FanartHandler
                         }
                         else if (FanartHandlerSetup.Fh.MyScraperNowWorker != null && flag2 && !externalAccess)
                           FanartHandlerSetup.Fh.FP.SetCurrentArtistsImageNames(null);
-                        ExternalAccess.InvokeScraperCompleted("MusicFanart Scraper", artist1);
+                        ExternalAccess.InvokeScraperCompleted(Utils.Category.MusicFanartScraped.ToString(), artist1);
                       }
                     }
                     else
@@ -863,6 +898,7 @@ namespace FanartHandler
                 else
                   break;
               }
+              /*
               if (!reportProgress)
               {
                 ++dbm.CurrArtistsBeingScraped;
@@ -870,6 +906,7 @@ namespace FanartHandler
                   FanartHandlerSetup.Fh.MyScraperNowWorker.ReportProgress(Convert.ToInt32(dbm.CurrArtistsBeingScraped / dbm.TotArtistsBeingScraped * 100.0), "Ongoing");
                 logger.Info("*** Progress W *** : " + artist + " : "+dbm.CurrArtistsBeingScraped.ToString());
               }
+              */
               checked { ++index; }
             } // while (index < alSearchResults.Count && !dbm.StopScraper)
             if (dbm.StopScraper)
@@ -882,6 +919,7 @@ namespace FanartHandler
                 LastFMGetTumbnails(Utils.Category.MusicArtistThumbScraped, artist, null, externalAccess);
             }
             */
+            /*
             if (!reportProgress && !externalAccess)
             {
               ++dbm.CurrArtistsBeingScraped;
@@ -889,6 +927,7 @@ namespace FanartHandler
                 FanartHandlerSetup.Fh.MyScraperNowWorker.ReportProgress(Convert.ToInt32(dbm.CurrArtistsBeingScraped / dbm.TotArtistsBeingScraped * 100.0), "Ongoing");
               logger.Info("*** Progress A *** : " + artist + " : "+dbm.CurrArtistsBeingScraped.ToString());
             }
+            */
           } // if (alSearchResults != null)
           /*
           if (alSearchResults != null)
