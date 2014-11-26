@@ -132,21 +132,56 @@ namespace FanartHandler
       return doDownload;
     }
 
-    public bool CreateThumbnail(string aInputFilename, bool bigTumb)
+    public bool CreateThumbnail(string aInputFilename, bool bigThumb)
     {
       var bitmap1 = (Bitmap) null;
       var bitmap2 = (Bitmap) null;
       var templateWidth = 75;
       var templateHeight = 75;
+      var iText = string.Empty;
       string NewFile;
 
-      if (bigTumb) {
-        templateWidth = 500;
-        templateHeight = 500;
-        NewFile = aInputFilename.Substring(0, aInputFilename.IndexOf("_tmp.jpg", StringComparison.CurrentCulture)) + "L.jpg";
+      switch (MediaPortal.Util.Thumbs.Quality)
+      {
+        case MediaPortal.Util.Thumbs.ThumbQuality.fastest:
+          templateWidth = (!bigThumb) ? (int) MediaPortal.Util.Thumbs.ThumbSize.small : (int) MediaPortal.Util.Thumbs.LargeThumbSize.small;
+          templateHeight = templateWidth;
+          iText = "fastest";
+          break;
+
+        case MediaPortal.Util.Thumbs.ThumbQuality.fast:
+          templateWidth = (!bigThumb) ? (int) MediaPortal.Util.Thumbs.ThumbSize.small : (int) MediaPortal.Util.Thumbs.LargeThumbSize.small;
+          templateHeight = templateWidth;
+          iText = "fast";
+          break;
+
+        case MediaPortal.Util.Thumbs.ThumbQuality.average:
+          templateWidth = (!bigThumb) ? (int) MediaPortal.Util.Thumbs.ThumbSize.average : (int) MediaPortal.Util.Thumbs.LargeThumbSize.average;
+          templateHeight = templateWidth;
+          iText = "average";
+          break;
+
+        case MediaPortal.Util.Thumbs.ThumbQuality.higher:
+          templateWidth = (!bigThumb) ? (int) MediaPortal.Util.Thumbs.ThumbSize.average : (int) MediaPortal.Util.Thumbs.LargeThumbSize.average;
+          templateHeight = templateWidth;
+          iText = "high quality";
+          break;
+
+        case MediaPortal.Util.Thumbs.ThumbQuality.highest:
+          templateWidth = (!bigThumb) ? (int) MediaPortal.Util.Thumbs.ThumbSize.large : (int) MediaPortal.Util.Thumbs.LargeThumbSize.large;
+          templateHeight = templateWidth;
+          iText = "highest quality";
+          break;
+
+        default:
+          templateWidth = (!bigThumb) ? (int) templateWidth : 500;
+          templateHeight = templateWidth;
+          iText = "default";
+          break;
       }
-      else
-        NewFile = aInputFilename.Substring(0, aInputFilename.IndexOf("_tmp.jpg", StringComparison.CurrentCulture)) + ".jpg";
+      logger.Debug("CreateThumbnail: "+((bigThumb) ? "Big" : "")+"Thumbs mode: "+iText+" size: "+templateWidth+"x"+templateHeight);
+      NewFile = aInputFilename.Substring(0, aInputFilename.IndexOf("_tmp.jpg", StringComparison.CurrentCulture)) + ((bigThumb) ? "L" : "") + ".jpg";
+
       try
       {
         return CropImage(aInputFilename, templateWidth, templateHeight, NewFile);
