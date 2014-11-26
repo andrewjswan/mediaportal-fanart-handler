@@ -964,7 +964,7 @@ namespace FanartHandler
             {
                 logger.Error("Error creating database:");
                 logger.Error(ex.ToString());
-                var num = (int) MessageBox.Show("Error creating database, please se fanarthandler_config.log for details.","Error");
+                var num = (int) MessageBox.Show("Error creating database, please see [Fanart Handler Log] for details.","Error");
             }
         }
 
@@ -1265,7 +1265,7 @@ namespace FanartHandler
             {
                 logger.Error("Error upgrading database:");
                 logger.Error(ex.ToString());
-                var num = (int) MessageBox.Show("Error upgrading database, please se fanarthandler_config.log for details.","Error");
+                var num = (int) MessageBox.Show("Error upgrading database, please see [Fanart Handler Log] for details.","Error");
             }
         }
 
