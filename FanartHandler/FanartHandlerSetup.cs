@@ -45,12 +45,12 @@ namespace FanartHandler
 
     public string Description()
     {
-      return "Fanart handler for MediaPortal.";
+      return "Fanart Handler for MediaPortal.";
     }
 
     public string Author()
     {
-      return "cul8er";
+      return "cul8er, yoavain, ajs";
     }
 
     public void ShowPlugin()

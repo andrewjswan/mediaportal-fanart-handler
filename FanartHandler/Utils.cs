@@ -8,6 +8,7 @@ using NLog;
 using SQLite.NET;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -15,6 +16,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using MediaPortal.Music.Database;
 
 namespace FanartHandler
 {
@@ -396,6 +398,50 @@ namespace FanartHandler
           externalDatabaseManager1.Close();
         // externalDatabaseManager2 = null;
         logger.Error("GetMusicVideoArtists: " + ex);
+      }
+      return null;
+    }
+
+    public static List<AlbumInfo> GetMusicVideoAlbums(string dbName)
+    {
+      var externalDatabaseManager1 = (ExternalDatabaseManager) null;
+      var arrayList = new List<AlbumInfo>();
+      try
+      {
+        externalDatabaseManager1 = new ExternalDatabaseManager();
+        var str = string.Empty;
+        if (externalDatabaseManager1.InitDB(dbName))
+        {
+          var data = externalDatabaseManager1.GetData(Category.MusicAlbumThumbScraped);
+          if (data != null && data.Rows.Count > 0)
+          {
+            var num = 0;
+            while (num < data.Rows.Count)
+            {
+              var album = new AlbumInfo();
+              album.Artist      = GetArtist(data.GetField(num, 0), Category.MusicAlbumThumbScraped);
+              album.AlbumArtist = album.Artist;
+              album.Album       = GetAlbum(data.GetField(num, 1), Category.MusicAlbumThumbScraped);
+
+              arrayList.Add(album);
+              checked { ++num; }
+            }
+          }
+        }
+        try
+        {
+          externalDatabaseManager1.Close();
+        }
+        catch
+        {
+        }
+        return arrayList;
+      }
+      catch (Exception ex)
+      {
+        if (externalDatabaseManager1 != null)
+          externalDatabaseManager1.Close();
+        logger.Error("GetMusicVideoAlbums: " + ex);
       }
       return null;
     }

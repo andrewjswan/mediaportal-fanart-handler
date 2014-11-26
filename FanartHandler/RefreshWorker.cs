@@ -111,7 +111,10 @@ namespace FanartHandler
             FanartHandlerSetup.Fh.CurrentTrackTag = GUIPropertyManager.GetProperty("#Play.Current.Artist");
             FanartHandlerSetup.Fh.CurrentAlbumTag = GUIPropertyManager.GetProperty("#Play.Current.Album");
           }
-          if (FanartHandlerSetup.Fh.ScraperMPDatabase != null && FanartHandlerSetup.Fh.ScraperMPDatabase.Equals("True", StringComparison.CurrentCulture) && (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.TriggerRefresh))
+          if (FanartHandlerSetup.Fh.ScraperMPDatabase != null && 
+              FanartHandlerSetup.Fh.ScraperMPDatabase.Equals("True", StringComparison.CurrentCulture) && 
+              (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.TriggerRefresh)
+             )
           {
             FanartHandlerSetup.Fh.FS.CurrCount = FanartHandlerSetup.Fh.MaxCountImage;
             FanartHandlerSetup.Fh.FS.SetCurrentArtistsImageNames(null);
@@ -121,7 +124,10 @@ namespace FanartHandler
           if (FanartHandlerSetup.Fh.CurrentTrackTag != null && FanartHandlerSetup.Fh.CurrentTrackTag.Trim().Length > 0 && (g_Player.Playing || g_Player.Paused))
           {
             num2 = 11;
-            if (FanartHandlerSetup.Fh.ScraperMusicPlaying != null && FanartHandlerSetup.Fh.ScraperMusicPlaying.Equals("True", StringComparison.CurrentCulture) && (FanartHandlerSetup.Fh.MyScraperNowWorker != null && FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh))
+            if (FanartHandlerSetup.Fh.ScraperMusicPlaying != null && 
+                FanartHandlerSetup.Fh.ScraperMusicPlaying.Equals("True", StringComparison.CurrentCulture) && 
+                (FanartHandlerSetup.Fh.MyScraperNowWorker != null && FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh)
+               )
             {
               num2 = 12;
               FanartHandlerSetup.Fh.FP.CurrCountPlay = FanartHandlerSetup.Fh.MaxCountImage;
@@ -132,7 +138,11 @@ namespace FanartHandler
             if (!FanartHandlerSetup.Fh.FP.CurrPlayMusicArtist.Equals(FanartHandlerSetup.Fh.CurrentTrackTag, StringComparison.CurrentCulture))
             {
               num2 = 14;
-              if (FanartHandlerSetup.Fh.ScraperMusicPlaying != null && FanartHandlerSetup.Fh.ScraperMusicPlaying.Equals("True", StringComparison.CurrentCulture) && !Utils.GetDbm().GetIsScraping() && (FanartHandlerSetup.Fh.MyScraperNowWorker != null && !FanartHandlerSetup.Fh.MyScraperNowWorker.IsBusy || FanartHandlerSetup.Fh.MyScraperNowWorker == null))
+              if (FanartHandlerSetup.Fh.ScraperMusicPlaying != null && 
+                  FanartHandlerSetup.Fh.ScraperMusicPlaying.Equals("True", StringComparison.CurrentCulture) && 
+                  !Utils.GetDbm().GetIsScraping() && 
+                  (FanartHandlerSetup.Fh.MyScraperNowWorker != null && !FanartHandlerSetup.Fh.MyScraperNowWorker.IsBusy || FanartHandlerSetup.Fh.MyScraperNowWorker == null)
+                 )
               {
                 num2 = 15;
                 FanartHandlerSetup.Fh.StartScraperNowPlaying(FanartHandlerSetup.Fh.CurrentTrackTag, FanartHandlerSetup.Fh.CurrentAlbumTag);
@@ -184,7 +194,11 @@ namespace FanartHandler
               {
                 FanartHandlerSetup.Fh.IsSelectedMusic = true;
                 flag2 = false;
-                FanartHandlerSetup.Fh.FS.RefreshGenericSelectedProperties("music", ref FanartHandlerSetup.Fh.FS.ListSelectedMusic, Utils.Category.MusicFanartScraped, ref FanartHandlerSetup.Fh.FS.CurrSelectedMusic, ref FanartHandlerSetup.Fh.FS.CurrSelectedMusicArtist);
+                FanartHandlerSetup.Fh.FS.RefreshGenericSelectedProperties("music", 
+                                                                          ref FanartHandlerSetup.Fh.FS.ListSelectedMusic, 
+                                                                          Utils.Category.MusicFanartScraped, 
+                                                                          ref FanartHandlerSetup.Fh.FS.CurrSelectedMusic, 
+                                                                          ref FanartHandlerSetup.Fh.FS.CurrSelectedMusicArtist);
                 Report(e);
               }
             }
@@ -214,28 +228,49 @@ namespace FanartHandler
               {
                 FanartHandlerSetup.Fh.IsSelectedVideo = true;
                 flag2 = false;
-                FanartHandlerSetup.Fh.FS.RefreshGenericSelectedProperties("movie", ref FanartHandlerSetup.Fh.FS.ListSelectedMovies, Utils.Category.MovieScraped, ref FanartHandlerSetup.Fh.FS.CurrSelectedMovie, ref FanartHandlerSetup.Fh.FS.CurrSelectedMovieTitle);
+                FanartHandlerSetup.Fh.FS.RefreshGenericSelectedProperties("movie", 
+                                                                          ref FanartHandlerSetup.Fh.FS.ListSelectedMovies, 
+                                                                          Utils.Category.MovieScraped, 
+                                                                          ref FanartHandlerSetup.Fh.FS.CurrSelectedMovie, 
+                                                                          ref FanartHandlerSetup.Fh.FS.CurrSelectedMovieTitle);
                 Report(e);
               }
-              else if (activeWindow == 601 || activeWindow == 605 || (activeWindow == 606 || activeWindow == 603) || (activeWindow == 759 || activeWindow == 1 || (activeWindow == 600 || activeWindow == 747)) || (activeWindow == 49849 || activeWindow == 49848 || activeWindow == 49850))
+              else if (activeWindow == 601 || 
+                       activeWindow == 605 || 
+                       (activeWindow == 606 || activeWindow == 603) || 
+                       (activeWindow == 759 || activeWindow == 1 || (activeWindow == 600 || activeWindow == 747)) || 
+                       (activeWindow == 49849 || activeWindow == 49848 || activeWindow == 49850)
+                      )
               {
                 FanartHandlerSetup.Fh.IsSelectedVideo = true;
                 flag2 = false;
-                FanartHandlerSetup.Fh.FS.RefreshGenericSelectedProperties("movie", ref FanartHandlerSetup.Fh.FS.ListSelectedMovies, Utils.Category.TvManual, ref FanartHandlerSetup.Fh.FS.CurrSelectedMovie, ref FanartHandlerSetup.Fh.FS.CurrSelectedMovieTitle);
+                FanartHandlerSetup.Fh.FS.RefreshGenericSelectedProperties("movie", 
+                                                                          ref FanartHandlerSetup.Fh.FS.ListSelectedMovies, 
+                                                                          Utils.Category.TvManual, 
+                                                                          ref FanartHandlerSetup.Fh.FS.CurrSelectedMovie, 
+                                                                          ref FanartHandlerSetup.Fh.FS.CurrSelectedMovieTitle);
                 Report(e);
               }
               else if (activeWindow == 35)
               {
                 FanartHandlerSetup.Fh.IsSelectedVideo = true;
                 flag2 = false;
-                FanartHandlerSetup.Fh.FS.RefreshGenericSelectedProperties("movie", ref FanartHandlerSetup.Fh.FS.ListSelectedMovies, Utils.Category.MovieScraped, ref FanartHandlerSetup.Fh.FS.CurrSelectedMovie, ref FanartHandlerSetup.Fh.FS.CurrSelectedMovieTitle);
+                FanartHandlerSetup.Fh.FS.RefreshGenericSelectedProperties("movie", 
+                                                                          ref FanartHandlerSetup.Fh.FS.ListSelectedMovies, 
+                                                                          Utils.Category.MovieScraped, 
+                                                                          ref FanartHandlerSetup.Fh.FS.CurrSelectedMovie, 
+                                                                          ref FanartHandlerSetup.Fh.FS.CurrSelectedMovieTitle);
                 Report(e);
               }
               else
               {
                 FanartHandlerSetup.Fh.IsSelectedVideo = true;
                 flag2 = false;
-                FanartHandlerSetup.Fh.FS.RefreshGenericSelectedProperties("movie", ref FanartHandlerSetup.Fh.FS.ListSelectedMovies, Utils.Category.MovieScraped, ref FanartHandlerSetup.Fh.FS.CurrSelectedMovie, ref FanartHandlerSetup.Fh.FS.CurrSelectedMovieTitle);
+                FanartHandlerSetup.Fh.FS.RefreshGenericSelectedProperties("movie", 
+                                                                          ref FanartHandlerSetup.Fh.FS.ListSelectedMovies, 
+                                                                          Utils.Category.MovieScraped, 
+                                                                          ref FanartHandlerSetup.Fh.FS.CurrSelectedMovie, 
+                                                                          ref FanartHandlerSetup.Fh.FS.CurrSelectedMovieTitle);
                 Report(e);
               }
             }
@@ -257,7 +292,9 @@ namespace FanartHandler
           if (FanartHandlerSetup.Fh.UseScoreCenterFanart != null && FanartHandlerSetup.Fh.UseScoreCenterFanart.Equals("True", StringComparison.CurrentCulture) && flag1)
           {
             num2 = 26;
-            if (FanartHandlerSetup.Fh.FS.WindowsUsingFanartSelectedScoreCenter != null && FanartHandlerSetup.Fh.FS.WindowsUsingFanartSelectedScoreCenter.ContainsKey(activeWindow.ToString(CultureInfo.CurrentCulture)))
+            if (FanartHandlerSetup.Fh.FS.WindowsUsingFanartSelectedScoreCenter != null && 
+                FanartHandlerSetup.Fh.FS.WindowsUsingFanartSelectedScoreCenter.ContainsKey(activeWindow.ToString(CultureInfo.CurrentCulture))
+               )
             {
               if (activeWindow == 42000)
               {
