@@ -274,7 +274,8 @@ namespace FanartHandler
                     // var dbCleanFile = Config.GetFile((Config.Dir) 4, dbFilenameOrg);
                     if (File.Exists(dbFile))
                     {
-                        File.Move(dbFile, dbFile + "_old_" + date);
+                        var backupdate = DateTime.Today.ToString("yyyyMMdd", CultureInfo.CurrentCulture);
+                        File.Move(dbFile, dbFile + "_old_" + ((DBVersion != null) ? "v" + DBVersion + "_" : "") + backupdate);
                         logger.Info("Upgrading Step 2 - finished");
                         //File.Copy(dbCleanFile, dbFile);
                         //logger.Info("Upgrading Step 3 - finished");
