@@ -15,6 +15,7 @@ namespace FanartHandler
 
     internal static FanartHandler Fh { get; set; }
 
+    #region FanartHandler ISetupForm Members
     public void Start()
     {
       try
@@ -22,9 +23,7 @@ namespace FanartHandler
         Fh = new FanartHandler();
         Fh.Start();
       }
-      catch
-      {
-      }
+      catch { }
     }
 
     public void Stop()
@@ -33,9 +32,7 @@ namespace FanartHandler
       {
         Fh.Stop();
       }
-      catch
-      {
-      }
+      catch { }
     }
 
     public string PluginName()
@@ -87,5 +84,6 @@ namespace FanartHandler
       strPictureImage = string.Empty;
       return false;
     }
+    #endregion
   }
 }

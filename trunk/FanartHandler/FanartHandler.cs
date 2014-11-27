@@ -1288,16 +1288,12 @@ label_21:;
         {
           UtilsMovingPictures.SetupMovingPicturesLatest();
         }
-        catch
-        {
-        }
+        catch { }
         try
         {
           UtilsTVSeries.SetupTVSeriesLatest();
         }
-        catch
-        {
-        }
+        catch { }
         logger.Info("Fanart Handler is started.");
         logger.Debug("Current Culture: {0}", CultureInfo.CurrentCulture.Name);
       }
@@ -1723,7 +1719,7 @@ label_21:;
         logger.Error("setupDirectories: " + ex);
       }
     }
-
+    /*
     internal void SetupDirectoriesOLD()
     {
       try
@@ -1741,7 +1737,7 @@ label_21:;
         logger.Error("setupDirectoriesOLD: " + ex);
       }
     }
-
+    */
     private void StartScraper()
     {
       try
@@ -1878,16 +1874,12 @@ label_21:;
         {
           UtilsMovingPictures.DisposeMovingPicturesLatest();
         }
-        catch
-        {
-        }
+        catch { }
         try
         {
           UtilsTVSeries.DisposeTVSeriesLatest();
         }
-        catch
-        {
-        }
+        catch { }
         // ISSUE: method pointer
         GUIWindowManager.OnActivateWindow -= new GUIWindowManager.WindowActivationHandler(GuiWindowManagerOnActivateWindow);
         GUIWindowManager.Receivers -= new SendMessageHandler(GUIWindowManager_OnNewMessage);

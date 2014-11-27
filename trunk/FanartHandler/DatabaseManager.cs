@@ -54,8 +54,10 @@ namespace FanartHandler
             return IsScraping;
         }
 
+        #region DB
         public void InitDB(string type)
         {
+            logger.Debug("initDB: Start: "+type);
             try
             {
                 IsScraping = false;
@@ -103,6 +105,413 @@ namespace FanartHandler
                 logger.Error("close: " + ex);
             }
         }
+
+        public void CreateDBMain()
+        {
+            try
+            {
+                var date = DateTime.Today.ToString("yyyyMMdd", CultureInfo.CurrentCulture);
+                logger.Info("Creating Database, version 3.2");
+                lock (lockObject)
+                    dbClient.Execute("CREATE TABLE [Image] ([Id] TEXT, "+
+                                                           "[Category] TEXT, "+
+                                                           "[Provider] TEXT, "+
+                                                           "[Key1] TEXT, "+
+                                                           "[Key2] TEXT, "+
+                                                           "[FullPath] TEXT, "+
+                                                           "[SourcePath] TEXT, "+
+                                                           "[AvailableRandom] TEXT, "+
+                                                           "[Enabled] TEXT, "+
+                                                           "[DummyItem] TEXT, "+
+                                                           "[MBID] TEXT, "+
+                                                           "[Time_Stamp] TEXT, "+
+                                                           "CONSTRAINT [iIdProvider] PRIMARY KEY ([Id], [Provider]) ON CONFLICT ROLLBACK);");
+                lock (lockObject)
+                    dbClient.Execute("CREATE TABLE Version (Id INTEGER PRIMARY KEY, Version TEXT, Time_Stamp TEXT);");
+                logger.Info("Create tables [Step 1] - finished");
+
+                lock (lockObject)
+                    dbClient.Execute("CREATE INDEX [iCategory] ON [Image] ([Category]);");
+                lock (lockObject)
+                    dbClient.Execute("CREATE INDEX [iCategoryTimeStamp] ON [Image] ([Category], [Time_Stamp]);");
+                lock (lockObject)
+                    dbClient.Execute("CREATE INDEX [iEnabledAvailableRandomCategory] ON [Image] ([Enabled], [AvailableRandom], [Category]);");
+                lock (lockObject)
+                    dbClient.Execute("CREATE INDEX [iKey1CategoryDummyItem] ON [Image] ([Key1], [Category], [DummyItem]);");
+                lock (lockObject)
+                    dbClient.Execute("CREATE INDEX [iKey1Enabled] ON [Image] ([Key1], [Enabled]);");
+                lock (lockObject)
+                    dbClient.Execute("CREATE INDEX [iKey1EnabledCategory] ON [Image] ([Key1], [Enabled], [Category]);");
+                lock (lockObject)
+                    dbClient.Execute("CREATE INDEX [iKey1Key2Category] ON [Image] ([Key1], [Key2], [Category]);");
+                lock (lockObject)
+                    dbClient.Execute("CREATE INDEX [iMBID] ON [Image] ([MBID] COLLATE NOCASE);");
+                lock (lockObject)
+                    dbClient.Execute("CREATE INDEX [iKey1MBID] ON [Image] ([Key1], [MBID]);");
+                lock (lockObject)
+                    dbClient.Execute("CREATE INDEX [iKey1Key2MBID] ON [Image] ([Key1], [Key2], [MBID]);");
+                logger.Info("Create indexes [Step 2] - finished");
+
+                lock (lockObject)
+                    dbClient.Execute("INSERT INTO Version (Version,Time_Stamp) VALUES ('3.2','"+date+"');");
+                lock (lockObject)
+                    dbClient.Execute("PRAGMA user_version=32;");
+                logger.Info("Create database, version 3.2 - finished");
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Error creating database:");
+                logger.Error(ex.ToString());
+                var num = (int) MessageBox.Show("Error creating database, please see [Fanart Handler Log] for details.","Error");
+            }
+        }
+
+        public void UpgradeDBMain(string type)
+        {
+            if (type.Equals("upgrade", StringComparison.CurrentCulture))
+              return;
+
+            var DBVersion = string.Empty;
+            try
+            {
+                var date = DateTime.Today.ToString("yyyyMMdd", CultureInfo.CurrentCulture);
+                SQLiteResultSet sqLiteResultSet;
+                lock (lockObject)
+                    sqLiteResultSet = dbClient.Execute("SELECT Version FROM Version;");
+                var num = 0;
+                while (num < sqLiteResultSet.Rows.Count)
+                {
+                    DBVersion = sqLiteResultSet.GetField(num, 0);
+                    checked { ++num; }
+                }
+                if (DBVersion != null)
+                    logger.Info("Database version is: " + DBVersion + " at database initiation");
+                if (DBVersion != null && DBVersion.Equals("2.3", StringComparison.CurrentCulture))
+                {
+                    logger.Info("Upgrading Database to version 2.4");
+                    lock (lockObject)
+                        dbClient.Execute("DELETE FROM Timestamps WHERE Key LIKE 'Directory -%';");
+                    logger.Info("Upgrading Step 1 - finished");
+
+                    DBVersion = "2.4";
+                    lock (lockObject)
+                        dbClient.Execute("UPDATE Version SET Version = '"+DBVersion+"', Time_Stamp = '"+date+"';");
+                    lock (lockObject)
+                        dbClient.Execute("PRAGMA user_version="+DBVersion.Replace(".","")+";");
+                    logger.Info("Upgraded Database to version "+DBVersion);
+                }
+                if (DBVersion != null && DBVersion.Equals("2.4", StringComparison.CurrentCulture))
+                {
+                    logger.Info("Upgrading Database to version 2.5");
+                    lock (lockObject)
+                        dbClient.Execute("DELETE FROM Timestamps WHERE Key LIKE 'Directory -%';");
+                    logger.Info("Upgrading Step 1 - finished");
+
+                    DBVersion = "2.5";
+                    lock (lockObject)
+                        dbClient.Execute("UPDATE Version SET Version = '"+DBVersion+"', Time_Stamp = '"+date+"';");
+                    lock (lockObject)
+                        dbClient.Execute("PRAGMA user_version="+DBVersion.Replace(".","")+";");
+                    logger.Info("Upgraded Database to version "+DBVersion);
+                }
+                if (DBVersion != null && DBVersion.Equals("2.5", StringComparison.CurrentCulture))
+                {
+                    logger.Info("Upgrading Database to version 2.6");
+                    lock (lockObject)
+                        dbClient.Execute("DELETE FROM tvseries_fanart;");
+                    logger.Info("Upgrading Step 1 - finished");
+                    lock (lockObject)
+                        dbClient.Execute("DELETE FROM Movie_Fanart;");
+                    logger.Info("Upgrading Step 2 - finished");
+                    lock (lockObject)
+                        dbClient.Execute("DELETE FROM MovingPicture_Fanart;");
+                    logger.Info("Upgrading Step 3 - finished");
+
+                    DBVersion = "2.6";
+                    lock (lockObject)
+                        dbClient.Execute("UPDATE Version SET Version = '"+DBVersion+"', Time_Stamp = '"+date+"';");
+                    lock (lockObject)
+                        dbClient.Execute("PRAGMA user_version="+DBVersion.Replace(".","")+";");
+                    logger.Info("Upgraded Database to version "+DBVersion);
+                }
+                if (DBVersion != null && DBVersion.Equals("2.6", StringComparison.CurrentCulture))
+                {
+                    logger.Info("Upgrading Database to version 2.7");
+                    lock (lockObject)
+                        dbClient.Execute("DELETE FROM Timestamps WHERE Key LIKE 'Directory Ext - %';");
+                    logger.Info("Upgrading Step 1 - finished");
+
+                    DBVersion = "2.7";
+                    lock (lockObject)
+                        dbClient.Execute("UPDATE Version SET Version = '"+DBVersion+"', Time_Stamp = '"+date+"';");
+                    lock (lockObject)
+                        dbClient.Execute("PRAGMA user_version="+DBVersion.Replace(".","")+";");
+                    logger.Info("Upgraded Database to version "+DBVersion);
+                }
+                if (DBVersion != null && DBVersion.Equals("2.7", StringComparison.CurrentCulture))
+                {
+                    logger.Info("Upgrading Database to version 2.8");
+                    lock (lockObject)
+                        dbClient.Execute("UPDATE Music_Artist SET Successful_Scrape = 0 WHERE (Successful_Scrape is null or Successful_Scrape = '')");
+                    logger.Info("Upgrading Step 1 - finished");
+                    lock (lockObject)
+                        dbClient.Execute("UPDATE Music_Artist SET successful_thumb_scrape = 0 WHERE (successful_thumb_scrape is null or successful_thumb_scrape = '')");
+                    logger.Info("Upgrading Step 2 - finished");
+
+                    DBVersion = "2.8";
+                    lock (lockObject)
+                        dbClient.Execute("UPDATE Version SET Version = '"+DBVersion+"', Time_Stamp = '"+date+"';");
+                    lock (lockObject)
+                        dbClient.Execute("PRAGMA user_version="+DBVersion.Replace(".","")+";");
+                    logger.Info("Upgraded Database to version "+DBVersion);
+                }
+                if (DBVersion != null && DBVersion.Equals("2.8", StringComparison.CurrentCulture))
+                {
+                    logger.Info("Upgrading Database to version 2.9");
+                    Close();
+                    logger.Info("Upgrading Step 1 - finished");
+                    var dbFile = Config.GetFile((Config.Dir) 4, dbFilename);
+                    // var dbCleanFile = Config.GetFile((Config.Dir) 4, dbFilenameOrg);
+                    if (File.Exists(dbFile))
+                    {
+                        File.Move(dbFile, dbFile + "_old_" + date);
+                        logger.Info("Upgrading Step 2 - finished");
+                        //File.Copy(dbCleanFile, dbFile);
+                        //logger.Info("Upgrading Step 3 - finished");
+                    }
+                    var musicPath = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\Scraper\\music";
+                    var backupPath = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\Scraper_Backup_" + date;
+                    if (Directory.Exists(musicPath) && !Directory.Exists(backupPath))
+                    {
+                        Directory.Move(musicPath, backupPath);
+                        logger.Info("Upgrading Step 3 - finished");
+                    }
+                    if (!Directory.Exists(musicPath))
+                    {
+                        Directory.CreateDirectory(musicPath);
+                        logger.Info("Upgrading Step 4 - finished");
+                    }
+                    try
+                    {
+                        File.Copy(backupPath + "\\default.jpg", musicPath + "\\default.jpg");
+                        logger.Info("Upgrading Step 5 - finished");
+                    }
+                    catch {  }
+                    // Create New Empty DB ...
+                    InitDB("upgrade");
+                    logger.Info("Upgrading Step 6 - finished");
+                    // Check for New DB Version ...
+                    lock (lockObject)
+                        sqLiteResultSet = dbClient.Execute("SELECT Version FROM Version;");
+                    DBVersion = string.Empty;
+                    num = 0;
+                    while (num < sqLiteResultSet.Rows.Count)
+                    {
+                        DBVersion = sqLiteResultSet.GetField(num, 0);
+                        checked { ++num; }
+                    }
+                    if (DBVersion != null && DBVersion.Equals("2.8", StringComparison.CurrentCulture))
+                    {
+                        DBVersion = "2.9";
+                        lock (lockObject)
+                            dbClient.Execute("UPDATE Version SET Version = '"+DBVersion+"', Time_Stamp = '"+date+"';");
+                        lock (lockObject)
+                            dbClient.Execute("PRAGMA user_version="+DBVersion.Replace(".","")+";");
+                        logger.Info("Upgraded Database to version "+DBVersion);
+                    }
+                    else
+                    {
+                        logger.Info("Upgraded Database to version "+DBVersion);
+                    }
+                    logger.Debug("Upgrading Step 7 - Fill tables ...");
+                    FanartHandlerSetup.Fh.UpdateDirectoryTimer("All", false, "All");
+                    logger.Info("Upgrading Step 7 - finished");
+                }
+                if (DBVersion != null && DBVersion.Equals("2.9", StringComparison.CurrentCulture))
+                {
+                    logger.Info("Upgrading Database to version 3.0");
+                    try
+                    {
+                        lock (lockObject)
+                            dbClient.Execute("CREATE INDEX iKey1Key2Category ON Image (Key1,Key2, Category)");
+                        logger.Info("Upgrading Step 1 - finished");
+                    }
+                    catch { }
+                    try
+                    {
+                        lock (lockObject)
+                            dbClient.Execute("CREATE INDEX iKey1CategoryDummyItem ON Image (Key1,Category,DummyItem)");
+                        logger.Info("Upgrading Step 2 - finished");
+                    }
+                    catch { }
+                    try
+                    {
+                        lock (lockObject)
+                            dbClient.Execute("CREATE INDEX iCategoryTimeStamp ON Image (Category,Time_Stamp)");
+                        logger.Info("Upgrading Step 3 - finished");
+                    }
+                    catch { }
+
+                    DBVersion = "3.0";
+                    lock (lockObject)
+                        dbClient.Execute("UPDATE Version SET Version = '"+DBVersion+"', Time_Stamp = '"+date+"';");
+                    lock (lockObject)
+                        dbClient.Execute("PRAGMA user_version="+DBVersion.Replace(".","")+";");
+                    logger.Info("Upgraded Database to version "+DBVersion);
+                }
+                if (DBVersion != null && DBVersion.Equals("3.0", StringComparison.CurrentCulture))
+                {
+                    logger.Info("Upgrading Database to version 3.1");
+                    try
+                    {
+                        lock (lockObject)
+                            dbClient.Execute("ALTER TABLE [Image] ADD COLUMN [MBID] TEXT;");
+                        logger.Info("Upgrading Step 1 - finished");
+                    }
+                    catch { }
+                    try
+                    {
+                        lock (lockObject)
+                            dbClient.Execute("CREATE INDEX [iMBID] ON [Image] ([MBID] COLLATE NOCASE);");
+                        logger.Info("Upgrading Step 2 - finished");
+                    }
+                    catch { }
+                    
+                    DBVersion = "3.1";
+                    lock (lockObject)
+                        dbClient.Execute("UPDATE Version SET Version = '"+DBVersion+"', Time_Stamp = '"+date+"';");
+                    lock (lockObject)
+                        dbClient.Execute("PRAGMA user_version="+DBVersion.Replace(".","")+";");
+                    logger.Info("Upgraded Database to version "+DBVersion);
+                }
+                if (DBVersion != null && DBVersion.Equals("3.1", StringComparison.CurrentCulture))
+                {
+                    logger.Info("Upgrading Database to version 3.2");
+                    try
+                    {
+                        logger.Debug("Delete Dummy items...");
+                        lock (lockObject)
+                            dbClient.Execute("DELETE FROM Image WHERE DummyItem = 'True';");
+
+                        logger.Info("Upgrading [Step 1] - finished.");
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error("Delete Dummy items:");
+                        logger.Error(ex);
+                    }
+
+                    try
+                    {
+                    lock (lockObject)
+                        logger.Debug("Try to Delete Temp tables...");
+                        dbClient.Execute("DROP TABLE ImageN;");
+                        logger.Info("Upgrading [Step 2.1] - finished.");
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error("Delete Temp tables...");
+                        logger.Error(ex);
+                    }
+                    logger.Debug("Create New Table...");
+                    lock (lockObject)
+                        dbClient.Execute("CREATE TABLE [ImageN] ([Id] TEXT, "+
+                                                                "[Category] TEXT, "+
+                                                                "[Provider] TEXT, "+
+                                                                "[Key1] TEXT, "+
+                                                                "[Key2] TEXT, "+
+                                                                "[FullPath] TEXT, "+
+                                                                "[SourcePath] TEXT, "+
+                                                                "[AvailableRandom] TEXT, "+
+                                                                "[Enabled] TEXT, "+
+                                                                "[DummyItem] TEXT, "+
+                                                                "[MBID] TEXT, "+
+                                                                "[Time_Stamp] TEXT, "+
+                                                                "CONSTRAINT [iIdProvider] PRIMARY KEY ([Id], [Provider]) ON CONFLICT ROLLBACK);");
+                    logger.Info("Create tables [Step 2.All] - finished");
+
+                    logger.Debug("Create Indexes...");
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [iCategory] ON [ImageN] ([Category]);");
+                    logger.Debug("Create Indexes [Step 3.1] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [iCategoryTimeStamp] ON [ImageN] ([Category], [Time_Stamp]);");
+                    logger.Debug("Create Indexes [Step 3.2] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [iEnabledAvailableRandomCategory] ON [ImageN] ([Enabled], [AvailableRandom], [Category]);");
+                    logger.Debug("Create Indexes [Step 3.3] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [iKey1CategoryDummyItem] ON [ImageN] ([Key1], [Category], [DummyItem]);");
+                    logger.Debug("Create Indexes [Step 3.4] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [iKey1Enabled] ON [ImageN] ([Key1], [Enabled]);");
+                    logger.Debug("Create Indexes [Step 3.5] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [iKey1EnabledCategory] ON [ImageN] ([Key1], [Enabled], [Category]);");
+                    logger.Debug("Create Indexes [Step 3.6] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [iKey1Key2Category] ON [ImageN] ([Key1], [Key2], [Category]);");
+                    logger.Debug("Create Indexes [Step 3.7] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [iMBID] ON [ImageN] ([MBID] COLLATE NOCASE);");
+                    logger.Debug("Create Indexes [Step 3.8] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [iKey1MBID] ON [ImageN] ([Key1], [MBID]);");
+                    logger.Debug("Create Indexes [Step 3.9] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [iKey1Key2MBID] ON [ImageN] ([Key1], [Key2], [MBID]);");
+                    logger.Debug("Upgrading Indexes [Step 3.10] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    logger.Info("Upgrading Indexes [Step 3.All] - finished");
+
+                    logger.Debug("Transfer Data to New table...");
+                    lock (lockObject)
+                        dbClient.Execute("INSERT INTO [ImageN] SELECT * FROM [Image];");
+                    logger.Info("Upgrading [Step 4] - finished.");
+
+                    logger.Debug("Rename and Drop Tables...");
+                    lock (lockObject)
+                        dbClient.Execute("DROP TABLE Image;");
+                    lock (lockObject)
+                        dbClient.Execute("ALTER TABLE ImageN RENAME TO Image;");
+                    logger.Info("Upgrading [Step 5] - finished.");
+
+                    DBVersion = "3.2";
+                    lock (lockObject)
+                        dbClient.Execute("UPDATE Version SET Version = '"+DBVersion+"', Time_Stamp = '"+date+"';");
+                    lock (lockObject)
+                        dbClient.Execute("PRAGMA user_version="+DBVersion.Replace(".","")+";");
+                    logger.Info("Upgraded Database to version "+DBVersion);
+                }
+                logger.Info("Database version is verified: " + DBVersion);
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Error upgrading database:");
+                logger.Error(ex.ToString());
+                var num = (int) MessageBox.Show("Error upgrading database, please see [Fanart Handler Log] for details.","Error");
+            }
+        }
+        #endregion
 
         public bool ArtistAlbumScrape(string artist, string album)
         {
@@ -906,409 +1315,6 @@ namespace FanartHandler
             Utils.Shuffle(ref filenames);
             HtAnyFanart.Remove(Utils.Category.MusicFanartScraped);
             htAnyFanart.Add(Utils.Category.MusicFanartScraped, filenames);
-        }
-
-        public void CreateDBMain()
-        {
-            try
-            {
-                var date = DateTime.Today.ToString("yyyyMMdd", CultureInfo.CurrentCulture);
-                logger.Info("Creating Database, version 3.2");
-                lock (lockObject)
-                    dbClient.Execute("CREATE TABLE [Image] ([Id] TEXT, "+
-                                                           "[Category] TEXT, "+
-                                                           "[Provider] TEXT, "+
-                                                           "[Key1] TEXT, "+
-                                                           "[Key2] TEXT, "+
-                                                           "[FullPath] TEXT, "+
-                                                           "[SourcePath] TEXT, "+
-                                                           "[AvailableRandom] TEXT, "+
-                                                           "[Enabled] TEXT, "+
-                                                           "[DummyItem] TEXT, "+
-                                                           "[MBID] TEXT, "+
-                                                           "[Time_Stamp] TEXT, "+
-                                                           "CONSTRAINT [iIdProvider] PRIMARY KEY ([Id], [Provider]) ON CONFLICT ROLLBACK);");
-                lock (lockObject)
-                    dbClient.Execute("CREATE TABLE Version (Id INTEGER PRIMARY KEY, Version TEXT, Time_Stamp TEXT);");
-                logger.Info("Create tables [Step 1] - finished");
-
-                lock (lockObject)
-                    dbClient.Execute("CREATE INDEX [iCategory] ON [Image] ([Category]);");
-                lock (lockObject)
-                    dbClient.Execute("CREATE INDEX [iCategoryTimeStamp] ON [Image] ([Category], [Time_Stamp]);");
-                lock (lockObject)
-                    dbClient.Execute("CREATE INDEX [iEnabledAvailableRandomCategory] ON [Image] ([Enabled], [AvailableRandom], [Category]);");
-                lock (lockObject)
-                    dbClient.Execute("CREATE INDEX [iKey1CategoryDummyItem] ON [Image] ([Key1], [Category], [DummyItem]);");
-                lock (lockObject)
-                    dbClient.Execute("CREATE INDEX [iKey1Enabled] ON [Image] ([Key1], [Enabled]);");
-                lock (lockObject)
-                    dbClient.Execute("CREATE INDEX [iKey1EnabledCategory] ON [Image] ([Key1], [Enabled], [Category]);");
-                lock (lockObject)
-                    dbClient.Execute("CREATE INDEX [iKey1Key2Category] ON [Image] ([Key1], [Key2], [Category]);");
-                lock (lockObject)
-                    dbClient.Execute("CREATE INDEX [iMBID] ON [Image] ([MBID] COLLATE NOCASE);");
-                lock (lockObject)
-                    dbClient.Execute("CREATE INDEX [iKey1MBID] ON [Image] ([Key1], [MBID]);");
-                lock (lockObject)
-                    dbClient.Execute("CREATE INDEX [iKey1Key2MBID] ON [Image] ([Key1], [Key2], [MBID]);");
-                logger.Info("Create indexes [Step 2] - finished");
-
-                lock (lockObject)
-                    dbClient.Execute("INSERT INTO Version (Version,Time_Stamp) VALUES ('3.2','"+date+"');");
-                lock (lockObject)
-                    dbClient.Execute("PRAGMA user_version=32;");
-                logger.Info("Create database, version 3.2 - finished");
-            }
-            catch (Exception ex)
-            {
-                logger.Error("Error creating database:");
-                logger.Error(ex.ToString());
-                var num = (int) MessageBox.Show("Error creating database, please see [Fanart Handler Log] for details.","Error");
-            }
-        }
-
-        public void UpgradeDBMain(string type)
-        {
-            var flag = false;
-            var databaseVersion = string.Empty;
-            try
-            {
-                SQLiteResultSet sqLiteResultSet;
-                lock (lockObject)
-                    sqLiteResultSet = dbClient.Execute("SELECT Version FROM Version;");
-                var databaseFileVersion = string.Empty;
-                var num = 0;
-                while (num < sqLiteResultSet.Rows.Count)
-                {
-                    databaseFileVersion = sqLiteResultSet.GetField(num, 0);
-                    databaseVersion = databaseFileVersion;
-                    checked
-                    {
-                        ++num;
-                    }
-                }
-                if (databaseFileVersion != null)
-                    logger.Info("Database version is: " + databaseVersion + " at database initiation");
-                if (databaseFileVersion != null && databaseFileVersion.Equals("2.3", StringComparison.CurrentCulture) || flag)
-                {
-                    logger.Info("Upgrading Database to version 2.4");
-                    lock (lockObject)
-                        dbClient.Execute("DELETE FROM Timestamps WHERE Key LIKE 'Directory -%';");
-                    logger.Info("Upgrading Step 1 - finished");
-                    lock (lockObject)
-                        dbClient.Execute("UPDATE Version SET Version = '2.4'");
-                    lock (lockObject)
-                        dbClient.Execute("PRAGMA user_version=24;");
-                    flag = true;
-                    logger.Info("Upgraded Database to version 2.4");
-                    databaseVersion = "2.4";
-                }
-                if (databaseFileVersion != null && databaseFileVersion.Equals("2.4", StringComparison.CurrentCulture) || flag)
-                {
-                    logger.Info("Upgrading Database to version 2.5");
-                    lock (lockObject)
-                        dbClient.Execute("DELETE FROM Timestamps WHERE Key LIKE 'Directory -%';");
-                    logger.Info("Upgrading Step 1 - finished");
-                    lock (lockObject)
-                        dbClient.Execute("UPDATE Version SET Version = '2.5'");
-                    lock (lockObject)
-                        dbClient.Execute("PRAGMA user_version=25;");
-                    flag = true;
-                    logger.Info("Upgraded Database to version 2.5");
-                    databaseVersion = "2.5";
-                }
-                if (databaseFileVersion != null && databaseFileVersion.Equals("2.5", StringComparison.CurrentCulture) || flag)
-                {
-                    logger.Info("Upgrading Database to version 2.6");
-                    lock (lockObject)
-                        dbClient.Execute("DELETE FROM tvseries_fanart;");
-                    logger.Info("Upgrading Step 1 - finished");
-                    lock (lockObject)
-                        dbClient.Execute("DELETE FROM Movie_Fanart;");
-                    logger.Info("Upgrading Step 2 - finished");
-                    lock (lockObject)
-                        dbClient.Execute("DELETE FROM MovingPicture_Fanart;");
-                    logger.Info("Upgrading Step 3 - finished");
-                    lock (lockObject)
-                        dbClient.Execute("UPDATE Version SET Version = '2.6'");
-                    lock (lockObject)
-                        dbClient.Execute("PRAGMA user_version=26;");
-                    flag = true;
-                    logger.Info("Upgraded Database to version 2.6");
-                    databaseVersion = "2.6";
-                }
-                if (databaseFileVersion != null && databaseFileVersion.Equals("2.6", StringComparison.CurrentCulture) || flag)
-                {
-                    logger.Info("Upgrading Database to version 2.7");
-                    lock (lockObject)
-                        dbClient.Execute("DELETE FROM Timestamps WHERE Key LIKE 'Directory Ext - %';");
-                    logger.Info("Upgrading Step 1 - finished");
-                    lock (lockObject)
-                        dbClient.Execute("UPDATE Version SET Version = '2.7'");
-                    lock (lockObject)
-                        dbClient.Execute("PRAGMA user_version=27;");
-                    flag = true;
-                    logger.Info("Upgraded Database to version 2.7");
-                    databaseVersion = "2.7";
-                }
-                if (databaseFileVersion != null && databaseFileVersion.Equals("2.7", StringComparison.CurrentCulture) || flag)
-                {
-                    logger.Info("Upgrading Database to version 2.8");
-                    lock (lockObject)
-                        dbClient.Execute("UPDATE Music_Artist SET Successful_Scrape = 0 WHERE (Successful_Scrape is null or Successful_Scrape = '')");
-                    logger.Info("Upgrading Step 1 - finished");
-                    lock (lockObject)
-                        dbClient.Execute("UPDATE Music_Artist SET successful_thumb_scrape = 0 WHERE (successful_thumb_scrape is null or successful_thumb_scrape = '')");
-                    logger.Info("Upgrading Step 2 - finished");
-                    lock (lockObject)
-                        dbClient.Execute("UPDATE Version SET Version = '2.8'");
-                    flag = true;
-                    logger.Info("Upgraded Database to version 2.8");
-                    lock (lockObject)
-                        dbClient.Execute("PRAGMA user_version=28;");
-                    databaseVersion = "2.8";
-                }
-                if (databaseFileVersion != null && databaseFileVersion.Equals("2.8", StringComparison.CurrentCulture) || flag)
-                {
-                    logger.Info("Upgrading Database to version 2.9");
-                    Close();
-                    logger.Info("Upgrading Step 1 - finished");
-                    var dbFile = Config.GetFile((Config.Dir) 4, dbFilename);
-                    // var dbCleanFile = Config.GetFile((Config.Dir) 4, dbFilenameOrg);
-                    var date = DateTime.Today.ToString("yyyyMMdd", CultureInfo.CurrentCulture);
-                    if (File.Exists(dbFile))
-                    {
-                        File.Move(dbFile, dbFile + "_old_" + date);
-                        logger.Info("Upgrading Step 2 - finished");
-                        //File.Copy(dbCleanFile, dbFile);
-                        //logger.Info("Upgrading Step 3 - finished");
-                    }
-                    var musicPath = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\Scraper\\music";
-                    var backupPath = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\Scraper_Backup_" + date;
-                    if (Directory.Exists(musicPath) && !Directory.Exists(backupPath))
-                    {
-                        Directory.Move(musicPath, backupPath);
-                        logger.Info("Upgrading Step 3 - finished");
-                    }
-                    if (!Directory.Exists(musicPath))
-                    {
-                        Directory.CreateDirectory(musicPath);
-                        logger.Info("Upgrading Step 4 - finished");
-                    }
-                    try
-                    {
-                        File.Copy(backupPath + "\\default.jpg", musicPath + "\\default.jpg");
-                        logger.Info("Upgrading Step 5 - finished");
-                    }
-                    catch
-                    {
-                    }
-                    InitDB(type);
-                    logger.Info("Upgrading Step 6 - finished");
-                    lock (lockObject)
-                        dbClient.Execute("UPDATE Version SET Version = '2.9'");
-                    lock (lockObject)
-                        dbClient.Execute("PRAGMA user_version=29;");
-                    logger.Info("Upgrading Step 7 - finished");
-                    FanartHandlerSetup.Fh.UpdateDirectoryTimer("All", false, "All");
-                    logger.Info("Upgraded Database to version 2.9");
-                    databaseVersion = "2.9";
-                    flag = true;
-                }
-                if (databaseFileVersion != null && databaseFileVersion.Equals("2.9", StringComparison.CurrentCulture) || flag)
-                {
-                    logger.Info("Upgrading Database to version 3.0");
-                    try
-                    {
-                        lock (lockObject)
-                            dbClient.Execute("CREATE INDEX iKey1Key2Category ON Image (Key1,Key2, Category)");
-                        logger.Info("Upgrading Step 1 - finished");
-                    }
-                    catch
-                    {
-                    }
-                    try
-                    {
-                        lock (lockObject)
-                            dbClient.Execute("CREATE INDEX iKey1CategoryDummyItem ON Image (Key1,Category,DummyItem)");
-                        logger.Info("Upgrading Step 2 - finished");
-                    }
-                    catch
-                    {
-                    }
-                    try
-                    {
-                        lock (lockObject)
-                            dbClient.Execute("CREATE INDEX iCategoryTimeStamp ON Image (Category,Time_Stamp)");
-                        logger.Info("Upgrading Step 3 - finished");
-                    }
-                    catch
-                    {
-                    }
-                    var str5 = "UPDATE Version SET Version = '3.0'";
-                    lock (lockObject)
-                        dbClient.Execute(str5);
-                    lock (lockObject)
-                        dbClient.Execute("PRAGMA user_version=30;");
-                    logger.Info("Upgraded Database to version 3.0");
-                    databaseVersion = "3.0";
-                }
-                if (databaseFileVersion != null && databaseFileVersion.Equals("3.0", StringComparison.CurrentCulture) || flag)
-                {
-                    var date = DateTime.Today.ToString("yyyyMMdd", CultureInfo.CurrentCulture);
-                    logger.Info("Upgrading Database to version 3.1");
-                    try
-                    {
-                        lock (lockObject)
-                            dbClient.Execute("ALTER TABLE [Image] ADD COLUMN [MBID] TEXT;");
-                        logger.Info("Upgrading Step 1 - finished");
-                    }
-                    catch
-                    { }
-                    try
-                    {
-                        lock (lockObject)
-                            dbClient.Execute("CREATE INDEX [iMBID] ON [Image] ([MBID] COLLATE NOCASE);");
-                        logger.Info("Upgrading Step 2 - finished");
-                    }
-                    catch
-                    { }
-                    var str5 = "UPDATE Version SET Version = '3.1', Time_Stamp = '"+date+"';";
-                    lock (lockObject)
-                        dbClient.Execute(str5);
-                    lock (lockObject)
-                        dbClient.Execute("PRAGMA user_version=31;");
-                    logger.Info("Upgraded Database to version 3.1");
-                    databaseVersion = "3.1";
-                }
-                if (databaseFileVersion != null && databaseFileVersion.Equals("3.1", StringComparison.CurrentCulture) || flag)
-                {
-                    var date = DateTime.Today.ToString("yyyyMMdd", CultureInfo.CurrentCulture);
-                    logger.Info("Upgrading Database to version 3.2");
-                    try
-                    {
-                        logger.Debug("Delete Dummy items...");
-                        lock (lockObject)
-                            dbClient.Execute("DELETE FROM Image WHERE DummyItem = 'True';");
-
-                        logger.Info("Upgrading [Step 1] - finished.");
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.Error("Delete Dummy items:");
-                        logger.Error(ex);
-                    }
-
-                    try
-                    {
-                    lock (lockObject)
-                        logger.Debug("Try to Delete Temp tables...");
-                        dbClient.Execute("DROP TABLE ImageN;");
-                        logger.Info("Upgrading [Step 2.1] - finished.");
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.Error("Delete Temp tables...");
-                        logger.Error(ex);
-                    }
-                    logger.Debug("Create New Table...");
-                    lock (lockObject)
-                        dbClient.Execute("CREATE TABLE [ImageN] ([Id] TEXT, "+
-                                                                "[Category] TEXT, "+
-                                                                "[Provider] TEXT, "+
-                                                                "[Key1] TEXT, "+
-                                                                "[Key2] TEXT, "+
-                                                                "[FullPath] TEXT, "+
-                                                                "[SourcePath] TEXT, "+
-                                                                "[AvailableRandom] TEXT, "+
-                                                                "[Enabled] TEXT, "+
-                                                                "[DummyItem] TEXT, "+
-                                                                "[MBID] TEXT, "+
-                                                                "[Time_Stamp] TEXT, "+
-                                                                "CONSTRAINT [iIdProvider] PRIMARY KEY ([Id], [Provider]) ON CONFLICT ROLLBACK);");
-                    logger.Info("Create tables [Step 2.All] - finished");
-
-                    logger.Debug("Create Indexes...");
-                    try {
-                    lock (lockObject)
-                        dbClient.Execute("CREATE INDEX [iCategory] ON [ImageN] ([Category]);");
-                    logger.Debug("Create Indexes [Step 3.1] - finished");
-                    } catch (Exception ex) {logger.Error(ex);}
-                    try {
-                    lock (lockObject)
-                        dbClient.Execute("CREATE INDEX [iCategoryTimeStamp] ON [ImageN] ([Category], [Time_Stamp]);");
-                    logger.Debug("Create Indexes [Step 3.2] - finished");
-                    } catch (Exception ex) {logger.Error(ex);}
-                    try {
-                    lock (lockObject)
-                        dbClient.Execute("CREATE INDEX [iEnabledAvailableRandomCategory] ON [ImageN] ([Enabled], [AvailableRandom], [Category]);");
-                    logger.Debug("Create Indexes [Step 3.3] - finished");
-                    } catch (Exception ex) {logger.Error(ex);}
-                    try {
-                    lock (lockObject)
-                        dbClient.Execute("CREATE INDEX [iKey1CategoryDummyItem] ON [ImageN] ([Key1], [Category], [DummyItem]);");
-                    logger.Debug("Create Indexes [Step 3.4] - finished");
-                    } catch (Exception ex) {logger.Error(ex);}
-                    try {
-                    lock (lockObject)
-                        dbClient.Execute("CREATE INDEX [iKey1Enabled] ON [ImageN] ([Key1], [Enabled]);");
-                    logger.Debug("Create Indexes [Step 3.5] - finished");
-                    } catch (Exception ex) {logger.Error(ex);}
-                    try {
-                    lock (lockObject)
-                        dbClient.Execute("CREATE INDEX [iKey1EnabledCategory] ON [ImageN] ([Key1], [Enabled], [Category]);");
-                    logger.Debug("Create Indexes [Step 3.6] - finished");
-                    } catch (Exception ex) {logger.Error(ex);}
-                    try {
-                    lock (lockObject)
-                        dbClient.Execute("CREATE INDEX [iKey1Key2Category] ON [ImageN] ([Key1], [Key2], [Category]);");
-                    logger.Debug("Create Indexes [Step 3.7] - finished");
-                    } catch (Exception ex) {logger.Error(ex);}
-                    try {
-                    lock (lockObject)
-                        dbClient.Execute("CREATE INDEX [iMBID] ON [ImageN] ([MBID] COLLATE NOCASE);");
-                    logger.Debug("Create Indexes [Step 3.8] - finished");
-                    } catch (Exception ex) {logger.Error(ex);}
-                    try {
-                    lock (lockObject)
-                        dbClient.Execute("CREATE INDEX [iKey1MBID] ON [ImageN] ([Key1], [MBID]);");
-                    logger.Debug("Create Indexes [Step 3.9] - finished");
-                    } catch (Exception ex) {logger.Error(ex);}
-                    try {
-                    lock (lockObject)
-                        dbClient.Execute("CREATE INDEX [iKey1Key2MBID] ON [ImageN] ([Key1], [Key2], [MBID]);");
-                    logger.Debug("Upgrading Indexes [Step 3.10] - finished");
-                    } catch (Exception ex) {logger.Error(ex);}
-                    logger.Info("Upgrading Indexes [Step 3.All] - finished");
-
-                    logger.Debug("Transfer Data to New table...");
-                    lock (lockObject)
-                        dbClient.Execute("INSERT INTO [ImageN] SELECT * FROM [Image];");
-                    logger.Info("Upgrading [Step 4] - finished.");
-
-                    logger.Debug("Rename and Drop Tables...");
-                    lock (lockObject)
-                        dbClient.Execute("DROP TABLE Image;");
-                    lock (lockObject)
-                        dbClient.Execute("ALTER TABLE ImageN RENAME TO Image;");
-                    logger.Info("Upgrading [Step 5] - finished.");
-
-                    lock (lockObject)
-                        dbClient.Execute("UPDATE Version SET Version = '3.2', Time_Stamp = '"+date+"';");
-                    lock (lockObject)
-                        dbClient.Execute("PRAGMA user_version=32;");
-                    logger.Info("Upgraded Database to version 3.2");
-                    databaseVersion = "3.2";
-                }
-                logger.Info("Database version is verified: " + databaseVersion);
-            }
-            catch (Exception ex)
-            {
-                logger.Error("Error upgrading database:");
-                logger.Error(ex.ToString());
-                var num = (int) MessageBox.Show("Error upgrading database, please see [Fanart Handler Log] for details.","Error");
-            }
         }
 
         public void DeleteAllFanart(Utils.Category category)
