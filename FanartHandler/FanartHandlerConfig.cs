@@ -1735,6 +1735,7 @@ namespace FanartHandler
     {
       try
       {
+        dataGridView9.ClearSelection();
         myDataTable9.Rows.Clear();
         /*
         myDataTable9 = new DataTable();
@@ -2004,6 +2005,7 @@ namespace FanartHandler
           if (!Utils.GetFilenameNoPath(str).ToLower(CultureInfo.CurrentCulture).StartsWith("default", StringComparison.CurrentCulture))
             File.Delete(str);
         }
+        dataGridView1.ClearSelection();
         myDataTable.Rows.Clear();
         myDataTable.AcceptChanges();
         var num2 = (int) MessageBox.Show("Done!");
@@ -2179,6 +2181,7 @@ namespace FanartHandler
               break;
           }
         }
+        dataGridView9.ClearSelection();
         myDataTable9.Rows.Clear();
         myDataTable9.AcceptChanges();
       }
@@ -2508,6 +2511,7 @@ namespace FanartHandler
     {
       try
       {
+        dataGridView2.ClearSelection();
         myDataTable2.Rows.Clear();
         var userManagedTable = Utils.GetDbm().GetDataForConfigUserManagedTable(0,GetCategoryFromExtComboFilter(comboBox3.SelectedItem.ToString()).ToString());
         if (userManagedTable != null && userManagedTable.Rows.Count > 0)
@@ -2529,6 +2533,7 @@ namespace FanartHandler
       catch (Exception ex)
       {
         logger.Error("UpdateFanartExternalTable: " + ex);
+        dataGridView2.ClearSelection();
         myDataTable2.Rows.Clear();
         /*
         dataGridView2.DataSource = null;
@@ -2550,6 +2555,7 @@ namespace FanartHandler
     {
       try
       {
+        dataGridView4.ClearSelection();
         myDataTable4.Rows.Clear();
         var sqLiteResultSet = (comboBox2.SelectedItem == null)
                                ? Utils.GetDbm().GetDataForConfigUserManagedTable(0,"GameManual")
@@ -2573,6 +2579,7 @@ namespace FanartHandler
       catch (Exception ex)
       {
         logger.Error("UpdateFanartUserManagedTable: " + ex);
+        dataGridView4.ClearSelection();
         myDataTable4.Rows.Clear();
         /*
         dataGridView4.DataSource = null;
@@ -2600,7 +2607,7 @@ namespace FanartHandler
         }
         else
         {
-          if (myDataTable.Rows.Count < 500)
+          // if (myDataTable.Rows.Count < 500)
           {
             if (lastID < 0)
               lastID = 0;
@@ -2660,6 +2667,7 @@ namespace FanartHandler
     {
       try
       {
+        dataGridView9.ClearSelection();
         myDataTable9.Rows.Clear();
         if (Interlocked.CompareExchange(ref SyncPointTableUpdate, 1, 0) == 0 && !isStopping)
         {
@@ -2699,6 +2707,7 @@ namespace FanartHandler
       {
         logger.Error("UpdateThumbnailTableOnStartup: " + ex);
         SyncPointTableUpdate = 0;
+        dataGridView9.ClearSelection();
         myDataTable9.Rows.Clear();
         /*
         dataGridView9.DataSource = null;
@@ -2730,6 +2739,7 @@ namespace FanartHandler
         myDataTable.Columns.Add("Image Path");
         dataGridView1.DataSource = myDataTable;
         */
+        dataGridView1.ClearSelection();
         myDataTable.Rows.Clear();
         // Handle Grid exception
         if (sqlStartVal == 1)
@@ -2838,13 +2848,6 @@ namespace FanartHandler
           myScraperThumbWorker.Dispose();
         }
         Thread.Sleep(3000);
-        if (onlyMissing.Equals("True"))
-        {
-          if (button43 != null)
-            button43.Text = "Scrape for missing Artist/Album Thumbnails";
-        }
-        else if (button44 != null)
-          button44.Text = "Scrape for all Artist/Album Thumbnails";
         isScraping = false;
         if (Utils.GetDbm() != null)
         {
@@ -2866,6 +2869,13 @@ namespace FanartHandler
         button43.Enabled = true;
         button44.Enabled = true;
         FilterThumbGrid(0);
+        if (onlyMissing.Equals("True"))
+        {
+          if (button43 != null)
+            button43.Text = "Scrape for missing Artist/Album Thumbnails";
+        }
+        else if (button44 != null)
+          button44.Text = "Scrape for all Artist/Album Thumbnails";
       }
       catch (Exception ex)
       {
@@ -2886,8 +2896,6 @@ namespace FanartHandler
           myScraperWorker.Dispose();
         }
         Thread.Sleep(3000);
-        if (button6 != null)
-          button6.Text = "Start Scraper [S]";
         isScraping = false;
         if (Utils.GetDbm() != null)
         {
@@ -2910,6 +2918,8 @@ namespace FanartHandler
         button5.Enabled = true;
         button9.Enabled = true;
         button10.Enabled = true;
+        if (button6 != null)
+          button6.Text = "Start Scraper [S]";
       }
       catch (Exception ex)
       {
@@ -3096,6 +3106,7 @@ namespace FanartHandler
         Utils.GetDbm().DeleteAllFanart(GetCategoryFromComboFilter(comboBox2.SelectedItem.ToString()));
         foreach (var path in Directory.GetFiles(Config.GetFolder((Config.Dir) 6) + (object) "\\Skin FanArt\\UserDef\\" + (string) comboBox2.SelectedItem, "*.jpg"))
           File.Delete(path);
+        dataGridView4.ClearSelection();
         myDataTable4.Rows.Clear();
         myDataTable4.AcceptChanges();
         var num2 = (int) MessageBox.Show("Done!");
