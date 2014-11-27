@@ -1200,6 +1200,18 @@ namespace FanartHandler
                         logger.Error(ex);
                     }
 
+                    try
+                    {
+                    lock (lockObject)
+                        logger.Debug("Try to Delete Temp tables...");
+                        dbClient.Execute("DROP TABLE ImageN;");
+                        logger.Info("Upgrading [Step 2.1] - finished.");
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error("Delete Temp tables...");
+                        logger.Error(ex);
+                    }
                     logger.Debug("Create New Table...");
                     lock (lockObject)
                         dbClient.Execute("CREATE TABLE [ImageN] ([Id] TEXT, "+
@@ -1215,30 +1227,60 @@ namespace FanartHandler
                                                                 "[MBID] TEXT, "+
                                                                 "[Time_Stamp] TEXT, "+
                                                                 "CONSTRAINT [iIdProvider] PRIMARY KEY ([Id], [Provider]) ON CONFLICT ROLLBACK);");
-                    logger.Info("Create tables [Step 2] - finished");
+                    logger.Info("Create tables [Step 2.All] - finished");
 
                     logger.Debug("Create Indexes...");
+                    try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [iCategory] ON [ImageN] ([Category]);");
+                    logger.Debug("Create Indexes [Step 3.1] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [iCategoryTimeStamp] ON [ImageN] ([Category], [Time_Stamp]);");
+                    logger.Debug("Create Indexes [Step 3.2] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [iEnabledAvailableRandomCategory] ON [ImageN] ([Enabled], [AvailableRandom], [Category]);");
+                    logger.Debug("Create Indexes [Step 3.3] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [iKey1CategoryDummyItem] ON [ImageN] ([Key1], [Category], [DummyItem]);");
+                    logger.Debug("Create Indexes [Step 3.4] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [iKey1Enabled] ON [ImageN] ([Key1], [Enabled]);");
+                    logger.Debug("Create Indexes [Step 3.5] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [iKey1EnabledCategory] ON [ImageN] ([Key1], [Enabled], [Category]);");
+                    logger.Debug("Create Indexes [Step 3.6] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [iKey1Key2Category] ON [ImageN] ([Key1], [Key2], [Category]);");
+                    logger.Debug("Create Indexes [Step 3.7] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [iMBID] ON [ImageN] ([MBID] COLLATE NOCASE);");
+                    logger.Debug("Create Indexes [Step 3.8] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [iKey1MBID] ON [ImageN] ([Key1], [MBID]);");
+                    logger.Debug("Create Indexes [Step 3.9] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [iKey1Key2MBID] ON [ImageN] ([Key1], [Key2], [MBID]);");
-                    logger.Info("Upgrading Indexes [Step 3] - finished");
+                    logger.Debug("Upgrading Indexes [Step 3.10] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    logger.Info("Upgrading Indexes [Step 3.All] - finished");
 
                     logger.Debug("Transfer Data to New table...");
                     lock (lockObject)
