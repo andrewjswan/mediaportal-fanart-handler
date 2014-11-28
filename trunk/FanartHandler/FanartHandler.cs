@@ -879,6 +879,7 @@ namespace FanartHandler
       using (var writer = XmlWriter.Create(output))
         xpathDocument.CreateNavigator().WriteSubtree(writer);
       var str2 = output.ToString();
+
       if (str2.Contains("#useSelectedFanart:Yes"))
       {
         _flag1Music = true;
@@ -886,46 +887,21 @@ namespace FanartHandler
         _flag1ScoreCenter = true;
       }
       if (str2.Contains("#usePlayFanart:Yes"))
-        _flagPlay = true;
-      if (!str2.Contains("fanarthandler.music.backdrop1.selected"))
       {
-        if (!str2.Contains("fanarthandler.music.backdrop2.selected"))
-          goto label_13;
+        _flagPlay = true;
       }
-      try
+      if (str2.Contains("fanarthandler.music.backdrop1.selected") || str2.Contains("fanarthandler.music.backdrop2.selected"))
       {
         _flag2Music = true;
       }
-      catch
-      {
-      }
-label_13:
-      if (!str2.Contains("fanarthandler.scorecenter.backdrop1.selected"))
-      {
-        if (!str2.Contains("fanarthandler.scorecenter.backdrop2.selected"))
-          goto label_17;
-      }
-      try
+      if (str2.Contains("fanarthandler.scorecenter.backdrop1.selected") || str2.Contains("fanarthandler.scorecenter.backdrop2.selected"))
       {
         _flag2ScoreCenter = true;
       }
-      catch
-      {
-      }
-label_17:
-      if (!str2.Contains("fanarthandler.movie.backdrop1.selected"))
-      {
-        if (!str2.Contains("fanarthandler.movie.backdrop2.selected"))
-          goto label_21;
-      }
-      try
+      if (str2.Contains("fanarthandler.movie.backdrop1.selected") || str2.Contains("fanarthandler.movie.backdrop2.selected"))
       {
         _flag2Movie = true;
       }
-      catch
-      {
-      }
-label_21:;
     }
 
     internal void InitRandomProperties()
@@ -1230,10 +1206,12 @@ label_21:;
           scraperInterval = "24";
         if (string.IsNullOrEmpty(UseAspectRatio))
           UseAspectRatio = "False";
+        //
         FP = new FanartPlaying();
         FS = new FanartSelected();
         FR = new FanartRandom();
         FR.SetupWindowsUsingRandomImages();
+        //
         SetupWindowsUsingFanartHandlerVisibility();
         SetupVariables();
         SetupDirectories();
@@ -1248,26 +1226,32 @@ label_21:;
           Utils.Shuffle(ref defaultBackdropImages);
         }
         logger.Info("Fanart Handler is using Fanart: " + UseFanart + ", Album Thumbs: " + UseAlbum + ", Artist Thumbs: " + UseArtist + ".");
+        //
         Utils.SetScraperMaxImages(ScraperMaxImages);
         Utils.ScrapeThumbnails = scrapeThumbnails;
         Utils.ScrapeThumbnailsAlbum = scrapeThumbnailsAlbum;
         Utils.DoNotReplaceExistingThumbs = doNotReplaceExistingThumbs;
+        //
         Utils.InitiateDbm("mediaportal");
         MDB = MusicDatabase.Instance;
+        //
         AddToDirectoryTimerQueue("All");
         InitRandomProperties();
+        //
         if (ScraperMPDatabase != null && ScraperMPDatabase.Equals("True", StringComparison.CurrentCulture))
         {
           myScraperTimer = new TimerCallback(UpdateScraperTimer);
           scraperTimer = new System.Threading.Timer(myScraperTimer, null, 1000, checked (Convert.ToInt32(scraperInterval, CultureInfo.CurrentCulture) * 3600000));
         }
+        //
         SystemEvents.PowerModeChanged += new PowerModeChangedEventHandler(OnSystemPowerModeChanged);
-        
+        //
         GUIWindowManager.OnActivateWindow += new GUIWindowManager.WindowActivationHandler(GuiWindowManagerOnActivateWindow);
         GUIWindowManager.Receivers += new SendMessageHandler(GUIWindowManager_OnNewMessage);
+        //
         g_Player.PlayBackStarted += new g_Player.StartedHandler(OnPlayBackStarted);
         g_Player.PlayBackEnded += new g_Player.EndedHandler(OnPlayBackEnded);
-
+        //
         refreshTimer = new Timer(250.0);
         refreshTimer.Elapsed += new ElapsedEventHandler(UpdateImageTimer);
         refreshTimer.Interval = 250.0;
@@ -1277,6 +1261,7 @@ label_21:;
             (FP.WindowsUsingFanartPlay.ContainsKey("35") || UseOverlayFanart != null && UseOverlayFanart.Equals("True", StringComparison.CurrentCulture))
            )
           refreshTimer.Start();
+        //
         MyFileWatcher = new FileSystemWatcher();
         MyFileWatcher.Path = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt";
         MyFileWatcher.Filter = "*.jpg";
@@ -1284,16 +1269,19 @@ label_21:;
         MyFileWatcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.LastWrite;
         MyFileWatcher.Created += new FileSystemEventHandler(MyFileWatcher_Created);
         MyFileWatcher.EnableRaisingEvents = true;
+        //
         try
         {
           UtilsMovingPictures.SetupMovingPicturesLatest();
         }
         catch { }
+        //
         try
         {
           UtilsTVSeries.SetupTVSeriesLatest();
         }
         catch { }
+        //
         logger.Info("Fanart Handler is started.");
         logger.Debug("Current Culture: {0}", CultureInfo.CurrentCulture.Name);
       }
@@ -1305,10 +1293,12 @@ label_21:;
 
     private void GUIWindowManager_OnNewMessage(GUIMessage message)
     {
+      logger.Debug("New message recieved: "+message.ToString());
       if (message.Message == GUIMessage.MessageType.GUI_MSG_VIDEOINFO_REFRESH)
-        return;
-      logger.Info("VideoInfo refresh detected: Refreshing fanarts.");
-      AddToDirectoryTimerQueue(Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\Scraper\\movies");
+      {
+        logger.Debug("VideoInfo refresh detected: Refreshing video fanarts.");
+        AddToDirectoryTimerQueue(Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\Scraper\\movies");
+      }
     }
 
     private void OnSystemPowerModeChanged(object sender, PowerModeChangedEventArgs e)
@@ -1317,7 +1307,7 @@ label_21:;
       {
         if (e.Mode == PowerModes.Resume)
         {
-          logger.Info("Fanart Handler is resuming from standby/hibernate.");
+          logger.Info("Fanart Handler: is resuming from standby/hibernate.");
           StopTasks(false);
           Start();
         }
@@ -1325,9 +1315,9 @@ label_21:;
         {
           if (e.Mode != PowerModes.Suspend)
             return;
-          logger.Info("Fanart Handler is suspending/hibernating...");
+          logger.Info("Fanart Handler: is suspending/hibernating...");
           StopTasks(true);
-          logger.Info("Fanart Handler is suspended/hibernated.");
+          logger.Info("Fanart Handler: is suspended/hibernated.");
         }
       }
       catch (Exception ex)
@@ -1347,7 +1337,13 @@ label_21:;
           checked { ++num; }
         }
         var windowId = string.Empty + activeWindowId;
-        if ((FR.WindowsUsingFanartRandom.ContainsKey(windowId) || FS.WindowsUsingFanartSelectedMusic.ContainsKey(windowId) || (FS.WindowsUsingFanartSelectedScoreCenter.ContainsKey(windowId) || FS.WindowsUsingFanartSelectedMovie.ContainsKey(windowId)) || FP.WindowsUsingFanartPlay.ContainsKey(windowId)) && AllowFanartInThisWindow(windowId))
+        if ((FR.WindowsUsingFanartRandom.ContainsKey(windowId) || 
+             FS.WindowsUsingFanartSelectedMusic.ContainsKey(windowId) || 
+             (FS.WindowsUsingFanartSelectedScoreCenter.ContainsKey(windowId) || FS.WindowsUsingFanartSelectedMovie.ContainsKey(windowId)) || 
+             FP.WindowsUsingFanartPlay.ContainsKey(windowId)
+            ) && 
+            AllowFanartInThisWindow(windowId)
+           )
         {
           if (Utils.GetDbm().GetIsScraping())
           {
@@ -1361,6 +1357,7 @@ label_21:;
             Utils.GetDbm().TotArtistsBeingScraped = 0.0;
             Utils.GetDbm().CurrArtistsBeingScraped = 0.0;
           }
+
           if (FS.WindowsUsingFanartSelectedMusic.ContainsKey(windowId) || FS.WindowsUsingFanartSelectedScoreCenter.ContainsKey(windowId) || FS.WindowsUsingFanartSelectedMovie.ContainsKey(windowId))
           {
             if (FS.DoShowImageOne)
@@ -1374,6 +1371,7 @@ label_21:;
             if (refreshTimer != null && !refreshTimer.Enabled)
               refreshTimer.Start();
           }
+
           if ((FP.WindowsUsingFanartPlay.ContainsKey(windowId) || UseOverlayFanart != null && UseOverlayFanart.Equals("True", StringComparison.CurrentCulture)) && AllowFanartInThisWindow(windowId))
           {
             if ((g_Player.Playing || g_Player.Paused) && (g_Player.IsCDA || g_Player.IsMusic || (g_Player.IsRadio || !string.IsNullOrEmpty(CurrentTrackTag))))
@@ -1411,6 +1409,7 @@ label_21:;
             else
               FP.FanartIsNotAvailablePlay(activeWindowId);
           }
+
           if (FR.WindowsUsingFanartRandom != null && FR.WindowsUsingFanartRandom.ContainsKey(windowId))
           {
             FR.WindowOpen = true;
@@ -1481,6 +1480,7 @@ label_21:;
           refreshTimer.Stop();
           EmptyAllFanartHandlerProperties();
         }
+
         var hashtable = new Hashtable();
         foreach (string str in DirectoryTimerQueue.Values)
         {
