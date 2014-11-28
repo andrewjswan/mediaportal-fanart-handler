@@ -290,10 +290,10 @@ namespace FanartHandler
 
     private bool IsFileValid(string filename)
     {
-      if (filename == null)
+      if (string.IsNullOrEmpty(filename))
         return false;
+
       var image1 = (Image) null;
-      // Image image2;
       try
       {
         image1 = CreateNonIndexedImage(filename);
@@ -307,14 +307,12 @@ namespace FanartHandler
         {
           if (image1 != null)
             ObjectMethods.SafeDispose(image1);
-          // image2 = null;
         }
       }
       catch
       {
         if (image1 != null)
           ObjectMethods.SafeDispose(image1);
-        // image2 = null;
       }
       return false;
     }
@@ -326,7 +324,7 @@ namespace FanartHandler
       const string URLRE = @"id=\""(.+?)\""" ;
       var Result = (string) null ;         
 
-      if ((AInputString == null) || (AInputString == "null"))
+      if (string.IsNullOrEmpty(AInputString))
         return Result ;
 
       Regex ru = new Regex(URLRE,RegexOptions.IgnoreCase);
@@ -347,7 +345,7 @@ namespace FanartHandler
     // Begin: GetMuzicBrainzID
     private string GetMuzicBrainzID(string artist, string album)
     {
-      var res = Utils.GetDbm().GetDBMuzicBrainzID(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped), (album == null) ? null : Utils.GetAlbum(album, Utils.Category.MusicFanartScraped)) ;
+      var res = Utils.GetDbm().GetDBMuzicBrainzID(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped), (string.IsNullOrEmpty(album)) ? null : Utils.GetAlbum(album, Utils.Category.MusicFanartScraped)) ;
       if ((res != null) && (res.Length > 10))
       {
         logger.Debug("MuzicBrainz: DB ID: " + res) ;
@@ -358,7 +356,7 @@ namespace FanartHandler
       const string MIDURL   = "/artist/?query=artist:" ;
       const string MIDURLA  = "/release-group/?query=artist:" ;
 
-      var URL  = MBURL + ((album == null) ? MIDURL + HttpUtility.UrlEncode(artist) : MIDURLA + HttpUtility.UrlEncode(artist + " " + album)) ;
+      var URL  = MBURL + (string.IsNullOrEmpty(album) ? MIDURL + HttpUtility.UrlEncode(artist) : MIDURLA + HttpUtility.UrlEncode(artist + " " + album)) ;
       var html = (string) null ;
       
       GetHtml(URL, out html) ;
@@ -404,7 +402,7 @@ namespace FanartHandler
       ReportProgress (5.0, dbm, reportProgress, externalAccess) ;
 
       mbid = GetMuzicBrainzID(artist, null) ;
-      if ((mbid == null) || (mbid.Length < 10))
+      if (string.IsNullOrEmpty(mbid) || (mbid.Length < 10))
         // ** Get MBID & Search result from htBackdrop
         if (alSearchResults == null)
           flag = GethtBackdropsSearchResult(artist, "1,5");
@@ -468,8 +466,9 @@ namespace FanartHandler
       var flag = true;
       var mbid = (string) null;
 
-      if ((artist == null) || (artist == string.Empty))
+      if (string.IsNullOrEmpty(artist))
         return res ;
+
       if (!Utils.ScrapeThumbnails.Equals("True", StringComparison.CurrentCulture))
       {
         logger.Debug("Artist Thumbnails - Disabled.");
@@ -478,7 +477,7 @@ namespace FanartHandler
       logger.Debug("Trying to find Thumbs for Artist: " + artist + ".");
 
       mbid = GetMuzicBrainzID(artist, null) ;
-      if ((mbid == null) || (mbid.Length < 10))
+      if (string.IsNullOrEmpty(mbid) || (mbid.Length < 10))
         // ** Get MBID & Search result from htBackdrop
         if (alSearchResults == null)
           flag = GethtBackdropsSearchResult(artist,"5");
@@ -539,10 +538,9 @@ namespace FanartHandler
       var flag = true;
       var mbid = (string) null;
 
-      if ((artist == null) || (artist == string.Empty))
+      if (string.IsNullOrEmpty(artist) || string.IsNullOrEmpty(album))
         return res ;
-      if ((album == null) || (album == string.Empty))
-        return res ;
+
       if (!Utils.ScrapeThumbnailsAlbum.Equals("True", StringComparison.CurrentCulture))
       {
         logger.Debug("Artist/Album Thumbnails - Disabled.");
@@ -1025,7 +1023,9 @@ namespace FanartHandler
     #region Last.FM
     public static void RemoveStackEndings(ref string strFileName)
     {
-      if (strFileName == null) return;
+      if (string.IsNullOrEmpty(strFileName)) 
+        return;
+
       var stackReg = StackExpression();
       for (var i = 0; i < stackReg.Length; i++)
       {
@@ -1064,8 +1064,9 @@ namespace FanartHandler
 
     public static bool ShouldStack(string strFile1, string strFile2)
     {
-      if (strFile1 == null) return false;
-      if (strFile2 == null) return false;
+      if (string.IsNullOrEmpty(strFile1)) return false;
+      if (string.IsNullOrEmpty(strFile2)) return false;
+
       try
       {
         var stackReg = StackExpression();
@@ -1347,13 +1348,13 @@ namespace FanartHandler
                 sourceFilename = str1.Substring(checked (str1.IndexOf("size=\"mega\">") + 12));
                 sourceFilename = sourceFilename.Substring(0, sourceFilename.IndexOf("</image>"));
                 logger.Debug("Last.FM: Thumb Mega for " + Method + " - " + sourceFilename);
-                if (sourceFilename.ToLower().IndexOf(".jpg") > 0 || sourceFilename.ToLower().IndexOf(".png") > 0)
+                if (sourceFilename.ToLower().IndexOf(".jpg") > 0 || sourceFilename.ToLower().IndexOf(".png") > 0 || sourceFilename.ToLower().IndexOf(".gif") > 0)
                   flag = true ;
                 else {
                   sourceFilename = str1.Substring(checked (str1.IndexOf("size=\"extralarge\">") + 18));
                   sourceFilename = sourceFilename.Substring(0, sourceFilename.IndexOf("</image>"));
                   logger.Debug("Last.FM: Thumb Extra for " + Method + " - " + sourceFilename);
-                  if (sourceFilename.ToLower().IndexOf(".jpg") > 0 || sourceFilename.ToLower().IndexOf(".png") > 0)
+                  if (sourceFilename.ToLower().IndexOf(".jpg") > 0 || sourceFilename.ToLower().IndexOf(".png") > 0 || sourceFilename.ToLower().IndexOf(".gif") > 0)
                     flag = true ;
                   else
                     flag = false ;
@@ -1453,7 +1454,7 @@ namespace FanartHandler
       var B       = (string) null;
       var URLList = new List<string>() ;  
 
-      if ((AInputString == null) || (AInputString == "null"))
+      if (string.IsNullOrEmpty(AInputString) || (AInputString == "null"))
         return URLList ;
 
       Regex r = new Regex(SECRE.Replace("%1",Sec),RegexOptions.IgnoreCase);
