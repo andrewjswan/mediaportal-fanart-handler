@@ -549,7 +549,7 @@ namespace FanartHandler
                   (FanartHandlerSetup.Fh.UseArtist.Equals("True", StringComparison.CurrentCulture) || 
                    FanartHandlerSetup.Fh.UseAlbum.Equals("True", StringComparison.CurrentCulture))
                 )
-                )
+               )
               filenames = Utils.GetDbm().GetFanart(key, category, false);
             else if (isMusic && 
                      skipWhenHighResAvailable != null && 
@@ -1252,7 +1252,7 @@ label_21:;
         Utils.ScrapeThumbnails = scrapeThumbnails;
         Utils.ScrapeThumbnailsAlbum = scrapeThumbnailsAlbum;
         Utils.DoNotReplaceExistingThumbs = doNotReplaceExistingThumbs;
-        Utils.InitiateDbm("mp");
+        Utils.InitiateDbm("mediaportal");
         MDB = MusicDatabase.Instance;
         AddToDirectoryTimerQueue("All");
         InitRandomProperties();

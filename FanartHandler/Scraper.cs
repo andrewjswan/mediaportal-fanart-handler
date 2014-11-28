@@ -66,70 +66,71 @@ namespace FanartHandler
 
     private bool ReplaceOldThumbnails(string filenameOld, string filenameNew, ref bool doDownload, bool forceDelete, Utils.Category category)
     {
+      #region ForceDlete
+      if (forceDelete)
+      {
+        try
+        {
+          File.SetAttributes(filenameOld, FileAttributes.Normal);
+          MediaPortal.Util.Utils.FileDelete(filenameOld);
+        }
+        catch (Exception ex)
+        {
+          doDownload = false;
+          logger.Error("ReplaceOldThumbnails: Deleting old thumbnail: " + filenameOld) ;
+          logger.Error(ex) ;
+        }
+        return doDownload ; 
+      }
+      #endregion
+
+      #region NoForceDelete
       var image1 = (Image) null;
       var image2 = (Image) null;
       var num1 = 0.0;
       var num2 = 0.0;
       var num3 = 0.0;
       var num4 = 0.0;
+
       try
       {
-        if (forceDelete)
-        {
-          File.SetAttributes(filenameOld, FileAttributes.Normal);
-          MediaPortal.Util.Utils.FileDelete(filenameOld);
-        }
-        else
-        {
-          image1 = CreateNonIndexedImage(filenameOld);
-          image2 = CreateNonIndexedImage(filenameNew);
-          num1 = image1.Width;
-          num2 = image1.Height;
-          num3 = image2.Width;
-          num4 = image2.Height;
-        }
+        image1 = CreateNonIndexedImage(filenameOld);
+        image2 = CreateNonIndexedImage(filenameNew);
+        num1 = image1.Width;
+        num2 = image1.Height;
+        num3 = image2.Width;
+        num4 = image2.Height;
       }
       catch (Exception ex)
       {
         doDownload = false;
-        logger.Error(string.Concat(new object[4]
-        {
-          "ReplaceOldThumbnails: Error deleting old thumbnail - ",
-          filenameOld,
-          ".",
-          ex
-        }));
+        logger.Error("ReplaceOldThumbnails: Get image information: " + filenameOld + " / " + filenameNew);
+        logger.Error(ex) ;
       }
       finally
       {
         ObjectMethods.SafeDispose(image1);
         ObjectMethods.SafeDispose(image2);
       }
+
       try
       {
-        if (!forceDelete)
+        if (category == Utils.Category.MusicArtistThumbScraped || category == Utils.Category.MusicAlbumThumbScraped || (num1 < num3 || num2 < num4) || num1 != num2)
         {
-          if (category == Utils.Category.MusicArtistThumbScraped || category == Utils.Category.MusicAlbumThumbScraped || (num1 < num3 || num2 < num4) || num1 != num2)
-          {
-            File.SetAttributes(filenameOld, FileAttributes.Normal);
-            MediaPortal.Util.Utils.FileDelete(filenameOld);
-          }
-          else
-            doDownload = false;
+          File.SetAttributes(filenameOld, FileAttributes.Normal);
+          MediaPortal.Util.Utils.FileDelete(filenameOld);
         }
+        else
+          doDownload = false;
       }
       catch (Exception ex)
       {
         doDownload = false;
-        logger.Error(string.Concat(new object[4]
-        {
-          "ReplaceOldThumbnails: Error deleting old thumbnail - ",
-          filenameOld,
-          ".",
-          ex
-        }));
+        logger.Error("ReplaceOldThumbnails: Deleting old thumbnail: " + filenameOld) ;
+        logger.Error(ex) ;
       }
       return doDownload;
+      #endregion
     }
 
     public bool CreateThumbnail(string aInputFilename, bool bigThumb)
@@ -141,6 +142,7 @@ namespace FanartHandler
       var iText = string.Empty;
       string NewFile;
 
+      #region ThumbsQuality
       switch (MediaPortal.Util.Thumbs.Quality)
       {
         case MediaPortal.Util.Thumbs.ThumbQuality.fastest:
@@ -180,8 +182,9 @@ namespace FanartHandler
           break;
       }
       logger.Debug("CreateThumbnail: "+((bigThumb) ? "Big" : "")+"Thumbs mode: "+iText+" size: "+templateWidth+"x"+templateHeight);
-      NewFile = aInputFilename.Substring(0, aInputFilename.IndexOf("_tmp.jpg", StringComparison.CurrentCulture)) + ((bigThumb) ? "L" : "") + ".jpg";
+      #endregion
 
+      NewFile = aInputFilename.Substring(0, aInputFilename.IndexOf("_tmp.jpg", StringComparison.CurrentCulture)) + ((bigThumb) ? "L" : "") + ".jpg";
       try
       {
         return CropImage(aInputFilename, templateWidth, templateHeight, NewFile);
@@ -465,6 +468,8 @@ namespace FanartHandler
       var flag = true;
       var mbid = (string) null;
 
+      if ((artist == null) || (artist == string.Empty))
+        return res ;
       if (!Utils.ScrapeThumbnails.Equals("True", StringComparison.CurrentCulture))
       {
         logger.Debug("Artist Thumbnails - Disabled.");
@@ -534,6 +539,10 @@ namespace FanartHandler
       var flag = true;
       var mbid = (string) null;
 
+      if ((artist == null) || (artist == string.Empty))
+        return res ;
+      if ((album == null) || (album == string.Empty))
+        return res ;
       if (!Utils.ScrapeThumbnailsAlbum.Equals("True", StringComparison.CurrentCulture))
       {
         logger.Debug("Artist/Album Thumbnails - Disabled.");
@@ -733,7 +742,7 @@ namespace FanartHandler
           var num = 0;
           if (alSearchResults != null)
           {
-            logger.Info("Trying to find thumbnail (htBackdrops) for Artist: " + artist + ".");
+            logger.Info("HtBackdrops: Trying to find thumbnail for Artist: " + artist + ".");
             // var artist1 = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
             var index = 0;
             while (index < alSearchResults.Count && !dbm.StopScraper)
@@ -746,7 +755,7 @@ namespace FanartHandler
                   if (((SearchResults) alSearchResults[index]).Album.Equals("5", StringComparison.CurrentCulture) /* && /*!flag &&*/ /*(!Utils.GetDbm().HasArtistThumb(artist1) || !onlyMissing)*/)
                   {
                     string mbid = ((SearchResults) alSearchResults[index]).MBID;
-                    logger.Info("Found thumbnail (htBackdrops) for Artist: " + artist + ". MBID: "+mbid);
+                    logger.Info("HtBackdrops: Found thumbnail for Artist: " + artist + ". MBID: "+mbid);
                     var sourceFilename = "http://htbackdrops.org/api/"+ApiKeyhtBackdrops+"/download/" + ((SearchResults) alSearchResults[index]).Id + "/fullsize";
                     if (DownloadImage(ref artist, null, ref sourceFilename, ref path, ref filename, /*ref requestPic, ref responsePic,*/ Utils.Category.MusicArtistThumbScraped, null))
                     {
@@ -796,7 +805,7 @@ namespace FanartHandler
         }
         alSearchResults = null;
         */
-        logger.Error("HtBackdrop: GetThumbsImages:");
+        logger.Error("HtBackdrops: GetThumbsImages:");
         logger.Error(ex);
       }
       return 9999;
@@ -858,7 +867,7 @@ namespace FanartHandler
           if (alSearchResults != null)
           {
             if (doScrapeFanart)
-              logger.Info("Trying to find fanart (htBackdrops) for Artist: " + artist + ".");
+              logger.Info("HtBackdrops: Trying to find fanart for Artist: " + artist + ".");
             /*
             if (!reportProgress && !externalAccess)
             {
@@ -880,7 +889,7 @@ namespace FanartHandler
                 {
                   if (((SearchResults) alSearchResults[index]).Album.Equals("1", StringComparison.CurrentCulture) && doScrapeFanart)
                   {
-                    logger.Info("Found fanart (htBackdrops) for Artist: " + artist + ". MBID: "+mbid);
+                    logger.Info("HtBackdrops: Found fanart for Artist: " + artist + ". MBID: "+mbid);
                     sourceFilename = "http://htbackdrops.org/api/"+ApiKeyhtBackdrops+"/download/" + ((SearchResults) alSearchResults[index]).Id + "/fullsize";
                     if (!dbm.SourceImageExist(artist1, null, null, Utils.Category.MusicFanartScraped, null, Utils.Provider.HtBackdrops, ((SearchResults) alSearchResults[index]).Id))
                     {
@@ -900,7 +909,7 @@ namespace FanartHandler
                       }
                     }
                     else
-                      logger.Info("Will not download fanart image as it already exist an image in your fanart database with this source image name.");
+                      logger.Info("HtBackdrops: Will not download fanart image as it already exist an image in your fanart database with this source image name.");
                   }
                 }
                 else
@@ -994,7 +1003,7 @@ namespace FanartHandler
         }
         alSearchResults = null;
         */
-        logger.Error("HtBackdrop: GetFanart:");
+        logger.Error("HtBackdrops: GetFanart:");
         logger.Error(ex);
       }
       finally
@@ -1327,7 +1336,7 @@ namespace FanartHandler
         var sourceFilename = (string) null;
         var mbid = (string) null;
         var flag = false;
-        logger.Info("Trying to find thumbnail (Last.FM) for "+Method+".");
+        logger.Info("Last.FM: Trying to find thumbnail for "+Method+".");
         GetHtml(URL+POST, out str1) ;
         try
         {
@@ -1631,7 +1640,7 @@ namespace FanartHandler
         }
         catch (Exception ex)
         {
-          logger.Error("GetHtml Proxy Error: ");
+          logger.Error("HTML Proxy Error: ");
           logger.Error(ex);
         }
 
@@ -1684,164 +1693,139 @@ namespace FanartHandler
     // End: GetHtml
 
     // Begin: Download Image
-    private bool DownloadImage(ref string sArtist, string album, ref string sourceFilename, ref string path, ref string filename, /*ref HttpWebRequest requestPic, ref WebResponse responsePic,*/ Utils.Category category, string id)
+    private bool DownloadImage(ref string sArtist, string sAlbum, ref string sourceFilename, ref string path, ref string filename, /*ref HttpWebRequest requestPic, ref WebResponse responsePic,*/ Utils.Category category, string id)
     {
-      var num1 = 0;
-      var num2 = 0L;
-      var str1 = "Resume";
-      var str2 = (string) null;
-      var str3 = (string) null;
-      var requestPic = (HttpWebRequest) null;
-      var responsePic = (WebResponse) null;
+      var TryCount         = 0;
+      var FileLength       = 0L;
+      var DownloaderStatus = "Start";
+      var FileNameLarge    = (string) null;
+      var FileNameThumb    = (string) null;
+      var requestPic       = (HttpWebRequest) null;
+      var responsePic      = (WebResponse) null;
+      var ThumbsPath        = Config.GetFolder((Config.Dir) 6) ;
+      var Text             = (string) null;
 
       if (category == Utils.Category.MusicArtistThumbScraped)
       {
-        path = Config.GetFolder((Config.Dir) 6) + "\\Music\\Artists";
+        path = ThumbsPath + "\\Music\\Artists";
+        FileNameThumb = path + "\\" + MediaPortal.Util.Utils.MakeFileName(sArtist) + ".jpg";
+        FileNameLarge = path + "\\" + MediaPortal.Util.Utils.MakeFileName(sArtist) + "L.jpg";
         filename = path + "\\" + MediaPortal.Util.Utils.MakeFileName(sArtist) + "_tmp.jpg";
-        logger.Info("Downloading artist tumbnail for " + sArtist + " (" + filename + ").");
-        str2 = path + "\\" + MediaPortal.Util.Utils.MakeFileName(sArtist) + "L.jpg";
-        str3 = path + "\\" + MediaPortal.Util.Utils.MakeFileName(sArtist) + ".jpg";
+        Text = sArtist ;
+        logger.Info("Download: Artist tumbnail for " + Text + " (" + filename + ").");
       }
       else if (category == Utils.Category.MusicAlbumThumbScraped)
       {
-        path = Config.GetFolder((Config.Dir) 6) + "\\Music\\Albums";
-        var albumThumbName = MediaPortal.Util.Utils.GetAlbumThumbName(sArtist, album);
-        filename = albumThumbName.Substring(0, albumThumbName.IndexOf(".jpg")) + "_tmp.jpg";
-        logger.Info("Downloading album tumbnail for " + sArtist + " (" + filename + ").");
-        str2 = MediaPortal.Util.Utils.ConvertToLargeCoverArt(albumThumbName);
-        str3 = albumThumbName;
+        path = ThumbsPath + "\\Music\\Albums";
+        FileNameThumb = MediaPortal.Util.Utils.GetAlbumThumbName(sArtist, sAlbum);
+        FileNameLarge = MediaPortal.Util.Utils.ConvertToLargeCoverArt(FileNameThumb);
+        filename = FileNameThumb.Substring(0, FileNameThumb.IndexOf(".jpg")) + "_tmp.jpg";
+        Text = sArtist + " - " + sAlbum;
+        logger.Info("Download: Album tumbnail for " + Text + " (" + filename + ").");
+      }
+      else if (category == Utils.Category.MusicFanartScraped)
+      {
+        path = ThumbsPath + "\\Skin FanArt\\Scraper\\music";
+        filename = path + "\\" + MediaPortal.Util.Utils.MakeFileName(sArtist) + " (" + id + ").jpg";
+        Text = sArtist ;
+        logger.Info("Download: Fanart for " + Text + " (" + filename + ").");
       }
       else
       {
-        path = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\Scraper\\music";
-        filename = path + "\\" + MediaPortal.Util.Utils.MakeFileName(sArtist) + " (" + id + ").jpg";
-        logger.Info("Downloading fanart for " + sArtist + " (" + filename + ").");
+        logger.Info("Download: Wrong category [" + category.ToString() + "] for " + sArtist + " " + sAlbum + " (" + filename + ").");
+        return false;
       }
 
-      while (!str1.Equals("Success", StringComparison.CurrentCulture) && !str1.Equals("Stop", StringComparison.CurrentCulture) && num1 < 10)
+      if (category == Utils.Category.MusicArtistThumbScraped || category == Utils.Category.MusicAlbumThumbScraped)
+      {
+        if (File.Exists(FileNameLarge) && Utils.DoNotReplaceExistingThumbs.Equals("True"))
+          DownloaderStatus = "Skip" ;
+        if (File.Exists(FileNameThumb) && Utils.DoNotReplaceExistingThumbs.Equals("True"))
+          DownloaderStatus = "Skip" ;
+      }
+
+      while (!DownloaderStatus.Equals("Success", StringComparison.CurrentCulture) && 
+             !DownloaderStatus.Equals("Stop", StringComparison.CurrentCulture) && 
+             !DownloaderStatus.Equals("Skip", StringComparison.CurrentCulture) && 
+             TryCount < 10)
       {
         var stream = (Stream) null;
         var fileStream = (FileStream) null;
-        var doDownload = true;
-        str1 = "Success";
+        DownloaderStatus = "Success";
         try
         {
-          if (category == Utils.Category.MusicArtistThumbScraped || category == Utils.Category.MusicAlbumThumbScraped)
+          if (File.Exists(filename))
+            FileLength = new FileInfo(filename).Length;
+          checked { ++TryCount; }
+
+          requestPic = (HttpWebRequest) WebRequest.Create(sourceFilename);
+          requestPic.ServicePoint.Expect100Continue = false;
+          try
           {
-            if (File.Exists(str2) && Utils.DoNotReplaceExistingThumbs.Equals("True"))
-              doDownload = false;
-            if (File.Exists(str3) && Utils.DoNotReplaceExistingThumbs.Equals("True"))
-              doDownload = false;
+            requestPic.Proxy.Credentials = CredentialCache.DefaultCredentials;
           }
-          else if (File.Exists(filename))
-            num2 = new FileInfo(filename).Length;
-          checked { ++num1; }
-          if (doDownload)
+          catch (Exception ex)
           {
-            requestPic = (HttpWebRequest) WebRequest.Create(sourceFilename);
-            requestPic.ServicePoint.Expect100Continue = false;
-            try
-            {
-              requestPic.Proxy.Credentials = CredentialCache.DefaultCredentials;
-            }
-            catch (Exception ex)
-            {
-              logger.Debug("Proxy: "+ex);
-            }
-            requestPic.AddRange(checked ((int) num2));
-            requestPic.Timeout = checked (5000 + 1000 * num1);
-            requestPic.ReadWriteTimeout = 20000;
-            requestPic.UserAgent = DefUserAgent ;
-            requestPic.ProtocolVersion = HttpVersion.Version11;
-            responsePic = requestPic.GetResponse();
-            fileStream = num2 != 0L ? new FileStream(filename, FileMode.Append, FileAccess.Write, FileShare.None) : new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
-            logger.Debug("Downloading image for " + sArtist + " (" + filename + "): "+(num1 == 0 ? "Start" : "Resume ["+ num1 +"]")+"...");
-            stream = responsePic.GetResponseStream();
-            var num3 = checked (responsePic.ContentLength + num2);
-            var buffer = new byte[2048];
-            for (var count = stream.Read(buffer, 0, buffer.Length); count > 0; count = stream.Read(buffer, 0, buffer.Length))
-            {
-              fileStream.Write(buffer, 0, count);
-              var length = fileStream.Length;
-            }
-            if (fileStream != null && fileStream.Length != num3)
-            {
-              fileStream.Close();
-              ObjectMethods.SafeDispose(fileStream);
-              fileStream = null;
-              str1 = "Resume";
-            }
-            else if (fileStream != null)
-            {
-              fileStream.Close();
-              ObjectMethods.SafeDispose(fileStream);
-              fileStream = null;
-            }
-            if (!IsFileValid(filename))
-            {
-              str1 = "Stop";
-              logger.Error("DownloadImage: Deleting downloaded file because it is corrupt.");
-            }
-            /*
-            if (category != Utils.Category.MusicArtistThumbScraped)
-            {
-              if (category != Utils.Category.MusicAlbumThumbScraped)
-                goto label_51;
-            }
-            */
-            if ((category != Utils.Category.MusicArtistThumbScraped) && (category != Utils.Category.MusicAlbumThumbScraped))
-            { }
-            else {
-              if (Utils.GetDbm().IsImageProtectedByUser(str2).Equals("False"))
-              {
-                if (File.Exists(str2) && Utils.DoNotReplaceExistingThumbs.Equals("False"))
-                  ReplaceOldThumbnails(str2, filename, ref doDownload, false, category);
-                if (doDownload)
-                  CreateThumbnail(filename, true);
-                if (File.Exists(str3) && Utils.DoNotReplaceExistingThumbs.Equals("False") && doDownload)
-                  ReplaceOldThumbnails(str3, filename, ref doDownload, false, category);
-                if (doDownload)
-                  CreateThumbnail(filename, false);
-              }
-              try
-              {
-                MediaPortal.Util.Utils.FileDelete(filename);
-              }
-              catch (Exception ex)
-              {
-                logger.Error(string.Concat(new object[4]
-                {
-                  "DownloadImage: Error deleting temp thumbnail - ",
-                  filename,
-                  ".",
-                  ex
-                }));
-              }
-            }
+            logger.Debug("Download: Proxy: "+ex);
+          }
+          requestPic.AddRange(checked ((int) FileLength));
+          requestPic.Timeout = checked (5000 + 1000 * TryCount);
+          requestPic.ReadWriteTimeout = 20000;
+          requestPic.UserAgent = DefUserAgent ;
+          requestPic.ProtocolVersion = HttpVersion.Version11;
+          responsePic = requestPic.GetResponse();
+          stream = responsePic.GetResponseStream();
+          fileStream = FileLength != 0L ? new FileStream(filename, FileMode.Append, FileAccess.Write, FileShare.None) : new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
+          var num3 = checked (responsePic.ContentLength + FileLength);
+          var buffer = new byte[2048];
+
+          logger.Debug("Download: Image: " + filename + ": "+(TryCount == 1 ? "Start" : "Resume ["+ TryCount +"]")+"...");
+          for (var count = stream.Read(buffer, 0, buffer.Length); count > 0; count = stream.Read(buffer, 0, buffer.Length))
+          {
+            fileStream.Write(buffer, 0, count);
+            // var length = fileStream.Length;
+          }
+          if (fileStream != null && fileStream.Length != num3)
+          {
+            fileStream.Close();
+            ObjectMethods.SafeDispose(fileStream);
+            fileStream = null;
+            DownloaderStatus = "Resume";
+          }
+          else if (fileStream != null)
+          {
+            fileStream.Close();
+            ObjectMethods.SafeDispose(fileStream);
+            fileStream = null;
+          }
+          if (!IsFileValid(filename))
+          {
+            DownloaderStatus = "Stop";
+            logger.Error("Download: Deleting downloaded file because it is corrupt.");
           }
         }
         catch (ExternalException ex)
         {
-          str1 = "Stop";
-          logger.Error("DownloadImage: " + ex);
+          DownloaderStatus = "Stop";
+          logger.Error("Download: " + ex);
         }
         catch (UriFormatException ex)
         {
-          str1 = "Stop";
-          logger.Error("DownloadImage: " + ex);
+          DownloaderStatus = "Stop";
+          logger.Error("Download: " + ex);
         }
         catch (WebException ex)
         {
           if (ex.Message.Contains("404"))
           {
-            str1 = "Stop";
-            logger.Error("DownloadImage: " + ex);
+            DownloaderStatus = "Stop";
+            logger.Error("Download: " + ex);
           }
           else
           {
-            str1 = "Resume";
-            if (num1 >= 10)
-              logger.Error("DownloadImage: " + ex);
+            DownloaderStatus = "Resume";
+            if (TryCount >= 10)
+              logger.Error("Download: " + ex);
           }
         }
         catch (ThreadAbortException ex)
@@ -1854,16 +1838,16 @@ namespace FanartHandler
           }
           if (File.Exists(filename))
             File.Delete(filename);
-          str1 = "Stop";
-          logger.Error("DownloadImage: " + ex);
+          DownloaderStatus = "Stop";
+          logger.Error("Download: " + ex);
         }
         catch (Exception ex)
         {
-          logger.Error("DownloadImage: " + ex);
-          str1 = "Stop";
+          logger.Error("Download: " + ex);
+          DownloaderStatus = "Stop";
         }
-// label_51:
-        if (fileStream != null && str1.Equals("Stop", StringComparison.CurrentCulture))
+
+        if (fileStream != null && DownloaderStatus.Equals("Stop", StringComparison.CurrentCulture))
         {
           fileStream.Close();
           ObjectMethods.SafeDispose(fileStream);
@@ -1892,11 +1876,6 @@ namespace FanartHandler
           ObjectMethods.SafeDispose(requestPic);
         }
       }
-      if (!str1.Equals("Success", StringComparison.CurrentCulture) && File.Exists(filename))
-        File.Delete(filename);
-      if (str1.Equals("Success", StringComparison.CurrentCulture) && File.Exists(filename))
-        logger.Debug("Downloading image for " + sArtist + " (" + filename + "): Comlete.");
-
       if (requestPic != null)
         ObjectMethods.SafeDispose(requestPic);
       if (responsePic != null)
@@ -1904,7 +1883,40 @@ namespace FanartHandler
         responsePic.Close();
         ObjectMethods.SafeDispose(responsePic);
       }
-      return str1.Equals("Success", StringComparison.CurrentCulture);
+
+      if (DownloaderStatus.Equals("Success", StringComparison.CurrentCulture) && File.Exists(filename))
+        if ((category == Utils.Category.MusicArtistThumbScraped) || (category == Utils.Category.MusicAlbumThumbScraped))
+        { 
+          if (Utils.GetDbm().IsImageProtectedByUser(FileNameLarge).Equals("False"))
+          {
+            var doDownload = true;
+            if (File.Exists(FileNameLarge) && Utils.DoNotReplaceExistingThumbs.Equals("False"))
+              ReplaceOldThumbnails(FileNameLarge, filename, ref doDownload, false, category);
+            if (doDownload)
+              CreateThumbnail(filename, true);
+            if (File.Exists(FileNameThumb) && Utils.DoNotReplaceExistingThumbs.Equals("False") && doDownload)
+              ReplaceOldThumbnails(FileNameThumb, filename, ref doDownload, false, category);
+            if (doDownload)
+              CreateThumbnail(filename, false);
+          }
+          try
+          {
+            MediaPortal.Util.Utils.FileDelete(filename);
+          }
+          catch (Exception ex)
+          {
+            logger.Error("Download: Deleting temporary thumbnail: " + filename);
+            logger.Error(ex) ;
+          }
+        }
+
+      if (!DownloaderStatus.Equals("Success", StringComparison.CurrentCulture) && File.Exists(filename))
+        File.Delete(filename);
+      if (DownloaderStatus.Equals("Success", StringComparison.CurrentCulture) && File.Exists(filename))
+        logger.Debug("Download: Image for " + Text + " (" + filename + "): Comlete.");
+      if (DownloaderStatus.Equals("Skip", StringComparison.CurrentCulture))
+        logger.Debug("Download: Image for " + Text + " (" + filename + "): Skipped.");
+      return DownloaderStatus.Equals("Success", StringComparison.CurrentCulture); // || DownloaderStatus.Equals("Skip", StringComparison.CurrentCulture)
     }
     // End: Download Image
     #endregion
