@@ -89,6 +89,7 @@ namespace FanartHandler
         var isMusic = false;
         if (property.Equals("music", StringComparison.CurrentCulture))
           isMusic = true;
+        #region SelectedItem
         if (GUIWindowManager.ActiveWindow == 6623)
         {
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#mvids.artist");
@@ -113,10 +114,20 @@ namespace FanartHandler
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#selecteditem2");
           FanartHandlerSetup.Fh.SelectedItem = Utils.GetArtistLeftOfMinusSign(FanartHandlerSetup.Fh.SelectedItem);
         }
-        else if (GUIWindowManager.ActiveWindow == 2003 || GUIWindowManager.ActiveWindow == 6 || (GUIWindowManager.ActiveWindow == 25 || GUIWindowManager.ActiveWindow == 614) || GUIWindowManager.ActiveWindow == 28)
+        else if (GUIWindowManager.ActiveWindow == 2003 || 
+                 GUIWindowManager.ActiveWindow == 6 || 
+                 (GUIWindowManager.ActiveWindow == 25 || GUIWindowManager.ActiveWindow == 614) || 
+                 GUIWindowManager.ActiveWindow == 28
+                )
         {
           var property1 = GUIPropertyManager.GetProperty("#movieid");
-          FanartHandlerSetup.Fh.SelectedItem = property1 == null || property1 == string.Empty || property1 == "-1" ? (GUIWindowManager.ActiveWindow != 2003 ? GUIPropertyManager.GetProperty("#selecteditem") : GUIPropertyManager.GetProperty("#title")) : property1;
+          FanartHandlerSetup.Fh.SelectedItem = property1 == null || 
+                                               property1 == string.Empty || 
+                                               property1 == "-1" ? 
+                                                 (GUIWindowManager.ActiveWindow != 2003 ? 
+                                                    GUIPropertyManager.GetProperty("#selecteditem") : 
+                                                    GUIPropertyManager.GetProperty("#title")) : 
+                                                 property1;
         }
         else if (GUIWindowManager.ActiveWindow == 9813)
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#TVSeries.Episode.SeriesName");
@@ -151,6 +162,7 @@ namespace FanartHandler
         }
         else
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#selecteditem");
+        #endregion
         if (FanartHandlerSetup.Fh.SelectedItem != null && FanartHandlerSetup.Fh.SelectedItem.Trim().Length > 0)
         {
           if (GUIWindowManager.ActiveWindow == 4755 && 
@@ -238,7 +250,7 @@ namespace FanartHandler
               ResetCurrCount();
           }
           IncreaseCurrCount();
-        }
+        } // if (FanartHandlerSetup.Fh.SelectedItem != null && FanartHandlerSetup.Fh.SelectedItem.Trim().Length > 0)
         else
         {
           if (FanartHandlerSetup.Fh.SelectedItem != null && 

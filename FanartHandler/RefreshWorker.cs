@@ -42,7 +42,7 @@ namespace FanartHandler
       Thread.CurrentThread.Name = "RefreshWorker";
       Utils.AllocateDelayStop("RefreshWorker-OnDoWork");
       var activeWindow = GUIWindowManager.ActiveWindow;
-      var num2 = 1;
+      var DebugStep = 1;
       if (!Utils.GetIsStopping())
       {
         var flag1 = Utils.IsIdle();
@@ -50,29 +50,29 @@ namespace FanartHandler
         {
           if (activeWindow == 2 && flag1)
           {
-            num2 = 2;
+            DebugStep = 2;
             var window = GUIWindowManager.GetWindow(GUIWindowManager.ActiveWindow);
             if (window != null && GUIWindowManager.ActiveWindow == 2 && window.GetFocusControlId() == 50)
             {
-              num2 = 3;
+              DebugStep = 3;
               var property = GUIPropertyManager.GetProperty("#selecteditem");
               if (property != null && !property.Equals(FanartHandlerSetup.Fh.PrevPicture))
               {
-                num2 = 4;
+                DebugStep = 4;
                 var selectedListItem = GUIControl.GetSelectedListItem(GUIWindowManager.ActiveWindow, window.GetFocusControlId());
                 if (selectedListItem != null)
                 {
-                  num2 = 5;
+                  DebugStep = 5;
                   FanartHandlerSetup.Fh.AddPictureToCache("#fanarthandler.picture.backdrop.selected", selectedListItem.Path, ref FanartHandlerSetup.Fh.ListPictureHash);
                   FanartHandlerSetup.Fh.HandleOldImages(ref FanartHandlerSetup.Fh.ListPictureHash);
                   FanartHandlerSetup.Fh.SetProperty("#fanarthandler.picture.backdrop.selected", selectedListItem.Path);
                   FanartHandlerSetup.Fh.PrevPicture = property;
                   FanartHandlerSetup.Fh.PrevPictureImage = selectedListItem.Path;
-                  num2 = 6;
+                  DebugStep = 6;
                 }
                 else
                 {
-                  num2 = 7;
+                  DebugStep = 7;
                   if (FanartHandlerSetup.Fh.IsSelectedPicture)
                   {
                     FanartHandlerSetup.Fh.EmptyAllImages(ref FanartHandlerSetup.Fh.ListPictureHash);
@@ -87,7 +87,7 @@ namespace FanartHandler
           }
           else
           {
-            num2 = 8;
+            DebugStep = 8;
             if (FanartHandlerSetup.Fh.IsSelectedPicture)
             {
               FanartHandlerSetup.Fh.EmptyAllImages(ref FanartHandlerSetup.Fh.ListPictureHash);
@@ -97,7 +97,7 @@ namespace FanartHandler
               FanartHandlerSetup.Fh.IsSelectedPicture = false;
             }
           }
-          num2 = 9;
+          DebugStep = 9;
           var flag2 = true;
           FanartHandlerSetup.Fh.FS.HasUpdatedCurrCount = false;
           FanartHandlerSetup.Fh.FP.HasUpdatedCurrCountPlay = false;
@@ -120,35 +120,35 @@ namespace FanartHandler
             FanartHandlerSetup.Fh.FS.SetCurrentArtistsImageNames(null);
             FanartHandlerSetup.Fh.MyScraperWorker.TriggerRefresh = false;
           }
-          num2 = 10;
+          DebugStep = 10;
           if (FanartHandlerSetup.Fh.CurrentTrackTag != null && FanartHandlerSetup.Fh.CurrentTrackTag.Trim().Length > 0 && (g_Player.Playing || g_Player.Paused))
           {
-            num2 = 11;
+            DebugStep = 11;
             if (FanartHandlerSetup.Fh.ScraperMusicPlaying != null && 
                 FanartHandlerSetup.Fh.ScraperMusicPlaying.Equals("True", StringComparison.CurrentCulture) && 
                 (FanartHandlerSetup.Fh.MyScraperNowWorker != null && FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh)
                )
             {
-              num2 = 12;
+              DebugStep = 12;
               FanartHandlerSetup.Fh.FP.CurrCountPlay = FanartHandlerSetup.Fh.MaxCountImage;
               FanartHandlerSetup.Fh.FP.SetCurrentArtistsImageNames(null);
               FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh = false;
-              num2 = 13;
+              DebugStep = 13;
             }
             if (!FanartHandlerSetup.Fh.FP.CurrPlayMusicArtist.Equals(FanartHandlerSetup.Fh.CurrentTrackTag, StringComparison.CurrentCulture))
             {
-              num2 = 14;
+              DebugStep = 14;
               if (FanartHandlerSetup.Fh.ScraperMusicPlaying != null && 
                   FanartHandlerSetup.Fh.ScraperMusicPlaying.Equals("True", StringComparison.CurrentCulture) && 
                   !Utils.GetDbm().GetIsScraping() && 
                   (FanartHandlerSetup.Fh.MyScraperNowWorker != null && !FanartHandlerSetup.Fh.MyScraperNowWorker.IsBusy || FanartHandlerSetup.Fh.MyScraperNowWorker == null)
                  )
               {
-                num2 = 15;
+                DebugStep = 15;
                 FanartHandlerSetup.Fh.StartScraperNowPlaying(FanartHandlerSetup.Fh.CurrentTrackTag, FanartHandlerSetup.Fh.CurrentAlbumTag);
               }
             }
-            num2 = 16;
+            DebugStep = 16;
             FanartHandlerSetup.Fh.FP.RefreshMusicPlayingProperties();
             FanartHandlerSetup.Fh.IsPlaying = true;
             FanartHandlerSetup.Fh.IsPlayingCount = 0;
@@ -156,7 +156,7 @@ namespace FanartHandler
           }
           else if (FanartHandlerSetup.Fh.IsPlaying && FanartHandlerSetup.Fh.IsPlayingCount > 3)
           {
-            num2 = 17;
+            DebugStep = 17;
             FanartHandlerSetup.Fh.StopScraperNowPlaying();
             FanartHandlerSetup.Fh.EmptyAllImages(ref FanartHandlerSetup.Fh.FP.ListPlayMusic);
             FanartHandlerSetup.Fh.FP.SetCurrentArtistsImageNames(null);
@@ -177,10 +177,10 @@ namespace FanartHandler
           }
           else if (FanartHandlerSetup.Fh.IsPlaying)
             checked { ++FanartHandlerSetup.Fh.IsPlayingCount; }
-          num2 = 18;
+          DebugStep = 18;
           if (FanartHandlerSetup.Fh.UseMusicFanart != null && FanartHandlerSetup.Fh.UseMusicFanart.Equals("True", StringComparison.CurrentCulture) && flag1)
           {
-            num2 = 19;
+            DebugStep = 19;
             if (FanartHandlerSetup.Fh.FS.WindowsUsingFanartSelectedMusic != null && FanartHandlerSetup.Fh.FS.WindowsUsingFanartSelectedMusic.ContainsKey(activeWindow.ToString(CultureInfo.CurrentCulture)))
             {
               if (activeWindow == 504 || activeWindow == 501 || activeWindow == 500)
@@ -204,7 +204,7 @@ namespace FanartHandler
             }
             else if (FanartHandlerSetup.Fh.IsSelectedMusic)
             {
-              num2 = 20;
+              DebugStep = 20;
               FanartHandlerSetup.Fh.EmptyAllImages(ref FanartHandlerSetup.Fh.FS.ListSelectedMusic);
               FanartHandlerSetup.Fh.FS.CurrSelectedMusic = string.Empty;
               FanartHandlerSetup.Fh.FS.CurrSelectedMusicArtist = string.Empty;
@@ -217,13 +217,13 @@ namespace FanartHandler
               Report(e);
             }
           }
-          num2 = 21;
+          DebugStep = 21;
           if (FanartHandlerSetup.Fh.UseVideoFanart != null && FanartHandlerSetup.Fh.UseVideoFanart.Equals("True", StringComparison.CurrentCulture) && flag1)
           {
-            num2 = 22;
+            DebugStep = 22;
             if (FanartHandlerSetup.Fh.FS.WindowsUsingFanartSelectedMovie != null && FanartHandlerSetup.Fh.FS.WindowsUsingFanartSelectedMovie.ContainsKey(activeWindow.ToString(CultureInfo.CurrentCulture)))
             {
-              num2 = 23;
+              DebugStep = 23;
               if (activeWindow == 6 || activeWindow == 25 || (activeWindow == 28 || activeWindow == 2003) || activeWindow == 9813)
               {
                 FanartHandlerSetup.Fh.IsSelectedVideo = true;
@@ -276,7 +276,7 @@ namespace FanartHandler
             }
             else if (FanartHandlerSetup.Fh.IsSelectedVideo)
             {
-              num2 = 24;
+              DebugStep = 24;
               FanartHandlerSetup.Fh.EmptyAllImages(ref FanartHandlerSetup.Fh.FS.ListSelectedMovies);
               FanartHandlerSetup.Fh.FS.CurrSelectedMovie = string.Empty;
               FanartHandlerSetup.Fh.FS.CurrSelectedMovieTitle = string.Empty;
@@ -288,10 +288,10 @@ namespace FanartHandler
               Report(e);
             }
           }
-          num2 = 25;
+          DebugStep = 25;
           if (FanartHandlerSetup.Fh.UseScoreCenterFanart != null && FanartHandlerSetup.Fh.UseScoreCenterFanart.Equals("True", StringComparison.CurrentCulture) && flag1)
           {
-            num2 = 26;
+            DebugStep = 26;
             if (FanartHandlerSetup.Fh.FS.WindowsUsingFanartSelectedScoreCenter != null && 
                 FanartHandlerSetup.Fh.FS.WindowsUsingFanartSelectedScoreCenter.ContainsKey(activeWindow.ToString(CultureInfo.CurrentCulture))
                )
@@ -317,7 +317,7 @@ namespace FanartHandler
               Report(e);
             }
           }
-          num2 = 27;
+          DebugStep = 27;
           if (flag2 && flag1)
           {
             FanartHandlerSetup.Fh.FS.FanartAvailable = false;
@@ -330,7 +330,7 @@ namespace FanartHandler
           }
           else if (FanartHandlerSetup.Fh.IsRandom)
           {
-            num2 = 28;
+            DebugStep = 28;
             FanartHandlerSetup.Fh.SetProperty("#fanarthandler.games.userdef.backdrop1.any", string.Empty);
             FanartHandlerSetup.Fh.SetProperty("#fanarthandler.games.userdef.backdrop2.any", string.Empty);
             FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movie.userdef.backdrop1.any", string.Empty);
@@ -368,14 +368,14 @@ namespace FanartHandler
             FanartHandlerSetup.Fh.IsRandom = false;
             Report(e);
           }
-          num2 = 29;
+          DebugStep = 29;
           if (FanartHandlerSetup.Fh.FS.UpdateVisibilityCount > 0)
             FanartHandlerSetup.Fh.FS.UpdateVisibilityCount = checked (FanartHandlerSetup.Fh.FS.UpdateVisibilityCount + 1);
           if (FanartHandlerSetup.Fh.FP.UpdateVisibilityCountPlay > 0)
             FanartHandlerSetup.Fh.FP.UpdateVisibilityCountPlay = checked (FanartHandlerSetup.Fh.FP.UpdateVisibilityCountPlay + 1);
           if (FanartHandlerSetup.Fh.FR.UpdateVisibilityCountRandom > 0)
             FanartHandlerSetup.Fh.FR.UpdateVisibilityCountRandom = checked (FanartHandlerSetup.Fh.FR.UpdateVisibilityCountRandom + 1);
-          num2 = 30;
+          DebugStep = 30;
           FanartHandlerSetup.Fh.UpdateDummyControls();
           Report(e);
           e.Result = 0;
@@ -388,7 +388,7 @@ namespace FanartHandler
           logger.Error(string.Concat(new object[4]
           {
             "OnDoWork (",
-            num2,
+            DebugStep,
             "): ",
             ex
           }));

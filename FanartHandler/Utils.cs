@@ -290,8 +290,9 @@ namespace FanartHandler
 
     public static string GetArtist(string key, Category category)
     {
-      if (key == null)
+      if (string.IsNullOrEmpty(key))
         return string.Empty;
+
       key = GetFilenameNoPath(key);
       key = RemoveExtension(key);
       key = Regex.Replace(key, "\\(\\d{5}\\)", string.Empty).Trim();
@@ -307,12 +308,13 @@ namespace FanartHandler
 
     public static string GetAlbum(string key, Category category)
     {
-      if (key == null)
+      if (string.IsNullOrEmpty(key))
         return string.Empty;
+
       key = GetFilenameNoPath(key);
       key = RemoveExtension(key);
       key = Regex.Replace(key, "\\(\\d{5}\\)", string.Empty).Trim();
-      if (category == Category.MusicArtistThumbScraped)
+      if ((category == Category.MusicArtistThumbScraped) || (category == Category.MusicAlbumThumbScraped))
         key = Regex.Replace(key, "[L]$", string.Empty).Trim();
       key = RemoveSpecialChars(key);
       if (category == Category.MusicAlbumThumbScraped && key.IndexOf("-", StringComparison.CurrentCulture) >= 0)
@@ -363,7 +365,7 @@ namespace FanartHandler
     {
       var externalDatabaseManager1 = (ExternalDatabaseManager) null;
       var arrayList = new ArrayList();
-      // ExternalDatabaseManager externalDatabaseManager2;
+      
       try
       {
         externalDatabaseManager1 = new ExternalDatabaseManager();
@@ -389,14 +391,12 @@ namespace FanartHandler
         catch
         {
         }
-        // externalDatabaseManager2 = null;
         return arrayList;
       }
       catch (Exception ex)
       {
         if (externalDatabaseManager1 != null)
           externalDatabaseManager1.Close();
-        // externalDatabaseManager2 = null;
         logger.Error("GetMusicVideoArtists: " + ex);
       }
       return null;
@@ -712,26 +712,23 @@ namespace FanartHandler
     {
       if (filename == null)
         return false;
-      // var image1 = (Image) null;
+      
       try
       {
         var image2 = LoadImageFastFromFile(filename);
         if (image2 != null && image2.Width > 0)
         {
           image2.Dispose();
-          // image1 = null;
           return true;
         }
         else
         {
           if (image2 != null)
             image2.Dispose();
-          // image1 = null;
         }
       }
       catch
       {
-        // image1 = null;
       }
       return false;
     }

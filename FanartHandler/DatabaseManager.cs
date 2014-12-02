@@ -514,6 +514,442 @@ namespace FanartHandler
         }
         #endregion
 
+        #region Scrape
+        public int DoScrape(string artist/*, Hashtable htFanart*/)
+        {
+            if (!StopScraper)
+            {
+                Utils.AllocateDelayStop("FanartHandlerSetup-StartScraper");
+                try
+                {
+                    var GetImages = 0;
+                    if (artist != null && artist.Trim().Length > 0)
+                    {
+                        // var dbartist = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
+                        var MaxImages = checked(Convert.ToInt32(Utils.GetScraperMaxImages(),CultureInfo.CurrentCulture));
+                        // var InDBImages = 0;
+                        // var htArtist = Scraper.UndoArtistPrefix(dbartist.ToLower()) ;
+                        // if (!htFanart.Contains(htArtist))
+                        //     InDBImages = int.Parse((string) htFanart[htArtist],CultureInfo.CurrentCulture);
+                        // logger.Debug("*** "+htArtist+" "+InDBImages);
+                        // if (InDBImages < 1)
+                        // {
+                            var numberOfFanartImages = GetNumberOfFanartImages(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped));
+                            // DeleteDummyItem(dbartist, Utils.Category.MusicFanartScraped);
+                            var doScrapeFanart = false;
+                            if (numberOfFanartImages < MaxImages)
+                                doScrapeFanart = true;
+                            if (checked (MaxImages - numberOfFanartImages) <= 0)
+                              GetImages = 8888 ;
+                            else
+                              {
+                                scraper = new Scraper();
+                                lock (lockObject)
+                                    dbClient.Execute("BEGIN TRANSACTION;");
+                                GetImages = scraper.GetArtistFanart(artist, MaxImages, this, true, false, false, doScrapeFanart);
+                                lock (lockObject)
+                                    dbClient.Execute("COMMIT;");
+                                scraper = null;
+                              }
+                            if ((GetImages == 0) && (GetNumberOfFanartImages(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped)) == 0))
+                            {
+                                logger.Info("No fanart found for Artist: " + artist + ".");
+                                // InsertDummyItem(dbartist, Utils.Category.MusicFanartScraped, null, null);
+                            }
+                            if (GetImages == 8888 && doScrapeFanart)
+                                logger.Info("Artist: " + artist + " has already maximum number of images. Will not download anymore images for this artist.");
+                        //}
+                    }
+                    return GetImages;
+                }
+                catch (Exception ex)
+                {
+                    scraper = null;
+                    logger.Error("DoScrape: " + ex);
+                    lock (lockObject)
+                        dbClient.Execute("ROLLBACK;");
+                }
+            }
+            return 0;
+        }
+
+        public int DoScrapeNew(string artist, string album, bool externalAccess)
+        {
+            if (!StopScraper)
+            {
+                try
+                {
+                    var GetImages = 0;
+                    if (artist != null && artist.Trim().Length > 0)
+                    {
+                        var dbartist = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
+
+                        var MaxImages = checked(Convert.ToInt32(Utils.GetScraperMaxImages(),CultureInfo.CurrentCulture));
+                        var numberOfFanartImages = GetNumberOfFanartImages(dbartist);
+                        var doTriggerRefresh = false;
+                        if (numberOfFanartImages == 0 && !externalAccess)
+                            doTriggerRefresh = true;
+                        if (checked (MaxImages - numberOfFanartImages) <= 0)
+                          GetImages = 8888 ;
+                        else
+                          {
+                            scraper = new Scraper();
+                            lock (lockObject)
+                                dbClient.Execute("BEGIN TRANSACTION;");
+                            GetImages = scraper.GetArtistFanart(artist, MaxImages, this, false, doTriggerRefresh, externalAccess, true);
+                            lock (lockObject)
+                                dbClient.Execute("COMMIT;");
+                            scraper = null;
+                          }
+                        switch (GetImages)
+                        {
+                            case 0:
+                                if (GetNumberOfFanartImages(dbartist) == 0)
+                                  logger.Info("No fanart found for Artist: " + artist + ".");
+                                break;
+                            case 8888:
+                                logger.Info("Artist: " + artist + " has already maximum number of images. Will not download anymore images for this artist.");
+                                break;
+                        }
+                        if (StopScraper)
+                            return GetImages;
+
+                        if (album != null && album.Trim().Length > 0)
+                          if (!Utils.GetDbm().HasAlbumThumb(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped),Utils.GetAlbum(album, Utils.Category.MusicFanartScraped)) && 
+                               Utils.ScrapeThumbnailsAlbum.Equals("True", StringComparison.CurrentCulture)
+                             )
+                          {
+                            scraper = new Scraper();
+                            lock (lockObject)
+                                dbClient.Execute("BEGIN TRANSACTION;");
+                            scraper.GetArtistAlbumThumbs(artist, album, false, externalAccess);
+                            lock (lockObject)
+                                dbClient.Execute("COMMIT;");
+                            scraper = null;
+                          }
+                    }
+                    return GetImages;
+                }
+                catch (Exception ex)
+                {
+                    scraper = null;
+                    logger.Error("DoScrapeNew: " + ex);
+                    lock (lockObject)
+                        dbClient.Execute("ROLLBACK;");
+                }
+            }
+            return 0;
+        }
+
+        public int DoScrapeThumbs(string artist, bool onlyMissing)
+        {
+            if (!StopScraper)
+            {
+                Utils.AllocateDelayStop("FanartHandlerSetup-StartScraper");
+                try
+                {
+                    var num = 0;
+                    if (artist != null && artist.Trim().Length > 0)
+                    {
+                        var dbartist = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
+                        if (!HasArtistThumb(dbartist) || !onlyMissing)
+                        {
+                            scraper = new Scraper();
+                            lock (lockObject)
+                                dbClient.Execute("BEGIN TRANSACTION;");
+                            num = scraper.GetArtistThumbs(artist, this, onlyMissing);
+                            lock (lockObject)
+                                dbClient.Execute("COMMIT;");
+                            if (num == 0)
+                                logger.Info("No Thumbs found for Artist: " + artist + ".");
+                            scraper = null;
+                        }
+                    }
+                    return num;
+                }
+                catch (Exception ex)
+                {
+                    scraper = null;
+                    logger.Error("DoScrapeThumbs: " + ex);
+                    lock (lockObject)
+                        dbClient.Execute("ROLLBACK;");
+                }
+            }
+            return 0;
+        }
+        #endregion
+
+        #region Initial Scrape
+        public void InitialScrape()
+        {
+            try
+            {
+                logger.Info("InitialScrape is starting...");
+                var flag = true;
+                musicDatabaseArtists = new ArrayList();
+                musicDatabaseAlbums = new List<AlbumInfo>();
+                m_db.GetAllArtists(ref musicDatabaseArtists);
+                m_db.GetAllAlbums(ref musicDatabaseAlbums);
+                var musicVideoArtists = Utils.GetMusicVideoArtists("mvCentral.db3");
+                if (musicVideoArtists != null && musicVideoArtists.Count > 0) {
+                    logger.Debug("InitialScrape add Artists from mvCentral ["+musicVideoArtists.Count+"]...");
+                    musicDatabaseArtists.AddRange(musicVideoArtists);
+                }
+                var musicVideoAlbums = Utils.GetMusicVideoAlbums("mvCentral.db3");
+                if (musicVideoAlbums != null && musicVideoAlbums.Count > 0) {
+                    logger.Debug("InitialScrape add Artists/Albums from mvCentral ["+musicVideoAlbums.Count+"]...");
+                    musicDatabaseAlbums.AddRange(musicVideoAlbums);
+                }
+                if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+                    FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, "Start");
+                TotArtistsBeingScraped = checked (musicDatabaseArtists.Count + musicDatabaseAlbums.Count);
+                if (musicDatabaseArtists != null && musicDatabaseArtists.Count > 0)
+                {
+                    logger.Debug("InitialScrape initiating for Artist...");
+                    var htFanart = new Hashtable();
+                    var str = "SELECT Key1, count(Key1) "+
+                               "FROM Image "+
+                               "WHERE Category in ('" + ((object) Utils.Category.MusicFanartScraped).ToString() + "') AND "+
+                                     // "Enabled = 'True' AND "+
+                                     // "DummyItem = 'False' AND "+
+                                     "Time_Stamp >= '" + DateTime.Today.AddDays(-14.0).ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "' "+
+                               "GROUP BY Key1;";
+                    SQLiteResultSet sqLiteResultSet;
+                    lock (lockObject)
+                        sqLiteResultSet = dbClient.Execute(str);
+                    var num = 0;
+                    while (num < sqLiteResultSet.Rows.Count)
+                    {
+                        var htArtist = Scraper.UndoArtistPrefix(sqLiteResultSet.GetField(num, 0).ToLower()) ;
+                        if (!htFanart.Contains(htArtist)) // !!! The Beatles <> Beatles
+                            htFanart.Add(htArtist, sqLiteResultSet.GetField(num, 1));
+                        checked
+                        {
+                            ++num;
+                        }
+                    }
+                    var index = 0;
+                    while (index < musicDatabaseArtists.Count)
+                    {
+                        var artist = musicDatabaseArtists[index].ToString();
+                        if (!StopScraper && !Utils.GetIsStopping()) 
+                        {
+                            var dbartist = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
+                            var htArtist = Scraper.UndoArtistPrefix(dbartist.ToLower()) ;
+                            if (!htFanart.Contains(htArtist)) // !!! The Beatles <> Beatles
+                            {
+                              if (DoScrape(artist/*, htFanart*/) > 0 && flag)
+                              {
+                                  AddScapedFanartToAnyHash();
+                                  if (FanartHandlerSetup.Fh.MyScraperNowWorker != null)
+                                  {
+                                      FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh = true;
+                                      flag = false; // ??? I do not understand what for it ... // ajs
+                                  }
+                              }
+                            }
+                            ++CurrArtistsBeingScraped;
+                            if (TotArtistsBeingScraped > 0.0 && FanartHandlerSetup.Fh.MyScraperWorker != null)
+                              FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(Convert.ToInt32(CurrArtistsBeingScraped/TotArtistsBeingScraped*100.0),"Ongoing");
+                            checked
+                            {
+                                ++index;
+                            }
+                        }
+                        else
+                            break;
+                    }
+                    logger.Debug("InitialScrape done for Artist...");
+                }
+                if (musicDatabaseAlbums != null && musicDatabaseAlbums.Count > 0 &&
+                    Utils.ScrapeThumbnailsAlbum.Equals("True", StringComparison.CurrentCulture))
+                {
+                    logger.Debug("InitialScrape initiating for Artist/Album...");
+                    var hashtable1 = new Hashtable();
+                    var str1 = "SELECT Key1, Key2, count(Key1) "+
+                                "FROM Image "+
+                                "WHERE Category IN ('" + ((object) Utils.Category.MusicAlbumThumbScraped).ToString() + "') AND "+
+                                      // "DummyItem = 'False' AND "+
+                                      "Time_Stamp >= '" + DateTime.Today.AddDays(-14.0).ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "' "+
+                                "GROUP BY Key1, Key2;";
+                    SQLiteResultSet sqLiteResultSet;
+                    lock (lockObject)
+                        sqLiteResultSet = dbClient.Execute(str1);
+                    var num1 = 0;
+                    while (num1 < sqLiteResultSet.Rows.Count)
+                    {
+                        var htArtistAlbum = Scraper.UndoArtistPrefix(sqLiteResultSet.GetField(num1, 0).ToLower()) + "-" + sqLiteResultSet.GetField(num1, 1).ToLower() ;
+                        if (!hashtable1.Contains(htArtistAlbum)) // !!! The Beatles <> Beatles
+                            hashtable1.Add(htArtistAlbum,sqLiteResultSet.GetField(num1, 2));
+                        checked
+                        {
+                            ++num1;
+                        }
+                    }
+                    var hashtable2 = new Hashtable();
+                    var str2 = "SELECT Key1, Key2, count(Key1) "+
+                                "FROM Image "+
+                                "WHERE Category IN ('" + ((object) Utils.Category.MusicAlbumThumbScraped).ToString() + "') AND "+
+                                      "DummyItem = 'False' "+
+                                "GROUP BY Key1, Key2;";
+                    lock (lockObject)
+                        sqLiteResultSet = dbClient.Execute(str2);
+                    var num2 = 0;
+                    while (num2 < sqLiteResultSet.Rows.Count)
+                    {
+                        var htArtistAlbum = Scraper.UndoArtistPrefix(sqLiteResultSet.GetField(num2, 0).ToLower()) + "-" + sqLiteResultSet.GetField(num2, 1).ToLower() ;
+                        if (!hashtable2.Contains(htArtistAlbum)) // !!! The Beatles <> Beatles
+                            hashtable2.Add(htArtistAlbum,sqLiteResultSet.GetField(num2, 2));
+                        checked
+                        {
+                            ++num2;
+                        }
+                    }
+                    var index = 0;
+                    while (index < musicDatabaseAlbums.Count)
+                    {
+                        var album = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Album).Trim();
+                        if (album != null && album.Length > 0)
+                        {
+                            var artist   = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Artist).Trim();
+                            var dbartist = Scraper.UndoArtistPrefix(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped)).ToLower();
+                            var dbalbum  = Utils.GetAlbum(album, Utils.Category.MusicFanartScraped).ToLower();
+                            var htArtistAlbum = dbartist + "-" + dbalbum ;
+                            // var num3 = 0;
+                            if (!hashtable1.Contains(htArtistAlbum)) // !!! The Beatles <> Beatles
+                            //    num3 = int.Parse((string) hashtable1[Utils.PatchSql(dbartist).ToLower() + "-" + Utils.PatchSql(dbalbum).ToLower()],CultureInfo.CurrentCulture);
+                            // if (num3 < 1) 
+                            {
+                                // var num4 = 0;
+                                if (!hashtable2.Contains(htArtistAlbum)) // !!! The Beatles <> Beatles
+                                //    num4 = int.Parse((string)hashtable2[Utils.PatchSql(dbartist).ToLower() + "-" + Utils.PatchSql(dbalbum).ToLower()],CultureInfo.CurrentCulture);
+                                // if (num4 < 1) 
+                                {
+                                    if (!StopScraper && !Utils.GetIsStopping()) 
+                                    {
+                                        scraper = new Scraper();
+                                        scraper.GetArtistAlbumThumbs(artist, album, false, false);
+                                        scraper = null;
+                                    }
+                                    else
+                                      break;
+                                }
+                            }
+                        }
+                        ++CurrArtistsBeingScraped;
+                        if (TotArtistsBeingScraped > 0.0 && FanartHandlerSetup.Fh.MyScraperWorker != null)
+                            FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(Convert.ToInt32(CurrArtistsBeingScraped/TotArtistsBeingScraped*100.0),"Ongoing");
+                        checked
+                        {
+                            ++index;
+                        }
+                    }
+                    logger.Debug("InitialScrape done for Artist/Album");
+                }
+                musicDatabaseArtists = null;
+                musicDatabaseAlbums = null;
+                AddScapedFanartToAnyHash();
+                logger.Info("InitialScrape is done.");
+            }
+            catch (Exception ex)
+            {
+                scraper = null;
+                logger.Error("InitialScrape: " + ex);
+            }
+        }
+
+        public void InitialThumbScrape(bool onlyMissing)
+        {
+            try
+            {
+                logger.Info("InitialThumbScrape is starting (only missing=" + (onlyMissing ? 1 : 0) + ")...");
+                musicDatabaseArtists = new ArrayList();
+                musicDatabaseAlbums = new List<AlbumInfo>();
+                m_db.GetAllArtists(ref musicDatabaseArtists);
+                m_db.GetAllAlbums(ref musicDatabaseAlbums);
+                var musicVideoArtists = Utils.GetMusicVideoArtists("mvCentral.db3");
+                if (musicVideoArtists != null && musicVideoArtists.Count > 0){
+                    logger.Debug("InitialThumbScrape add Artists from mvCentral ["+musicVideoArtists.Count+"]...");
+                    musicDatabaseArtists.AddRange(musicVideoArtists);
+                }
+                var musicVideoAlbums = Utils.GetMusicVideoAlbums("mvCentral.db3");
+                if (musicVideoAlbums != null && musicVideoAlbums.Count > 0) {
+                    logger.Debug("InitialThumbScrape add Artists/Albums from mvCentral ["+musicVideoAlbums.Count+"]...");
+                    musicDatabaseAlbums.AddRange(musicVideoAlbums);
+                }
+                TotArtistsBeingScraped = checked (musicDatabaseArtists.Count + musicDatabaseAlbums.Count);
+                if (musicDatabaseArtists != null && musicDatabaseArtists.Count > 0)
+                {
+                    var index = 0;
+                    while (index < musicDatabaseArtists.Count)
+                    {
+                        var artist = musicDatabaseArtists[index].ToString();
+                        if (!StopScraper && !Utils.GetIsStopping())
+                        {
+                            DoScrapeThumbs(artist, onlyMissing);
+                            ++CurrArtistsBeingScraped;
+                            checked
+                            {
+                                ++index;
+                            }
+                        }
+                        else
+                            break;
+                    }
+                }
+                if (musicDatabaseAlbums != null && musicDatabaseAlbums.Count > 0 &&
+                    Utils.ScrapeThumbnailsAlbum.Equals("True", StringComparison.CurrentCulture))
+                {
+                    scraper = new Scraper();
+                    var index = 0;
+                    while (index < musicDatabaseAlbums.Count)
+                    {
+                        var album = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Album).Trim();
+                        if (album != null && album.Length > 0)
+                        {
+                            var artist = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Artist).Trim();
+                            var dbartist = Utils.GetArtist(Scraper.UndoArtistPrefix(artist), Utils.Category.MusicFanartScraped);
+                            var dbalbum = Utils.GetAlbum(album, Utils.Category.MusicFanartScraped);
+                            /*
+                            var str = "SELECT count(Key1) "+
+                                       "FROM Image "+
+                                       "WHERE Key1 = '" + Utils.PatchSql(dbartist) + "' AND "+
+                                             "Key2 = '" + Utils.PatchSql(dbalbum) + "' AND "+
+                                             "Category in ('" + ((object) Utils.Category.MusicAlbumThumbScraped).ToString() + "') AND "+
+                                             "DummyItem = 'False';";
+                            SQLiteResultSet sqLiteResultSet;
+                            lock (lockObject)
+                                sqLiteResultSet = dbClient.Execute(str);
+                            */
+                            if (!Utils.GetDbm().HasAlbumThumb(dbartist,dbalbum) || !onlyMissing)
+                            {
+                            // if (int.Parse(sqLiteResultSet.GetField(0, 0), CultureInfo.CurrentCulture) < 1 || !onlyMissing) {
+                              if (!StopScraper && !Utils.GetIsStopping()) 
+                                scraper.GetArtistAlbumThumbs(artist, album, false, false);
+                              else
+                                break;
+                            }
+                        }
+                        ++CurrArtistsBeingScraped;
+                        checked
+                        {
+                            ++index;
+                        }
+                    }
+                    scraper = null;
+                }
+                logger.Info("InitialThumbScrape is done.");
+                musicDatabaseArtists = null;
+                musicDatabaseAlbums = null;
+            }
+            catch (Exception ex)
+            {
+                logger.Error("InitialThumbScrape: " + ex);
+            }
+        }
+        #endregion
+
+        #region Other Scrape
         public bool ArtistAlbumScrape(string artist, string album)
         {
             try
@@ -581,6 +1017,7 @@ namespace FanartHandler
                 return false;
             }
         }
+        #endregion
 
         public int GetTotalArtistsInMPMusicDatabase()
         {
@@ -596,6 +1033,7 @@ namespace FanartHandler
                 var str = "SELECT count(Key1) "+
                            "FROM Image "+
                            "WHERE Key1 = '" + Utils.PatchSql(artist) + "' AND "+
+                                 "Enabled = 'True' AND "+ // ???
                                  "Category = '" + Utils.PatchSql(((object) Utils.Category.MusicFanartScraped).ToString()) + "' AND "+
                                  "DummyItem = 'False';";
                 SQLiteResultSet sqLiteResultSet;
@@ -618,6 +1056,7 @@ namespace FanartHandler
                 var str = "SELECT count(Key1) "+
                            "FROM Image "+
                            "WHERE Key1 = '" + Utils.PatchSql(artist) + "' AND "+
+                                 "Enabled = 'True' AND "+ // ???
                                  "Category = '" + Utils.PatchSql(((object) Utils.Category.MusicArtistThumbScraped).ToString()) + "' AND "+
                                  "DummyItem = 'False';";
                 SQLiteResultSet sqLiteResultSet;
@@ -642,6 +1081,7 @@ namespace FanartHandler
                            "FROM Image "+
                            "WHERE Key1 = '" + Utils.PatchSql(artist) + "' AND "+
                                  "Key2 = '" + Utils.PatchSql(album) + "' AND "+
+                                 "Enabled = 'True' AND "+ // ???
                                  "Category = '" + Utils.PatchSql(((object) Utils.Category.MusicAlbumThumbScraped).ToString()) + "' AND "+
                                  "DummyItem = 'False';";
                 SQLiteResultSet sqLiteResultSet;
@@ -778,512 +1218,6 @@ namespace FanartHandler
             return num1;
         }
 
-        public int DoScrape(string artist, Hashtable htFanart)
-        {
-            if (!StopScraper)
-            {
-                Utils.AllocateDelayStop("FanartHandlerSetup-StartScraper");
-                try
-                {
-                    var artist1 = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
-                    scraper = new Scraper();
-                    var num1 = 0;
-                    if (artist != null && artist.Trim().Length > 0)
-                    {
-                        lock (lockObject)
-                            dbClient.Execute("BEGIN TRANSACTION;");
-                        var num2 = int.Parse(Utils.GetScraperMaxImages());
-                        var num3 = 0;
-                        if (htFanart.Contains(Utils.PatchSql(artist1)))
-                            num3 = int.Parse((string) htFanart[Utils.PatchSql(artist1)],CultureInfo.CurrentCulture);
-                        if (num3 < 1)
-                        {
-                            var numberOfFanartImages = GetNumberOfFanartImages(artist1);
-                            // DeleteDummyItem(artist1, Utils.Category.MusicFanartScraped);
-                            var iMax = checked (Convert.ToInt32(Utils.GetScraperMaxImages(),CultureInfo.CurrentCulture) - numberOfFanartImages);
-                            var doScrapeFanart = false;
-                            if (numberOfFanartImages < num2)
-                                doScrapeFanart = true;
-                            num1 = scraper.GetArtistFanart(artist, iMax, this, true, false, false, doScrapeFanart);
-                            if (num1 == 0)
-                            {
-                                logger.Info("No fanart found for Artist: " + artist + ".");
-                                // InsertDummyItem(artist1, Utils.Category.MusicFanartScraped, null, null);
-                            }
-                            if (num1 == 8888 && doScrapeFanart)
-                                logger.Info("Artist: " + artist + " has already maximum number of images. Will not download anymore images for this artist.");
-                        }
-                        lock (lockObject)
-                            dbClient.Execute("COMMIT;");
-                    }
-                    scraper = null;
-                    return num1;
-                }
-                catch (Exception ex)
-                {
-                    logger.Error("doScrape: " + ex);
-                    lock (lockObject)
-                        dbClient.Execute("ROLLBACK;");
-                }
-            }
-            return 0;
-        }
-
-        /*
-        public void InsertDummyItem(string artist, Utils.Category category, string album, string mbid)
-        {
-            try
-            {
-                var str1 = string.Empty;
-                var str2 = string.Empty;
-                var s = "";
-                if (category == Utils.Category.MusicArtistThumbScraped) {
-                    s = Config.GetFolder((Config.Dir) 6) + "\\Music\\Artists" + "\\" +
-                        MediaPortal.Util.Utils.MakeFileName(artist) + ".jpg";
-                }
-                else if (category == Utils.Category.MusicAlbumThumbScraped) {
-                    str1 = Config.GetFolder((Config.Dir) 6) + "\\Music\\Albums";
-                    var albumThumbName = MediaPortal.Util.Utils.GetAlbumThumbName(artist, album);
-                    if (albumThumbName.IndexOf(".jpg") > 0) {
-                        s = albumThumbName.Substring(0, albumThumbName.IndexOf(".jpg")) + ".jpg";
-                    }
-                    else {
-                        return;
-                    }
-                }
-                else {
-                    s = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\Scraper\\music" + "\\" +
-                        MediaPortal.Util.Utils.MakeFileName(artist) + " (" + randNumber.Next(10000, 99999) + ").jpg";
-                }
-                var str3 = "DELETE FROM Image WHERE Key1 = '" + Utils.PatchSql(artist) + "' AND Key2 = '" +
-                                                    Utils.PatchSql(album) + "' AND Category = '" + Utils.PatchSql((category).ToString()) +
-                                                    "' AND DummyItem = 'True';";
-                lock (lockObject)
-                    dbClient.Execute(str3);
-                if (DatabaseUtility.GetAsInt(dbClient.Execute("SELECT COUNT(Key1) FROM Image WHERE Key1 = '" + Utils.PatchSql(artist) +
-                                                                      "' AND Key2 = '" + Utils.PatchSql(album) + "' AND Category = '" +
-                                             Utils.PatchSql((category).ToString()) + "';"), 0, 0) > 0)
-                    return;
-                var now = DateTime.Now;
-                var str4 = "INSERT INTO Image (Id, Category, Provider, Key1, Key2, FullPath, SourcePath, AvailableRandom, Enabled, DummyItem, Time_Stamp, MBID) VALUES('" +
-                                               Utils.PatchSql(s) + "', '" + Utils.PatchSql((category).ToString()) + "','" +
-                                               Utils.PatchSql((Utils.Provider.Dummy).ToString()) + "','" + Utils.PatchSql(artist) + "','" +
-                                               Utils.PatchSql(album) + "',null, null, 'True', 'True', 'True', '" +
-                                               now.ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "','"+Utils.PatchSql(mbid)+"');";
-                lock (lockObject)
-                    dbClient.Execute(str4);
-            }
-            catch (Exception ex)
-            {
-                logger.Error("InsertDummyItem: " + ex);
-            }
-        }
-
-        public void DeleteDummyItem(string artist, Utils.Category category)
-        {
-            try
-            {
-                var str = "DELETE FROM Image WHERE Key1 = '" + Utils.PatchSql(artist) + "' AND Category = '" +
-                                                   Utils.PatchSql(((object) category).ToString()) + "' AND DummyItem = 'True';";
-                lock (lockObject)
-                    dbClient.Execute(str);
-            }
-            catch (Exception ex)
-            {
-                logger.Error("DeleteDummyItem: " + ex);
-            }
-        }
-        */
-
-        public int doScrapeThumbs(string artist, bool onlyMissing)
-        {
-            if (!StopScraper)
-            {
-                Utils.AllocateDelayStop("FanartHandlerSetup-StartScraper");
-                try
-                {
-                    var artist1 = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
-                    scraper = new Scraper();
-                    var num = 0;
-                    lock (lockObject)
-                        dbClient.Execute("BEGIN TRANSACTION;");
-                    if (artist != null && artist.Trim().Length > 0)
-                    {
-                        var str = "SELECT count(Key1) "+
-                                   "FROM Image "+
-                                   "WHERE Key1 = '" + Utils.PatchSql(artist1) + "' AND "+
-                                         "Enabled = 'True' AND "+
-                                         "Category in (" + Utils.GetMusicArtistCategoriesInStatement() + ") AND "+
-                                         "DummyItem = 'False';";
-                        SQLiteResultSet sqLiteResultSet;
-                        lock (lockObject)
-                            sqLiteResultSet = dbClient.Execute(str);
-                        if (int.Parse(sqLiteResultSet.GetField(0, 0), CultureInfo.CurrentCulture) < 1 || !onlyMissing)
-                        {
-                            num = scraper.GetArtistThumbs(artist, this, onlyMissing);
-                            if (num == 0)
-                                logger.Info("No fanart found for artist " + artist + ".");
-                        }
-                        scraper = null;
-                    }
-                    lock (lockObject)
-                        dbClient.Execute("COMMIT;");
-                    return num;
-                }
-                catch (Exception ex)
-                {
-                    logger.Error("doScrapeThumbs: " + ex);
-                    lock (lockObject)
-                        dbClient.Execute("ROLLBACK;");
-                }
-            }
-            return 0;
-        }
-
-        public int DoScrapeNew(string artist, string album, bool externalAccess)
-        {
-            if (!StopScraper)
-            {
-                try
-                {
-                    var artist1 = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
-                    scraper = new Scraper();
-                    var num1 = 0;
-                    lock (lockObject)
-                        dbClient.Execute("BEGIN TRANSACTION;");
-                    if (artist != null && artist.Trim().Length > 0)
-                    {
-                        var num2 = int.Parse(dbClient.Execute("SELECT count(Key1) "+
-                                                               "FROM Image "+
-                                                               "WHERE Key1 = '" + (object) Utils.PatchSql(artist1) + "' AND "+
-                                                                     "Enabled = 'True' AND "+
-                                                                     "Category IN ('" + Utils.Category.MusicFanartScraped + "') AND "+
-                                                                     "DummyItem = 'False';").GetField(0, 0), CultureInfo.CurrentCulture);
-                        var doTriggerRefresh = false;
-                        if (num2 == 0 && !externalAccess)
-                            doTriggerRefresh = true;
-                        var iMax = checked (Convert.ToInt32(Utils.GetScraperMaxImages(),CultureInfo.CurrentCulture) - num2);
-                        if (iMax < 0) iMax = 0;
-                        num1 = scraper.GetArtistFanart(artist, iMax, this, false, doTriggerRefresh, externalAccess, true);
-                        switch (num1)
-                        {
-                            case 0:
-                                logger.Info("No fanart found for Artist: " + artist + ".");
-                                break;
-                            case 8888:
-                                logger.Info("Artist: " + artist + " has already maximum number of images. Will not download anymore images for this artist.");
-                                break;
-                        }
-                        if (StopScraper)
-                            return num1;
-                        // var validUrlLastFmString1 = Scraper.getValidURLLastFMString(Scraper.UndoArtistPrefix(artist));
-                        // var validUrlLastFmString2 = Scraper.getValidURLLastFMString(album);
-                        // var validUrlLastFmString1 = Scraper.UndoArtistPrefix(artist);
-                        // var validUrlLastFmString2 = album;
-                        // Utils.GetArtist(validUrlLastFmString1, Utils.Category.MusicFanartScraped);
-                        // Utils.GetArtist(validUrlLastFmString2, Utils.Category.MusicFanartScraped);
-                        //if (!Utils.GetDbm().HasAlbumThumb(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped),Utils.GetArtist(album, Utils.Category.MusicFanartScraped)) && 
-                        if (!Utils.GetDbm().HasAlbumThumb(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped),Utils.GetAlbum(album, Utils.Category.MusicFanartScraped)) && 
-                             Utils.ScrapeThumbnailsAlbum.Equals("True", StringComparison.CurrentCulture)
-                           )
-                        {
-                        /*
-                            Utils.GetDbm().InsertDummyItem(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped),
-                                                           Utils.Category.MusicAlbumThumbScraped,
-                        //                                   Utils.GetArtist(album, Utils.Category.MusicFanartScraped));
-                                                           Utils.GetAlbum(album, Utils.Category.MusicFanartScraped), 
-                                                           null);
-                        */
-                        //    scraper.LastFMGetTumbnails(Utils.Category.MusicAlbumThumbScraped, artist, album, externalAccess);
-                          scraper.GetArtistAlbumThumbs(artist, album, false, externalAccess);
-                        }
-                        scraper = null;
-                    }
-                    lock (lockObject)
-                        dbClient.Execute("COMMIT;");
-                    return num1;
-                }
-                catch (Exception ex)
-                {
-                    logger.Error("DoScrapeNew: " + ex);
-                    lock (lockObject)
-                        dbClient.Execute("ROLLBACK;");
-                }
-            }
-            return 0;
-        }
-
-        public void InitialScrape()
-        {
-            try
-            {
-                logger.Info("InitialScrape is starting...");
-                var flag = true;
-                musicDatabaseArtists = new ArrayList();
-                musicDatabaseAlbums = new List<AlbumInfo>();
-                m_db.GetAllArtists(ref musicDatabaseArtists);
-                m_db.GetAllAlbums(ref musicDatabaseAlbums);
-                var musicVideoArtists = Utils.GetMusicVideoArtists("mvCentral.db3");
-                if (musicVideoArtists != null && musicVideoArtists.Count > 0) {
-                    logger.Debug("InitialScrape add Artists from mvCentral ["+musicVideoArtists.Count+"]...");
-                    musicDatabaseArtists.AddRange(musicVideoArtists);
-                }
-                var musicVideoAlbums = Utils.GetMusicVideoAlbums("mvCentral.db3");
-                if (musicVideoAlbums != null && musicVideoAlbums.Count > 0) {
-                    logger.Debug("InitialScrape add Artists/Albums from mvCentral ["+musicVideoAlbums.Count+"]...");
-                    musicDatabaseAlbums.AddRange(musicVideoAlbums);
-                }
-                if (FanartHandlerSetup.Fh.MyScraperWorker != null)
-                    FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, "Start");
-                TotArtistsBeingScraped = checked (musicDatabaseArtists.Count + musicDatabaseAlbums.Count);
-                if (musicDatabaseArtists != null && musicDatabaseArtists.Count > 0)
-                {
-                    logger.Debug("InitialScrape initiating for Artist...");
-                    var htFanart = new Hashtable();
-                    var str = "SELECT Key1, count(Key1) "+
-                               "FROM Image "+
-                               "WHERE Enabled = 'True' AND "+
-                                     "Category in ('" + ((object) Utils.Category.MusicFanartScraped).ToString() + "') AND "+
-                                     "Time_Stamp >= '" + DateTime.Today.AddDays(-14.0).ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "' AND "+
-                                     "DummyItem = 'False' "+
-                               "GROUP BY Key1;";
-                    SQLiteResultSet sqLiteResultSet;
-                    lock (lockObject)
-                        sqLiteResultSet = dbClient.Execute(str);
-                    var num = 0;
-                    while (num < sqLiteResultSet.Rows.Count)
-                    {
-                        if (!htFanart.Contains(sqLiteResultSet.GetField(num, 0)))
-                            htFanart.Add(sqLiteResultSet.GetField(num, 0), sqLiteResultSet.GetField(num, 1));
-                        checked
-                        {
-                            ++num;
-                        }
-                    }
-                    var index = 0;
-                    while (index < musicDatabaseArtists.Count)
-                    {
-                        var artist = musicDatabaseArtists[index].ToString();
-                        if (!StopScraper && !Utils.GetIsStopping()) 
-                        {
-                            if (DoScrape(artist, htFanart) > 0 && flag)
-                            {
-                                AddScapedFanartToAnyHash();
-                                if (FanartHandlerSetup.Fh.MyScraperNowWorker != null)
-                                {
-                                    FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh = true;
-                                    flag = false;
-                                }
-                            }
-                            ++CurrArtistsBeingScraped;
-                            if (TotArtistsBeingScraped > 0.0 && FanartHandlerSetup.Fh.MyScraperWorker != null)
-                              FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(Convert.ToInt32(CurrArtistsBeingScraped/TotArtistsBeingScraped*100.0),"Ongoing");
-                            checked
-                            {
-                                ++index;
-                            }
-                        }
-                        else
-                            break;
-                    }
-                    logger.Debug("InitialScrape done for Artist...");
-                }
-                if (musicDatabaseAlbums != null && musicDatabaseAlbums.Count > 0 &&
-                    Utils.ScrapeThumbnailsAlbum.Equals("True", StringComparison.CurrentCulture))
-                {
-                    logger.Debug("InitialScrape initiating for Artist/Album...");
-                    scraper = new Scraper();
-                    var hashtable1 = new Hashtable();
-                    var str1 = "SELECT Key1, Key2, count(Key1) "+
-                                "FROM Image "+
-                                "WHERE Category IN ('" + ((object) Utils.Category.MusicAlbumThumbScraped).ToString() + "') AND "+
-                                      "Time_Stamp >= '" + DateTime.Today.AddDays(-14.0).ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "' AND "+
-                                      "DummyItem = 'False' "+
-                                "GROUP BY Key1, Key2;";
-                    SQLiteResultSet sqLiteResultSet;
-                    lock (lockObject)
-                        sqLiteResultSet = dbClient.Execute(str1);
-                    var num1 = 0;
-                    while (num1 < sqLiteResultSet.Rows.Count)
-                    {
-                        if (!hashtable1.Contains(sqLiteResultSet.GetField(num1, 0) + "-" + sqLiteResultSet.GetField(num1, 1)))
-                            hashtable1.Add(sqLiteResultSet.GetField(num1, 0) + "-" + sqLiteResultSet.GetField(num1, 1),sqLiteResultSet.GetField(num1, 2));
-                        checked
-                        {
-                            ++num1;
-                        }
-                    }
-                    var hashtable2 = new Hashtable();
-                    var str2 = "SELECT Key1, Key2, count(Key1) "+
-                                "FROM Image "+
-                                "WHERE Category IN ('" + ((object) Utils.Category.MusicAlbumThumbScraped).ToString() + "') AND "+
-                                      "DummyItem = 'False' "+
-                                "GROUP BY Key1, Key2;";
-                    lock (lockObject)
-                        sqLiteResultSet = dbClient.Execute(str2);
-                    var num2 = 0;
-                    while (num2 < sqLiteResultSet.Rows.Count)
-                    {
-                        if (!hashtable2.Contains(sqLiteResultSet.GetField(num2, 0) + "-" + sqLiteResultSet.GetField(num2, 1)))
-                            hashtable2.Add(sqLiteResultSet.GetField(num2, 0) + "-" + sqLiteResultSet.GetField(num2, 1),sqLiteResultSet.GetField(num2, 2));
-                        checked
-                        {
-                            ++num2;
-                        }
-                    }
-                    var index = 0;
-                    while (index < musicDatabaseAlbums.Count)
-                    {
-                        var album = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Album).Trim();
-                        if (album != null && album.Length > 0)
-                        {
-                            var artist1 = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Artist).Trim();
-                            // var validUrlLastFmString1 = Scraper.getValidURLLastFMString(Scraper.UndoArtistPrefix(artist1));
-                            // var validUrlLastFmString2 = Scraper.getValidURLLastFMString(album);
-                            // var validUrlLastFmString1 = Scraper.UndoArtistPrefix(artist1);
-                            // var validUrlLastFmString2 = album;
-                            // var artist2 = Utils.GetArtist(validUrlLastFmString1, Utils.Category.MusicFanartScraped);
-                            var dbartist = Utils.GetArtist(Scraper.UndoArtistPrefix(artist1), Utils.Category.MusicFanartScraped);
-                            // var artist3 = Utils.GetArtist(validUrlLastFmString2, Utils.Category.MusicFanartScraped);
-                            // var artist3 = Utils.GetAlbum(validUrlLastFmString2, Utils.Category.MusicFanartScraped);
-                            var dbalbum = Utils.GetAlbum(album, Utils.Category.MusicFanartScraped);
-                            var num3 = 0;
-                            if (hashtable1.Contains(Utils.PatchSql(dbartist) + "-" + Utils.PatchSql(dbalbum)))
-                                num3 = int.Parse((string) hashtable1[Utils.PatchSql(dbartist) + "-" + Utils.PatchSql(dbalbum)],CultureInfo.CurrentCulture);
-                            if (num3 < 1) {
-                                var num4 = 0;
-                                if (hashtable2.Contains(Utils.PatchSql(dbartist) + "-" + Utils.PatchSql(dbalbum)))
-                                    num4 = int.Parse((string)hashtable2[Utils.PatchSql(dbartist) + "-" + Utils.PatchSql(dbalbum)],CultureInfo.CurrentCulture);
-                                if (num4 < 1) {
-                                    if (!StopScraper && !Utils.GetIsStopping()) {
-                                        // InsertDummyItem(artist2, Utils.Category.MusicAlbumThumbScraped, artist3, null);
-                                        // scraper.LastFMGetTumbnails(Utils.Category.MusicAlbumThumbScraped, artist1, album, false);
-                                        scraper.GetArtistAlbumThumbs(artist1, album, false, false);
-                                    }
-                                    else
-                                      break;
-                                }
-                            }
-                        }
-                        ++CurrArtistsBeingScraped;
-                        if (TotArtistsBeingScraped > 0.0 && FanartHandlerSetup.Fh.MyScraperWorker != null)
-                            FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(Convert.ToInt32(CurrArtistsBeingScraped/TotArtistsBeingScraped*100.0),"Ongoing");
-                        checked
-                        {
-                            ++index;
-                        }
-                    }
-                    scraper = null;
-                    logger.Debug("InitialScrape done for Artist/Album");
-                }
-                musicDatabaseArtists = null;
-                musicDatabaseAlbums = null;
-                AddScapedFanartToAnyHash();
-                logger.Info("InitialScrape is done.");
-            }
-            catch (Exception ex)
-            {
-                logger.Error("InitialScrape: " + ex);
-            }
-        }
-
-
-        public void InitialThumbScrape(bool onlyMissing)
-        {
-            try
-            {
-                logger.Info("InitialThumbScrape is starting (only missing=" + (onlyMissing ? 1 : 0) + ")...");
-                musicDatabaseArtists = new ArrayList();
-                musicDatabaseAlbums = new List<AlbumInfo>();
-                m_db.GetAllArtists(ref musicDatabaseArtists);
-                m_db.GetAllAlbums(ref musicDatabaseAlbums);
-                var musicVideoArtists = Utils.GetMusicVideoArtists("mvCentral.db3");
-                if (musicVideoArtists != null && musicVideoArtists.Count > 0){
-                    logger.Debug("InitialThumbScrape add Artists from mvCentral ["+musicVideoArtists.Count+"]...");
-                    musicDatabaseArtists.AddRange(musicVideoArtists);
-                }
-                var musicVideoAlbums = Utils.GetMusicVideoAlbums("mvCentral.db3");
-                if (musicVideoAlbums != null && musicVideoAlbums.Count > 0) {
-                    logger.Debug("InitialThumbScrape add Artists/Albums from mvCentral ["+musicVideoAlbums.Count+"]...");
-                    musicDatabaseAlbums.AddRange(musicVideoAlbums);
-                }
-                TotArtistsBeingScraped = checked (musicDatabaseArtists.Count + musicDatabaseAlbums.Count);
-                if (musicDatabaseArtists != null && musicDatabaseArtists.Count > 0)
-                {
-                    var index = 0;
-                    while (index < musicDatabaseArtists.Count)
-                    {
-                        var artist = musicDatabaseArtists[index].ToString();
-                        if (!StopScraper && !Utils.GetIsStopping())
-                        {
-                            doScrapeThumbs(artist, onlyMissing);
-                            ++CurrArtistsBeingScraped;
-                            checked
-                            {
-                                ++index;
-                            }
-                        }
-                        else
-                            break;
-                    }
-                }
-                if (musicDatabaseAlbums != null && musicDatabaseAlbums.Count > 0 &&
-                    Utils.ScrapeThumbnailsAlbum.Equals("True", StringComparison.CurrentCulture))
-                {
-                    scraper = new Scraper();
-                    var index = 0;
-                    while (index < musicDatabaseAlbums.Count)
-                    {
-                        var album = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Album).Trim();
-                        if (album != null && album.Length > 0)
-                        {
-                            var artist1 = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Artist).Trim();
-                            // var validUrlLastFmString1 = Scraper.getValidURLLastFMString(Scraper.UndoArtistPrefix(artist1));
-                            // var validUrlLastFmString2 = Scraper.getValidURLLastFMString(album);
-                            // var validUrlLastFmString1 = Scraper.UndoArtistPrefix(artist1);
-                            // var validUrlLastFmString2 = album;
-                            // var artist2 = Utils.GetArtist(validUrlLastFmString1, Utils.Category.MusicFanartScraped);
-                            var dbartist = Utils.GetArtist(Scraper.UndoArtistPrefix(artist1), Utils.Category.MusicFanartScraped);
-                            // var artist3 = Utils.GetArtist(validUrlLastFmString2, Utils.Category.MusicFanartScraped);
-                            // var artist3 = Utils.GetAlbum(validUrlLastFmString2, Utils.Category.MusicFanartScraped);
-                            var dbalbum = Utils.GetAlbum(album, Utils.Category.MusicFanartScraped);
-                            var str = "SELECT count(Key1) "+
-                                       "FROM Image "+
-                                       "WHERE Key1 = '" + Utils.PatchSql(dbartist) + "' AND "+
-                                             "Key2 = '" + Utils.PatchSql(dbalbum) + "' AND "+
-                                             "Category in ('" + ((object) Utils.Category.MusicAlbumThumbScraped).ToString() + "') AND "+
-                                             "DummyItem = 'False';";
-                            SQLiteResultSet sqLiteResultSet;
-                            lock (lockObject)
-                                sqLiteResultSet = dbClient.Execute(str);
-                            if (int.Parse(sqLiteResultSet.GetField(0, 0), CultureInfo.CurrentCulture) < 1 || !onlyMissing) {
-                                if (!StopScraper && !Utils.GetIsStopping()) {
-                                    // Utils.GetDbm().InsertDummyItem(artist2, Utils.Category.MusicAlbumThumbScraped, artist3, null);
-                                    // scraper.LastFMGetTumbnails(Utils.Category.MusicAlbumThumbScraped, artist1, album, false);
-                                    scraper.GetArtistAlbumThumbs(artist1, album, false, false);
-                                }
-                                else
-                                    break;
-                            }
-                        }
-                        ++CurrArtistsBeingScraped;
-                        checked
-                        {
-                            ++index;
-                        }
-                    }
-                    scraper = null;
-                }
-                logger.Info("InitialThumbScrape is done.");
-                musicDatabaseArtists = null;
-                musicDatabaseAlbums = null;
-            }
-            catch (Exception ex)
-            {
-                logger.Error("InitialThumbScrape: " + ex);
-            }
-        }
-
         private void AddScapedFanartToAnyHash()
         {
             if (HtAnyFanart == null)
@@ -1323,7 +1257,7 @@ namespace FanartHandler
             try
             {
                 lock (lockObject)
-                    dbClient.Execute("DELETE FROM Image WHERE Category = '" + Utils.PatchSql(((object) category).ToString()) + "';");
+                    dbClient.Execute("DELETE FROM Image WHERE Category = '" + ((object) category).ToString() + "';");
             }
             catch (Exception ex)
             {
@@ -1385,7 +1319,7 @@ namespace FanartHandler
                 var str = "SELECT Key1, Enabled, AvailableRandom, FullPath, ROWID "+
                            "FROM Image "+
                            "WHERE DummyItem = 'False' AND "+
-                                 "Category IN ('" + Utils.Category.MusicFanartScraped + "','" + Utils.Category.MusicFanartManual +
+                                 "Category IN ('" + ((object) Utils.Category.MusicFanartScraped).ToString() + "','" + ((object) Utils.Category.MusicFanartManual).ToString() +
                             // "') order by Key1, FullPath LIMIT " + start + ",500;";
                                              "') "+
                            "ORDER BY Key1, FullPath;";
@@ -1408,7 +1342,7 @@ namespace FanartHandler
                            "FROM Image "+
                            "WHERE ROWID > " + lastID + " AND "+
                                  "DummyItem = 'False' AND "+
-                                 "Category IN ('" + Utils.Category.MusicFanartScraped + "','" + Utils.Category.MusicFanartManual + "') "+
+                                 "Category IN ('" + ((object) Utils.Category.MusicFanartScraped).ToString() + "','" + ((object) Utils.Category.MusicFanartManual).ToString() + "') "+
                            "ORDER BY Key1, FullPath";
                 lock (lockObject)
                     sqLiteResultSet = dbClient.Execute(str);
@@ -1483,123 +1417,6 @@ namespace FanartHandler
             return filenames;
         }
 
-        public Hashtable GetAnyHashtable(Utils.Category category)
-        {
-            if (HtAnyFanart == null)
-                HtAnyFanart = new Hashtable();
-            if (HtAnyFanart.ContainsKey(category))
-                return (Hashtable) HtAnyFanart[category];
-            else
-                return null;
-        }
-
-        private void AddToAnyHashtable(Utils.Category category, Hashtable ht)
-        {
-            if (HtAnyFanart == null)
-                HtAnyFanart = new Hashtable();
-            if (!HtAnyFanart.ContainsKey(category))
-                return;
-            HtAnyFanart.Remove(category);
-            HtAnyFanart.Add(category, ht);
-        }
-
-        public Hashtable GetAnyFanart(Utils.Category category)
-        {
-            var filenames = GetAnyHashtable(category);
-            try
-            {
-                if (filenames != null)
-                    return filenames;
-                filenames = new Hashtable();
-                var str1 = string.Empty;
-                if (category == Utils.Category.MusicFanartScraped)
-                {
-                    if (FanartHandlerSetup.Fh.UseAlbum.Equals("True", StringComparison.CurrentCulture) &&
-                        FanartHandlerSetup.Fh.DisableMPTumbsForRandom.Equals("False", StringComparison.CurrentCulture))
-                    {
-                        if (str1.Length > 0)
-                            str1 = string.Concat(new object[4]
-                            {
-                                str1,
-                                ",'",
-                                Utils.Category.MusicAlbumThumbScraped,
-                                "'"
-                            });
-                        else
-                            str1 = "'" + Utils.Category.MusicAlbumThumbScraped + "'";
-                    }
-                    if (FanartHandlerSetup.Fh.UseArtist.Equals("True", StringComparison.CurrentCulture) &&
-                        FanartHandlerSetup.Fh.DisableMPTumbsForRandom.Equals("False", StringComparison.CurrentCulture))
-                    {
-                        if (str1.Length > 0)
-                            str1 = string.Concat(new object[4]
-                            {
-                                str1,
-                                ",'",
-                                Utils.Category.MusicArtistThumbScraped,
-                                "'"
-                            });
-                        else
-                            str1 = "'" + Utils.Category.MusicArtistThumbScraped + "'";
-                    }
-                    if (FanartHandlerSetup.Fh.UseFanart.Equals("True", StringComparison.CurrentCulture))
-                    {
-                        string str2;
-                        if (str1.Length > 0)
-                            str2 = string.Concat(new object[4]
-                            {
-                                str1,
-                                ",'",
-                                Utils.Category.MusicFanartScraped,
-                                "'"
-                            });
-                        else
-                            str2 = "'" + Utils.Category.MusicFanartScraped + "'";
-                        if (str2.Length > 0)
-                            str1 = string.Concat(new object[4]
-                            {
-                                str2,
-                                ",'",
-                                Utils.Category.MusicFanartManual,
-                                "'"
-                            });
-                        else
-                            str1 = "'" + Utils.Category.MusicFanartManual + "'";
-                    }
-                }
-                else
-                    str1 = "'" + ((object) category).ToString() + "'";
-                var str3 = "SELECT Id, Key1, FullPath, SourcePath, Category, Provider "+
-                            "FROM Image "+
-                            "WHERE Enabled = 'True' AND "+
-                                  "AvailableRandom = 'True' AND "+
-                                  "Category IN (" + str1 + ");";
-                SQLiteResultSet sqLiteResultSet;
-                lock (lockObject)
-                    sqLiteResultSet = dbClient.Execute(str3);
-                var num = 0;
-                while (num < sqLiteResultSet.Rows.Count)
-                {
-                    var fanartImage = new FanartImage(sqLiteResultSet.GetField(num, 0), sqLiteResultSet.GetField(num, 1),
-                                                      sqLiteResultSet.GetField(num, 2), sqLiteResultSet.GetField(num, 3),
-                                                      sqLiteResultSet.GetField(num, 4), sqLiteResultSet.GetField(num, 5));
-                    filenames.Add(num, fanartImage);
-                    checked
-                    {
-                        ++num;
-                    }
-                }
-                Utils.Shuffle(ref filenames);
-                AddToAnyHashtable(category, filenames);
-                return filenames;
-            }
-            catch (Exception ex)
-            {
-                logger.Error("getAnyFanart: " + ex);
-                return filenames;
-            }
-        }
-
         private string GetImageId(string artist, string diskImage, string sourceImage, Utils.Category category, string album, Utils.Provider provider, string _id)
         {
             var str = string.Empty;
@@ -1649,36 +1466,36 @@ namespace FanartHandler
                 var SQL = string.Empty;
                 var now = DateTime.Now;
                 album = (category != Utils.Category.MusicAlbumThumbScraped) ? null : album ;
-                SQL = "DELETE FROM Image "+
-                       "WHERE Key1 = '" + Utils.PatchSql(artist) + "' AND "+
-                             "Category = '" + Utils.PatchSql(((object) category).ToString()) + "' AND "+
-                             "DummyItem = 'True';";
-                lock (lockObject)
-                    dbClient.Execute(SQL);
+
+                DeleteDummyItem(artist, album, category) ;
                 if (DatabaseUtility.GetAsInt(dbClient.Execute("SELECT COUNT(Key1) "+
                                                                "FROM Image "+
                                                                "WHERE Id = '" + Utils.PatchSql(imageId) + "' AND "+
-                                                                     "Provider = '" + Utils.PatchSql(((object) provider).ToString()) + "';"), 0, 0) > 0)
+                                                                     "Provider = '" + ((object) provider).ToString() + "';"), 0, 0) > 0)
                 {
-                    SQL = "UPDATE Image SET Category = '" + Utils.PatchSql(((object) category).ToString()) + "', "+
-                                           "Provider = '" + Utils.PatchSql(((object) provider).ToString()) + "', "+
+                    SQL = "UPDATE Image SET Category = '" + ((object) category).ToString() + "', "+
+                                           "Provider = '" + ((object) provider).ToString() + "', "+
                                            "Key1 = '" + Utils.PatchSql(artist) + "', "+
                                            "Key2 = '" + Utils.PatchSql(album) + "', "+
                                            "FullPath = '" + Utils.PatchSql(diskImage) + "', "+
                                            "SourcePath = '" + Utils.PatchSql(sourceImage) + "', "+
+                                           "AvailableRandom = 'True', "+
                                            "Enabled = 'True', "+
+                                           "DummyItem = 'False', "+
                                            "Time_Stamp = '" + now.ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "' "+
+                                           ((string.IsNullOrEmpty(mbid)) ? "" : ", MBID = '"+Utils.PatchSql(mbid)+"' ") +
                           "WHERE Id = '" + Utils.PatchSql(imageId) + "' AND "+
-                                "Provider = '" + Utils.PatchSql(((object) provider).ToString()) + "';";
+                                "Provider = '" + ((object) provider).ToString() + "';";
                     lock (lockObject)
                         dbClient.Execute(SQL);
+                    logger.Debug("Updating fanart in fanart handler database (" + diskImage + ").");
                 }
                 else
                 {
                     SQL = "INSERT INTO Image (Id, Category, Provider, Key1, Key2, FullPath, SourcePath, AvailableRandom, Enabled, DummyItem, Time_Stamp, MBID) "+
                            "VALUES('" + Utils.PatchSql(imageId) + "',"+
-                                  "'" + Utils.PatchSql(((object) category).ToString()) + "',"+
-                                  "'" + Utils.PatchSql(((object) provider).ToString()) + "',"+
+                                  "'" + ((object) category).ToString() + "',"+
+                                  "'" + ((object) provider).ToString() + "',"+
                                   "'" + Utils.PatchSql(artist) + "',"+
                                   "'" + Utils.PatchSql(album) + "',"+
                                   "'" + Utils.PatchSql(diskImage) + "',"+
@@ -1688,7 +1505,7 @@ namespace FanartHandler
                                   "'"+Utils.PatchSql(mbid)+"');";
                     lock (lockObject)
                         dbClient.Execute(SQL);
-                    logger.Info("Importing local fanart into fanart handler database (" + diskImage + ").");
+                    logger.Info("Importing fanart into fanart handler database (" + diskImage + ").");
                 }
             }
             catch (Exception ex)
@@ -1698,7 +1515,7 @@ namespace FanartHandler
             }
         }
 
-        public bool SourceImageExist(string artist, string diskImage, string sourceImage, Utils.Category category, string album, Utils.Provider provider, string _id)
+        public bool SourceImageExist(string artist, string diskImage, string sourceImage, Utils.Category category, string album, Utils.Provider provider, string _id, string mbid)
         {
             try
             {
@@ -1706,12 +1523,14 @@ namespace FanartHandler
                 if (DatabaseUtility.GetAsInt(dbClient.Execute("SELECT COUNT(Key1) "+
                                                                "FROM Image "+
                                                                "WHERE Id = '" + Utils.PatchSql(imageId) + "' AND "+
-                                                                     "Provider = '" + Utils.PatchSql(((object) provider).ToString()) + "';"),0, 0) <= 0)
+                                                                     "Provider = '" + ((object) provider).ToString() + "';"),0, 0) <= 0)
                     return false;
                 lock (lockObject)
                     dbClient.Execute("UPDATE Image "+
                                       "SET Time_Stamp = '" + DateTime.Now.ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "' "+
-                                      "WHERE Id = '" + Utils.PatchSql(imageId) + "';");
+                                      (string.IsNullOrEmpty(mbid) ? "" : ", MBID ='"+Utils.PatchSql(mbid)+"' ") +
+                                      "WHERE Id = '" + Utils.PatchSql(imageId) + "' AND "+
+                                            "Provider = '" + ((object) provider).ToString() + "';");
                 return true;
             }
             catch (Exception ex)
@@ -1741,17 +1560,103 @@ namespace FanartHandler
         }
         // End: GetDBMuzicBrainzID
 
+        #region Hash
+        public Hashtable GetAnyHashtable(Utils.Category category)
+        {
+            if (HtAnyFanart == null)
+                HtAnyFanart = new Hashtable();
+            if (HtAnyFanart.ContainsKey(category))
+                return (Hashtable) HtAnyFanart[category];
+            else
+                return null;
+        }
+
+        private void AddToAnyHashtable(Utils.Category category, Hashtable ht)
+        {
+            if (HtAnyFanart == null)
+                HtAnyFanart = new Hashtable();
+            if (!HtAnyFanart.ContainsKey(category))
+                return;
+            HtAnyFanart.Remove(category);
+            HtAnyFanart.Add(category, ht);
+        }
+        #endregion
+
+        #region HashFanart
+        public Hashtable GetAnyFanart(Utils.Category category)
+        {
+            var filenames = GetAnyHashtable(category);
+            try
+            {
+                if (filenames != null)
+                    return filenames;
+                filenames = new Hashtable();
+                var SQLCategory = string.Empty;
+
+                if (category == Utils.Category.MusicFanartScraped)
+                {
+                    if (FanartHandlerSetup.Fh.UseAlbum.Equals("True", StringComparison.CurrentCulture) &&
+                        FanartHandlerSetup.Fh.DisableMPTumbsForRandom.Equals("False", StringComparison.CurrentCulture))
+                    {
+                       SQLCategory = (SQLCategory.Length > 0 ? SQLCategory + "," : string.Empty) + "'" + ((object) Utils.Category.MusicAlbumThumbScraped).ToString() + "'";
+                    }
+                    if (FanartHandlerSetup.Fh.UseArtist.Equals("True", StringComparison.CurrentCulture) &&
+                        FanartHandlerSetup.Fh.DisableMPTumbsForRandom.Equals("False", StringComparison.CurrentCulture))
+                    {
+                       SQLCategory = (SQLCategory.Length > 0 ? SQLCategory + "," : string.Empty) + "'" + ((object) Utils.Category.MusicArtistThumbScraped).ToString() + "'";
+                    }
+                    if (FanartHandlerSetup.Fh.UseFanart.Equals("True", StringComparison.CurrentCulture))
+                    {
+                       SQLCategory = (SQLCategory.Length > 0 ? SQLCategory + "," : string.Empty) + "'" + ((object) Utils.Category.MusicFanartScraped).ToString() + "',"+
+                                                                                                   "'" + ((object) Utils.Category.MusicFanartManual).ToString() + "'";
+                    }
+                }
+                else
+                    SQLCategory = "'" + ((object) category).ToString() + "'";
+
+                if (!string.IsNullOrEmpty(SQLCategory))
+                {
+                    var SQL = "SELECT Id, Key1, FullPath, SourcePath, Category, Provider "+
+                               "FROM Image "+
+                               "WHERE Enabled = 'True' AND "+
+                                     "AvailableRandom = 'True' AND "+
+                                     "Category IN (" + SQLCategory + ");";
+                    SQLiteResultSet sqLiteResultSet;
+                    lock (lockObject)
+                        sqLiteResultSet = dbClient.Execute(SQL);
+                    var num = 0;
+                    while (num < sqLiteResultSet.Rows.Count)
+                    {
+                        var fanartImage = new FanartImage(sqLiteResultSet.GetField(num, 0), sqLiteResultSet.GetField(num, 1),
+                                                          sqLiteResultSet.GetField(num, 2), sqLiteResultSet.GetField(num, 3),
+                                                          sqLiteResultSet.GetField(num, 4), sqLiteResultSet.GetField(num, 5));
+                        filenames.Add(num, fanartImage);
+                        checked
+                        {
+                            ++num;
+                        }
+                    }
+                    Utils.Shuffle(ref filenames);
+                    AddToAnyHashtable(category, filenames);
+                }
+                return filenames;
+            }
+            catch (Exception ex)
+            {
+                logger.Error("getAnyFanart: " + ex);
+                return filenames;
+            }
+        }
+
         public Hashtable GetAllFilenames(Utils.Category category)
         {
             var hashtable = new Hashtable();
             try
             {
-                var str1 = string.Empty;
-                var str2 = string.Empty;
-                var str3 = "SELECT FullPath FROM image WHERE Category = '" + category + "';";
+                var SQL = "SELECT FullPath FROM image WHERE Category = '" + ((object) category).ToString() + "';";
                 SQLiteResultSet sqLiteResultSet;
                 lock (lockObject)
-                    sqLiteResultSet = dbClient.Execute(str3);
+                    sqLiteResultSet = dbClient.Execute(SQL);
                 var num = 0;
                 while (num < sqLiteResultSet.Rows.Count)
                 {
@@ -1770,5 +1675,99 @@ namespace FanartHandler
             }
             return hashtable;
         }
+        #endregion
+
+        #region Dummy
+        public void InsertDummyItem(string artist, string album, string mbid, Utils.Category category)
+        {
+            try
+            {
+                var DummyFile = string.Empty;
+                    
+                if (category == Utils.Category.MusicArtistThumbScraped) 
+                {
+                  DummyFile = Config.GetFolder((Config.Dir) 6) + "\\Music\\Artists\\" + MediaPortal.Util.Utils.MakeFileName(artist) + ".jpg";
+                }
+                else if (category == Utils.Category.MusicAlbumThumbScraped) 
+                {
+                  DummyFile = Config.GetFolder((Config.Dir) 6) + "\\Music\\Albums\\" + MediaPortal.Util.Utils.GetAlbumThumbName(artist, album);
+                  if (DummyFile.IndexOf(".jpg") < 0) 
+                    DummyFile = DummyFile + ".jpg" ;
+                }
+                else if (category == Utils.Category.MusicFanartScraped)
+                {
+                  DummyFile = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\Scraper\\music\\" + MediaPortal.Util.Utils.MakeFileName(artist) + " (" + randNumber.Next(10000, 99999) + ").jpg";
+                }
+                else
+                {
+                  logger.Warn("InsertDummyItem: Wrong category: " + category.ToString());
+                  return;
+                }  
+
+                var now = DateTime.Now;
+                var SQL = string.Empty;
+                DeleteDummyItem(artist, album, category) ;
+                /*
+                if (DatabaseUtility.GetAsInt(dbClient.Execute("SELECT COUNT(Key1) "+
+                                                               "FROM Image "+
+                                                               "WHERE Key1 = '" + Utils.PatchSql(artist) + "' AND "+
+                                                                     "Key2 = '" + Utils.PatchSql(album) + "' AND "+
+                                                                     "Category = '" + ((object) category).ToString() + "' AND "+
+                                                                     "DummyItem = 'True';"), 0, 0) > 0)
+                  SQL = "UPDATE Image SET Category = '" + ((object) category).ToString() + "', "+
+                                         "Provider = '" + ((object) Utils.Provider.Dummy).ToString() + "', "+
+                                         "Key1 = '" + Utils.PatchSql(artist) + "', "+
+                                         "Key2 = '" + Utils.PatchSql(album) + "', "+
+                                         "FullPath = 'null', "+
+                                         "SourcePath = 'null', "+
+                                         "AvailableRandom = 'False', "+
+                                         "Enabled = 'False', "+
+                                         "DummyItem = 'True', "+
+                                         "Time_Stamp = '" + now.ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "' "+
+                                          ((string.IsNullOrEmpty(mbid)) ? "" : ", MBID = '"+Utils.PatchSql(mbid)+"' ") +
+                                     "WHERE Id = '" + Utils.PatchSql(DummyFile) + "' AND "+
+                                           "Provider = '" + ((object) Utils.Provider.Dummy).ToString() + "';";
+                else
+                */
+                  SQL = "INSERT INTO Image (Id, Category, Provider, Key1, Key2, FullPath, SourcePath, AvailableRandom, Enabled, DummyItem, Time_Stamp, MBID) "+
+                                    "VALUES('" + Utils.PatchSql(DummyFile) + "', "+
+                                           "'" + ((object) category).ToString() + "', "+
+                                           "'" + ((object) Utils.Provider.Dummy).ToString() + "', "+
+                                           "'" + Utils.PatchSql(artist) + "',"+
+                                           "'" + Utils.PatchSql(album) + "', "+
+                                           "null, "+
+                                           "null, "+
+                                           "'False', "+
+                                           "'False', "+
+                                           "'True', "+
+                                           "'" + now.ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "', "+
+                                           "'" + Utils.PatchSql(mbid)+"');";
+                lock (lockObject)
+                    dbClient.Execute(SQL);
+            }
+            catch (Exception ex)
+            {
+                logger.Error("InsertDummyItem: " + ex);
+            }
+        }
+
+        public void DeleteDummyItem(string artist, string album, Utils.Category category)
+        {
+            try
+            {
+                var SQL = "DELETE FROM Image "+
+                           "WHERE Key1 = '" + Utils.PatchSql(artist) + "' AND "+
+                                 "Key2 = '" + Utils.PatchSql(album) + "' AND "+
+                                 "Category = '" + ((object) category).ToString() + "' AND "+
+                                 "DummyItem = 'True';";
+                lock (lockObject)
+                    dbClient.Execute(SQL);
+            }
+            catch (Exception ex)
+            {
+                logger.Error("DeleteDummyItem: " + ex);
+            }
+        }
+        #endregion
     }
 }
