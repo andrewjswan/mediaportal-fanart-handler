@@ -111,7 +111,8 @@ namespace FanartHandler
             try
             {
                 var date = DateTime.Today.ToString("yyyyMMdd", CultureInfo.CurrentCulture);
-                logger.Info("Creating Database, version 3.2");
+                #region Create table
+                logger.Info("Creating Database, version 3.3");
                 lock (lockObject)
                     dbClient.Execute("CREATE TABLE [Image] ([Id] TEXT, "+
                                                            "[Category] TEXT, "+
@@ -125,38 +126,49 @@ namespace FanartHandler
                                                            "[DummyItem] TEXT, "+
                                                            "[MBID] TEXT, "+
                                                            "[Time_Stamp] TEXT, "+
-                                                           "CONSTRAINT [iIdProvider] PRIMARY KEY ([Id], [Provider]) ON CONFLICT ROLLBACK);");
+                                                           "CONSTRAINT [i_IdProviderKey1] PRIMARY KEY ([Id], [Provider], [Key1]) ON CONFLICT ROLLBACK);");
                 lock (lockObject)
                     dbClient.Execute("CREATE TABLE Version (Id INTEGER PRIMARY KEY, Version TEXT, Time_Stamp TEXT);");
                 logger.Info("Create tables [Step 1] - finished");
+                #endregion
 
+                #region Indexes
                 lock (lockObject)
-                    dbClient.Execute("CREATE INDEX [iCategory] ON [Image] ([Category]);");
+                    dbClient.Execute("CREATE INDEX [i_Category] ON [Image] ([Category]);");
                 lock (lockObject)
-                    dbClient.Execute("CREATE INDEX [iCategoryTimeStamp] ON [Image] ([Category], [Time_Stamp]);");
+                    dbClient.Execute("CREATE INDEX [i_CategoryTimeStamp] ON [Image] ([Category], [Time_Stamp]);");
                 lock (lockObject)
-                    dbClient.Execute("CREATE INDEX [iEnabledAvailableRandomCategory] ON [Image] ([Enabled], [AvailableRandom], [Category]);");
+                    dbClient.Execute("CREATE INDEX [i_EnabledAvailableRandomCategory] ON [Image] ([Enabled], [AvailableRandom], [Category]);");
                 lock (lockObject)
-                    dbClient.Execute("CREATE INDEX [iKey1CategoryDummyItem] ON [Image] ([Key1], [Category], [DummyItem]);");
+                    dbClient.Execute("CREATE INDEX [i_Key1CategoryDummyItem] ON [Image] ([Key1], [Category], [DummyItem]);");
                 lock (lockObject)
-                    dbClient.Execute("CREATE INDEX [iKey1Enabled] ON [Image] ([Key1], [Enabled]);");
+                    dbClient.Execute("CREATE INDEX [i_Key1Key2CategoryDummyItem] ON [Image] ([Key1], [Key2], [Category], [DummyItem]);");
                 lock (lockObject)
-                    dbClient.Execute("CREATE INDEX [iKey1EnabledCategory] ON [Image] ([Key1], [Enabled], [Category]);");
+                    dbClient.Execute("CREATE INDEX [i_Key1Enabled] ON [Image] ([Key1], [Enabled]);");
                 lock (lockObject)
-                    dbClient.Execute("CREATE INDEX [iKey1Key2Category] ON [Image] ([Key1], [Key2], [Category]);");
+                    dbClient.Execute("CREATE INDEX [i_Key1Key2Enabled] ON [Image] ([Key1], [Key2], [Enabled]);");
                 lock (lockObject)
-                    dbClient.Execute("CREATE INDEX [iMBID] ON [Image] ([MBID] COLLATE NOCASE);");
+                    dbClient.Execute("CREATE INDEX [i_Key1EnabledCategory] ON [Image] ([Key1], [Enabled], [Category]);");
                 lock (lockObject)
-                    dbClient.Execute("CREATE INDEX [iKey1MBID] ON [Image] ([Key1], [MBID]);");
+                    dbClient.Execute("CREATE INDEX [i_Key1Key2EnabledCategory] ON [Image] ([Key1], [Key2], [Enabled], [Category]);");
                 lock (lockObject)
-                    dbClient.Execute("CREATE INDEX [iKey1Key2MBID] ON [Image] ([Key1], [Key2], [MBID]);");
+                    dbClient.Execute("CREATE INDEX [i_Key1Category] ON [Image] ([Key1], [Category]);");
+                lock (lockObject)
+                    dbClient.Execute("CREATE INDEX [i_Key1Key2Category] ON [Image] ([Key1], [Key2], [Category]);");
+                lock (lockObject)
+                    dbClient.Execute("CREATE INDEX [i_MBID] ON [Image] ([MBID] COLLATE NOCASE);");
+                lock (lockObject)
+                    dbClient.Execute("CREATE INDEX [i_Key1MBID] ON [Image] ([Key1], [MBID]);");
+                lock (lockObject)
+                    dbClient.Execute("CREATE INDEX [i_Key1Key2MBID] ON [Image] ([Key1], [Key2], [MBID]);");
                 logger.Info("Create indexes [Step 2] - finished");
+                #endregion
 
                 lock (lockObject)
-                    dbClient.Execute("INSERT INTO Version (Version,Time_Stamp) VALUES ('3.2','"+date+"');");
+                    dbClient.Execute("INSERT INTO Version (Version,Time_Stamp) VALUES ('3.3','"+date+"');");
                 lock (lockObject)
-                    dbClient.Execute("PRAGMA user_version=32;");
-                logger.Info("Create database, version 3.2 - finished");
+                    dbClient.Execute("PRAGMA user_version=33;");
+                logger.Info("Create database, version 3.3 - finished");
             }
             catch (Exception ex)
             {
@@ -186,6 +198,7 @@ namespace FanartHandler
                 }
                 if (DBVersion != null)
                     logger.Info("Database version is: " + DBVersion + " at database initiation");
+                #region 2.4
                 if (DBVersion != null && DBVersion.Equals("2.3", StringComparison.CurrentCulture))
                 {
                     logger.Info("Upgrading Database to version 2.4");
@@ -200,6 +213,8 @@ namespace FanartHandler
                         dbClient.Execute("PRAGMA user_version="+DBVersion.Replace(".","")+";");
                     logger.Info("Upgraded Database to version "+DBVersion);
                 }
+                #endregion
+                #region 2.5
                 if (DBVersion != null && DBVersion.Equals("2.4", StringComparison.CurrentCulture))
                 {
                     logger.Info("Upgrading Database to version 2.5");
@@ -214,6 +229,8 @@ namespace FanartHandler
                         dbClient.Execute("PRAGMA user_version="+DBVersion.Replace(".","")+";");
                     logger.Info("Upgraded Database to version "+DBVersion);
                 }
+                #endregion
+                #region 2.6
                 if (DBVersion != null && DBVersion.Equals("2.5", StringComparison.CurrentCulture))
                 {
                     logger.Info("Upgrading Database to version 2.6");
@@ -234,6 +251,8 @@ namespace FanartHandler
                         dbClient.Execute("PRAGMA user_version="+DBVersion.Replace(".","")+";");
                     logger.Info("Upgraded Database to version "+DBVersion);
                 }
+                #endregion
+                #region 2.7
                 if (DBVersion != null && DBVersion.Equals("2.6", StringComparison.CurrentCulture))
                 {
                     logger.Info("Upgrading Database to version 2.7");
@@ -248,6 +267,8 @@ namespace FanartHandler
                         dbClient.Execute("PRAGMA user_version="+DBVersion.Replace(".","")+";");
                     logger.Info("Upgraded Database to version "+DBVersion);
                 }
+                #endregion
+                #region 2.8
                 if (DBVersion != null && DBVersion.Equals("2.7", StringComparison.CurrentCulture))
                 {
                     logger.Info("Upgrading Database to version 2.8");
@@ -265,6 +286,8 @@ namespace FanartHandler
                         dbClient.Execute("PRAGMA user_version="+DBVersion.Replace(".","")+";");
                     logger.Info("Upgraded Database to version "+DBVersion);
                 }
+                #endregion
+                #region 2.9
                 if (DBVersion != null && DBVersion.Equals("2.8", StringComparison.CurrentCulture))
                 {
                     logger.Info("Upgrading Database to version 2.9");
@@ -328,6 +351,8 @@ namespace FanartHandler
                     FanartHandlerSetup.Fh.UpdateDirectoryTimer("All", false, "All");
                     logger.Info("Upgrading Step 7 - finished");
                 }
+                #endregion
+                #region 3.0
                 if (DBVersion != null && DBVersion.Equals("2.9", StringComparison.CurrentCulture))
                 {
                     logger.Info("Upgrading Database to version 3.0");
@@ -360,6 +385,8 @@ namespace FanartHandler
                         dbClient.Execute("PRAGMA user_version="+DBVersion.Replace(".","")+";");
                     logger.Info("Upgraded Database to version "+DBVersion);
                 }
+                #endregion
+                #region 3.1
                 if (DBVersion != null && DBVersion.Equals("3.0", StringComparison.CurrentCulture))
                 {
                     logger.Info("Upgrading Database to version 3.1");
@@ -385,9 +412,12 @@ namespace FanartHandler
                         dbClient.Execute("PRAGMA user_version="+DBVersion.Replace(".","")+";");
                     logger.Info("Upgraded Database to version "+DBVersion);
                 }
+                #endregion
+                #region 3.2
                 if (DBVersion != null && DBVersion.Equals("3.1", StringComparison.CurrentCulture))
                 {
                     logger.Info("Upgrading Database to version 3.2");
+                    #region Dummy
                     try
                     {
                         logger.Debug("Delete Dummy items...");
@@ -414,6 +444,9 @@ namespace FanartHandler
                         logger.Error("Delete Temp tables...");
                         logger.Error(ex);
                     }
+                    #endregion
+
+                    #region Create Table
                     logger.Debug("Create New Table...");
                     lock (lockObject)
                         dbClient.Execute("CREATE TABLE [ImageN] ([Id] TEXT, "+
@@ -430,7 +463,9 @@ namespace FanartHandler
                                                                 "[Time_Stamp] TEXT, "+
                                                                 "CONSTRAINT [iIdProvider] PRIMARY KEY ([Id], [Provider]) ON CONFLICT ROLLBACK);");
                     logger.Info("Create tables [Step 2.All] - finished");
+                    #endregion
 
+                    #region Indexes
                     logger.Debug("Create Indexes...");
                     try {
                     lock (lockObject)
@@ -483,18 +518,23 @@ namespace FanartHandler
                     logger.Debug("Upgrading Indexes [Step 3.10] - finished");
                     } catch (Exception ex) {logger.Error(ex);}
                     logger.Info("Upgrading Indexes [Step 3.All] - finished");
+                    #endregion
 
+                    #region Transfer
                     logger.Debug("Transfer Data to New table...");
                     lock (lockObject)
                         dbClient.Execute("INSERT INTO [ImageN] SELECT * FROM [Image];");
                     logger.Info("Upgrading [Step 4] - finished.");
+                    #endregion
 
+                    #region Rename and Drop
                     logger.Debug("Rename and Drop Tables...");
                     lock (lockObject)
                         dbClient.Execute("DROP TABLE Image;");
                     lock (lockObject)
                         dbClient.Execute("ALTER TABLE ImageN RENAME TO Image;");
                     logger.Info("Upgrading [Step 5] - finished.");
+                    #endregion
 
                     DBVersion = "3.2";
                     lock (lockObject)
@@ -503,6 +543,159 @@ namespace FanartHandler
                         dbClient.Execute("PRAGMA user_version="+DBVersion.Replace(".","")+";");
                     logger.Info("Upgraded Database to version "+DBVersion);
                 }
+                #endregion
+                #region 3.3
+                if (DBVersion != null && DBVersion.Equals("3.2", StringComparison.CurrentCulture))
+                {
+                    logger.Info("Upgrading Database to version 3.3");
+                    #region Dummy
+                    try
+                    {
+                        logger.Debug("Delete Dummy items...");
+                        lock (lockObject)
+                            dbClient.Execute("DELETE FROM Image WHERE DummyItem = 'True';");
+
+                        logger.Info("Upgrading [Step 1] - finished.");
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error("Delete Dummy items:");
+                        logger.Error(ex);
+                    }
+
+                    try
+                    {
+                    lock (lockObject)
+                        logger.Debug("Try to Delete Temp tables...");
+                        dbClient.Execute("DROP TABLE ImageN;");
+                        logger.Debug("Upgrading [Step 2.1] - finished.");
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Debug("Delete Temp tables...");
+                        logger.Debug(ex);
+                    }
+                    #endregion
+
+                    #region Create table
+                    logger.Debug("Create New Table...");
+                    lock (lockObject)
+                        dbClient.Execute("CREATE TABLE [ImageN] ([Id] TEXT, "+
+                                                                "[Category] TEXT, "+
+                                                                "[Provider] TEXT, "+
+                                                                "[Key1] TEXT, "+
+                                                                "[Key2] TEXT, "+
+                                                                "[FullPath] TEXT, "+
+                                                                "[SourcePath] TEXT, "+
+                                                                "[AvailableRandom] TEXT, "+
+                                                                "[Enabled] TEXT, "+
+                                                                "[DummyItem] TEXT, "+
+                                                                "[MBID] TEXT, "+
+                                                                "[Time_Stamp] TEXT, "+
+                                                                "CONSTRAINT [i_IdProviderKey1] PRIMARY KEY ([Id], [Provider], [Key1]) ON CONFLICT ROLLBACK);");
+                    logger.Info("Create tables [Step 2.2] - finished");
+                    #endregion
+
+                    #region Indexes
+                    logger.Debug("Create Indexes...");
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [i_Category] ON [ImageN] ([Category]);");
+                    logger.Debug("Upgrading Indexes [Step 3.1] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [i_CategoryTimeStamp] ON [ImageN] ([Category], [Time_Stamp]);");
+                    logger.Debug("Upgrading Indexes [Step 3.2] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [i_EnabledAvailableRandomCategory] ON [ImageN] ([Enabled], [AvailableRandom], [Category]);");
+                    logger.Debug("Upgrading Indexes [Step 3.3] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [i_Key1CategoryDummyItem] ON [ImageN] ([Key1], [Category], [DummyItem]);");
+                    logger.Debug("Upgrading Indexes [Step 3.4] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [i_Key1Key2CategoryDummyItem] ON [ImageN] ([Key1], [Key2], [Category], [DummyItem]);");
+                    logger.Debug("Upgrading Indexes [Step 3.5] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [i_Key1Enabled] ON [ImageN] ([Key1], [Enabled]);");
+                    logger.Debug("Upgrading Indexes [Step 3.6] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [i_Key1Key2Enabled] ON [ImageN] ([Key1], [Key2], [Enabled]);");
+                    logger.Debug("Upgrading Indexes [Step 3.7] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [i_Key1EnabledCategory] ON [ImageN] ([Key1], [Enabled], [Category]);");
+                    logger.Debug("Upgrading Indexes [Step 3.8] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [i_Key1Key2EnabledCategory] ON [ImageN] ([Key1], [Key2], [Enabled], [Category]);");
+                    logger.Debug("Upgrading Indexes [Step 3.9] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [i_Key1Category] ON [ImageN] ([Key1], [Category]);");
+                    logger.Debug("Upgrading Indexes [Step 3.10] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [i_Key1Key2Category] ON [ImageN] ([Key1], [Key2], [Category]);");
+                    logger.Debug("Upgrading Indexes [Step 3.11] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [i_MBID] ON [ImageN] ([MBID] COLLATE NOCASE);");
+                    logger.Debug("Upgrading Indexes [Step 3.12] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [i_Key1MBID] ON [ImageN] ([Key1], [MBID]);");
+                    logger.Debug("Upgrading Indexes [Step 3.13] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [i_Key1Key2MBID] ON [ImageN] ([Key1], [Key2], [MBID]);");
+                    logger.Debug("Upgrading Indexes [Step 3.14] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    logger.Info("Upgrading Indexes [Step 3.All] - finished");
+                    #endregion
+                    
+                    #region Transfer
+                    logger.Debug("Transfer Data to New table...");
+                    lock (lockObject)
+                        dbClient.Execute("INSERT INTO [ImageN] SELECT * FROM [Image];");
+                    logger.Info("Upgrading [Step 4] - finished.");
+                    #endregion
+
+                    #region Rename and Drop
+                    logger.Debug("Rename and Drop Tables...");
+                    lock (lockObject)
+                        dbClient.Execute("DROP TABLE Image;");
+                    logger.Info("Upgrading [Step 5.1] - finished.");
+                    lock (lockObject)
+                        dbClient.Execute("ALTER TABLE ImageN RENAME TO Image;");
+                    logger.Info("Upgrading [Step 5.2] - finished.");
+                    #endregion
+
+                    DBVersion = "3.3";
+                    lock (lockObject)
+                        dbClient.Execute("UPDATE Version SET Version = '"+DBVersion+"', Time_Stamp = '"+date+"';");
+                    lock (lockObject)
+                        dbClient.Execute("PRAGMA user_version="+DBVersion.Replace(".","")+";");
+                    logger.Info("Upgraded Database to version "+DBVersion);
+                }
+                #endregion
                 logger.Info("Database version is verified: " + DBVersion);
             }
             catch (Exception ex)
@@ -614,7 +807,7 @@ namespace FanartHandler
                             scraper = null;
                           }
                     #endregion
-                    }
+                    } // if (artist != null && artist.Trim().Length > 0)
                     return GetImages;
                 }
                 catch (Exception ex)
