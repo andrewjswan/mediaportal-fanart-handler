@@ -1293,7 +1293,7 @@ namespace FanartHandler
 
     private void GUIWindowManager_OnNewMessage(GUIMessage message)
     {
-      logger.Debug("New message recieved: "+message.ToString());
+      // logger.Debug("New message recieved: "+message.Message.ToString());
       if (message.Message == GUIMessage.MessageType.GUI_MSG_VIDEOINFO_REFRESH)
       {
         logger.Debug("VideoInfo refresh detected: Refreshing video fanarts.");
