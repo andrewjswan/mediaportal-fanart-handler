@@ -97,6 +97,12 @@ namespace FanartHandler
       }
     }
 
+    public void AddPlayingArtistPropertys(string artist, bool DoShowImageOnePlay)
+    {
+      AddPlayingArtistThumbProperty(artist, DoShowImageOnePlay) ;
+      AddPlayingArtistClearArtProperty(artist, DoShowImageOnePlay) ;
+    }
+
     public void AddPlayingArtistThumbProperty(string artist, bool DoShowImageOnePlay)
     {
       try
@@ -137,13 +143,35 @@ namespace FanartHandler
           if (File.Exists(path))
             flag = true;
         }
-        if (!flag)
-          return;
-        AddPropertyPlay("#fanarthandler.music.artisthumb.play", path, ref ListPlayMusic);
+        if (flag)
+          AddPropertyPlay("#fanarthandler.music.artisthumb.play", path, ref ListPlayMusic);
+        else
+          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.artisthumb.play", string.Empty);
       }
       catch (Exception ex)
       {
         logger.Error("AddPlayingArtistThumbProperty: " + ex);
+      }
+    }
+
+    public void AddPlayingArtistClearArtProperty(string artist, bool DoShowImageOnePlay)
+    {
+      try
+      {
+        if (string.IsNullOrEmpty(artist))
+          return;
+
+        var path = Config.GetFolder((Config.Dir) 6) + "\\ClearArt\\Music\\";
+        var filename =  path + MediaPortal.Util.Utils.MakeFileName(artist) + ".png";
+
+        if (File.Exists(filename))
+          AddPropertyPlay("#fanarthandler.music.artistclearart.play", filename, ref ListPlayMusic);
+        else
+          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.artistclearart.play", string.Empty);
+      }
+      catch (Exception ex)
+      {
+        logger.Error("AddPlayingArtistClearArtProperty: " + ex);
       }
     }
 
@@ -155,7 +183,7 @@ namespace FanartHandler
           return;
         if (!CurrPlayMusicArtist.Equals(FanartHandlerSetup.Fh.CurrentTrackTag, StringComparison.CurrentCulture))
         {
-          AddPlayingArtistThumbProperty(FanartHandlerSetup.Fh.CurrentTrackTag, DoShowImageOnePlay);
+          AddPlayingArtistPropertys(FanartHandlerSetup.Fh.CurrentTrackTag, DoShowImageOnePlay);
           var str1 = CurrPlayMusic;
           CurrPlayMusic = string.Empty;
           PrevPlayMusic = -1;
@@ -188,7 +216,7 @@ namespace FanartHandler
         }
         else if (CurrCountPlay >= FanartHandlerSetup.Fh.MaxCountImage)
         {
-          AddPlayingArtistThumbProperty(FanartHandlerSetup.Fh.CurrentTrackTag, DoShowImageOnePlay);
+          AddPlayingArtistPropertys(FanartHandlerSetup.Fh.CurrentTrackTag, DoShowImageOnePlay);
           var str1 = CurrPlayMusic;
           var str2 = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.CurrentTrackTag, ref CurrPlayMusic, ref PrevPlayMusic, Utils.Category.MusicFanartScraped, "FanartPlaying", false, true);
           if (str2.Length == 0)

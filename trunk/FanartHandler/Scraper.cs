@@ -1238,7 +1238,7 @@ namespace FanartHandler
               checked { ++num; }
               Utils.GetDbm().LoadFanart(dbartist, filename.Replace("_tmp.jpg", "L.jpg"), sourceFilename, category, dbalbum, Utils.Provider.LastFM, null, mbid);
               if (FanartHandlerSetup.Fh.IsPlaying && !externalAccess) {
-                FanartHandlerSetup.Fh.FP.AddPlayingArtistThumbProperty(FanartHandlerSetup.Fh.CurrentTrackTag, FanartHandlerSetup.Fh.FP.DoShowImageOnePlay);
+                FanartHandlerSetup.Fh.FP.AddPlayingArtistPropertys(FanartHandlerSetup.Fh.CurrentTrackTag, FanartHandlerSetup.Fh.FP.DoShowImageOnePlay);
                 FanartHandlerSetup.Fh.FP.UpdatePropertiesPlay();
               }
               ExternalAccess.InvokeScraperCompleted(category.ToString(), dbartist);
@@ -1418,7 +1418,7 @@ namespace FanartHandler
               {
                 if (FanartHandlerSetup.Fh.IsPlaying && !externalAccess) 
                 {
-                  FanartHandlerSetup.Fh.FP.AddPlayingArtistThumbProperty(FanartHandlerSetup.Fh.CurrentTrackTag, FanartHandlerSetup.Fh.FP.DoShowImageOnePlay);
+                  FanartHandlerSetup.Fh.FP.AddPlayingArtistPropertys(FanartHandlerSetup.Fh.CurrentTrackTag, FanartHandlerSetup.Fh.FP.DoShowImageOnePlay);
                   FanartHandlerSetup.Fh.FP.UpdatePropertiesPlay();
                 }
               }
