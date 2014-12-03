@@ -1757,6 +1757,7 @@ namespace FanartHandler
                 if (DatabaseUtility.GetAsInt(dbClient.Execute("SELECT COUNT(Key1) "+
                                                                "FROM Image "+
                                                                "WHERE Id = '" + Utils.PatchSql(imageId) + "' AND "+
+                                                                     (string.IsNullOrEmpty(artist) ? string.Empty : "Key1 = '" + Utils.PatchSql(artist) + "' AND ") +
                                                                      "Provider = '" + ((object) provider).ToString() + "';"), 0, 0) > 0)
                 {
                     SQL = "UPDATE Image SET Category = '" + ((object) category).ToString() + "', "+

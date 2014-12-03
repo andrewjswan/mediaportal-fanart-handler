@@ -28,7 +28,7 @@ namespace FanartHandler
   {
     private static readonly Logger logger = LogManager.GetCurrentClassLogger();
     private const string LogFileName = "FanartHandler_config.log";
-    private const string OldLogFileName = "FanartHandler_config.old.log";
+    private const string OldLogFileName = "FanartHandler_config.bak";
     private IContainer components;
     private ToolTip toolTip1;
     private TabPage tabPage13;
