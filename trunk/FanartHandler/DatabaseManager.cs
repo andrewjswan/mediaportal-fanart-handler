@@ -61,22 +61,23 @@ namespace FanartHandler
             try
             {
                 IsScraping = false;
-                var file1 = Config.GetFile((Config.Dir) 4, dbFilename);
+                var DBFile = Config.GetFile((Config.Dir) 4, dbFilename);
                 var flag = false;
-                // var file2 = Config.GetFile((Config.Dir) 4, dbFilenameOrg);
-                // if (!File.Exists(file1))
-                //    File.Copy(file2, file1);
-                flag = (!File.Exists(file1));
-                dbClient = new SQLiteClient(file1);
+
+                flag = (!File.Exists(DBFile));
+
+                dbClient = new SQLiteClient(DBFile);
                 dbClient.Execute("PRAGMA synchronous=OFF;");
                 dbClient.Execute("PRAGMA encoding='UTF-8';");
                 dbClient.Execute("PRAGMA cache_size=5000;");
                 dbClient.Execute("PRAGMA temp_store = MEMORY;");
+
                 if (flag)
                   CreateDBMain() ;
 
                 m_db = MusicDatabase.Instance;
                 logger.Info("Successfully Opened Database: "+dbFilename);
+
                 UpgradeDBMain(type);
                 if (HtAnyFanart != null)
                     return;
@@ -126,7 +127,7 @@ namespace FanartHandler
                                                            "[DummyItem] TEXT, "+
                                                            "[MBID] TEXT, "+
                                                            "[Time_Stamp] TEXT, "+
-                                                           "CONSTRAINT [i_IdProviderKey1] PRIMARY KEY ([Id], [Provider], [Key1]) ON CONFLICT ROLLBACK);");
+                                                           "CONSTRAINT [i_IdProviderKey1] PRIMARY KEY ([Id], [Provider], [Key1]) ON CONFLICT REPLACE);");
                 lock (lockObject)
                     dbClient.Execute("CREATE TABLE Version (Id INTEGER PRIMARY KEY, Version TEXT, Time_Stamp TEXT);");
                 logger.Info("Create tables [Step 1] - finished");
@@ -294,14 +295,11 @@ namespace FanartHandler
                     Close();
                     logger.Info("Upgrading Step 1 - finished");
                     var dbFile = Config.GetFile((Config.Dir) 4, dbFilename);
-                    // var dbCleanFile = Config.GetFile((Config.Dir) 4, dbFilenameOrg);
                     if (File.Exists(dbFile))
                     {
                         var backupdate = DateTime.Today.ToString("yyyyMMdd", CultureInfo.CurrentCulture);
                         File.Move(dbFile, dbFile + "_old_" + ((DBVersion != null) ? "v" + DBVersion + "_" : "") + backupdate);
                         logger.Info("Upgrading Step 2 - finished");
-                        //File.Copy(dbCleanFile, dbFile);
-                        //logger.Info("Upgrading Step 3 - finished");
                     }
                     var musicPath = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\Scraper\\music";
                     var backupPath = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\Scraper_Backup_" + date;
@@ -417,6 +415,11 @@ namespace FanartHandler
                 if (DBVersion != null && DBVersion.Equals("3.1", StringComparison.CurrentCulture))
                 {
                     logger.Info("Upgrading Database to version 3.2");
+                    
+                    #region Backup
+                    BackupDBMain(DBVersion);
+                    #endregion
+
                     #region Dummy
                     try
                     {
@@ -437,13 +440,9 @@ namespace FanartHandler
                     lock (lockObject)
                         logger.Debug("Try to Delete Temp tables...");
                         dbClient.Execute("DROP TABLE ImageN;");
-                        logger.Info("Upgrading [Step 2.1] - finished.");
+                        logger.Debug("Upgrading [Step 2.1] - finished.");
                     }
-                    catch (Exception ex)
-                    {
-                        logger.Error("Delete Temp tables...");
-                        logger.Error(ex);
-                    }
+                    catch { }
                     #endregion
 
                     #region Create Table
@@ -462,7 +461,7 @@ namespace FanartHandler
                                                                 "[MBID] TEXT, "+
                                                                 "[Time_Stamp] TEXT, "+
                                                                 "CONSTRAINT [iIdProvider] PRIMARY KEY ([Id], [Provider]) ON CONFLICT ROLLBACK);");
-                    logger.Info("Create tables [Step 2.All] - finished");
+                    logger.Info("Create tables [Step 2] - finished");
                     #endregion
 
                     #region Indexes
@@ -517,13 +516,15 @@ namespace FanartHandler
                         dbClient.Execute("CREATE INDEX [iKey1Key2MBID] ON [ImageN] ([Key1], [Key2], [MBID]);");
                     logger.Debug("Upgrading Indexes [Step 3.10] - finished");
                     } catch (Exception ex) {logger.Error(ex);}
-                    logger.Info("Upgrading Indexes [Step 3.All] - finished");
+                    logger.Info("Upgrading Indexes [Step 3] - finished");
                     #endregion
 
                     #region Transfer
                     logger.Debug("Transfer Data to New table...");
                     lock (lockObject)
-                        dbClient.Execute("INSERT INTO [ImageN] SELECT * FROM [Image];");
+                        dbClient.Execute("INSERT INTO [ImageN] ([Id], [Category], [Provider], [Key1], [Key2], [FullPath], [SourcePath], [AvailableRandom], [Enabled], [DummyItem], [MBID], [Time_Stamp])"+
+                                                        "SELECT [Id], [Category], [Provider], [Key1], [Key2], [FullPath], [SourcePath], [AvailableRandom], [Enabled], [DummyItem], [MBID], [Time_Stamp] "+
+                                                         "FROM [Image];");
                     logger.Info("Upgrading [Step 4] - finished.");
                     #endregion
 
@@ -548,13 +549,21 @@ namespace FanartHandler
                 if (DBVersion != null && DBVersion.Equals("3.2", StringComparison.CurrentCulture))
                 {
                     logger.Info("Upgrading Database to version 3.3");
+
+                    #region Backup
+                    BackupDBMain(DBVersion);
+                    #endregion
+
                     #region Dummy
                     try
                     {
                         logger.Debug("Delete Dummy items...");
                         lock (lockObject)
                             dbClient.Execute("DELETE FROM Image WHERE DummyItem = 'True';");
-
+                        logger.Debug("Upgrading [Step 1.1] - finished.");
+                        lock (lockObject)
+                            dbClient.Execute("DELETE FROM Image WHERE Category IN ('MusicAlbumThumbScraped') AND Provider = 'Local';");
+                        logger.Debug("Upgrading [Step 1.2] - finished.");
                         logger.Info("Upgrading [Step 1] - finished.");
                     }
                     catch (Exception ex)
@@ -570,11 +579,7 @@ namespace FanartHandler
                         dbClient.Execute("DROP TABLE ImageN;");
                         logger.Debug("Upgrading [Step 2.1] - finished.");
                     }
-                    catch (Exception ex)
-                    {
-                        logger.Debug("Delete Temp tables...");
-                        logger.Debug(ex);
-                    }
+                    catch { }
                     #endregion
 
                     #region Create table
@@ -592,101 +597,115 @@ namespace FanartHandler
                                                                 "[DummyItem] TEXT, "+
                                                                 "[MBID] TEXT, "+
                                                                 "[Time_Stamp] TEXT, "+
-                                                                "CONSTRAINT [i_IdProviderKey1] PRIMARY KEY ([Id], [Provider], [Key1]) ON CONFLICT ROLLBACK);");
-                    logger.Info("Create tables [Step 2.2] - finished");
-                    #endregion
-
-                    #region Indexes
-                    logger.Debug("Create Indexes...");
-                    try {
-                    lock (lockObject)
-                        dbClient.Execute("CREATE INDEX [i_Category] ON [ImageN] ([Category]);");
-                    logger.Debug("Upgrading Indexes [Step 3.1] - finished");
-                    } catch (Exception ex) {logger.Error(ex);}
-                    try {
-                    lock (lockObject)
-                        dbClient.Execute("CREATE INDEX [i_CategoryTimeStamp] ON [ImageN] ([Category], [Time_Stamp]);");
-                    logger.Debug("Upgrading Indexes [Step 3.2] - finished");
-                    } catch (Exception ex) {logger.Error(ex);}
-                    try {
-                    lock (lockObject)
-                        dbClient.Execute("CREATE INDEX [i_EnabledAvailableRandomCategory] ON [ImageN] ([Enabled], [AvailableRandom], [Category]);");
-                    logger.Debug("Upgrading Indexes [Step 3.3] - finished");
-                    } catch (Exception ex) {logger.Error(ex);}
-                    try {
-                    lock (lockObject)
-                        dbClient.Execute("CREATE INDEX [i_Key1CategoryDummyItem] ON [ImageN] ([Key1], [Category], [DummyItem]);");
-                    logger.Debug("Upgrading Indexes [Step 3.4] - finished");
-                    } catch (Exception ex) {logger.Error(ex);}
-                    try {
-                    lock (lockObject)
-                        dbClient.Execute("CREATE INDEX [i_Key1Key2CategoryDummyItem] ON [ImageN] ([Key1], [Key2], [Category], [DummyItem]);");
-                    logger.Debug("Upgrading Indexes [Step 3.5] - finished");
-                    } catch (Exception ex) {logger.Error(ex);}
-                    try {
-                    lock (lockObject)
-                        dbClient.Execute("CREATE INDEX [i_Key1Enabled] ON [ImageN] ([Key1], [Enabled]);");
-                    logger.Debug("Upgrading Indexes [Step 3.6] - finished");
-                    } catch (Exception ex) {logger.Error(ex);}
-                    try {
-                    lock (lockObject)
-                        dbClient.Execute("CREATE INDEX [i_Key1Key2Enabled] ON [ImageN] ([Key1], [Key2], [Enabled]);");
-                    logger.Debug("Upgrading Indexes [Step 3.7] - finished");
-                    } catch (Exception ex) {logger.Error(ex);}
-                    try {
-                    lock (lockObject)
-                        dbClient.Execute("CREATE INDEX [i_Key1EnabledCategory] ON [ImageN] ([Key1], [Enabled], [Category]);");
-                    logger.Debug("Upgrading Indexes [Step 3.8] - finished");
-                    } catch (Exception ex) {logger.Error(ex);}
-                    try {
-                    lock (lockObject)
-                        dbClient.Execute("CREATE INDEX [i_Key1Key2EnabledCategory] ON [ImageN] ([Key1], [Key2], [Enabled], [Category]);");
-                    logger.Debug("Upgrading Indexes [Step 3.9] - finished");
-                    } catch (Exception ex) {logger.Error(ex);}
-                    try {
-                    lock (lockObject)
-                        dbClient.Execute("CREATE INDEX [i_Key1Category] ON [ImageN] ([Key1], [Category]);");
-                    logger.Debug("Upgrading Indexes [Step 3.10] - finished");
-                    } catch (Exception ex) {logger.Error(ex);}
-                    try {
-                    lock (lockObject)
-                        dbClient.Execute("CREATE INDEX [i_Key1Key2Category] ON [ImageN] ([Key1], [Key2], [Category]);");
-                    logger.Debug("Upgrading Indexes [Step 3.11] - finished");
-                    } catch (Exception ex) {logger.Error(ex);}
-                    try {
-                    lock (lockObject)
-                        dbClient.Execute("CREATE INDEX [i_MBID] ON [ImageN] ([MBID] COLLATE NOCASE);");
-                    logger.Debug("Upgrading Indexes [Step 3.12] - finished");
-                    } catch (Exception ex) {logger.Error(ex);}
-                    try {
-                    lock (lockObject)
-                        dbClient.Execute("CREATE INDEX [i_Key1MBID] ON [ImageN] ([Key1], [MBID]);");
-                    logger.Debug("Upgrading Indexes [Step 3.13] - finished");
-                    } catch (Exception ex) {logger.Error(ex);}
-                    try {
-                    lock (lockObject)
-                        dbClient.Execute("CREATE INDEX [i_Key1Key2MBID] ON [ImageN] ([Key1], [Key2], [MBID]);");
-                    logger.Debug("Upgrading Indexes [Step 3.14] - finished");
-                    } catch (Exception ex) {logger.Error(ex);}
-                    logger.Info("Upgrading Indexes [Step 3.All] - finished");
+                                                                "CONSTRAINT [i_IdProviderKey1] PRIMARY KEY ([Id], [Provider], [Key1]) ON CONFLICT REPLACE);");
+                    logger.Debug("Create tables [Step 2.2] - finished");
+                    logger.Info("Create tables [Step 2] - finished");
                     #endregion
                     
                     #region Transfer
                     logger.Debug("Transfer Data to New table...");
                     lock (lockObject)
-                        dbClient.Execute("INSERT INTO [ImageN] SELECT * FROM [Image];");
-                    logger.Info("Upgrading [Step 4] - finished.");
+                        dbClient.Execute("INSERT INTO [ImageN] ([Id], [Category], [Provider], [Key1], [Key2], [FullPath], [SourcePath], [AvailableRandom], [Enabled], [DummyItem], [MBID], [Time_Stamp])"+
+                                                        "SELECT [Id], [Category], [Provider], [Key1], [Key2], [FullPath], [SourcePath], [AvailableRandom], [Enabled], [DummyItem], [MBID], [Time_Stamp] "+
+                                                         "FROM [Image];");
+                    logger.Info("Upgrading [Step 3] - finished.");
                     #endregion
 
                     #region Rename and Drop
                     logger.Debug("Rename and Drop Tables...");
                     lock (lockObject)
                         dbClient.Execute("DROP TABLE Image;");
-                    logger.Info("Upgrading [Step 5.1] - finished.");
+                    logger.Info("Upgrading [Step 4.1] - finished.");
                     lock (lockObject)
                         dbClient.Execute("ALTER TABLE ImageN RENAME TO Image;");
-                    logger.Info("Upgrading [Step 5.2] - finished.");
+                    logger.Info("Upgrading [Step 4.2] - finished.");
                     #endregion
+
+                    #region Indexes
+                    logger.Debug("Create Indexes...");
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [i_Category] ON [Image] ([Category]);");
+                    logger.Debug("Upgrading Indexes [Step 5.1] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [i_CategoryTimeStamp] ON [Image] ([Category], [Time_Stamp]);");
+                    logger.Debug("Upgrading Indexes [Step 5.2] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [i_EnabledAvailableRandomCategory] ON [Image] ([Enabled], [AvailableRandom], [Category]);");
+                    logger.Debug("Upgrading Indexes [Step 5.3] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [i_Key1CategoryDummyItem] ON [Image] ([Key1], [Category], [DummyItem]);");
+                    logger.Debug("Upgrading Indexes [Step 5.4] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [i_Key1Key2CategoryDummyItem] ON [Image] ([Key1], [Key2], [Category], [DummyItem]);");
+                    logger.Debug("Upgrading Indexes [Step 5.5] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [i_Key1Enabled] ON [Image] ([Key1], [Enabled]);");
+                    logger.Debug("Upgrading Indexes [Step 5.6] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [i_Key1Key2Enabled] ON [Image] ([Key1], [Key2], [Enabled]);");
+                    logger.Debug("Upgrading Indexes [Step 5.7] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [i_Key1EnabledCategory] ON [Image] ([Key1], [Enabled], [Category]);");
+                    logger.Debug("Upgrading Indexes [Step 5.8] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [i_Key1Key2EnabledCategory] ON [Image] ([Key1], [Key2], [Enabled], [Category]);");
+                    logger.Debug("Upgrading Indexes [Step 5.9] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [i_Key1Category] ON [Image] ([Key1], [Category]);");
+                    logger.Debug("Upgrading Indexes [Step 5.10] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [i_Key1Key2Category] ON [Image] ([Key1], [Key2], [Category]);");
+                    logger.Debug("Upgrading Indexes [Step 5.11] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [i_MBID] ON [Image] ([MBID] COLLATE NOCASE);");
+                    logger.Debug("Upgrading Indexes [Step 5.12] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [i_Key1MBID] ON [Image] ([Key1], [MBID]);");
+                    logger.Debug("Upgrading Indexes [Step 5.13] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    try {
+                    lock (lockObject)
+                        dbClient.Execute("CREATE INDEX [i_Key1Key2MBID] ON [Image] ([Key1], [Key2], [MBID]);");
+                    logger.Debug("Upgrading Indexes [Step 5.14] - finished");
+                    } catch (Exception ex) {logger.Error(ex);}
+                    logger.Info("Upgrading Indexes [Step 5] - finished");
+                    #endregion
+
+                    #region Integrity check
+                    logger.Debug("Upgrading [Step 6] - Integrity check ...");
+                    lock (lockObject)
+                        dbClient.Execute("PRAGMA integrity_check;");
+                    logger.Info("Upgrading [Step 6] - finished");
+                    #endregion
+
+                    logger.Debug("Upgrading [Step 7] - Fill tables ...");
+                    FanartHandlerSetup.Fh.UpdateDirectoryTimer("All", false, "All");
+                    logger.Info("Upgrading [Step 7] - finished");
 
                     DBVersion = "3.3";
                     lock (lockObject)
@@ -696,6 +715,61 @@ namespace FanartHandler
                     logger.Info("Upgraded Database to version "+DBVersion);
                 }
                 #endregion
+                #region 3.Dummy Alter Table
+                /*
+                if (DBVersion != null && DBVersion.Equals("3.X", StringComparison.CurrentCulture))
+                {
+                    logger.Info("Upgrading Database to version 3.X");
+                    try
+                    {
+                      // Check for Schema Version ...
+                      lock (lockObject)
+                          sqLiteResultSet = dbClient.Execute("PRAGMA schema_version;");
+                      var SchemaVersion = string.Empty;
+                      if (sqLiteResultSet.Rows.Count > 0)
+                      {
+                          SchemaVersion = sqLiteResultSet.GetField(num, 0);
+                      }
+                      #region transaction
+                      lock (lockObject)
+                          dbClient.Execute("BEGIN TRANSACTION;");
+                      if (!string.IsNullOrEmpty(SchemaVersion))
+                      {
+                        lock (lockObject)
+                            dbClient.Execute("PRAGMA writable_schema=ON;");
+                        logger.Info("Upgrading Indexes [Step 1] - finished");
+                        lock (lockObject)
+                            dbClient.Execute("UPDATE sqlite_master SET sql='CREATE TABLE ...' WHERE type='table' AND name='Image';");
+                        logger.Info("Upgrading Indexes [Step 2] - finished");
+                        lock (lockObject)
+                            dbClient.Execute("PRAGMA schema_version="+(SchemaVersion+1)+";");
+                        logger.Info("Upgrading Indexes [Step 3] - finished");
+                        lock (lockObject)
+                            dbClient.Execute("PRAGMA writable_schema=OFF;");
+                        logger.Info("Upgrading Indexes [Step 4] - finished");
+                        lock (lockObject)
+                            dbClient.Execute("PRAGMA integrity_check;");
+                        logger.Info("Upgrading Indexes [Step 5] - finished");
+
+                        DBVersion = "3.X";
+                        lock (lockObject)
+                            dbClient.Execute("UPDATE Version SET Version = '"+DBVersion+"', Time_Stamp = '"+date+"';");
+                        lock (lockObject)
+                            dbClient.Execute("PRAGMA user_version="+DBVersion.Replace(".","")+";");
+                        logger.Info("Upgraded Database to version "+DBVersion);
+                      }
+                      lock (lockObject)
+                          dbClient.Execute("COMMIT;");
+                      #endregion
+                    }
+                    catch 
+                    { 
+                      lock (lockObject)
+                          dbClient.Execute("ROLLBACK;");
+                    }
+                }
+                */
+                #endregion
                 logger.Info("Database version is verified: " + DBVersion);
             }
             catch (Exception ex)
@@ -704,6 +778,30 @@ namespace FanartHandler
                 logger.Error(ex.ToString());
                 var num = (int) MessageBox.Show("Error upgrading database, please see [Fanart Handler Log] for details.","Error");
             }
+        }
+
+        public void BackupDBMain(string ver)
+        {
+          try
+          {
+            Close();
+            logger.Info("Backup Database...");
+            var dbFile = Config.GetFile((Config.Dir) 4, dbFilename);
+            if (File.Exists(dbFile))
+            {
+                var BackupDate = DateTime.Now.ToString("yyyyMMddHHmmss", CultureInfo.CurrentCulture);
+                var BackupFile = dbFile + "_" + (string.IsNullOrEmpty(ver) ? string.Empty : "v" + ver + "_") + BackupDate ;
+
+                File.Copy(dbFile, BackupFile);
+                logger.Info("Backup Database "+dbFilename+" - complete - "+BackupFile);
+                InitDB("upgrade");
+            }
+          }
+          catch (Exception ex)
+          {
+              logger.Error("Error Backup database:");
+              logger.Error(ex);
+          }
         }
         #endregion
 
@@ -718,6 +816,7 @@ namespace FanartHandler
                     var GetImages = 0;
                     if (artist != null && artist.Trim().Length > 0)
                     {
+                        var dbartist = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
                         var MaxImages = checked(Convert.ToInt32(Utils.GetScraperMaxImages(),CultureInfo.CurrentCulture));
                         var numberOfFanartImages = GetNumberOfFanartImages(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped));
                         var doScrapeFanart = (numberOfFanartImages < MaxImages);
@@ -734,12 +833,16 @@ namespace FanartHandler
                                 dbClient.Execute("COMMIT;");
                             scraper = null;
                           }
-                        if ((GetImages == 0) && (GetNumberOfFanartImages(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped)) == 0))
+                        if ((GetImages == 0) && (GetNumberOfFanartImages(dbartist) == 0))
                         {
                             logger.Info("No fanart found for Artist: " + artist + ".");
                         }
-                        if (GetImages == 8888 && doScrapeFanart)
-                            logger.Info("Artist: " + artist + " has already maximum number of images. Will not download anymore images for this artist.");
+                        if (GetImages == 8888)
+                        {
+                            UpdateTimeStamp(dbartist, null, Utils.Category.MusicFanartScraped) ;
+                            if (doScrapeFanart)
+                              logger.Info("Artist: " + artist + " has already maximum number of images. Will not download anymore images for this artist.");
+                        }
                     }
                     return GetImages;
                 }
@@ -765,6 +868,7 @@ namespace FanartHandler
                     {
                     #region NowPlaying Artist
                         var dbartist = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
+                        var dbalbum = Utils.GetAlbum(album, Utils.Category.MusicFanartScraped);
                         var MaxImages = checked(Convert.ToInt32(Utils.GetScraperMaxImages(),CultureInfo.CurrentCulture));
                         var numberOfFanartImages = GetNumberOfFanartImages(dbartist);
                         var doTriggerRefresh = (numberOfFanartImages == 0 && !externalAccess);
@@ -788,6 +892,7 @@ namespace FanartHandler
                                   logger.Info("No fanart found for Artist: " + artist + ".");
                                 break;
                             case 8888:
+                                UpdateTimeStamp(dbartist, null, Utils.Category.MusicFanartScraped) ;
                                 logger.Info("Artist: " + artist + " has already maximum number of images. Will not download anymore images for this artist.");
                                 break;
                         }
@@ -796,7 +901,7 @@ namespace FanartHandler
                     #endregion
                     #region NowPlaying Album
                         if ((album != null && album.Trim().Length > 0) && Utils.ScrapeThumbnailsAlbum.Equals("True", StringComparison.CurrentCulture))
-                          if (!Utils.GetDbm().HasAlbumThumb(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped),Utils.GetAlbum(album, Utils.Category.MusicFanartScraped)))
+                          if (!Utils.GetDbm().HasAlbumThumb(dbartist,dbalbum))
                           {
                             scraper = new Scraper();
                             lock (lockObject)
@@ -805,7 +910,10 @@ namespace FanartHandler
                             lock (lockObject)
                                 dbClient.Execute("COMMIT;");
                             scraper = null;
-                          }
+                          } 
+                          else
+                            UpdateTimeStamp(dbartist, dbalbum, Utils.Category.MusicAlbumThumbScraped) ;
+
                     #endregion
                     } // if (artist != null && artist.Trim().Length > 0)
                     return GetImages;
@@ -866,52 +974,64 @@ namespace FanartHandler
             {
                 logger.Info("InitialScrape is starting...");
                 var flag = true;
+
+                if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+                    FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, "Start");
+
+                #region Artists
                 musicDatabaseArtists = new ArrayList();
-                musicDatabaseAlbums = new List<AlbumInfo>();
                 m_db.GetAllArtists(ref musicDatabaseArtists);
-                m_db.GetAllAlbums(ref musicDatabaseAlbums);
+
                 #region mvCentral
                 var musicVideoArtists = Utils.GetMusicVideoArtists("mvCentral.db3");
                 if (musicVideoArtists != null && musicVideoArtists.Count > 0) {
                     logger.Debug("InitialScrape add Artists from mvCentral ["+musicVideoArtists.Count+"]...");
                     musicDatabaseArtists.AddRange(musicVideoArtists);
                 }
-                var musicVideoAlbums = Utils.GetMusicVideoAlbums("mvCentral.db3");
-                if (musicVideoAlbums != null && musicVideoAlbums.Count > 0) {
-                    logger.Debug("InitialScrape add Artists/Albums from mvCentral ["+musicVideoAlbums.Count+"]...");
-                    musicDatabaseAlbums.AddRange(musicVideoAlbums);
-                }
                 #endregion
-                if (FanartHandlerSetup.Fh.MyScraperWorker != null)
-                    FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, "Start");
-                TotArtistsBeingScraped = checked (musicDatabaseArtists.Count + musicDatabaseAlbums.Count);
+                TotArtistsBeingScraped = checked (musicDatabaseArtists.Count);
 
-                #region Artists
                 if (musicDatabaseArtists != null && musicDatabaseArtists.Count > 0)
                 {
-                    logger.Debug("InitialScrape initiating for Artist...");
+                    logger.Debug("InitialScrape initiating for Artists...");
                     var htFanart = new Hashtable();
-                    var str = "SELECT Key1, count(Key1) "+
+                    /*
+                    var SQL = "SELECT Key1, count(Key1) "+
                                "FROM Image "+
                                "WHERE Category in ('" + ((object) Utils.Category.MusicFanartScraped).ToString() + "') AND "+
                                      // "Enabled = 'True' AND "+
                                      // "DummyItem = 'False' AND "+
                                      "Time_Stamp >= '" + DateTime.Today.AddDays(-14.0).ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "' "+
                                "GROUP BY Key1;";
+                    */
+                    var SQL = "SELECT DISTINCT Key1, sum(Count) as Count FROM ("+
+                                "SELECT Key1, count(Key1) as Count "+
+                                  "FROM Image "+
+                                  "WHERE Category in ('" + ((object) Utils.Category.MusicFanartScraped).ToString() + "') AND "+
+                                        "Time_Stamp >= '" + DateTime.Today.AddDays(-14.0).ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "' "+
+                                  "GROUP BY Key1 "+
+                                "UNION ALL "+
+                                "SELECT Key1, count(Key1) as Count "+
+                                  "FROM Image "+
+                                  "WHERE Category in ('" + ((object) Utils.Category.MusicFanartScraped).ToString() + "') AND "+
+                                        "Enabled = 'True' AND "+
+                                        "DummyItem = 'False' "+
+                                  "GROUP BY Key1 "+
+                                  "HAVING count(key1) >= " + Utils.GetScraperMaxImages().Trim() +
+                              ") GROUP BY Key1;";
+
                     SQLiteResultSet sqLiteResultSet;
                     lock (lockObject)
-                        sqLiteResultSet = dbClient.Execute(str);
+                        sqLiteResultSet = dbClient.Execute(SQL);
                     var num = 0;
                     while (num < sqLiteResultSet.Rows.Count)
                     {
                         var htArtist = Scraper.UndoArtistPrefix(sqLiteResultSet.GetField(num, 0).ToLower()) ;
                         if (!htFanart.Contains(htArtist)) // !!! The Beatles <> Beatles
                             htFanart.Add(htArtist, sqLiteResultSet.GetField(num, 1));
-                        checked
-                        {
-                            ++num;
-                        }
+                        checked { ++num; }
                     }
+                    logger.Debug("InitialScrape Artists: ["+htFanart.Count+"]/["+musicDatabaseArtists.Count+"]");
                     var index = 0;
                     while (index < musicDatabaseArtists.Count)
                     {
@@ -932,109 +1052,156 @@ namespace FanartHandler
                                   }
                               }
                             }
+                            #region Report
                             ++CurrArtistsBeingScraped;
                             if (TotArtistsBeingScraped > 0.0 && FanartHandlerSetup.Fh.MyScraperWorker != null)
                               FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(Convert.ToInt32(CurrArtistsBeingScraped/TotArtistsBeingScraped*100.0),"Ongoing");
-                            checked
-                            {
-                                ++index;
-                            }
+                            #endregion
+                            checked { ++index; }
                         }
                         else
                             break;
                     }
-                    logger.Debug("InitialScrape done for Artist...");
+                    logger.Debug("InitialScrape done for Artists.");
                 }
-                #endregion
-                #region Albums
-                if (musicDatabaseAlbums != null && musicDatabaseAlbums.Count > 0 &&
-                    Utils.ScrapeThumbnailsAlbum.Equals("True", StringComparison.CurrentCulture))
-                {
-                    logger.Debug("InitialScrape initiating for Artist/Album...");
-                    var hashtable1 = new Hashtable();
-                    var str1 = "SELECT Key1, Key2, count(Key1) "+
-                                "FROM Image "+
-                                "WHERE Category IN ('" + ((object) Utils.Category.MusicAlbumThumbScraped).ToString() + "') AND "+
-                                      // "DummyItem = 'False' AND "+
-                                      "Time_Stamp >= '" + DateTime.Today.AddDays(-14.0).ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "' "+
-                                "GROUP BY Key1, Key2;";
-                    SQLiteResultSet sqLiteResultSet;
-                    lock (lockObject)
-                        sqLiteResultSet = dbClient.Execute(str1);
-                    var num1 = 0;
-                    while (num1 < sqLiteResultSet.Rows.Count)
-                    {
-                        var htArtistAlbum = Scraper.UndoArtistPrefix(sqLiteResultSet.GetField(num1, 0).ToLower()) + "-" + sqLiteResultSet.GetField(num1, 1).ToLower() ;
-                        if (!hashtable1.Contains(htArtistAlbum)) // !!! The Beatles <> Beatles
-                            hashtable1.Add(htArtistAlbum,sqLiteResultSet.GetField(num1, 2));
-                        checked
-                        {
-                            ++num1;
-                        }
-                    }
-                    var hashtable2 = new Hashtable();
-                    var str2 = "SELECT Key1, Key2, count(Key1) "+
-                                "FROM Image "+
-                                "WHERE Category IN ('" + ((object) Utils.Category.MusicAlbumThumbScraped).ToString() + "') AND "+
-                                      "DummyItem = 'False' "+
-                                "GROUP BY Key1, Key2;";
-                    lock (lockObject)
-                        sqLiteResultSet = dbClient.Execute(str2);
-                    var num2 = 0;
-                    while (num2 < sqLiteResultSet.Rows.Count)
-                    {
-                        var htArtistAlbum = Scraper.UndoArtistPrefix(sqLiteResultSet.GetField(num2, 0).ToLower()) + "-" + sqLiteResultSet.GetField(num2, 1).ToLower() ;
-                        if (!hashtable2.Contains(htArtistAlbum)) // !!! The Beatles <> Beatles
-                            hashtable2.Add(htArtistAlbum,sqLiteResultSet.GetField(num2, 2));
-                        checked
-                        {
-                            ++num2;
-                        }
-                    }
-                    var index = 0;
-                    while (index < musicDatabaseAlbums.Count)
-                    {
-                        var album = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Album).Trim();
-                        if (album != null && album.Length > 0)
-                        {
-                            var artist   = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Artist).Trim();
-                            var dbartist = Scraper.UndoArtistPrefix(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped)).ToLower();
-                            var dbalbum  = Utils.GetAlbum(album, Utils.Category.MusicFanartScraped).ToLower();
-                            var htArtistAlbum = dbartist + "-" + dbalbum ;
-                            // var num3 = 0;
-                            if (!hashtable1.Contains(htArtistAlbum)) // !!! The Beatles <> Beatles
-                            //    num3 = int.Parse((string) hashtable1[Utils.PatchSql(dbartist).ToLower() + "-" + Utils.PatchSql(dbalbum).ToLower()],CultureInfo.CurrentCulture);
-                            // if (num3 < 1) 
-                            {
-                                // var num4 = 0;
-                                if (!hashtable2.Contains(htArtistAlbum)) // !!! The Beatles <> Beatles
-                                //    num4 = int.Parse((string)hashtable2[Utils.PatchSql(dbartist).ToLower() + "-" + Utils.PatchSql(dbalbum).ToLower()],CultureInfo.CurrentCulture);
-                                // if (num4 < 1) 
-                                {
-                                    if (!StopScraper && !Utils.GetIsStopping()) 
-                                    {
-                                        scraper = new Scraper();
-                                        scraper.GetArtistAlbumThumbs(artist, album, false, false);
-                                        scraper = null;
-                                    }
-                                    else
-                                      break;
-                                }
-                            }
-                        }
-                        ++CurrArtistsBeingScraped;
-                        if (TotArtistsBeingScraped > 0.0 && FanartHandlerSetup.Fh.MyScraperWorker != null)
-                            FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(Convert.ToInt32(CurrArtistsBeingScraped/TotArtistsBeingScraped*100.0),"Ongoing");
-                        checked
-                        {
-                            ++index;
-                        }
-                    }
-                    logger.Debug("InitialScrape done for Artist/Album");
-                }
-                #endregion
                 musicDatabaseArtists = null;
-                musicDatabaseAlbums = null;
+                #endregion
+
+                #region Albums
+                if (Utils.ScrapeThumbnailsAlbum.Equals("True", StringComparison.CurrentCulture))
+                {
+                  musicDatabaseAlbums = new List<AlbumInfo>();
+                  m_db.GetAllAlbums(ref musicDatabaseAlbums);
+
+                  #region mvCentral
+                  var musicVideoAlbums = Utils.GetMusicVideoAlbums("mvCentral.db3");
+                  if (musicVideoAlbums != null && musicVideoAlbums.Count > 0) {
+                      logger.Debug("InitialScrape add Artists/Albums from mvCentral ["+musicVideoAlbums.Count+"]...");
+                      musicDatabaseAlbums.AddRange(musicVideoAlbums);
+                  }
+                  #endregion
+                  TotArtistsBeingScraped = checked (TotArtistsBeingScraped + musicDatabaseAlbums.Count);
+
+                  if (musicDatabaseAlbums != null && musicDatabaseAlbums.Count > 0)
+                  {
+                      logger.Debug("InitialScrape initiating for Artist/Albums...");
+                      // var hashtable1 = new Hashtable();
+                      var htAlbums = new Hashtable();
+                      /*
+                      var str1 = "SELECT Key1, Key2, count(Key1) "+
+                                  "FROM Image "+
+                                  "WHERE Category IN ('" + ((object) Utils.Category.MusicAlbumThumbScraped).ToString() + "') AND "+
+                                        // "DummyItem = 'False' AND "+
+                                        "Time_Stamp >= '" + DateTime.Today.AddDays(-14.0).ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "' "+
+                                  "GROUP BY Key1, Key2;";
+                      SQLiteResultSet sqLiteResultSet;
+                      lock (lockObject)
+                          sqLiteResultSet = dbClient.Execute(str1);
+                      */
+                      var SQL = "SELECT DISTINCT Key1, Key2, sum(Count) as Count FROM ("+
+                                  "SELECT Key1, Key2, count(Key1) as Count "+
+                                    "FROM Image "+
+                                    "WHERE Category IN ('" + ((object) Utils.Category.MusicAlbumThumbScraped).ToString() + "') AND "+
+                                          "Time_Stamp >= '" + DateTime.Today.AddDays(-14.0).ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "' "+
+                                    "GROUP BY Key1, Key2 "+
+                                  "UNION ALL "+
+                                  "SELECT Key1, Key2, count(Key1) as Count "+
+                                    "FROM Image "+
+                                    "WHERE Category IN ('" + ((object) Utils.Category.MusicAlbumThumbScraped).ToString() + "') AND "+
+                                          "Enabled = 'True' AND "+
+                                          "DummyItem = 'False' "+
+                                    "GROUP BY Key1, Key2 "+
+                                ") GROUP BY Key1, Key2;";
+                      SQLiteResultSet sqLiteResultSet;
+                      lock (lockObject)
+                          sqLiteResultSet = dbClient.Execute(SQL);
+                      /*
+                      var num1 = 0;
+                      while (num1 < sqLiteResultSet.Rows.Count)
+                      {
+                          var htArtistAlbum = Scraper.UndoArtistPrefix(sqLiteResultSet.GetField(num1, 0).ToLower()) + "-" + sqLiteResultSet.GetField(num1, 1).ToLower() ;
+                          if (!hashtable1.Contains(htArtistAlbum)) // !!! The Beatles <> Beatles
+                              hashtable1.Add(htArtistAlbum,sqLiteResultSet.GetField(num1, 2));
+                          checked
+                          {
+                              ++num1;
+                          }
+                      }
+                      */
+                      var i = 0;
+                      while (i < sqLiteResultSet.Rows.Count)
+                      {
+                          var htArtistAlbum = Scraper.UndoArtistPrefix(sqLiteResultSet.GetField(i, 0).ToLower()) + "-" + sqLiteResultSet.GetField(i, 1).ToLower() ;
+                          if (!htAlbums.Contains(htArtistAlbum)) // !!! The Beatles <> Beatles
+                              htAlbums.Add(htArtistAlbum,sqLiteResultSet.GetField(i, 2));
+                          checked { ++i; }
+                      }
+                      /*
+                      var hashtable2 = new Hashtable();
+                      var str2 = "SELECT Key1, Key2, count(Key1) "+
+                                  "FROM Image "+
+                                  "WHERE Category IN ('" + ((object) Utils.Category.MusicAlbumThumbScraped).ToString() + "') AND "+
+                                        "DummyItem = 'False' "+
+                                  "GROUP BY Key1, Key2;";
+                      lock (lockObject)
+                          sqLiteResultSet = dbClient.Execute(str2);
+                      var num2 = 0;
+                      while (num2 < sqLiteResultSet.Rows.Count)
+                      {
+                          var htArtistAlbum = Scraper.UndoArtistPrefix(sqLiteResultSet.GetField(num2, 0).ToLower()) + "-" + sqLiteResultSet.GetField(num2, 1).ToLower() ;
+                          if (!hashtable2.Contains(htArtistAlbum)) // !!! The Beatles <> Beatles
+                              hashtable2.Add(htArtistAlbum,sqLiteResultSet.GetField(num2, 2));
+                          checked
+                          {
+                              ++num2;
+                          }
+                      }
+                      */
+                      logger.Debug("InitialScrape Artists/Albums: ["+htAlbums.Count+"]/["+musicDatabaseAlbums.Count+"]");
+                      var index = 0;
+                      while (index < musicDatabaseAlbums.Count)
+                      {
+                          var album = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Album).Trim();
+                          if (album != null && album.Length > 0)
+                          {
+                              var artist   = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Artist).Trim();
+                              var dbartist = Scraper.UndoArtistPrefix(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped)).ToLower();
+                              var dbalbum  = Utils.GetAlbum(album, Utils.Category.MusicFanartScraped).ToLower();
+                              var htArtistAlbum = dbartist + "-" + dbalbum ;
+                              // var num3 = 0;
+                              // if (!hashtable1.Contains(htArtistAlbum)) // !!! The Beatles <> Beatles
+                              if (!htAlbums.Contains(htArtistAlbum)) // !!! The Beatles <> Beatles
+                              //    num3 = int.Parse((string) hashtable1[Utils.PatchSql(dbartist).ToLower() + "-" + Utils.PatchSql(dbalbum).ToLower()],CultureInfo.CurrentCulture);
+                              // if (num3 < 1) 
+                              {
+                                  // var num4 = 0;
+                                  // if (!hashtable2.Contains(htArtistAlbum)) // !!! The Beatles <> Beatles
+                                  //    num4 = int.Parse((string)hashtable2[Utils.PatchSql(dbartist).ToLower() + "-" + Utils.PatchSql(dbalbum).ToLower()],CultureInfo.CurrentCulture);
+                                  // if (num4 < 1) 
+                                  // {
+                                      if (!StopScraper && !Utils.GetIsStopping()) 
+                                      {
+                                          scraper = new Scraper();
+                                          scraper.GetArtistAlbumThumbs(artist, album, false, false);
+                                          scraper = null;
+                                      }
+                                      else
+                                        break;
+                                  // }
+                              }
+                          }
+                          #region Report
+                          ++CurrArtistsBeingScraped;
+                          if (TotArtistsBeingScraped > 0.0 && FanartHandlerSetup.Fh.MyScraperWorker != null)
+                              FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(Convert.ToInt32(CurrArtistsBeingScraped/TotArtistsBeingScraped*100.0),"Ongoing");
+                          #endregion
+                          checked { ++index; }
+                      }
+                      logger.Debug("InitialScrape done for Artist/Albums.");
+                  }
+                  musicDatabaseAlbums = null;
+                }
+                #endregion
                 AddScapedFanartToAnyHash();
                 logger.Info("InitialScrape is done.");
             }
@@ -1050,80 +1217,83 @@ namespace FanartHandler
             try
             {
                 logger.Info("InitialThumbScrape is starting (only missing=" + (onlyMissing ? 1 : 0) + ")...");
-                musicDatabaseArtists = new ArrayList();
-                musicDatabaseAlbums = new List<AlbumInfo>();
-                m_db.GetAllArtists(ref musicDatabaseArtists);
-                m_db.GetAllAlbums(ref musicDatabaseAlbums);
-                #region mvCentral
-                var musicVideoArtists = Utils.GetMusicVideoArtists("mvCentral.db3");
-                if (musicVideoArtists != null && musicVideoArtists.Count > 0){
+                #region Artists
+                if (Utils.ScrapeThumbnails.Equals("True", StringComparison.CurrentCulture))
+                {
+                  musicDatabaseArtists = new ArrayList();
+                  m_db.GetAllArtists(ref musicDatabaseArtists);
+                  #region mvCentral
+                  var musicVideoArtists = Utils.GetMusicVideoArtists("mvCentral.db3");
+                  if (musicVideoArtists != null && musicVideoArtists.Count > 0){
                     logger.Debug("InitialThumbScrape add Artists from mvCentral ["+musicVideoArtists.Count+"]...");
                     musicDatabaseArtists.AddRange(musicVideoArtists);
-                }
-                var musicVideoAlbums = Utils.GetMusicVideoAlbums("mvCentral.db3");
-                if (musicVideoAlbums != null && musicVideoAlbums.Count > 0) {
-                    logger.Debug("InitialThumbScrape add Artists/Albums from mvCentral ["+musicVideoAlbums.Count+"]...");
-                    musicDatabaseAlbums.AddRange(musicVideoAlbums);
-                }
-                #endregion
-                TotArtistsBeingScraped = checked (musicDatabaseArtists.Count + musicDatabaseAlbums.Count);
-                #region Artists
-                if (musicDatabaseArtists != null && musicDatabaseArtists.Count > 0)
-                {
+                  }
+                  #endregion
+                  TotArtistsBeingScraped = checked (musicDatabaseArtists.Count + musicDatabaseAlbums.Count);
+                  if (musicDatabaseArtists != null && musicDatabaseArtists.Count > 0)
+                  {
+                    logger.Debug("InitialThumbScrape Artists: ["+musicVideoArtists.Count+"]");
                     var index = 0;
                     while (index < musicDatabaseArtists.Count)
                     {
-                        var artist = musicDatabaseArtists[index].ToString();
-                        if (!StopScraper && !Utils.GetIsStopping())
-                        {
-                            DoScrapeThumbs(artist, onlyMissing);
-                            ++CurrArtistsBeingScraped;
-                            checked
-                            {
-                                ++index;
-                            }
-                        }
-                        else
-                            break;
+                      var artist = musicDatabaseArtists[index].ToString();
+                      if (!StopScraper && !Utils.GetIsStopping())
+                      {
+                        DoScrapeThumbs(artist, onlyMissing);
+                        ++CurrArtistsBeingScraped;
+                        checked { ++index; }
+                      }
+                      else
+                        break;
                     }
+                  }
+                  musicDatabaseArtists = null;
                 }
                 #endregion
+
                 #region Albums
-                if (musicDatabaseAlbums != null && musicDatabaseAlbums.Count > 0 &&
-                    Utils.ScrapeThumbnailsAlbum.Equals("True", StringComparison.CurrentCulture)
-                   )
+                if (Utils.ScrapeThumbnailsAlbum.Equals("True", StringComparison.CurrentCulture))
                 {
+                  musicDatabaseAlbums = new List<AlbumInfo>();
+                  m_db.GetAllAlbums(ref musicDatabaseAlbums);
+                  #region mvCentral
+                  var musicVideoAlbums = Utils.GetMusicVideoAlbums("mvCentral.db3");
+                  if (musicVideoAlbums != null && musicVideoAlbums.Count > 0) {
+                    logger.Debug("InitialThumbScrape add Artists/Albums from mvCentral ["+musicVideoAlbums.Count+"]...");
+                    musicDatabaseAlbums.AddRange(musicVideoAlbums);
+                  }
+                  #endregion
+                  if (musicDatabaseAlbums != null && musicDatabaseAlbums.Count > 0)
+                  {
+                    logger.Debug("InitialThumbScrape Artists/Albums: ["+musicDatabaseAlbums.Count+"]");
                     scraper = new Scraper();
                     var index = 0;
                     while (index < musicDatabaseAlbums.Count)
                     {
-                        var album = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Album).Trim();
-                        if (album != null && album.Length > 0)
+                      var album = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Album).Trim();
+                      if (album != null && album.Length > 0)
+                      {
+                        var artist = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Artist).Trim();
+                        var dbartist = Utils.GetArtist(Scraper.UndoArtistPrefix(artist), Utils.Category.MusicFanartScraped);
+                        var dbalbum = Utils.GetAlbum(album, Utils.Category.MusicFanartScraped);
+                        if (!Utils.GetDbm().HasAlbumThumb(dbartist,dbalbum) || !onlyMissing)
                         {
-                            var artist = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Artist).Trim();
-                            var dbartist = Utils.GetArtist(Scraper.UndoArtistPrefix(artist), Utils.Category.MusicFanartScraped);
-                            var dbalbum = Utils.GetAlbum(album, Utils.Category.MusicFanartScraped);
-                            if (!Utils.GetDbm().HasAlbumThumb(dbartist,dbalbum) || !onlyMissing)
-                            {
-                            // if (int.Parse(sqLiteResultSet.GetField(0, 0), CultureInfo.CurrentCulture) < 1 || !onlyMissing) {
-                              if (!StopScraper && !Utils.GetIsStopping()) 
-                                scraper.GetArtistAlbumThumbs(artist, album, false, false);
-                              else
-                                break;
-                            }
+                        // if (int.Parse(sqLiteResultSet.GetField(0, 0), CultureInfo.CurrentCulture) < 1 || !onlyMissing) {
+                          if (!StopScraper && !Utils.GetIsStopping()) 
+                            scraper.GetArtistAlbumThumbs(artist, album, false, false);
+                          else
+                            break;
                         }
-                        ++CurrArtistsBeingScraped;
-                        checked
-                        {
-                            ++index;
-                        }
+                      }
+                      ++CurrArtistsBeingScraped;
+                      checked { ++index; }
                     }
                     scraper = null;
+                  }
+                  musicDatabaseAlbums = null;
                 }
                 #endregion
                 logger.Info("InitialThumbScrape is done.");
-                musicDatabaseArtists = null;
-                musicDatabaseAlbums = null;
             }
             catch (Exception ex)
             {
@@ -1701,6 +1871,7 @@ namespace FanartHandler
                 if (DatabaseUtility.GetAsInt(dbClient.Execute("SELECT COUNT(Key1) "+
                                                                "FROM Image "+
                                                                "WHERE Id = '" + Utils.PatchSql(imageId) + "' AND "+
+                                                                     (string.IsNullOrEmpty(artist) ? string.Empty : "Key1 = '" + Utils.PatchSql(artist) + "' AND ") +
                                                                      "Provider = '" + ((object) provider).ToString() + "';"),0, 0) <= 0)
                     return false;
                 lock (lockObject)
@@ -1708,6 +1879,7 @@ namespace FanartHandler
                                       "SET Time_Stamp = '" + DateTime.Now.ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "' "+
                                       (string.IsNullOrEmpty(mbid) ? "" : ", MBID ='"+Utils.PatchSql(mbid)+"' ") +
                                       "WHERE Id = '" + Utils.PatchSql(imageId) + "' AND "+
+                                            (string.IsNullOrEmpty(artist) ? string.Empty : "Key1 = '" + Utils.PatchSql(artist) + "' AND ") +
                                             "Provider = '" + ((object) provider).ToString() + "';");
                 return true;
             }
@@ -1717,6 +1889,29 @@ namespace FanartHandler
                 return true;
             }
         }
+
+        // Begin: UpdateTimeStamp
+        public void UpdateTimeStamp(string artist, string album, Utils.Category category, bool now = true, bool all = false)
+        {
+          try
+          {
+            var SQL  = "UPDATE Image "+
+                          "SET Time_Stamp = '" + (now ? DateTime.Now.ToString("yyyyMMdd", CultureInfo.CurrentCulture) : DateTime.Today.AddDays(-30.0).ToString("yyyyMMdd", CultureInfo.CurrentCulture)) + "' "+
+                          "WHERE "+
+                            (string.IsNullOrEmpty(artist) ? string.Empty : "Key1 = '" + Utils.PatchSql(artist) + "' AND ") +
+                            (string.IsNullOrEmpty(album) ? string.Empty : "Key2 = '" + Utils.PatchSql(album) + "' AND ") +
+                            "Category IN (" + (all ? Utils.GetMusicFanartCategoriesInStatement(false) : "'" + ((object) category).ToString() + "'") + ");";
+            // logger.Debug("*** UpdateTimeStamp: " + SQL);
+            lock (lockObject)
+              dbClient.Execute(SQL);
+          }
+          catch (Exception ex)
+          {
+            logger.Error("UpdateTimeStamp: " + ex);
+            logger.Error(ex);
+          }
+        }
+        // End: UpdateTimeStamp
 
         // Begin: GetDBMuzicBrainzID
         public string GetDBMuzicBrainzID(string artist, string album)
