@@ -1308,11 +1308,14 @@ namespace FanartHandler
           xmlwriter.SetValue("FanartHandler", "scrapeThumbnailsAlbum", checkBox9.Checked ? true : false);
           xmlwriter.SetValue("FanartHandler", "doNotReplaceExistingThumbs", checkBox8.Checked ? true : false);
         }
-        MessageBox.Show("Settings is stored in memory. Make sure to press Ok when exiting MP Configuration. Pressing Cancel when exiting MP Configuration will result in these setting NOT being saved!");
+        MessageBox.Show("Settings is stored in memory. Make sure to press Ok when exiting MP Configuration. "+
+                        "Pressing Cancel when exiting MP Configuration will result in these setting NOT being saved!", "Settings", MessageBoxButtons.OK, MessageBoxIcon.Information);
       }
       else
       {
-        MessageBox.Show("Error: You have to select at least on of the checkboxes under headline \"Selected Fanart Sources\". Also you cannot disable both album and artist thumbs if you also have disabled fanart. If you do not want to use fanart you still have to check at least one of the checkboxes and the disable the plugin.");
+        MessageBox.Show("Error: You have to select at least on of the checkboxes under headline \"Selected Fanart Sources\". "+
+                        "Also you cannot disable both album and artist thumbs if you also have disabled fanart. "+
+                        "If you do not want to use fanart you still have to check at least one of the checkboxes and the disable the plugin.",  "Settings", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
       }
     }
 
@@ -1321,7 +1324,7 @@ namespace FanartHandler
       isStopping = true;
       if (DesignMode)
         return;
-      var dialogResult = MessageBox.Show("Do you want to save your changes?", "Save Changes?", MessageBoxButtons.YesNo);
+      var dialogResult = MessageBox.Show("Do you want to save your changes?", "Save Changes?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
       StopScraper();
       // if (MyDirectoryWorker != null)
       // {
@@ -1991,10 +1994,10 @@ namespace FanartHandler
     {
       try
       {
-        var dialogResult = MessageBox.Show("Are you sure you want to delete all fanart? This will cause all fanart stored in your music fanart folder to be deleted.", "Delete All Music Fanart", MessageBoxButtons.YesNo);
+        var dialogResult = MessageBox.Show("Are you sure you want to delete all fanart? This will cause all fanart stored in your music fanart folder to be deleted.", "Delete All Music Fanart", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2);
         if (dialogResult == DialogResult.No)
         {
-          var num1 = (int) MessageBox.Show("Operation was aborted!");
+          var num1 = (int) MessageBox.Show("Operation was aborted!", "Delete All Music Fanart", MessageBoxButtons.OK, MessageBoxIcon.Stop);
         }
         if (dialogResult != DialogResult.Yes)
           return;
@@ -2008,7 +2011,7 @@ namespace FanartHandler
         dataGridView1.ClearSelection();
         myDataTable.Rows.Clear();
         myDataTable.AcceptChanges();
-        var num2 = (int) MessageBox.Show("Done!");
+        var num2 = (int) MessageBox.Show("Done!", "Delete All Music Fanart", MessageBoxButtons.OK, MessageBoxIcon.Information);
       }
       catch (Exception ex)
       {
@@ -2109,7 +2112,7 @@ namespace FanartHandler
         }
         else
         {
-          var num = (int) MessageBox.Show("Unable to delete a thumbnail that you have locked. Please unlock first.");
+          var num = (int) MessageBox.Show("Unable to delete a thumbnail that you have locked. Please unlock first.", "Delete", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
         }
       }
       catch (Exception ex)
@@ -2230,7 +2233,8 @@ namespace FanartHandler
     {
       try
       {
-        var num = (int) MessageBox.Show("Successfully synchronised your fanart database. Removed " + Utils.GetDbm().DeleteRecordsWhereFileIsMissing() + " entries from your fanart database.");
+        var num = (int) MessageBox.Show("Successfully synchronised your fanart database. "+
+                                        "Removed " + Utils.GetDbm().DeleteRecordsWhereFileIsMissing() + " entries from your fanart database.", "Cleanup", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
       }
       catch (Exception ex)
       {
@@ -2268,6 +2272,16 @@ namespace FanartHandler
 
     private void button6_Click(object sender, EventArgs e)
     {
+      if (!isScraping)
+      {
+        var dialogResult = MessageBox.Show("Update pictures [Yes], or Full Scan [No]?", "Scrape fanart pictures", MessageBoxButtons.YesNoCancel,  MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
+        if (dialogResult == DialogResult.Cancel)
+          return;
+
+        if (dialogResult == DialogResult.No)
+          Utils.GetDbm().UpdateTimeStamp(null, null, Utils.Category.Dummy, false, true) ;
+      }
+
       StartScrape();
     }
 
@@ -3096,10 +3110,12 @@ namespace FanartHandler
     {
       try
       {
-        var dialogResult = MessageBox.Show("Are you sure you want to delete all fanart? This will cause all fanart stored in your game fanart folder to be deleted.", "Delete All Game Fanart", MessageBoxButtons.YesNo);
+        var dialogResult = MessageBox.Show("Are you sure you want to delete all fanart? "+
+                                           "This will cause all fanart stored in your game fanart folder to be deleted.", 
+                                           "Delete All Game Fanart", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
         if (dialogResult == DialogResult.No)
         {
-          var num1 = (int) MessageBox.Show("Operation was aborted!");
+          var num1 = (int) MessageBox.Show("Operation was aborted!", "Delete All Game Fanart", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
         }
         if (dialogResult != DialogResult.Yes)
           return;
@@ -3109,7 +3125,7 @@ namespace FanartHandler
         dataGridView4.ClearSelection();
         myDataTable4.Rows.Clear();
         myDataTable4.AcceptChanges();
-        var num2 = (int) MessageBox.Show("Done!");
+        var num2 = (int) MessageBox.Show("Done!", "Delete All Game Fanart", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
       }
       catch (Exception ex)
       {

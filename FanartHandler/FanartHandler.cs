@@ -329,7 +329,7 @@ namespace FanartHandler
         {
           var allFilenames = Utils.GetDbm().GetAllFilenames(category);
           filter = string.Format("^{0}$", filter.Replace(".", @"\.").Replace("*", ".*").Replace("?", ".").Replace("jpg", "(j|J)(p|P)(e|E)?(g|G)").Trim());
-          // logger.Debug("*** SetupFilenames: filter: " + filter);
+          // logger.Debug("*** SetupFilenames: "+category.ToString()+" "+provider.ToString()+" filter: " + filter);
           foreach (var str3 in Enumerable.Select<FileInfo, string>(Enumerable.Where<FileInfo>(new DirectoryInfo(s).GetFiles("*.*", SearchOption.AllDirectories), fi =>
           {
             return Regex.IsMatch(fi.FullName, filter,RegexOptions.CultureInvariant) ;

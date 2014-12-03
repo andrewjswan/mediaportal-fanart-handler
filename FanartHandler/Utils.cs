@@ -749,6 +749,7 @@ namespace FanartHandler
       SeriesManual,
       TvManual,
       TvSeriesScraped,
+      Dummy,
     }
 
     public enum Provider
