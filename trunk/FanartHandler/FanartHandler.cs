@@ -37,7 +37,7 @@ namespace FanartHandler
     private string fhThreadPriority = "Lowest";
     private int maxCountImage = 30;
     private const string LogFileName = "FanartHandler.log";
-    private const string OldLogFileName = "FanartHandler.old.log";
+    private const string OldLogFileName = "FanartHandler.bak";
     internal FanartPlaying FP;
     internal FanartRandom FR;
     internal FanartSelected FS;
