@@ -1143,6 +1143,13 @@ namespace FanartHandler
                 #endregion
                 AddScapedFanartToAnyHash();
                 logger.Info("InitialScrape is done.");
+
+                #region Statistics
+                logger.Info("InitialScrape statistic for Category:");
+                GetCategoryStatistic (true) ;
+                logger.Info("InitialScrape statistic for Provider:");
+                GetProviderStatistic (true) ;
+                #endregion
             }
             catch (Exception ex)
             {
@@ -2057,6 +2064,70 @@ namespace FanartHandler
             {
                 logger.Error("DeleteDummyItem: " + ex);
             }
+        }
+        #endregion
+
+        #region Statistic
+        public string GetCategoryStatistic (bool Log = false)
+        {
+            var res = string.Empty;
+
+            try
+            {
+                var SQL = "SELECT Category, Provider, count (*) as Count "+
+                           "FROM Image "+
+                           "GROUP BY Category,Provider "+
+                           "ORDER BY Category, Count Desc;";
+                SQLiteResultSet sqLiteResultSet;
+                lock (lockObject)
+                    sqLiteResultSet = dbClient.Execute(SQL);
+
+                var i = 0;
+                while (i < sqLiteResultSet.Rows.Count)
+                {
+                    var line = string.Format("{3,3} {0,-25} {1,-15} {2,5}", sqLiteResultSet.GetField(i, 0), sqLiteResultSet.GetField(i, 1), sqLiteResultSet.GetField(i, 2), i);
+                    res = res + line + System.Environment.NewLine;
+                    if (Log)
+                      logger.Debug(line) ;
+                    checked { ++i; }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error("GetCategoryStatistic: " + ex);
+            }
+            return res;
+        }
+
+        public string GetProviderStatistic (bool Log = false)
+        {
+            var res = string.Empty;
+
+            try
+            {
+                var SQL = "SELECT Provider, count (*) as Count "+
+                           "FROM Image "+
+                           "GROUP BY Provider "+
+                           "ORDER BY Count Desc;";
+                SQLiteResultSet sqLiteResultSet;
+                lock (lockObject)
+                    sqLiteResultSet = dbClient.Execute(SQL);
+
+                var i = 0;
+                while (i < sqLiteResultSet.Rows.Count)
+                {
+                    var line = string.Format("{2,3} {0,-15} {1,5}", sqLiteResultSet.GetField(i, 0), sqLiteResultSet.GetField(i, 1), i) ;
+                    res = res + line + System.Environment.NewLine;
+                    if (Log)
+                      logger.Debug(line) ;
+                    checked { ++i; }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error("GetProviderStatistic: " + ex);
+            }
+            return res;
         }
         #endregion
     }
