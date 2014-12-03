@@ -1014,6 +1014,7 @@ namespace FanartHandler
       SetProperty("#fanarthandler.music.scraper.backdrop2.any", string.Empty);
       SetProperty("#fanarthandler.music.overlay.play", string.Empty);
       SetProperty("#fanarthandler.music.artisthumb.play", string.Empty);
+      SetProperty("#fanarthandler.music.artistclearart.play", string.Empty);
       SetProperty("#fanarthandler.music.backdrop1.play", string.Empty);
       SetProperty("#fanarthandler.music.backdrop2.play", string.Empty);
       SetProperty("#fanarthandler.music.backdrop1.selected", string.Empty);
@@ -1398,6 +1399,7 @@ namespace FanartHandler
               FP.FanartIsNotAvailablePlay(activeWindowId);
               FP.PrevPlayMusic = -1;
               SetProperty("#fanarthandler.music.artisthumb.play", string.Empty);
+              SetProperty("#fanarthandler.music.artistclearart.play", string.Empty);
               SetProperty("#fanarthandler.music.overlay.play", string.Empty);
               SetProperty("#fanarthandler.music.backdrop1.play", string.Empty);
               SetProperty("#fanarthandler.music.backdrop2.play", string.Empty);
@@ -1649,7 +1651,7 @@ namespace FanartHandler
       {
         if (type == g_Player.MediaType.Music || type == g_Player.MediaType.Radio)
         {
-          FanartHandlerSetup.Fh.FP.AddPlayingArtistThumbProperty(CurrentTrackTag, FP.DoShowImageOnePlay);
+          FanartHandlerSetup.Fh.FP.AddPlayingArtistPropertys(CurrentTrackTag, FP.DoShowImageOnePlay);
         }
       }
       catch (Exception ex)
@@ -1685,7 +1687,7 @@ namespace FanartHandler
     //  {
     //    if (type == g_Player.MediaType.Music || type == g_Player.MediaType.Radio)
     //      return;
-    //    FanartHandlerSetup.Fh.FP.AddPlayingArtistThumbProperty(this.CurrentTrackTag, this.FP.DoShowImageOnePlay);
+    //    FanartHandlerSetup.Fh.FP.AddPlayingArtistPropertys(this.CurrentTrackTag, this.FP.DoShowImageOnePlay);
     //  }
     //  catch (Exception ex)
     //  {

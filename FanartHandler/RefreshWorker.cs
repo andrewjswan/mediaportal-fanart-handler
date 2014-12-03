@@ -166,6 +166,7 @@ namespace FanartHandler
             FanartHandlerSetup.Fh.FP.FanartIsNotAvailablePlay(GUIWindowManager.ActiveWindow);
             FanartHandlerSetup.Fh.FP.PrevPlayMusic = -1;
             FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.artisthumb.play", string.Empty);
+            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.artistclearart.play", string.Empty);
             FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.overlay.play", string.Empty);
             FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.backdrop1.play", string.Empty);
             FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.backdrop2.play", string.Empty);
