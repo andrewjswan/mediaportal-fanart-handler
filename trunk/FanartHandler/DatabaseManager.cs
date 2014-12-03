@@ -995,15 +995,7 @@ namespace FanartHandler
                 {
                     logger.Debug("InitialScrape initiating for Artists...");
                     var htFanart = new Hashtable();
-                    /*
-                    var SQL = "SELECT Key1, count(Key1) "+
-                               "FROM Image "+
-                               "WHERE Category in ('" + ((object) Utils.Category.MusicFanartScraped).ToString() + "') AND "+
-                                     // "Enabled = 'True' AND "+
-                                     // "DummyItem = 'False' AND "+
-                                     "Time_Stamp >= '" + DateTime.Today.AddDays(-14.0).ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "' "+
-                               "GROUP BY Key1;";
-                    */
+
                     var SQL = "SELECT DISTINCT Key1, sum(Count) as Count FROM ("+
                                 "SELECT Key1, count(Key1) as Count "+
                                   "FROM Image "+
@@ -1085,19 +1077,8 @@ namespace FanartHandler
                   if (musicDatabaseAlbums != null && musicDatabaseAlbums.Count > 0)
                   {
                       logger.Debug("InitialScrape initiating for Artist/Albums...");
-                      // var hashtable1 = new Hashtable();
                       var htAlbums = new Hashtable();
-                      /*
-                      var str1 = "SELECT Key1, Key2, count(Key1) "+
-                                  "FROM Image "+
-                                  "WHERE Category IN ('" + ((object) Utils.Category.MusicAlbumThumbScraped).ToString() + "') AND "+
-                                        // "DummyItem = 'False' AND "+
-                                        "Time_Stamp >= '" + DateTime.Today.AddDays(-14.0).ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "' "+
-                                  "GROUP BY Key1, Key2;";
-                      SQLiteResultSet sqLiteResultSet;
-                      lock (lockObject)
-                          sqLiteResultSet = dbClient.Execute(str1);
-                      */
+
                       var SQL = "SELECT DISTINCT Key1, Key2, sum(Count) as Count FROM ("+
                                   "SELECT Key1, Key2, count(Key1) as Count "+
                                     "FROM Image "+
@@ -1115,19 +1096,7 @@ namespace FanartHandler
                       SQLiteResultSet sqLiteResultSet;
                       lock (lockObject)
                           sqLiteResultSet = dbClient.Execute(SQL);
-                      /*
-                      var num1 = 0;
-                      while (num1 < sqLiteResultSet.Rows.Count)
-                      {
-                          var htArtistAlbum = Scraper.UndoArtistPrefix(sqLiteResultSet.GetField(num1, 0).ToLower()) + "-" + sqLiteResultSet.GetField(num1, 1).ToLower() ;
-                          if (!hashtable1.Contains(htArtistAlbum)) // !!! The Beatles <> Beatles
-                              hashtable1.Add(htArtistAlbum,sqLiteResultSet.GetField(num1, 2));
-                          checked
-                          {
-                              ++num1;
-                          }
-                      }
-                      */
+
                       var i = 0;
                       while (i < sqLiteResultSet.Rows.Count)
                       {
@@ -1136,27 +1105,7 @@ namespace FanartHandler
                               htAlbums.Add(htArtistAlbum,sqLiteResultSet.GetField(i, 2));
                           checked { ++i; }
                       }
-                      /*
-                      var hashtable2 = new Hashtable();
-                      var str2 = "SELECT Key1, Key2, count(Key1) "+
-                                  "FROM Image "+
-                                  "WHERE Category IN ('" + ((object) Utils.Category.MusicAlbumThumbScraped).ToString() + "') AND "+
-                                        "DummyItem = 'False' "+
-                                  "GROUP BY Key1, Key2;";
-                      lock (lockObject)
-                          sqLiteResultSet = dbClient.Execute(str2);
-                      var num2 = 0;
-                      while (num2 < sqLiteResultSet.Rows.Count)
-                      {
-                          var htArtistAlbum = Scraper.UndoArtistPrefix(sqLiteResultSet.GetField(num2, 0).ToLower()) + "-" + sqLiteResultSet.GetField(num2, 1).ToLower() ;
-                          if (!hashtable2.Contains(htArtistAlbum)) // !!! The Beatles <> Beatles
-                              hashtable2.Add(htArtistAlbum,sqLiteResultSet.GetField(num2, 2));
-                          checked
-                          {
-                              ++num2;
-                          }
-                      }
-                      */
+
                       logger.Debug("InitialScrape Artists/Albums: ["+htAlbums.Count+"]/["+musicDatabaseAlbums.Count+"]");
                       var index = 0;
                       while (index < musicDatabaseAlbums.Count)
@@ -1168,26 +1117,16 @@ namespace FanartHandler
                               var dbartist = Scraper.UndoArtistPrefix(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped)).ToLower();
                               var dbalbum  = Utils.GetAlbum(album, Utils.Category.MusicFanartScraped).ToLower();
                               var htArtistAlbum = dbartist + "-" + dbalbum ;
-                              // var num3 = 0;
-                              // if (!hashtable1.Contains(htArtistAlbum)) // !!! The Beatles <> Beatles
                               if (!htAlbums.Contains(htArtistAlbum)) // !!! The Beatles <> Beatles
-                              //    num3 = int.Parse((string) hashtable1[Utils.PatchSql(dbartist).ToLower() + "-" + Utils.PatchSql(dbalbum).ToLower()],CultureInfo.CurrentCulture);
-                              // if (num3 < 1) 
                               {
-                                  // var num4 = 0;
-                                  // if (!hashtable2.Contains(htArtistAlbum)) // !!! The Beatles <> Beatles
-                                  //    num4 = int.Parse((string)hashtable2[Utils.PatchSql(dbartist).ToLower() + "-" + Utils.PatchSql(dbalbum).ToLower()],CultureInfo.CurrentCulture);
-                                  // if (num4 < 1) 
-                                  // {
-                                      if (!StopScraper && !Utils.GetIsStopping()) 
-                                      {
-                                          scraper = new Scraper();
-                                          scraper.GetArtistAlbumThumbs(artist, album, false, false);
-                                          scraper = null;
-                                      }
-                                      else
-                                        break;
-                                  // }
+                                  if (!StopScraper && !Utils.GetIsStopping()) 
+                                  {
+                                      scraper = new Scraper();
+                                      scraper.GetArtistAlbumThumbs(artist, album, false, false);
+                                      scraper = null;
+                                  }
+                                  else
+                                    break;
                               }
                           }
                           #region Report
@@ -1278,7 +1217,6 @@ namespace FanartHandler
                         var dbalbum = Utils.GetAlbum(album, Utils.Category.MusicFanartScraped);
                         if (!Utils.GetDbm().HasAlbumThumb(dbartist,dbalbum) || !onlyMissing)
                         {
-                        // if (int.Parse(sqLiteResultSet.GetField(0, 0), CultureInfo.CurrentCulture) < 1 || !onlyMissing) {
                           if (!StopScraper && !Utils.GetIsStopping()) 
                             scraper.GetArtistAlbumThumbs(artist, album, false, false);
                           else
