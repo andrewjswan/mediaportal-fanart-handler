@@ -179,6 +179,7 @@ namespace FanartHandler
           }
           else if (FanartHandlerSetup.Fh.IsPlaying)
             checked { ++FanartHandlerSetup.Fh.IsPlayingCount; }
+
           DebugStep = 18;
           if (FanartHandlerSetup.Fh.UseMusicFanart != null && FanartHandlerSetup.Fh.UseMusicFanart.Equals("True", StringComparison.CurrentCulture) && flag1)
           {

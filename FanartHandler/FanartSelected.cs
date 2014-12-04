@@ -88,9 +88,7 @@ namespace FanartHandler
         if (Utils.GetIsStopping())
           return;
 
-        var isMusic = false;
-        if (property.Equals("music", StringComparison.CurrentCulture))
-          isMusic = true;
+        var isMusic = (property.Equals("music", StringComparison.CurrentCulture));
 
         if (isMusic)
         {
@@ -181,16 +179,28 @@ namespace FanartHandler
               FanartHandlerSetup.Fh.SelectedItem.Equals("..", StringComparison.CurrentCulture)
              )
             return;
-          // !!! Обїеденить в один блок,  тут много общего!
-          if (!currSelectedGenericTitle.Equals(FanartHandlerSetup.Fh.SelectedItem, StringComparison.CurrentCulture))
+
+          if ((!currSelectedGenericTitle.Equals(FanartHandlerSetup.Fh.SelectedItem, StringComparison.CurrentCulture)) || (CurrCount >= FanartHandlerSetup.Fh.MaxCountImage))
           {
-            var str1 = string.Empty;
-            var str2 = CurrSelectedMusic;
-            currSelectedGeneric = string.Empty;
-            PrevSelectedGeneric = -1;
-            SetCurrentArtistsImageNames(null);
-            UpdateVisibilityCount = 0;
-            var str3 = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.SelectedItem, ref currSelectedGeneric, ref PrevSelectedGeneric, category, "FanartSelected", true, isMusic);
+            // var str1 = string.Empty;
+            var str2 = string.Empty;
+            var str3 = string.Empty;
+            var flag = (!currSelectedGenericTitle.Equals(FanartHandlerSetup.Fh.SelectedItem, StringComparison.CurrentCulture));
+
+            if (flag) // (!currSelectedGenericTitle.Equals(FanartHandlerSetup.Fh.SelectedItem, StringComparison.CurrentCulture))
+            {
+              str2 = CurrSelectedMusic;
+              currSelectedGeneric = string.Empty;
+              PrevSelectedGeneric = -1;
+              SetCurrentArtistsImageNames(null);
+              UpdateVisibilityCount = 0;
+            }
+            else // (CurrCount >= FanartHandlerSetup.Fh.MaxCountImage)
+            {
+              str2 = currSelectedGeneric;
+            }
+            str3 = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.SelectedItem, ref currSelectedGeneric, ref PrevSelectedGeneric, category, "FanartSelected", flag, isMusic);
+
             if (str3.Length == 0 && (GUIWindowManager.ActiveWindow == 2003 || GUIWindowManager.ActiveWindow == 6 || GUIWindowManager.ActiveWindow == 25))
               str3 = GUIPropertyManager.GetProperty("#myvideosuserfanart");
             if (str3.Length == 0 && (GUIWindowManager.ActiveWindow == 2003 || GUIWindowManager.ActiveWindow == 6 || GUIWindowManager.ActiveWindow == 25))
@@ -201,9 +211,7 @@ namespace FanartHandler
               {
                 str3 = FanartHandlerSetup.Fh.GetRandomDefaultBackdrop(ref currSelectedGeneric, ref PrevSelectedGeneric);
                 if (str3.Length == 0)
-                {
                   FanartAvailable = false;
-                }
                 else
                 {
                   FanartAvailable = true;
@@ -222,44 +230,7 @@ namespace FanartHandler
             currSelectedGenericTitle = FanartHandlerSetup.Fh.SelectedItem;
             if (str3.Length == 0 || !str3.Equals(str2, StringComparison.CurrentCulture))
               ResetCurrCount();
-          } // if (!currSelectedGenericTitle.Equals(FanartHandlerSetup.Fh.SelectedItem, StringComparison.CurrentCulture))
-          else if (CurrCount >= FanartHandlerSetup.Fh.MaxCountImage)
-          {
-            var str1 = string.Empty;
-            var str2 = currSelectedGeneric;
-            var str3 = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.SelectedItem, ref currSelectedGeneric, ref PrevSelectedGeneric, category, "FanartSelected", false, isMusic);
-            if (str3.Length == 0 && (GUIWindowManager.ActiveWindow == 2003 || GUIWindowManager.ActiveWindow == 6 || GUIWindowManager.ActiveWindow == 25))
-              str3 = GUIPropertyManager.GetProperty("#myvideosuserfanart");
-            if (str3.Length == 0 && (GUIWindowManager.ActiveWindow == 2003 || GUIWindowManager.ActiveWindow == 6 || GUIWindowManager.ActiveWindow == 25))
-              str3 = FanartHandlerSetup.Fh.GetFilename(GUIWindowManager.ActiveWindow != 2003 ? GUIPropertyManager.GetProperty("#selecteditem") : GUIPropertyManager.GetProperty("#title"), ref currSelectedGeneric, ref PrevSelectedGeneric, category, "FanartSelected", true, isMusic);
-            if (str3.Length == 0)
-            {
-              if (property.Equals("music", StringComparison.CurrentCulture))
-              {
-                str3 = FanartHandlerSetup.Fh.GetRandomDefaultBackdrop(ref currSelectedGeneric, ref PrevSelectedGeneric);
-                if (str3.Length == 0)
-                {
-                  FanartAvailable = false;
-                }
-                else
-                {
-                  FanartAvailable = true;
-                  currSelectedGeneric = str3;
-                }
-              }
-              else
-                FanartAvailable = false;
-            }
-            else
-              FanartAvailable = true;
-            if (DoShowImageOne)
-              AddProperty("#fanarthandler." + property + ".backdrop1.selected", str3, ref listSelectedGeneric);
-            else
-              AddProperty("#fanarthandler." + property + ".backdrop2.selected", str3, ref listSelectedGeneric);
-            currSelectedGenericTitle = FanartHandlerSetup.Fh.SelectedItem;
-            if (str3.Length == 0 || !str3.Equals(str2, StringComparison.CurrentCulture))
-              ResetCurrCount();
-          } // if (CurrCount >= FanartHandlerSetup.Fh.MaxCountImage)
+          } // if ((!currSelectedGenericTitle.Equals(FanartHandlerSetup.Fh.SelectedItem, StringComparison.CurrentCulture)) || (CurrCount >= FanartHandlerSetup.Fh.MaxCountImage))
           IncreaseCurrCount();
         } // if (FanartHandlerSetup.Fh.SelectedItem != null && FanartHandlerSetup.Fh.SelectedItem.Trim().Length > 0)
         else
@@ -485,6 +456,10 @@ namespace FanartHandler
         if (Utils.GetIsStopping())
           return;
 
+        //
+        AddProperty("#fanarthandler.music.artistclearart.selected", string.Empty, ref ListSelectedMusic);
+        AddProperty("#fanarthandler.music.artistbanner.selected", string.Empty, ref ListSelectedMusic);
+        //
         FanartHandlerSetup.Fh.SelectedItem = GetMusicArtistFromListControl();
         if (FanartHandlerSetup.Fh.SelectedItem == null || FanartHandlerSetup.Fh.SelectedItem.Length <= 0)
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#selecteditem");
