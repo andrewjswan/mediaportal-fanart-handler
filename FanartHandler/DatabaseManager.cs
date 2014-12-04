@@ -301,8 +301,8 @@ namespace FanartHandler
                         File.Move(dbFile, dbFile + "_old_" + ((DBVersion != null) ? "v" + DBVersion + "_" : "") + backupdate);
                         logger.Info("Upgrading Step 2 - finished");
                     }
-                    var musicPath = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\Scraper\\music";
-                    var backupPath = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\Scraper_Backup_" + date;
+                    var musicPath = Utils.FAHSMusic;
+                    var backupPath = Path.Combine(Utils.FAHFolder, "Scraper_Backup_" + date);
                     if (Directory.Exists(musicPath) && !Directory.Exists(backupPath))
                     {
                         Directory.Move(musicPath, backupPath);
@@ -825,7 +825,7 @@ namespace FanartHandler
         {
             if (!StopScraper)
             {
-                Utils.AllocateDelayStop("FanartHandlerSetup-StartScraper");
+                // Utils.AllocateDelayStop("FanartHandlerSetup-StartScraper");
                 try
                 {
                     var GetImages = 0;
@@ -948,7 +948,7 @@ namespace FanartHandler
         {
             if (!StopScraper)
             {
-                Utils.AllocateDelayStop("FanartHandlerSetup-StartScraper");
+                // Utils.AllocateDelayStop("FanartHandlerSetup-StartScraper");
                 try
                 {
                     var num = 0;
@@ -1157,7 +1157,6 @@ namespace FanartHandler
                 }
                 #endregion
                 AddScapedFanartToAnyHash();
-                logger.Info("InitialScrape is done.");
 
                 #region Statistics
                 logger.Info("InitialScrape statistic for Category:");
@@ -1165,6 +1164,8 @@ namespace FanartHandler
                 logger.Info("InitialScrape statistic for Provider:");
                 GetProviderStatistic (true) ;
                 #endregion
+
+                logger.Info("InitialScrape is done.");
             }
             catch (Exception ex)
             {
@@ -1291,17 +1292,15 @@ namespace FanartHandler
             try
             {
                 logger.Info("NowPlayingScrape is starting for Artist: " + artist + ".");
-                TotArtistsBeingScraped = 2.0;
+                TotArtistsBeingScraped = 1.0;
                 CurrArtistsBeingScraped = 0.0;
                 var flag = false;
                 if (artist.Contains("|"))
                 {
-                    var artists = artist;
-                    var chArray = new char[1]
-                    {
-                        '|'
-                    };
-                    foreach (var sartist in artists.Split(chArray))
+                    var chArray = new char[1] { '|' };
+                    string[] artists = artist.Split(chArray,StringSplitOptions.RemoveEmptyEntries);
+                    TotArtistsBeingScraped = artists.Length * 1.0;
+                    foreach (string sartist in artists)
                     {
                         if (!StopScraper) 
                             flag = (flag || (DoScrapeNew(sartist.Trim(), album, false) > 0));
@@ -1743,7 +1742,7 @@ namespace FanartHandler
                 else if (category == Utils.Category.MusicArtistThumbScraped)
                     str = diskImage;
                 else if (category == Utils.Category.MusicFanartScraped)
-                    str = _id;
+                    str = (provider == Utils.Provider.Local) ? diskImage : _id;
                 else if (category == Utils.Category.MusicFanartManual)
                     str = diskImage;
                 else if (category == Utils.Category.PictureManual)
@@ -2020,17 +2019,17 @@ namespace FanartHandler
                     
                 if (category == Utils.Category.MusicArtistThumbScraped) 
                 {
-                  DummyFile = Config.GetFolder((Config.Dir) 6) + "\\Music\\Artists\\" + MediaPortal.Util.Utils.MakeFileName(artist) + ".jpg";
+                  DummyFile = Path.Combine(Utils.FAHMusicArtists, MediaPortal.Util.Utils.MakeFileName(artist) + ".jpg");
                 }
                 else if (category == Utils.Category.MusicAlbumThumbScraped) 
                 {
-                  DummyFile = Config.GetFolder((Config.Dir) 6) + "\\Music\\Albums\\" + MediaPortal.Util.Utils.GetAlbumThumbName(artist, album);
+                  DummyFile = Path.Combine(Utils.FAHMusicAlbums, MediaPortal.Util.Utils.GetAlbumThumbName(artist, album));
                   if (DummyFile.IndexOf(".jpg") < 0) 
                     DummyFile = DummyFile + ".jpg" ;
                 }
                 else if (category == Utils.Category.MusicFanartScraped)
                 {
-                  DummyFile = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\Scraper\\music\\" + MediaPortal.Util.Utils.MakeFileName(artist) + " (" + randNumber.Next(10000, 99999) + ").jpg";
+                  DummyFile = Path.Combine(Utils.FAHSMusic, MediaPortal.Util.Utils.MakeFileName(artist) + " (" + randNumber.Next(10000, 99999) + ").jpg");
                 }
                 else
                 {

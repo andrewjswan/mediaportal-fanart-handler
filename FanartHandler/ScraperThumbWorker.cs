@@ -34,6 +34,7 @@ namespace FanartHandler
         Thread.CurrentThread.Priority = !FanartHandlerSetup.Fh.FHThreadPriority.Equals("Lowest", StringComparison.CurrentCulture) ? ThreadPriority.BelowNormal : ThreadPriority.Lowest;
         Thread.CurrentThread.Name = "ScraperWorker";
         Utils.GetDbm().IsScraping = true;
+        Utils.AllocateDelayStop("FanartHandlerSetup-StartScraper");
         var strArray = e.Argument as string[];
         var onlyMissing = false;
         if (strArray != null && strArray[0].Equals("True"))

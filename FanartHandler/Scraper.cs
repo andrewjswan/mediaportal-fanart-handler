@@ -1519,21 +1519,20 @@ namespace FanartHandler
       var FileNameThumb    = (string) null;
       var requestPic       = (HttpWebRequest) null;
       var responsePic      = (WebResponse) null;
-      var ThumbsPath        = Config.GetFolder((Config.Dir) 6) ;
       var Text             = (string) null;
 
       if (category == Utils.Category.MusicArtistThumbScraped)
       {
-        path = ThumbsPath + "\\Music\\Artists";
-        FileNameThumb = path + "\\" + MediaPortal.Util.Utils.MakeFileName(sArtist) + ".jpg";
-        FileNameLarge = path + "\\" + MediaPortal.Util.Utils.MakeFileName(sArtist) + "L.jpg";
-        filename = path + "\\" + MediaPortal.Util.Utils.MakeFileName(sArtist) + "_tmp.jpg";
+        path = Utils.FAHMusicArtists;
+        FileNameThumb = Path.Combine(path, MediaPortal.Util.Utils.MakeFileName(sArtist) + ".jpg");
+        FileNameLarge = Path.Combine(path, MediaPortal.Util.Utils.MakeFileName(sArtist) + "L.jpg");
+        filename = Path.Combine(path, MediaPortal.Util.Utils.MakeFileName(sArtist) + "_tmp.jpg");
         Text = sArtist ;
         logger.Info("Download: Artist tumbnail for " + Text + " (" + filename + ").");
       }
       else if (category == Utils.Category.MusicAlbumThumbScraped)
       {
-        path = ThumbsPath + "\\Music\\Albums";
+        path = Utils.FAHMusicAlbums;
         FileNameThumb = MediaPortal.Util.Utils.GetAlbumThumbName(sArtist, sAlbum);
         FileNameLarge = MediaPortal.Util.Utils.ConvertToLargeCoverArt(FileNameThumb);
         filename = FileNameThumb.Substring(0, FileNameThumb.IndexOf(".jpg")) + "_tmp.jpg";
@@ -1542,8 +1541,8 @@ namespace FanartHandler
       }
       else if (category == Utils.Category.MusicFanartScraped)
       {
-        path = ThumbsPath + "\\Skin FanArt\\Scraper\\music";
-        filename = path + "\\" + MediaPortal.Util.Utils.MakeFileName(sArtist) + " (" + id + ").jpg";
+        path = Utils.FAHSMusic;
+        filename = Path.Combine(path, MediaPortal.Util.Utils.MakeFileName(sArtist) + " (" + id + ").jpg");
         Text = sArtist ;
         logger.Info("Download: Fanart for " + Text + " (" + filename + ").");
       }
