@@ -316,9 +316,24 @@ namespace FanartHandler
                     try
                     {
                         File.Copy(backupPath + "\\default.jpg", musicPath + "\\default.jpg");
-                        logger.Info("Upgrading Step 5 - finished");
                     }
                     catch {  }
+                    try
+                    {
+                        File.Copy(backupPath + "\\default1.jpg", musicPath + "\\default1.jpg");
+                    }
+                    catch {  }
+                    try
+                    {
+                        File.Copy(backupPath + "\\default2.jpg", musicPath + "\\default2.jpg");
+                    }
+                    catch {  }
+                    try
+                    {
+                        File.Copy(backupPath + "\\default3.jpg", musicPath + "\\default3.jpg");
+                    }
+                    catch {  }
+                    logger.Info("Upgrading Step 5 - finished");
                     // Create New Empty DB ...
                     InitDB("upgrade");
                     logger.Info("Upgrading Step 6 - finished");
