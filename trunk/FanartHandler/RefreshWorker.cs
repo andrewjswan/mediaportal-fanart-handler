@@ -167,6 +167,7 @@ namespace FanartHandler
             FanartHandlerSetup.Fh.FP.PrevPlayMusic = -1;
             FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.artisthumb.play", string.Empty);
             FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.artistclearart.play", string.Empty);
+            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.artistbanner.play", string.Empty);
             FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.overlay.play", string.Empty);
             FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.backdrop1.play", string.Empty);
             FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.backdrop2.play", string.Empty);
@@ -214,6 +215,8 @@ namespace FanartHandler
               FanartHandlerSetup.Fh.FS.SetCurrentArtistsImageNames(null);
               FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.backdrop1.selected", string.Empty);
               FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.backdrop2.selected", string.Empty);
+              FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.artistclearart.selected", string.Empty);
+              FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.artistbanner.selected", string.Empty);
               FanartHandlerSetup.Fh.IsSelectedMusic = false;
               Report(e);
             }

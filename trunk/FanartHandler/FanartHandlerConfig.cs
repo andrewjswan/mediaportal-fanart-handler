@@ -1584,6 +1584,7 @@ namespace FanartHandler
       {
         logger.Error("FanartHandlerConfig_Load: Logger: " + ex);
       }
+      Utils.InitFolders();
       try
       {
         FanartHandlerSetup.Fh = new FanartHandler();
@@ -2003,7 +2004,7 @@ namespace FanartHandler
           return;
         lastID = 0;
         Utils.GetDbm().DeleteAllFanart(Utils.Category.MusicFanartScraped);
-        foreach (var str in Directory.GetFiles(Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\Scraper\\music", "*.jpg"))
+        foreach (var str in Directory.GetFiles(Utils.FAHSMusic, "*.jpg"))
         {
           if (!Utils.GetFilenameNoPath(str).ToLower(CultureInfo.CurrentCulture).StartsWith("default", StringComparison.CurrentCulture))
             File.Delete(str);
@@ -2150,10 +2151,10 @@ namespace FanartHandler
     {
       try
       {
-        var path1 = Config.GetFolder((Config.Dir) 6) + "\\Music\\Albums";
-        if (Directory.Exists(path1))
+        // var path1 = Config.GetFolder((Config.Dir) 6) + "\\Music\\Albums";
+        if (Directory.Exists(Utils.FAHMusicAlbums))
         {
-          foreach (var fileInfo in new DirectoryInfo(path1).GetFiles("*.jpg", SearchOption.AllDirectories))
+          foreach (var fileInfo in new DirectoryInfo(Utils.FAHMusicAlbums).GetFiles("*.jpg", SearchOption.AllDirectories))
           {
             if (!Utils.GetIsStopping())
             {
@@ -2167,10 +2168,10 @@ namespace FanartHandler
               break;
           }
         }
-        var path2 = Config.GetFolder((Config.Dir) 6) + "\\Music\\Artists";
-        if (Directory.Exists(path2))
+        // var path2 = Config.GetFolder((Config.Dir) 6) + "\\Music\\Artists";
+        if (Directory.Exists(Utils.FAHMusicArtists))
         {
-          foreach (var fileInfo in new DirectoryInfo(path2).GetFiles("*.jpg", SearchOption.AllDirectories))
+          foreach (var fileInfo in new DirectoryInfo(Utils.FAHMusicArtists).GetFiles("*.jpg", SearchOption.AllDirectories))
           {
             if (!Utils.GetIsStopping())
             {
@@ -2295,7 +2296,7 @@ namespace FanartHandler
         {
           isScraping = true;
           if (useFanart.Equals("True", StringComparison.CurrentCulture))
-            FanartHandlerSetup.Fh.SetupFilenames(Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\Scraper\\music", "*.jpg", Utils.Category.MusicFanartScraped, null, Utils.Provider.Local);
+            FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHSFolder, "*.jpg", Utils.Category.MusicFanartScraped, null, Utils.Provider.Local);
           dataGridView1.Enabled = false;
           button6.Text = "Stop Scraper [S]";
           button2.Enabled = false;
@@ -2391,15 +2392,15 @@ namespace FanartHandler
           progressBar2.Value = 0;
           oMissing = onlyMissing;
           watcher1 = new FileSystemWatcher();
-          var str1 = Config.GetFolder((Config.Dir) 6) + "\\Music\\Albums";
-          watcher1.Path = str1;
+          // var str1 = Config.GetFolder((Config.Dir) 6) + "\\Music\\Albums";
+          watcher1.Path = Utils.FAHMusicAlbums;
           watcher1.Filter = "*L.jpg";
           watcher1.Created += new FileSystemEventHandler(FileWatcher_Created);
           watcher1.IncludeSubdirectories = false;
           watcher1.EnableRaisingEvents = true;
           watcher2 = new FileSystemWatcher();
-          var str2 = Config.GetFolder((Config.Dir) 6) + "\\Music\\Artists";
-          watcher2.Path = str2;
+          // var str2 = Config.GetFolder((Config.Dir) 6) + "\\Music\\Artists";
+          watcher2.Path = Utils.FAHMusicArtists;
           watcher2.Filter = "*L.jpg";
           watcher2.Created += new FileSystemEventHandler(FileWatcher_Created);
           watcher2.IncludeSubdirectories = false;
@@ -2984,7 +2985,7 @@ namespace FanartHandler
         if (useSelectedMusicFanart.Equals("True", StringComparison.CurrentCulture))
         {
           ImportLocalFanart(Utils.Category.MusicFanartScraped);
-          FanartHandlerSetup.Fh.UpdateDirectoryTimer(Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\UserDef\\music", false, "Fanart");
+          FanartHandlerSetup.Fh.UpdateDirectoryTimer(Utils.FAHUDMusic, false, "Fanart");
           UpdateFanartTableOnStartup(1);
         }
         isScraping = false;
@@ -3120,7 +3121,7 @@ namespace FanartHandler
         if (dialogResult != DialogResult.Yes)
           return;
         Utils.GetDbm().DeleteAllFanart(GetCategoryFromComboFilter(comboBox2.SelectedItem.ToString()));
-        foreach (var path in Directory.GetFiles(Config.GetFolder((Config.Dir) 6) + (object) "\\Skin FanArt\\UserDef\\" + (string) comboBox2.SelectedItem, "*.jpg"))
+        foreach (var path in Directory.GetFiles(Utils.FAHUDFolder + (string) comboBox2.SelectedItem, "*.jpg"))
           File.Delete(path);
         dataGridView4.ClearSelection();
         myDataTable4.Rows.Clear();

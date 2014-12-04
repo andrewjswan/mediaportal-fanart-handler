@@ -36,8 +36,10 @@ namespace FanartHandler
         Thread.CurrentThread.Name = "ScraperWorker";
         TriggerRefresh = false;
         Utils.GetDbm().IsScraping = true;
-        FanartHandlerSetup.Fh.ShowScraperProgressIndicator();
+        Utils.AllocateDelayStop("FanartHandlerSetup-StartScraper");
         FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.task", "Initial Scrape");
+        FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.completed", "0");
+        FanartHandlerSetup.Fh.ShowScraperProgressIndicator();
         Utils.GetDbm().InitialScrape();
         Utils.GetDbm().StopScraper = true;
         Utils.GetDbm().StopScraper = false;
@@ -76,9 +78,9 @@ namespace FanartHandler
         if (Utils.GetIsStopping())
           return;
         Thread.Sleep(1000);
+        FanartHandlerSetup.Fh.HideScraperProgressIndicator();
         FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.completed", string.Empty);
         FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.task", string.Empty);
-        FanartHandlerSetup.Fh.HideScraperProgressIndicator();
         Utils.GetDbm().TotArtistsBeingScraped = 0.0;
         Utils.GetDbm().CurrArtistsBeingScraped = 0.0;
       }

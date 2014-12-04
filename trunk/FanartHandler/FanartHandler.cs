@@ -1015,10 +1015,13 @@ namespace FanartHandler
       SetProperty("#fanarthandler.music.overlay.play", string.Empty);
       SetProperty("#fanarthandler.music.artisthumb.play", string.Empty);
       SetProperty("#fanarthandler.music.artistclearart.play", string.Empty);
+      SetProperty("#fanarthandler.music.artistbanner.play", string.Empty);
       SetProperty("#fanarthandler.music.backdrop1.play", string.Empty);
       SetProperty("#fanarthandler.music.backdrop2.play", string.Empty);
       SetProperty("#fanarthandler.music.backdrop1.selected", string.Empty);
       SetProperty("#fanarthandler.music.backdrop2.selected", string.Empty);
+      SetProperty("#fanarthandler.music.artistclearart.selected", string.Empty);
+      SetProperty("#fanarthandler.music.artistbanner.selected", string.Empty);
       SetProperty("#fanarthandler.picture.userdef.backdrop1.any", string.Empty);
       SetProperty("#fanarthandler.picture.userdef.backdrop2.any", string.Empty);
       SetProperty("#fanarthandler.scorecenter.backdrop1.selected", string.Empty);
@@ -1138,6 +1141,7 @@ namespace FanartHandler
         logger.Info("Fanart Handler is starting.");
         logger.Info("Fanart Handler version is " + Utils.GetAllVersionNumber());
         SetupConfigFile();
+        Utils.InitFolders();
         using (var settings = new Settings(Config.GetFile((Config.Dir) 10, "FanartHandler.xml")))
         {
           UseFanart = settings.GetValueAsString("FanartHandler", "useFanart", string.Empty);
@@ -1195,7 +1199,7 @@ namespace FanartHandler
           imageInterval = "30";
         if (string.IsNullOrEmpty(minResolution))
           minResolution = "0x0";
-        defaultBackdrop = string.IsNullOrEmpty(defaultBackdrop) ? Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\UserDef\\music\\default.jpg" 
+        defaultBackdrop = string.IsNullOrEmpty(defaultBackdrop) ? Path.Combine(Utils.FAHUDMusic, "default.jpg")
                                                                 : defaultBackdrop.Replace("\\Skin FanArt\\music\\default.jpg", "\\Skin FanArt\\UserDef\\music\\default.jpg");
         if (string.IsNullOrEmpty(ScraperMaxImages))
           ScraperMaxImages = "2";
@@ -1264,7 +1268,7 @@ namespace FanartHandler
           refreshTimer.Start();
         //
         MyFileWatcher = new FileSystemWatcher();
-        MyFileWatcher.Path = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt";
+        MyFileWatcher.Path = Utils.FAHFolder;
         MyFileWatcher.Filter = "*.jpg";
         MyFileWatcher.IncludeSubdirectories = true;
         MyFileWatcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.LastWrite;
@@ -1298,7 +1302,7 @@ namespace FanartHandler
       if (message.Message == GUIMessage.MessageType.GUI_MSG_VIDEOINFO_REFRESH)
       {
         logger.Debug("VideoInfo refresh detected: Refreshing video fanarts.");
-        AddToDirectoryTimerQueue(Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\Scraper\\movies");
+        AddToDirectoryTimerQueue(Utils.FAHSMovies);
       }
     }
 
@@ -1400,6 +1404,7 @@ namespace FanartHandler
               FP.PrevPlayMusic = -1;
               SetProperty("#fanarthandler.music.artisthumb.play", string.Empty);
               SetProperty("#fanarthandler.music.artistclearart.play", string.Empty);
+              SetProperty("#fanarthandler.music.artistbanner.play", string.Empty);
               SetProperty("#fanarthandler.music.overlay.play", string.Empty);
               SetProperty("#fanarthandler.music.backdrop1.play", string.Empty);
               SetProperty("#fanarthandler.music.backdrop2.play", string.Empty);
@@ -1523,6 +1528,9 @@ namespace FanartHandler
           FP.FanartAvailablePlay = false;
           FP.FanartIsNotAvailablePlay(GUIWindowManager.ActiveWindow);
           FP.PrevPlayMusic = -1;
+          SetProperty("#fanarthandler.music.artisthumb.play", string.Empty);
+          SetProperty("#fanarthandler.music.artistclearart.play", string.Empty);
+          SetProperty("#fanarthandler.music.artistbanner.play", string.Empty);
           SetProperty("#fanarthandler.music.overlay.play", string.Empty);
           SetProperty("#fanarthandler.music.backdrop1.play", string.Empty);
           SetProperty("#fanarthandler.music.backdrop2.play", string.Empty);
@@ -1543,6 +1551,8 @@ namespace FanartHandler
           FS.FanartIsNotAvailable(GUIWindowManager.ActiveWindow);
           SetProperty("#fanarthandler.music.backdrop1.selected", string.Empty);
           SetProperty("#fanarthandler.music.backdrop2.selected", string.Empty);
+          SetProperty("#fanarthandler.music.artistclearart.selected", string.Empty);
+          SetProperty("#fanarthandler.music.artistbanner.selected", string.Empty);
           IsSelectedMusic = false;
         }
         if (IsSelectedVideo)
@@ -1706,15 +1716,15 @@ namespace FanartHandler
     {
       try
       {
-        CreateDirectoryIfMissing(Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\UserDef\\games");
-        CreateDirectoryIfMissing(Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\UserDef\\movies");
-        CreateDirectoryIfMissing(Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\UserDef\\music");
-        CreateDirectoryIfMissing(Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\UserDef\\pictures");
-        CreateDirectoryIfMissing(Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\UserDef\\scorecenter");
-        CreateDirectoryIfMissing(Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\UserDef\\tv");
-        CreateDirectoryIfMissing(Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\UserDef\\plugins");
-        CreateDirectoryIfMissing(Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\Scraper\\movies");
-        CreateDirectoryIfMissing(Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\Scraper\\music");
+        CreateDirectoryIfMissing(Utils.FAHUDGames);
+        CreateDirectoryIfMissing(Utils.FAHUDMovies);
+        CreateDirectoryIfMissing(Utils.FAHUDMusic);
+        CreateDirectoryIfMissing(Utils.FAHUDPictures);
+        CreateDirectoryIfMissing(Utils.FAHUDScorecenter);
+        CreateDirectoryIfMissing(Utils.FAHUDTV);
+        CreateDirectoryIfMissing(Utils.FAHUDPlugins);
+        CreateDirectoryIfMissing(Utils.FAHSMovies);
+        CreateDirectoryIfMissing(Utils.FAHSMusic);
       }
       catch (Exception ex)
       {

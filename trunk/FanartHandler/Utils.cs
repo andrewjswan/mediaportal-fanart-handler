@@ -3,6 +3,7 @@
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 // Assembly location: D:\Mes documents\Desktop\FanartHandler.dll
 
+using MediaPortal.Configuration;
 using MediaPortal.GUI.Library;
 using NLog;
 using SQLite.NET;
@@ -56,9 +57,117 @@ namespace FanartHandler
 
     public static string ScrapeThumbnailsAlbum { get; set; }
 
+    #region FanartHandler folders
+    public static string FAHFolder { get; set; }
+    public static string FAHUDFolder { get; set; }
+    public static string FAHUDGames { get; set; }
+    public static string FAHUDMovies { get; set; }
+    public static string FAHUDMusic { get; set; }
+    public static string FAHUDPictures { get; set; }
+    public static string FAHUDScorecenter { get; set; }
+    public static string FAHUDTV { get; set; }
+    public static string FAHUDPlugins { get; set; }
+
+    public static string FAHSFolder { get; set; }
+    public static string FAHSMovies { get; set; }
+    public static string FAHSMusic { get; set; }
+
+    public static string FAHMusicArtists { get; set; }
+    public static string FAHMusicAlbums { get; set; }
+
+    public static string FAHTVSeries { get; set; }
+    #endregion
+
+    #region Fanart.TV folders
+    public static string MusicClearArtFolder { get; set; }
+    public static string MusicBannerFolder { get; set; }
+    public static string MusicCDArtFolder { get; set; }
+    public static string MusicMask { get; set; }
+    #endregion
+
     static Utils()
     {
     }
+
+    #region Fanart Handler folders initialize
+    public static void InitFolders()
+    {
+      logger.Info("Fanart Handler folder initialize starting.");
+
+      #region Empty.Fill
+      MusicClearArtFolder = string.Empty;
+      MusicBannerFolder = string.Empty;
+      MusicCDArtFolder = string.Empty;
+      MusicMask = "{0} - {1}"; // MePoTools
+      #endregion
+
+      var MPThumbsFolder = Config.GetFolder((Config.Dir) 6) ;
+      if ((string.IsNullOrEmpty(MPThumbsFolder)) || (!Directory.Exists(MPThumbsFolder)))
+      {
+        logger.Info("Fanart Handler folder initialize failed.");
+        return;
+      }
+
+      #region Fill.MusicFanartFolders
+      MusicClearArtFolder = Path.Combine(MPThumbsFolder, @"ClearArt\Music\"); // MePotools
+      if (!Directory.Exists(MusicClearArtFolder))
+      {
+        MusicClearArtFolder = Path.Combine(MPThumbsFolder, @"Music\ClearArt\"); // MusicInfo Handler
+        if (!Directory.Exists(MusicClearArtFolder))
+        {
+          MusicClearArtFolder = Path.Combine(MPThumbsFolder, @"Music\ClearLogo\FullSize\"); // DVDArt
+          if (!Directory.Exists(MusicClearArtFolder))
+            MusicClearArtFolder = string.Empty;
+        }
+      }
+
+      MusicBannerFolder = Path.Combine(MPThumbsFolder, @"Banner\Music\"); // MePotools
+      if (!Directory.Exists(MusicBannerFolder))
+      {
+        MusicBannerFolder = Path.Combine(MPThumbsFolder, @"Music\Banner\FullSize\"); // DVDArt
+        if (!Directory.Exists(MusicBannerFolder))
+          MusicBannerFolder = string.Empty;
+      }
+
+      MusicCDArtFolder = Path.Combine(MPThumbsFolder, @"CDArt\Music\"); // MePotools
+      if (!Directory.Exists(MusicCDArtFolder))
+      {
+        MusicCDArtFolder = Path.Combine(MPThumbsFolder, @"Music\cdArt\"); // MusicInfo Handler
+        if (!Directory.Exists(MusicCDArtFolder))
+        {
+          MusicCDArtFolder = Path.Combine(MPThumbsFolder, @"Music\CDArt\FullSize\"); // DVDArt
+          if (!Directory.Exists(MusicCDArtFolder))
+            MusicCDArtFolder = string.Empty;
+        }
+        MusicMask = "{0}-{1}"; // Mediaportal
+      }
+      #endregion
+
+      #region Fill.FanartHandler 
+      FAHFolder = Path.Combine(MPThumbsFolder, @"Skin FanArt\");
+
+      FAHUDFolder = Path.Combine(FAHFolder, @"UserDef\");
+      FAHUDGames = Path.Combine(FAHUDFolder, @"games\");
+      FAHUDMovies = Path.Combine(FAHUDFolder, @"movies\");
+      FAHUDMusic = Path.Combine(FAHUDFolder, @"music\");
+      FAHUDPictures = Path.Combine(FAHUDFolder, @"pictures\");
+      FAHUDScorecenter = Path.Combine(FAHUDFolder, @"scorecenter\");
+      FAHUDTV = Path.Combine(FAHUDFolder, @"tv\");
+      FAHUDPlugins = Path.Combine(FAHUDFolder, @"plugins\");
+
+      FAHSFolder = Path.Combine(FAHFolder, @"Scraper\"); 
+      FAHSMovies = Path.Combine(FAHSFolder, @"movies\"); 
+      FAHSMusic = Path.Combine(FAHSFolder, @"music\"); 
+
+      FAHMusicArtists = Path.Combine(MPThumbsFolder, @"Music\Artists\");
+      FAHMusicAlbums = Path.Combine(MPThumbsFolder, @"Music\Albums\");
+
+      FAHTVSeries = Path.Combine(MPThumbsFolder, @"Fan Art\fanart\original\");
+      #endregion
+
+      logger.Info("Fanart Handler folder initialize done.");
+    }
+    #endregion
 
     public static string GetMusicFanartCategoriesInStatement(bool highDef)
     {
@@ -282,9 +391,10 @@ namespace FanartHandler
     {
       if (key == null)
         return string.Empty;
-      key = Regex.Replace(key, "_", string.Empty);
+      // key = Regex.Replace(key, "_", string.Empty); // ??? AC_DC = ACDC
+      key = Regex.Replace(key, "_", " ");             // ??? AC_DC = AC DC
       key = Regex.Replace(key, ":", string.Empty);
-      key = Regex.Replace(key, ";", string.Empty);
+      key = Regex.Replace(key, ";", string.Empty);    // ??? key = Regex.Replace(key, ";", " ");
       return key;
     }
 
