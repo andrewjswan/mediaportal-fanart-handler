@@ -9,8 +9,8 @@
     <entry name="useVideoFanart">True</entry>
     <entry name="useScoreCenterFanart">True</entry>
     <entry name="imageInterval">20</entry>
-    <entry name="minResolution">400x400</entry>
-    <entry name="defaultBackdrop">C:\Documents and Settings\All Users\Application Data\Team MediaPortal\MediaPortal\thumbs\Skin FanArt\UserDef\music\default.jpg</entry>
+    <entry name="minResolution">500x500</entry>
+    <entry name="defaultBackdrop">C:\ProgramData\Team MediaPortal\MediaPortal\thumbs\Skin FanArt\UserDef\music\default.jpg</entry>
     <entry name="scraperMaxImages">4</entry>
     <entry name="scraperMusicPlaying">True</entry>
     <entry name="scraperMPDatabase">True</entry>
