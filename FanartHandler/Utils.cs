@@ -452,7 +452,10 @@ namespace FanartHandler
       key = RemoveSpecialChars(key);
       if (category == Category.MusicAlbumThumbScraped && key.IndexOf("-", StringComparison.CurrentCulture) >= 0)
         key = key.Substring(0, key.IndexOf("-", StringComparison.CurrentCulture));
-      key = Utils.Equalize(key);
+      if (category == Category.TvSeriesScraped)
+        key = Regex.Replace(key, "-", " ");
+      else
+        key = Utils.Equalize(key);
       key = Utils.MovePrefixToFront(key);
       return key;
     }

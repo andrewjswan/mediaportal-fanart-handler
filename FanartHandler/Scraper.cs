@@ -1772,7 +1772,7 @@ namespace FanartHandler
       if (!DownloaderStatus.Equals("Success", StringComparison.CurrentCulture) && File.Exists(filename))
         File.Delete(filename);
       if (DownloaderStatus.Equals("Success", StringComparison.CurrentCulture) && File.Exists(filename))
-        logger.Debug("Download: Image for " + Text + " (" + filename + "): Comlete.");
+        logger.Debug("Download: Image for " + Text + " (" + filename + "): Complete.");
       if (DownloaderStatus.Equals("Skip", StringComparison.CurrentCulture))
         logger.Debug("Download: Image for " + Text + " (" + filename + "): Skipped.");
       return DownloaderStatus.Equals("Success", StringComparison.CurrentCulture); // || DownloaderStatus.Equals("Skip", StringComparison.CurrentCulture)
