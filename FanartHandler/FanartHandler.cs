@@ -456,9 +456,9 @@ namespace FanartHandler
           if (!FR.WindowsUsingFanartRandom.ContainsKey(windowId) && 
               !FS.WindowsUsingFanartSelectedMusic.ContainsKey(windowId) && 
               (!FS.WindowsUsingFanartSelectedScoreCenter.ContainsKey(windowId) && !FS.WindowsUsingFanartSelectedMovie.ContainsKey(windowId))
-             ) {
+             ) 
+          {
             if (!FP.WindowsUsingFanartPlay.ContainsKey(windowId))
-              // goto label_7;
               return flag;   
           }
           if (AllowFanartInThisWindow(windowId))
@@ -469,7 +469,6 @@ namespace FanartHandler
       {
         logger.Error("CheckValidWindowsForDirectoryTimerQueue: " + ex);
       }
-// label_7:
       return flag;
     }
 

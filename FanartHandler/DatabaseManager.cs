@@ -1700,6 +1700,7 @@ namespace FanartHandler
                           "FROM Image "+
                           "WHERE Key1 IN ('" + Utils.PatchSql(artist) + "') AND "+
                                 "Enabled = 'True';";
+                // TODO: UPDATE Image SET Last_Access = Now WHERE ... Then create procedure for Delete from Disk old Fanart (Artist not in MP DB and Last_Access < NOW-30)
                 SQLiteResultSet sqLiteResultSet;
                 lock (lockObject)
                     sqLiteResultSet = dbClient.Execute(SQL);
