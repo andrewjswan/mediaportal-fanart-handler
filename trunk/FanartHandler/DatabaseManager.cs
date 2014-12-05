@@ -1116,7 +1116,7 @@ namespace FanartHandler
                       while (i < sqLiteResultSet.Rows.Count)
                       {
                           var htArtistAlbum = Scraper.UndoArtistPrefix(sqLiteResultSet.GetField(i, 0).ToLower()) + "-" + sqLiteResultSet.GetField(i, 1).ToLower() ;
-                          if (!htAlbums.Contains(htArtistAlbum)) // !!! The Beatles <> Beatles
+                          if (!htAlbums.Contains(htArtistAlbum))
                               htAlbums.Add(htArtistAlbum,sqLiteResultSet.GetField(i, 2));
                           checked { ++i; }
                       }
@@ -1132,7 +1132,7 @@ namespace FanartHandler
                               var dbartist = Scraper.UndoArtistPrefix(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped)).ToLower();
                               var dbalbum  = Utils.GetAlbum(album, Utils.Category.MusicFanartScraped).ToLower();
                               var htArtistAlbum = dbartist + "-" + dbalbum ;
-                              if (!htAlbums.Contains(htArtistAlbum)) // !!! The Beatles <> Beatles
+                              if (!htAlbums.Contains(htArtistAlbum))
                               {
                                   if (!StopScraper && !Utils.GetIsStopping()) 
                                   {

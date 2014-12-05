@@ -99,70 +99,110 @@ namespace FanartHandler
       MusicBannerFolder = string.Empty;
       MusicCDArtFolder = string.Empty;
       MusicMask = "{0} - {1}"; // MePoTools
+
+      FAHFolder = string.Empty;
+      FAHUDFolder = string.Empty;
+      FAHUDGames = string.Empty;
+      FAHUDMovies = string.Empty;
+      FAHUDMusic = string.Empty;
+      FAHUDPictures = string.Empty;
+      FAHUDScorecenter = string.Empty;
+      FAHUDTV = string.Empty;
+      FAHUDPlugins = string.Empty;
+
+      FAHSFolder = string.Empty;
+      FAHSMovies = string.Empty;
+      FAHSMusic = string.Empty;
+
+      FAHMusicArtists = string.Empty;
+      FAHMusicAlbums = string.Empty;
+
+      FAHTVSeries = string.Empty;
       #endregion
 
       var MPThumbsFolder = Config.GetFolder((Config.Dir) 6) ;
+      /*
       if ((string.IsNullOrEmpty(MPThumbsFolder)) || (!Directory.Exists(MPThumbsFolder)))
       {
         logger.Info("Fanart Handler folder initialize failed.");
         return;
       }
+      */
+      logger.Debug("Mediaportal Thumb folder: "+MPThumbsFolder);
 
       #region Fill.MusicFanartFolders
       MusicClearArtFolder = Path.Combine(MPThumbsFolder, @"ClearArt\Music\"); // MePotools
-      if (!Directory.Exists(MusicClearArtFolder))
+      if (!Directory.Exists(MusicClearArtFolder) || IsDirectoryEmpty(MusicClearArtFolder))
       {
         MusicClearArtFolder = Path.Combine(MPThumbsFolder, @"Music\ClearArt\"); // MusicInfo Handler
-        if (!Directory.Exists(MusicClearArtFolder))
+        if (!Directory.Exists(MusicClearArtFolder) || IsDirectoryEmpty(MusicClearArtFolder))
         {
           MusicClearArtFolder = Path.Combine(MPThumbsFolder, @"Music\ClearLogo\FullSize\"); // DVDArt
-          if (!Directory.Exists(MusicClearArtFolder))
+          if (!Directory.Exists(MusicClearArtFolder) || IsDirectoryEmpty(MusicClearArtFolder))
             MusicClearArtFolder = string.Empty;
         }
       }
+      logger.Debug("Fanart Handler ClearArt folder: "+MusicClearArtFolder);
 
       MusicBannerFolder = Path.Combine(MPThumbsFolder, @"Banner\Music\"); // MePotools
-      if (!Directory.Exists(MusicBannerFolder))
+      if (!Directory.Exists(MusicBannerFolder) || IsDirectoryEmpty(MusicBannerFolder))
       {
         MusicBannerFolder = Path.Combine(MPThumbsFolder, @"Music\Banner\FullSize\"); // DVDArt
-        if (!Directory.Exists(MusicBannerFolder))
+        if (!Directory.Exists(MusicBannerFolder) || IsDirectoryEmpty(MusicBannerFolder))
           MusicBannerFolder = string.Empty;
       }
+      logger.Debug("Fanart Handler Banner folder: "+MusicBannerFolder);
 
       MusicCDArtFolder = Path.Combine(MPThumbsFolder, @"CDArt\Music\"); // MePotools
-      if (!Directory.Exists(MusicCDArtFolder))
+      if (!Directory.Exists(MusicCDArtFolder) || IsDirectoryEmpty(MusicCDArtFolder))
       {
         MusicCDArtFolder = Path.Combine(MPThumbsFolder, @"Music\cdArt\"); // MusicInfo Handler
-        if (!Directory.Exists(MusicCDArtFolder))
+        if (!Directory.Exists(MusicCDArtFolder) || IsDirectoryEmpty(MusicCDArtFolder))
         {
           MusicCDArtFolder = Path.Combine(MPThumbsFolder, @"Music\CDArt\FullSize\"); // DVDArt
-          if (!Directory.Exists(MusicCDArtFolder))
+          if (!Directory.Exists(MusicCDArtFolder) || IsDirectoryEmpty(MusicCDArtFolder))
             MusicCDArtFolder = string.Empty;
         }
         MusicMask = "{0}-{1}"; // Mediaportal
       }
+      logger.Debug("Fanart Handler CD folder: "+MusicCDArtFolder+" Mask: "+MusicMask);
       #endregion
 
       #region Fill.FanartHandler 
       FAHFolder = Path.Combine(MPThumbsFolder, @"Skin FanArt\");
+      logger.Debug("Fanart Handler root folder: "+FAHFolder);
 
       FAHUDFolder = Path.Combine(FAHFolder, @"UserDef\");
+      logger.Debug("Fanart Handler User folder: "+FAHUDFolder);
       FAHUDGames = Path.Combine(FAHUDFolder, @"games\");
+      logger.Debug("Fanart Handler User Games folder: "+FAHUDGames);
       FAHUDMovies = Path.Combine(FAHUDFolder, @"movies\");
+      logger.Debug("Fanart Handler User Movies folder: "+FAHUDMovies);
       FAHUDMusic = Path.Combine(FAHUDFolder, @"music\");
+      logger.Debug("Fanart Handler User Music folder: "+FAHUDMusic);
       FAHUDPictures = Path.Combine(FAHUDFolder, @"pictures\");
+      logger.Debug("Fanart Handler User Pictures folder: "+FAHUDPictures);
       FAHUDScorecenter = Path.Combine(FAHUDFolder, @"scorecenter\");
+      logger.Debug("Fanart Handler User Scorecenter folder: "+FAHUDScorecenter);
       FAHUDTV = Path.Combine(FAHUDFolder, @"tv\");
+      logger.Debug("Fanart Handler User TV folder: "+FAHUDTV);
       FAHUDPlugins = Path.Combine(FAHUDFolder, @"plugins\");
+      logger.Debug("Fanart Handler User Plugins folder: "+FAHUDPlugins);
 
       FAHSFolder = Path.Combine(FAHFolder, @"Scraper\"); 
+      logger.Debug("Fanart Handler Scraper folder: "+FAHSFolder);
       FAHSMovies = Path.Combine(FAHSFolder, @"movies\"); 
+      logger.Debug("Fanart Handler Scraper Movies folder: "+FAHSMovies);
       FAHSMusic = Path.Combine(FAHSFolder, @"music\"); 
+      logger.Debug("Fanart Handler Scraper Music folder: "+FAHSMusic);
 
       FAHMusicArtists = Path.Combine(MPThumbsFolder, @"Music\Artists\");
+      logger.Debug("Mediaportal Artists thumbs folder: "+FAHMusicArtists);
       FAHMusicAlbums = Path.Combine(MPThumbsFolder, @"Music\Albums\");
+      logger.Debug("Mediaportal Albums thumbs folder: "+FAHMusicAlbums);
 
       FAHTVSeries = Path.Combine(MPThumbsFolder, @"Fan Art\fanart\original\");
+      logger.Debug("TV-Series Fanart folder: "+FAHTVSeries);
       #endregion
 
       logger.Info("Fanart Handler folder initialize done.");
@@ -842,6 +882,20 @@ namespace FanartHandler
       }
       return false;
     }
+
+    public static bool IsDirectoryEmpty (string path) 
+    { 
+      // string[] dirs = System.IO.Directory.GetDirectories( path ); 
+      string[] files = System.IO.Directory.GetFiles( path ); 
+      return /*dirs.Length == 0 &&*/ files.Length == 0;
+    }
+
+    /* .Net 4.0
+    public static bool IsDirectoryEmpty(string path)
+    {
+        return !Directory.EnumerateFileSystemEntries(path).Any();
+    }
+    */
 
     public enum Category
     {
