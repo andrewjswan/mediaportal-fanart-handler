@@ -1406,16 +1406,16 @@ namespace FanartHandler
               Utils.GetDbm().LoadFanart(dbartist, filename, sourceFilename, category, dbalbum, Utils.Provider.FanartTV, id, mbid);
               //
               if (category == Utils.Category.MusicFanartScraped)
+              {
+                if (FanartHandlerSetup.Fh.MyScraperNowWorker != null && doTriggerRefresh && !externalAccess)
                 {
-                  if (FanartHandlerSetup.Fh.MyScraperNowWorker != null && doTriggerRefresh && !externalAccess)
-                  {
-                    FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh = true;
-                    doTriggerRefresh = false;
-                    ScraperFlag = true;
-                  }
-                  else if (FanartHandlerSetup.Fh.MyScraperNowWorker != null && ScraperFlag && !externalAccess)
-                    FanartHandlerSetup.Fh.FP.SetCurrentArtistsImageNames(null);
+                  FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh = true;
+                  doTriggerRefresh = false;
+                  ScraperFlag = true;
                 }
+                else if (FanartHandlerSetup.Fh.MyScraperNowWorker != null && ScraperFlag && !externalAccess)
+                  FanartHandlerSetup.Fh.FP.SetCurrentArtistsImageNames(null);
+              }
               else
               {
                 if (FanartHandlerSetup.Fh.IsPlaying && !externalAccess) 
@@ -1433,6 +1433,34 @@ namespace FanartHandler
               break;
           }
         }
+        #region ClearArt
+        if (!string.IsNullOrEmpty(Utils.MusicClearArtFolder) && (category == Utils.Category.MusicFanartScraped) && !Utils.GetDbm().StopScraper)
+        {
+          flag = false;
+          if (html != null) {
+            if (html.Length > 0) 
+            {
+              URLList = ExtractURL("hdmusiclogo", html);
+              if (URLList != null)
+                flag = (URLList.Count > 0);
+              if (!flag)
+              {
+                URLList = ExtractURL("musiclogo", html);
+                if (URLList != null)
+                  flag = (URLList.Count > 0);
+              }
+            }
+          }
+          if (flag)
+          {
+            var path = (string) null;
+            var filename = (string) null;
+            var sourceFilename = URLList[0].Substring(checked(URLList[0].IndexOf("|") + 1)) ;
+            if (DownloadImage(ref artist, null, ref sourceFilename, ref path, ref filename, Utils.Category.ClearArt, null))
+              logger.Debug("Fanart.TV: ClearArt for "+Method+" download complete.");
+          }
+        }
+        #endregion
         return num;
       }
       catch (Exception ex) {
@@ -1547,6 +1575,15 @@ namespace FanartHandler
         filename = Path.Combine(path, MediaPortal.Util.Utils.MakeFileName(sArtist) + " (" + id + ").jpg");
         Text = sArtist ;
         logger.Info("Download: Fanart for " + Text + " (" + filename + ").");
+      }
+      else if (category == Utils.Category.ClearArt)
+      {
+        path = Utils.MusicClearArtFolder;
+        filename = Path.Combine(path, MediaPortal.Util.Utils.MakeFileName(sArtist) + ".png");
+        if (File.Exists(filename))
+          return false;
+        Text = sArtist ;
+        logger.Info("Download: ClearArt for " + Text + " (" + filename + ").");
       }
       else
       {

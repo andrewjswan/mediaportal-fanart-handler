@@ -108,7 +108,6 @@ namespace FanartHandler
     {
       try
       {
-        // var str = Config.GetFolder((Config.Dir) 6) + "\\Music\\Artists";
         var flag = false;
         var path = (string) null;
         if (artist == null)
@@ -168,6 +167,7 @@ namespace FanartHandler
           AddPropertyPlay("#fanarthandler.music.artistclearart.play", filename, ref ListPlayMusic);
         else
           FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.artistclearart.play", string.Empty);
+        // logger.Debug("AddPlayingArtistClearArtProperty: " + filename + " " + (File.Exists(filename) ? "True" : "False"));
       }
       catch (Exception ex)
       {

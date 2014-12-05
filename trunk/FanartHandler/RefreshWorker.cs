@@ -408,6 +408,7 @@ namespace FanartHandler
       {
         if (Utils.GetIsStopping() || Interlocked.CompareExchange(ref FanartHandlerSetup.Fh.syncPointProgressChange, 1, 0) != 0)
           return;
+
         var activeWindow = GUIWindowManager.ActiveWindow;
         if (FanartHandlerSetup.Fh.FR.CountSetVisibility == 1 && FanartHandlerSetup.Fh.FR.GetPropertiesRandom() > 0)
         {
