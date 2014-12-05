@@ -1735,14 +1735,14 @@ namespace FanartHandler
                   SQL = "SELECT Id, Key1, FullPath, SourcePath, Category, Provider "+
                           "FROM Image "+
                           "WHERE Key1 IN (" + Utils.HandleMultipleArtistNamesForDBQuery(Utils.PatchSql(artist)) + ") AND "+
-                                (album == null ? "" : "Key2 = '"+PathSql(album)+"' AND ")+
+                                (album == null ? "" : "Key2 = '"+Utils.PatchSql(album)+"' AND ")+
                                 "Enabled = 'True' AND "+
                                 "Category in (" + Utils.GetMusicFanartCategoriesInStatement(highDef) + ");";
                 else
                   SQL = "SELECT Id, Key1, FullPath, SourcePath, Category, Provider "+
                           "FROM Image "+
                           "WHERE Key1 IN ('" + Utils.PatchSql(artist) + "') AND "+
-                                (album == null ? "" : "Key2 = '"+PathSql(album)+"' AND ")+
+                                (album == null ? "" : "Key2 = '"+Utils.PatchSql(album)+"' AND ")+
                                 "Enabled = 'True';";
                 SQLiteResultSet sqLiteResultSet;
                 lock (lockObject)

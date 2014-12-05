@@ -34,7 +34,7 @@ namespace FanartHandler
       }
     }
 
-    public Hashtable GetFanart(string artist, string album string type)
+    public Hashtable GetFanart(string artist, string album, string type)
     {
       return Utils.GetDbm().GetFanart(artist, null, Utils.Category.MusicFanartScraped, true);
     }
