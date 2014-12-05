@@ -730,6 +730,48 @@ namespace FanartHandler
                     logger.Info("Upgraded Database to version "+DBVersion);
                 }
                 #endregion
+                
+                #region 3.4
+                /*
+                if (DBVersion != null && DBVersion.Equals("3.3", StringComparison.CurrentCulture))
+                {
+                    logger.Info("Upgrading Database to version 3.4");
+
+                    #region Backup
+                    BackupDBMain(DBVersion);
+                    #endregion
+
+                    lock (lockObject)
+                        dbClient.Execute("ALTER TABLE [Image] ADD COLUMN [Last_Access] TEXT;");
+                    logger.Info("Upgrading Step 1 - finished");
+
+                    lock (lockObject)
+                        dbClient.Execute("UPDATE [Image] SET [Last_Access] = '"+date+"';");
+                    logger.Info("Upgrading Step 2 - finished");
+
+                    try
+                    {
+                        lock (lockObject)                                                               
+                            dbClient.Execute("CREATE INDEX [i_Key1LastAccess] ON [Image] ([Key1], [Last_Access]);");
+                        lock (lockObject)                                                               
+                            dbClient.Execute("CREATE INDEX [i_Key1EnabledLastAccess] ON [Image] ([Key1], [Enabled], [Last_Access]);");
+                        lock (lockObject)                                                               
+                            dbClient.Execute("CREATE INDEX [i_Key1CategoryLastAccess] ON [Image] ([Key1], [Category], [Last_Access]);");
+                        lock (lockObject)                                                               
+                            dbClient.Execute("CREATE INDEX [i_Key1EnabledCategoryLastAccess] ON [Image] ([Key1], [Enabled], [Category], [Last_Access]);");
+                        logger.Info("Upgrading Step 3 - finished");
+                    }
+                    catch { }
+                    
+                    DBVersion = "3.4";
+                    lock (lockObject)
+                        dbClient.Execute("UPDATE Version SET Version = '"+DBVersion+"', Time_Stamp = '"+date+"';");
+                    lock (lockObject)
+                        dbClient.Execute("PRAGMA user_version="+DBVersion.Replace(".","")+";");
+                    logger.Info("Upgraded Database to version "+DBVersion);
+                }
+                */
+                #endregion
                 #region 3.Dummy Alter Table
                 /*
                 if (DBVersion != null && DBVersion.Equals("3.X", StringComparison.CurrentCulture))
@@ -1683,7 +1725,7 @@ namespace FanartHandler
             return sqLiteResultSet;
         }
 
-        public Hashtable GetFanart(string artist, Utils.Category category, bool highDef)
+        public Hashtable GetFanart(string artist, string album, Utils.Category category, bool highDef)
         {
             var filenames = new Hashtable();
             try
@@ -1693,14 +1735,15 @@ namespace FanartHandler
                   SQL = "SELECT Id, Key1, FullPath, SourcePath, Category, Provider "+
                           "FROM Image "+
                           "WHERE Key1 IN (" + Utils.HandleMultipleArtistNamesForDBQuery(Utils.PatchSql(artist)) + ") AND "+
+                                (album == null ? "" : "Key2 = '"+PathSql(album)+"' AND ")+
                                 "Enabled = 'True' AND "+
                                 "Category in (" + Utils.GetMusicFanartCategoriesInStatement(highDef) + ");";
                 else
                   SQL = "SELECT Id, Key1, FullPath, SourcePath, Category, Provider "+
                           "FROM Image "+
                           "WHERE Key1 IN ('" + Utils.PatchSql(artist) + "') AND "+
+                                (album == null ? "" : "Key2 = '"+PathSql(album)+"' AND ")+
                                 "Enabled = 'True';";
-                // TODO: UPDATE Image SET Last_Access = Now WHERE ... Then create procedure for Delete from Disk old Fanart (Artist not in MP DB and Last_Access < NOW-30)
                 SQLiteResultSet sqLiteResultSet;
                 lock (lockObject)
                     sqLiteResultSet = dbClient.Execute(SQL);
@@ -1717,6 +1760,30 @@ namespace FanartHandler
                     }
                 }
                 Utils.Shuffle(ref filenames);
+                /*
+                // TODO: ... Then create procedure for Delete Old Music Fanart files from Disk (Artist not in MP DB and Last_Access < NOW-100)
+                try
+                {
+                  if (category == Utils.Category.MusicFanartScraped)
+                    SQL = "UPDATE Image SET Last_Access = '"+DateTime.Today.ToString("yyyyMMdd", CultureInfo.CurrentCulture)+"' "
+                            "WHERE Key1 IN (" + Utils.HandleMultipleArtistNamesForDBQuery(Utils.PatchSql(artist)) + ") AND "+
+                                  (album == null ? "" : "Key2 = '"+PathSql(album)+"' AND ")+
+                                  "Enabled = 'True' AND "+
+                                  "Category in (" + Utils.GetMusicFanartCategoriesInStatement(highDef) + ");";
+                  else
+                    SQL = "UPDATE Image SET Last_Access = '"+DateTime.Today.ToString("yyyyMMdd", CultureInfo.CurrentCulture)+"' "
+                            "WHERE Key1 IN ('" + Utils.PatchSql(artist) + "') AND "+
+                                  (album == null ? "" : "Key2 = '"+PathSql(album)+"' AND ")+
+                                  "Enabled = 'True';";
+                  lock (lockObject)
+                      dbClient.Execute(SQL);
+                }
+                cacth (Exception ex)
+                {
+                  logger.Debug("getFanart: Last Access update:");
+                  logger.Debug(ex);
+                }
+                */
             }
             catch (Exception ex)
             {

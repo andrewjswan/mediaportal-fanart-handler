@@ -757,6 +757,7 @@ namespace FanartHandler
       var random = new Random();
       if (filenames == null || random == null)
         return;
+
       var num1 = checked (filenames.Count - 1);
       while (num1 > 0)
       {

@@ -34,9 +34,9 @@ namespace FanartHandler
       }
     }
 
-    public Hashtable GetFanart(string artist, string type)
+    public Hashtable GetFanart(string artist, string album string type)
     {
-      return Utils.GetDbm().GetFanart(artist, Utils.Category.MusicFanartScraped, true);
+      return Utils.GetDbm().GetFanart(artist, null, Utils.Category.MusicFanartScraped, true);
     }
 
     public static string GetMyVideoFanart(string title)
@@ -45,7 +45,7 @@ namespace FanartHandler
       try
       {
         title = Utils.GetArtist(title, Utils.Category.MovieScraped);
-        var fanart = Utils.GetDbm().GetFanart(title, Utils.Category.MovieScraped, true);
+        var fanart = Utils.GetDbm().GetFanart(title, null, Utils.Category.MovieScraped, true);
         if (fanart != null)
         {
           if (fanart.Count > 0)
@@ -78,7 +78,7 @@ namespace FanartHandler
       try
       {
         tvshow = Utils.GetArtist(tvshow, Utils.Category.TvManual);
-        var values = Utils.GetDbm().GetFanart(tvshow, Utils.Category.TvManual, false).Values;
+        var values = Utils.GetDbm().GetFanart(tvshow, null, Utils.Category.TvManual, false).Values;
         var num = 0;
         foreach (FanartImage fanartImage in values)
         {
@@ -148,13 +148,13 @@ namespace FanartHandler
       {
         artist = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
         // var hashtable2 = (Hashtable) null;
-        var fanart1 = Utils.GetDbm().GetFanart(artist, Utils.Category.MusicFanartScraped, true);
+        var fanart1 = Utils.GetDbm().GetFanart(artist, null, Utils.Category.MusicFanartScraped, true);
         if (fanart1 != null && 
             fanart1.Count <= 0 && 
             (FanartHandlerSetup.Fh.SkipWhenHighResAvailable != null && FanartHandlerSetup.Fh.SkipWhenHighResAvailable.Equals("True", StringComparison.CurrentCulture)) && 
             (FanartHandlerSetup.Fh.UseArtist.Equals("True", StringComparison.CurrentCulture) || FanartHandlerSetup.Fh.UseAlbum.Equals("True", StringComparison.CurrentCulture))
            )
-          fanart1 = Utils.GetDbm().GetFanart(artist, Utils.Category.MusicFanartScraped, false);
+          fanart1 = Utils.GetDbm().GetFanart(artist, null, Utils.Category.MusicFanartScraped, false);
         else if (FanartHandlerSetup.Fh.SkipWhenHighResAvailable != null && 
                  FanartHandlerSetup.Fh.SkipWhenHighResAvailable.Equals("False", StringComparison.CurrentCulture) && 
                  (FanartHandlerSetup.Fh.UseArtist.Equals("True", StringComparison.CurrentCulture) || FanartHandlerSetup.Fh.UseAlbum.Equals("True", StringComparison.CurrentCulture))
@@ -162,7 +162,7 @@ namespace FanartHandler
         {
           if (fanart1 != null && fanart1.Count > 0)
           {
-            var fanart2 = Utils.GetDbm().GetFanart(artist, Utils.Category.MusicFanartScraped, false);
+            var fanart2 = Utils.GetDbm().GetFanart(artist, null, Utils.Category.MusicFanartScraped, false);
             var enumerator = fanart2.GetEnumerator();
             var count = fanart1.Count;
             while (enumerator.MoveNext())
@@ -174,7 +174,7 @@ namespace FanartHandler
               fanart2.Clear();
           }
           else
-            fanart1 = Utils.GetDbm().GetFanart(artist, Utils.Category.MusicFanartScraped, false);
+            fanart1 = Utils.GetDbm().GetFanart(artist, null, Utils.Category.MusicFanartScraped, false);
         }
         var num = 0;
         if (fanart1 != null && fanart1.Count > 0)

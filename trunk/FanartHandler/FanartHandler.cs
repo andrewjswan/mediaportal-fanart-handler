@@ -540,7 +540,7 @@ namespace FanartHandler
           if (newArtist || filenames == null || filenames.Count == 0)
           {
             if (isMusic)
-              filenames = Utils.GetDbm().GetFanart(key, category, true);
+              filenames = Utils.GetDbm().GetFanart(key, null, category, true);
             if (isMusic && 
                 filenames != null && 
                 (filenames.Count <= 0 && skipWhenHighResAvailable != null) && 
@@ -549,7 +549,7 @@ namespace FanartHandler
                    FanartHandlerSetup.Fh.UseAlbum.Equals("True", StringComparison.CurrentCulture))
                 )
                )
-              filenames = Utils.GetDbm().GetFanart(key, category, false);
+              filenames = Utils.GetDbm().GetFanart(key, null, category, false);
             else if (isMusic && 
                      skipWhenHighResAvailable != null && 
                      skipWhenHighResAvailable.Equals("False", StringComparison.CurrentCulture) && 
@@ -558,7 +558,7 @@ namespace FanartHandler
             {
               if (filenames != null && filenames.Count > 0)
               {
-                var fanart = Utils.GetDbm().GetFanart(key, category, false);
+                var fanart = Utils.GetDbm().GetFanart(key, null, category, false);
                 var enumerator = fanart.GetEnumerator();
                 var count = filenames.Count;
                 while (enumerator.MoveNext())
@@ -570,10 +570,10 @@ namespace FanartHandler
                   fanart.Clear();
               }
               else
-                filenames = Utils.GetDbm().GetFanart(key, category, false);
+                filenames = Utils.GetDbm().GetFanart(key, null, category, false);
             }
             else if (!isMusic)
-              filenames = Utils.GetDbm().GetFanart(key, category, false);
+              filenames = Utils.GetDbm().GetFanart(key, null, category, false);
             Utils.Shuffle(ref filenames);
             if (obj.Equals("FanartPlaying", StringComparison.CurrentCulture))
               FP.SetCurrentArtistsImageNames(filenames);
