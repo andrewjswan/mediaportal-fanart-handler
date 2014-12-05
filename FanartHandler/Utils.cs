@@ -58,6 +58,7 @@ namespace FanartHandler
     public static string ScrapeThumbnailsAlbum { get; set; }
 
     #region FanartHandler folders
+    public static string MPThumbsFolder { get; set; }
     public static string FAHFolder { get; set; }
     public static string FAHUDFolder { get; set; }
     public static string FAHUDGames { get; set; }
@@ -913,6 +914,7 @@ namespace FanartHandler
       SeriesManual,
       TvManual,
       TvSeriesScraped,
+      ClearArt, 
       Dummy,
     }
 

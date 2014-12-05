@@ -1881,8 +1881,8 @@ namespace FanartHandler
             lock (lockObject)
               return dbClient.Execute("SELECT DISTINCT MBID "+
                                        "FROM Image "+
-                                       "WHERE Key1 = '"+Utils.PatchSql(artist)+"'"+
-                                              ((album == null) ? "" : " AND Key2 = '"+Utils.PatchSql(album)+"'")+
+                                       "WHERE Key1 = '"+Utils.PatchSql(artist)+"' AND "+
+                                             "Key2 = '"+Utils.PatchSql(album)+"'"+
                                        " LIMIT 0,1;").GetField(0, 0);
           }
           catch (Exception ex)

@@ -3000,37 +3000,48 @@ namespace FanartHandler
     {
       try
       {
-        var folder = Config.GetFolder((Config.Dir) 6);
+        // var folder = Config.GetFolder((Config.Dir) 6);
         var random = new Random();
         var openFileDialog = new OpenFileDialog();
-        openFileDialog.InitialDirectory = Config.GetFolder((Config.Dir) 6);
+
+        openFileDialog.InitialDirectory = Utils.MPThumbsFolder ; // Config.GetFolder((Config.Dir) 6);
         openFileDialog.Title = "Select Fanart Images To Import";
         openFileDialog.Filter = "Image Files(*.JPG)|*.JPG";
         openFileDialog.Multiselect = true;
         if (openFileDialog.ShowDialog() == DialogResult.Cancel)
           return;
+
         foreach (var str1 in openFileDialog.FileNames)
         {
           var artist = Utils.GetArtist(str1, category);
           string str2;
           if (category == Utils.Category.MusicFanartManual)
-            str2 = folder + (object) "\\Skin FanArt\\UserDef\\music\\" + artist + " (" + random.Next(10000, 99999) + ").jpg";
+            // str2 = folder + (object) "\\Skin FanArt\\UserDef\\music\\" + artist + " (" + random.Next(10000, 99999) + ").jpg";
+            str2 = Path.Combine(Utils.FAHUDMusic, artist + " (" + random.Next(10000, 99999) + ").jpg");
           else if (category == Utils.Category.MusicFanartScraped)
-            str2 = folder + (object) "\\Skin FanArt\\Scraper\\music\\" + artist + " (" + random.Next(10000, 99999) + ").jpg";
+            // str2 = folder + (object) "\\Skin FanArt\\Scraper\\music\\" + artist + " (" + random.Next(10000, 99999) + ").jpg";
+            str2 = Path.Combine(Utils.FAHSMusic, artist + " (" + random.Next(10000, 99999) + ").jpg");
           else if (category == Utils.Category.MovieScraped)
-            str2 = folder + (object) "\\Skin FanArt\\Scraper\\movies\\" + artist + " (" + random.Next(10000, 99999) + ").jpg";
+            // str2 = folder + (object) "\\Skin FanArt\\Scraper\\movies\\" + artist + " (" + random.Next(10000, 99999) + ").jpg";
+            str2 = Path.Combine(Utils.FAHSMovies, artist + " (" + random.Next(10000, 99999) + ").jpg");
           else if (category == Utils.Category.MovieManual)
-            str2 = folder + (object) "\\Skin FanArt\\UserDef\\movies\\" + artist + " (" + random.Next(10000, 99999) + ").jpg";
+            // str2 = folder + (object) "\\Skin FanArt\\UserDef\\movies\\" + artist + " (" + random.Next(10000, 99999) + ").jpg";
+            str2 = Path.Combine(Utils.FAHUDMovies, artist + " (" + random.Next(10000, 99999) + ").jpg");
           else if (category == Utils.Category.GameManual)
-            str2 = folder + (object) "\\Skin FanArt\\UserDef\\games\\" + artist + " (" + random.Next(10000, 99999) + ").jpg";
+            // str2 = folder + (object) "\\Skin FanArt\\UserDef\\games\\" + artist + " (" + random.Next(10000, 99999) + ").jpg";
+            str2 = Path.Combine(Utils.FAHUDGames, artist + " (" + random.Next(10000, 99999) + ").jpg");
           else if (category == Utils.Category.PictureManual)
-            str2 = folder + (object) "\\Skin FanArt\\UserDef\\pictures\\" + artist + " (" + random.Next(10000, 99999) + ").jpg";
+            // str2 = folder + (object) "\\Skin FanArt\\UserDef\\pictures\\" + artist + " (" + random.Next(10000, 99999) + ").jpg";
+            str2 = Path.Combine(Utils.FAHUDPictures, artist + " (" + random.Next(10000, 99999) + ").jpg");
           else if (category == Utils.Category.PluginManual)
-            str2 = folder + (object) "\\Skin FanArt\\UserDef\\plugins\\" + artist + " (" + random.Next(10000, 99999) + ").jpg";
+            // str2 = folder + (object) "\\Skin FanArt\\UserDef\\plugins\\" + artist + " (" + random.Next(10000, 99999) + ").jpg";
+            str2 = Path.Combine(Utils.FAHUDPlugins, artist + " (" + random.Next(10000, 99999) + ").jpg");
           else if (category == Utils.Category.TvManual)
-            str2 = folder + (object) "\\Skin FanArt\\UserDef\\tv\\" + artist + " (" + random.Next(10000, 99999) + ").jpg";
+            // str2 = folder + (object) "\\Skin FanArt\\UserDef\\tv\\" + artist + " (" + random.Next(10000, 99999) + ").jpg";
+            str2 = Path.Combine(Utils.FAHUDTV, artist + " (" + random.Next(10000, 99999) + ").jpg");
           else
-            str2 = folder + (object) "\\Skin FanArt\\UserDef\\scorecenter\\" + artist + " (" + random.Next(10000, 99999) + ").jpg";
+            // str2 = folder + (object) "\\Skin FanArt\\UserDef\\scorecenter\\" + artist + " (" + random.Next(10000, 99999) + ").jpg";
+            str2 = Path.Combine(Utils.FAHUDScorecenter, artist + " (" + random.Next(10000, 99999) + ").jpg");
           if (!Path.GetDirectoryName(str1).Equals(Path.GetDirectoryName(str2)))
             File.Copy(str1, str2);
         }
@@ -3195,7 +3206,7 @@ namespace FanartHandler
         pictureBox1.Image = null;
         var str1 = string.Empty;
         var openFileDialog = new OpenFileDialog();
-        openFileDialog.InitialDirectory = Config.GetFolder((Config.Dir) 6);
+        openFileDialog.InitialDirectory = Utils.MPThumbsFolder ; // Config.GetFolder((Config.Dir) 6);
         openFileDialog.Title = "Select Image";
         openFileDialog.Filter = "Image Files(*.JPG)|*.JPG";
         if (openFileDialog.ShowDialog() == DialogResult.Cancel)
