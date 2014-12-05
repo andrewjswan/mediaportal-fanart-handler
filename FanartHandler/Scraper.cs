@@ -1390,6 +1390,7 @@ namespace FanartHandler
                   num = 9999;
                 break ;
               }
+
             if (category == Utils.Category.MusicFanartScraped)
               if (Utils.GetDbm().SourceImageExist(dbartist, null, sourceFilename, category, null, Utils.Provider.FanartTV, id, mbid))
                 {
@@ -1397,6 +1398,7 @@ namespace FanartHandler
                   checked { ++num; }
                   continue;
                 }
+
             if (DownloadImage(ref artist, (category == Utils.Category.MusicAlbumThumbScraped) ? album : null, ref sourceFilename, ref path, ref filename, category, id)) 
             {
               checked { ++num; }
@@ -1424,6 +1426,7 @@ namespace FanartHandler
               }
               ExternalAccess.InvokeScraperCompleted(category.ToString(), dbartist);
             }
+
             if ((num > 0) && (category != Utils.Category.MusicFanartScraped))
               break ;
             if (Utils.GetDbm().StopScraper)
@@ -1437,8 +1440,7 @@ namespace FanartHandler
         return num;
       }
       finally
-      { 
-      }
+      { }
     }
     // End: Fanart.TV Get Fanart/Tumbnails for Artist or Artist/Album
     #endregion
