@@ -97,34 +97,43 @@ namespace FanartHandler
         }
 
         #region SelectedItem
-        if (GUIWindowManager.ActiveWindow == 6623)
+        if (GUIWindowManager.ActiveWindow == 6623)       // mVids plugin - Outdated.
         {
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#mvids.artist");
           FanartHandlerSetup.Fh.SelectedItem = Utils.GetArtistLeftOfMinusSign(FanartHandlerSetup.Fh.SelectedItem);
         }
-        else if (GUIWindowManager.ActiveWindow == 47286)
+        else if (GUIWindowManager.ActiveWindow == 47286) // Rockstar plugin
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#Rockstar.SelectedTrack.ArtistName");
-        else if (GUIWindowManager.ActiveWindow == 759)
+        else if (GUIWindowManager.ActiveWindow == 759)   // My TV Recorder
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#TV.RecordedTV.Title");
-        else if (GUIWindowManager.ActiveWindow == 1)
+        else if (GUIWindowManager.ActiveWindow == 1)     // My TV View
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#TV.View.title");
-        else if (GUIWindowManager.ActiveWindow == 600)
+        else if (GUIWindowManager.ActiveWindow == 600)   // My TV Guide
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#TV.Guide.Title");
-        else if (GUIWindowManager.ActiveWindow == 880)
+        else if (GUIWindowManager.ActiveWindow == 880)   // MusicVids plugin
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#MusicVids.ArtistName");
-        else if (GUIWindowManager.ActiveWindow == 510)
-          FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#artist");
-        else if (GUIWindowManager.ActiveWindow == 35)
+        /*
+        else if (GUIWindowManager.ActiveWindow == 510)   // My Music Plaing Now - Why is it here?
+          FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#artist"); // #Play.Current.Artist ?
+        */
+        else if (GUIWindowManager.ActiveWindow == 510)   // My Music Plaing Now - Why is it here? 
+          FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#Play.Current.Artist");
+        else if (GUIWindowManager.ActiveWindow == 90478) // My Lyrics - Why is it here? 
+          FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#Play.Current.Artist");
+        else if (GUIWindowManager.ActiveWindow == 25652) // Radio Time - Why is it here? 
+          FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#Play.Current.Artist");
+        else if (GUIWindowManager.ActiveWindow == 35)    // Basic Home - Why is it here? And where there may appear tag: #Play.Current.Title
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#Play.Current.Title");
-        else if (GUIWindowManager.ActiveWindow == 6622)
+        else if (GUIWindowManager.ActiveWindow == 6622)  // Music Trivia 
         {
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#selecteditem2");
           FanartHandlerSetup.Fh.SelectedItem = Utils.GetArtistLeftOfMinusSign(FanartHandlerSetup.Fh.SelectedItem);
         }
-        else if (GUIWindowManager.ActiveWindow == 2003 || 
-                 GUIWindowManager.ActiveWindow == 6 || 
-                 (GUIWindowManager.ActiveWindow == 25 || GUIWindowManager.ActiveWindow == 614) || 
-                 GUIWindowManager.ActiveWindow == 28
+        else if (GUIWindowManager.ActiveWindow == 2003 ||  // Dialog Video Info
+                 GUIWindowManager.ActiveWindow == 6 ||     // My Video
+                 GUIWindowManager.ActiveWindow == 25 ||    // My Video Title
+                 GUIWindowManager.ActiveWindow == 614 ||   // Dialog Video Artist Info
+                 GUIWindowManager.ActiveWindow == 28       // My Video Play List
                 )
         {
           var property1 = GUIPropertyManager.GetProperty("#movieid");
@@ -136,27 +145,30 @@ namespace FanartHandler
                                                     GUIPropertyManager.GetProperty("#title")) : 
                                                  property1;
         }
-        else if (GUIWindowManager.ActiveWindow == 9813)
+        else if (GUIWindowManager.ActiveWindow == 9813)    // TVSeries Playlist
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#TVSeries.Episode.SeriesName");
-        else if (GUIWindowManager.ActiveWindow == 112011)
+        else if (GUIWindowManager.ActiveWindow == 112011)  // mvCentral
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#mvCentral.ArtistName");
-        else if (GUIWindowManager.ActiveWindow == 112012)
+        else if (GUIWindowManager.ActiveWindow == 112012)  // mvCentral Playlist
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#mvCentral.ArtistName");
-        else if (GUIWindowManager.ActiveWindow == 112013)
+        else if (GUIWindowManager.ActiveWindow == 112013)  // mvCentral StatsAndInfo
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#mvCentral.ArtistName");
-        else if (GUIWindowManager.ActiveWindow == 112015)
+        else if (GUIWindowManager.ActiveWindow == 112015)  // mvCentral SmartDJ
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#mvCentral.ArtistName");
-        else if (GUIWindowManager.ActiveWindow == 30885)
+        else if (GUIWindowManager.ActiveWindow == 30885)   // GlobalSearch Music
         {
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#selecteditem");
           FanartHandlerSetup.Fh.SelectedItem = Utils.GetArtistLeftOfMinusSign(FanartHandlerSetup.Fh.SelectedItem);
         }
-        else if (GUIWindowManager.ActiveWindow == 29050 || GUIWindowManager.ActiveWindow == 29051 || GUIWindowManager.ActiveWindow == 29052)
+        else if (GUIWindowManager.ActiveWindow == 29050 || // youtube.fm videosbase
+                 GUIWindowManager.ActiveWindow == 29051 || // youtube.fm playlist
+                 GUIWindowManager.ActiveWindow == 29052    // youtube.fm info
+                )
         {
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#selecteditem");
           FanartHandlerSetup.Fh.SelectedItem = Utils.GetArtistLeftOfMinusSign(FanartHandlerSetup.Fh.SelectedItem);
         }
-        else if (GUIWindowManager.ActiveWindow == 30886)
+        else if (GUIWindowManager.ActiveWindow == 30886)   // GlobalSearch Music Details
         {
           try
           {
@@ -173,10 +185,9 @@ namespace FanartHandler
 
         if (FanartHandlerSetup.Fh.SelectedItem != null && FanartHandlerSetup.Fh.SelectedItem.Trim().Length > 0)
         {
-          if (GUIWindowManager.ActiveWindow == 4755 && 
-              GUIWindowManager.GetWindow(4755).GetControl(51).IsVisible || 
-              (GUIWindowManager.ActiveWindow == 6 || GUIWindowManager.ActiveWindow == 25) && 
-              FanartHandlerSetup.Fh.SelectedItem.Equals("..", StringComparison.CurrentCulture)
+          if (((GUIWindowManager.ActiveWindow == 4755 && GUIWindowManager.GetWindow(4755).GetControl(51).IsVisible) || // My Online Videos && My Online Videos Movie List
+               (GUIWindowManager.ActiveWindow == 6 || GUIWindowManager.ActiveWindow == 25)                             // My Video || My Video Title 
+              ) && FanartHandlerSetup.Fh.SelectedItem.Equals("..", StringComparison.CurrentCulture)                    // ..
              )
             return;
 
@@ -201,9 +212,9 @@ namespace FanartHandler
             }
             str3 = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.SelectedItem, ref currSelectedGeneric, ref PrevSelectedGeneric, category, "FanartSelected", flag, isMusic);
 
-            if (str3.Length == 0 && (GUIWindowManager.ActiveWindow == 2003 || GUIWindowManager.ActiveWindow == 6 || GUIWindowManager.ActiveWindow == 25))
+            if (str3.Length == 0 && (GUIWindowManager.ActiveWindow == 2003 || GUIWindowManager.ActiveWindow == 6 || GUIWindowManager.ActiveWindow == 25))  // Dialog Video Info || My Video || My Video Title
               str3 = GUIPropertyManager.GetProperty("#myvideosuserfanart");
-            if (str3.Length == 0 && (GUIWindowManager.ActiveWindow == 2003 || GUIWindowManager.ActiveWindow == 6 || GUIWindowManager.ActiveWindow == 25))
+            if (str3.Length == 0 && (GUIWindowManager.ActiveWindow == 2003 || GUIWindowManager.ActiveWindow == 6 || GUIWindowManager.ActiveWindow == 25))  // Dialog Video Info || My Video || My Video Title
               str3 = FanartHandlerSetup.Fh.GetFilename(GUIWindowManager.ActiveWindow != 2003 ? GUIPropertyManager.GetProperty("#selecteditem") : GUIPropertyManager.GetProperty("#title"), ref currSelectedGeneric, ref PrevSelectedGeneric, category, "FanartSelected", true, isMusic);
             if (str3.Length == 0)
             {
@@ -235,12 +246,11 @@ namespace FanartHandler
         } // if (FanartHandlerSetup.Fh.SelectedItem != null && FanartHandlerSetup.Fh.SelectedItem.Trim().Length > 0)
         else
         {
-          if (FanartHandlerSetup.Fh.SelectedItem != null && 
-              (GUIWindowManager.ActiveWindow == 4755 && 
-               GUIWindowManager.GetWindow(4755).GetControl(51).IsVisible || 
-               (GUIWindowManager.ActiveWindow == 6 || GUIWindowManager.ActiveWindow == 25) && 
-               FanartHandlerSetup.Fh.SelectedItem.Equals("..", StringComparison.CurrentCulture)
-              )
+          if ((FanartHandlerSetup.Fh.SelectedItem != null) &&
+               (((GUIWindowManager.ActiveWindow == 4755 && GUIWindowManager.GetWindow(4755).GetControl(51).IsVisible) || // My Online Videos && My Online Videos Movie List
+                 (GUIWindowManager.ActiveWindow == 6 || GUIWindowManager.ActiveWindow == 25)                             // My Video || My Video Title 
+                ) && FanartHandlerSetup.Fh.SelectedItem.Equals("..", StringComparison.CurrentCulture)                    // ..
+               )
              )
             return;
 
