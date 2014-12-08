@@ -56,6 +56,7 @@ namespace FanartHandler
     private string m_CurrentAlbumTag;
     private string m_CurrentTitleTag;
     private string m_CurrentTrackTag;
+    private string m_CurrentGenreTag;
     private string m_SelectedItem;
     private string minResolution;
     private TimerCallback myScraperTimer;
@@ -180,6 +181,18 @@ namespace FanartHandler
       set
       {
         m_CurrentAlbumTag = value;
+      }
+    }
+
+    internal string CurrentGenreTag
+    {
+      get
+      {
+        return m_CurrentGenreTag;
+      }
+      set
+      {
+        m_CurrentGenreTag = value;
       }
     }
 
@@ -541,12 +554,9 @@ namespace FanartHandler
           {
             if (isMusic)
               filenames = Utils.GetDbm().GetFanart(key, null, category, true);
-            if (isMusic && 
-                filenames != null && 
-                (filenames.Count <= 0 && skipWhenHighResAvailable != null) && 
+            if (isMusic && filenames != null && (filenames.Count <= 0 && skipWhenHighResAvailable != null) && 
                 (skipWhenHighResAvailable.Equals("True", StringComparison.CurrentCulture) && 
-                  (FanartHandlerSetup.Fh.UseArtist.Equals("True", StringComparison.CurrentCulture) || 
-                   FanartHandlerSetup.Fh.UseAlbum.Equals("True", StringComparison.CurrentCulture))
+                  (FanartHandlerSetup.Fh.UseArtist.Equals("True", StringComparison.CurrentCulture) || FanartHandlerSetup.Fh.UseAlbum.Equals("True", StringComparison.CurrentCulture))
                 )
                )
               filenames = Utils.GetDbm().GetFanart(key, null, category, false);
@@ -994,6 +1004,7 @@ namespace FanartHandler
       m_CurrentTrackTag = null;
       m_CurrentAlbumTag = null;
       m_CurrentTitleTag = null;
+      m_CurrentGenreTag = null;
       m_SelectedItem = null;
       SetProperty("#fanarthandler.scraper.percent.completed", string.Empty);
       SetProperty("#fanarthandler.scraper.task", string.Empty);
@@ -1631,7 +1642,9 @@ namespace FanartHandler
 
     private bool AllowFanartInThisWindow(string windowId)
     {
-      return (windowId == null || !windowId.Equals("511", StringComparison.CurrentCulture)) && (windowId == null || !windowId.Equals("2005", StringComparison.CurrentCulture)) && (windowId == null || !windowId.Equals("602", StringComparison.CurrentCulture));
+      return (windowId == null || !windowId.Equals("511", StringComparison.CurrentCulture)) &&   // Music Full Screen
+             (windowId == null || !windowId.Equals("2005", StringComparison.CurrentCulture)) &&  // Video Full Screen
+             (windowId == null || !windowId.Equals("602", StringComparison.CurrentCulture));     // My TV Full Screen
     }
 
     internal void OnPlayBackStarted(g_Player.MediaType type, string filename)
@@ -1642,7 +1655,10 @@ namespace FanartHandler
         IsPlaying = true;
         if ((FP.WindowsUsingFanartPlay.ContainsKey(windowId) || (UseOverlayFanart != null && UseOverlayFanart.Equals("True", StringComparison.CurrentCulture))) && AllowFanartInThisWindow(windowId))
         {
-          if (refreshTimer != null && !refreshTimer.Enabled && (type == g_Player.MediaType.Music || type == g_Player.MediaType.Radio || MediaPortal.Util.Utils.IsLastFMStream(filename) || windowId.Equals("730718", StringComparison.CurrentCulture)))
+          if (refreshTimer != null && !refreshTimer.Enabled && 
+              (type == g_Player.MediaType.Music || type == g_Player.MediaType.Radio || MediaPortal.Util.Utils.IsLastFMStream(filename) || windowId.Equals("730718", StringComparison.CurrentCulture))
+              //                                                                                                                                           MPGrooveshark
+             )
           {
             refreshTimer.Start();
           }

@@ -41,14 +41,16 @@ namespace FanartHandler
       Thread.CurrentThread.Priority = !FanartHandlerSetup.Fh.FHThreadPriority.Equals("Lowest", StringComparison.CurrentCulture) ? ThreadPriority.BelowNormal : ThreadPriority.Lowest;
       Thread.CurrentThread.Name = "RefreshWorker";
       Utils.AllocateDelayStop("RefreshWorker-OnDoWork");
+
       var activeWindow = GUIWindowManager.ActiveWindow;
       var DebugStep = 1;
+
       if (!Utils.GetIsStopping())
       {
         var flag1 = Utils.IsIdle();
         try
         {
-          if (activeWindow == 2 && flag1)
+          if (activeWindow == 2 && flag1)  // My Pics
           {
             DebugStep = 2;
             var window = GUIWindowManager.GetWindow(GUIWindowManager.ActiveWindow);
@@ -97,20 +99,24 @@ namespace FanartHandler
               FanartHandlerSetup.Fh.IsSelectedPicture = false;
             }
           }
+
           DebugStep = 9;
           var flag2 = true;
           FanartHandlerSetup.Fh.FS.HasUpdatedCurrCount = false;
           FanartHandlerSetup.Fh.FP.HasUpdatedCurrCountPlay = false;
-          if (activeWindow == 730718)
+          if (activeWindow == 730718) // MP Grooveshark
           {
             FanartHandlerSetup.Fh.CurrentTrackTag = GUIPropertyManager.GetProperty("#mpgrooveshark.current.artist");
             FanartHandlerSetup.Fh.CurrentAlbumTag = GUIPropertyManager.GetProperty("#mpgrooveshark.current.album");
+            FanartHandlerSetup.Fh.CurrentGenreTag = null;
           }
           else
           {
             FanartHandlerSetup.Fh.CurrentTrackTag = GUIPropertyManager.GetProperty("#Play.Current.Artist");
             FanartHandlerSetup.Fh.CurrentAlbumTag = GUIPropertyManager.GetProperty("#Play.Current.Album");
+            FanartHandlerSetup.Fh.CurrentGenreTag = GUIPropertyManager.GetProperty("#Play.Current.Genre");
           }
+
           if (FanartHandlerSetup.Fh.ScraperMPDatabase != null && 
               FanartHandlerSetup.Fh.ScraperMPDatabase.Equals("True", StringComparison.CurrentCulture) && 
               (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.TriggerRefresh)
@@ -120,6 +126,7 @@ namespace FanartHandler
             FanartHandlerSetup.Fh.FS.SetCurrentArtistsImageNames(null);
             FanartHandlerSetup.Fh.MyScraperWorker.TriggerRefresh = false;
           }
+
           DebugStep = 10;
           if (FanartHandlerSetup.Fh.CurrentTrackTag != null && FanartHandlerSetup.Fh.CurrentTrackTag.Trim().Length > 0 && (g_Player.Playing || g_Player.Paused))
           {
@@ -186,7 +193,8 @@ namespace FanartHandler
             DebugStep = 19;
             if (FanartHandlerSetup.Fh.FS.WindowsUsingFanartSelectedMusic != null && FanartHandlerSetup.Fh.FS.WindowsUsingFanartSelectedMusic.ContainsKey(activeWindow.ToString(CultureInfo.CurrentCulture)))
             {
-              if (activeWindow == 504 || activeWindow == 501 || activeWindow == 500)
+              if (activeWindow == 504 || activeWindow == 501 || activeWindow == 500)  
+              // My Music Genres (Main music window for database views: artist, album, genres etc) || My Music Songs (Music shares view screen) || My Music Playlist
               {
                 FanartHandlerSetup.Fh.IsSelectedMusic = true;
                 flag2 = false;
@@ -222,6 +230,7 @@ namespace FanartHandler
               Report(e);
             }
           }
+
           DebugStep = 21;
           if (FanartHandlerSetup.Fh.UseVideoFanart != null && FanartHandlerSetup.Fh.UseVideoFanart.Equals("True", StringComparison.CurrentCulture) && flag1)
           {
@@ -229,7 +238,8 @@ namespace FanartHandler
             if (FanartHandlerSetup.Fh.FS.WindowsUsingFanartSelectedMovie != null && FanartHandlerSetup.Fh.FS.WindowsUsingFanartSelectedMovie.ContainsKey(activeWindow.ToString(CultureInfo.CurrentCulture)))
             {
               DebugStep = 23;
-              if (activeWindow == 6 || activeWindow == 25 || (activeWindow == 28 || activeWindow == 2003) || activeWindow == 9813)
+              if (activeWindow == 6 || activeWindow == 25 || activeWindow == 28 || activeWindow == 2003 || activeWindow == 9813)
+                 // My Video        || My Video Title     || My Video Playlist  || Dialog Video Info    || TV Series Playlist
               {
                 FanartHandlerSetup.Fh.IsSelectedVideo = true;
                 flag2 = false;
@@ -240,11 +250,10 @@ namespace FanartHandler
                                                                           ref FanartHandlerSetup.Fh.FS.CurrSelectedMovieTitle);
                 Report(e);
               }
-              else if (activeWindow == 601 || 
-                       activeWindow == 605 || 
-                       (activeWindow == 606 || activeWindow == 603) || 
-                       (activeWindow == 759 || activeWindow == 1 || (activeWindow == 600 || activeWindow == 747)) || 
-                       (activeWindow == 49849 || activeWindow == 49848 || activeWindow == 49850)
+              else if (activeWindow == 601 || activeWindow == 605 || activeWindow == 606 || activeWindow == 603 || activeWindow == 759 || activeWindow == 1 || 
+                    // mytvschedulerServer                                                  mytvrecordedtv         mytvRecordedInfo       mytvhomeserver
+                       activeWindow == 600 || activeWindow == 747 || activeWindow == 49849 || activeWindow == 49848 || activeWindow == 49850
+                    // mytvguide        mytvschedulerServerSearch    ARGUS_Active             ARGUS_UpcomingTv         ARGUS_TvGuideSearch2
                       )
               {
                 FanartHandlerSetup.Fh.IsSelectedVideo = true;
@@ -256,7 +265,7 @@ namespace FanartHandler
                                                                           ref FanartHandlerSetup.Fh.FS.CurrSelectedMovieTitle);
                 Report(e);
               }
-              else if (activeWindow == 35)
+              else if (activeWindow == 35) // Basic Home
               {
                 FanartHandlerSetup.Fh.IsSelectedVideo = true;
                 flag2 = false;
@@ -293,6 +302,7 @@ namespace FanartHandler
               Report(e);
             }
           }
+
           DebugStep = 25;
           if (FanartHandlerSetup.Fh.UseScoreCenterFanart != null && FanartHandlerSetup.Fh.UseScoreCenterFanart.Equals("True", StringComparison.CurrentCulture) && flag1)
           {
@@ -301,7 +311,7 @@ namespace FanartHandler
                 FanartHandlerSetup.Fh.FS.WindowsUsingFanartSelectedScoreCenter.ContainsKey(activeWindow.ToString(CultureInfo.CurrentCulture))
                )
             {
-              if (activeWindow == 42000)
+              if (activeWindow == 42000) // My Score center
               {
                 FanartHandlerSetup.Fh.IsSelectedScoreCenter = true;
                 flag2 = false;
@@ -322,12 +332,14 @@ namespace FanartHandler
               Report(e);
             }
           }
+
           DebugStep = 27;
           if (flag2 && flag1)
           {
             FanartHandlerSetup.Fh.FS.FanartAvailable = false;
             FanartHandlerSetup.Fh.FS.FanartIsNotAvailable(activeWindow);
           }
+
           if (FanartHandlerSetup.Fh.FR.WindowsUsingFanartRandom != null && FanartHandlerSetup.Fh.FR.WindowsUsingFanartRandom.ContainsKey(activeWindow.ToString(CultureInfo.CurrentCulture)))
           {
             FanartHandlerSetup.Fh.IsRandom = true;
@@ -373,6 +385,7 @@ namespace FanartHandler
             FanartHandlerSetup.Fh.IsRandom = false;
             Report(e);
           }
+
           DebugStep = 29;
           if (FanartHandlerSetup.Fh.FS.UpdateVisibilityCount > 0)
             FanartHandlerSetup.Fh.FS.UpdateVisibilityCount = checked (FanartHandlerSetup.Fh.FS.UpdateVisibilityCount + 1);
