@@ -28,7 +28,6 @@ namespace FanartHandler
     private const string RXMatchNonWordCharacters = "[^\\w|;&]";
     private const string RXMatchMPvs = "({)([0-9]+)(})$";
     private const string RXMatchMPvs2 = "(\\()([0-9]+)(\\))$";
-    public const string GetMajorMinorVersionNumber = "3.1.0.000";
     private static bool isStopping;
     private static DatabaseManager dbm;
     private static string scraperMaxImages;
@@ -456,6 +455,7 @@ namespace FanartHandler
         key = Regex.Replace(key, "-", " ");
       else
         key = Utils.Equalize(key);
+      // key = RemoveResolutionFromArtistName (key) ;
       key = Utils.MovePrefixToFront(key);
       return key;
     }
@@ -476,6 +476,7 @@ namespace FanartHandler
       if (category != Category.MovieScraped)
         key = RemoveTrailingDigits(key);
       key = Utils.Equalize(key);
+      // key = RemoveResolutionFromArtistName (key) ;
       key = Utils.MovePrefixToFront(key);
       return key;
     }
@@ -659,6 +660,8 @@ namespace FanartHandler
     {
       if (s == null)
         return string.Empty;
+      s = s.Replace("loseless", string.Empty);
+      s = s.Replace("Loseless", string.Empty);
       s = s.Replace("-(1080P)", string.Empty);
       s = s.Replace("-(720P)", string.Empty);
       s = s.Replace("-[1080P]", string.Empty);

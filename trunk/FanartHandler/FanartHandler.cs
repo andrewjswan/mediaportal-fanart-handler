@@ -354,8 +354,8 @@ namespace FanartHandler
             {
               if (!Utils.GetIsStopping())
               {
-                var artist = Utils.GetArtist(RemoveResolutionFromArtistName(str3), category);
-                var album = Utils.GetAlbum(RemoveResolutionFromArtistName(str3), category);
+                var artist = Utils.GetArtist(str3, category);
+                var album = Utils.GetAlbum(str3, category);
                 if (ht != null && ht.Contains(artist))
                   Utils.GetDbm().LoadFanart(ht[artist].ToString(), str3, str3, category, album, provider, null, null);
                 else
