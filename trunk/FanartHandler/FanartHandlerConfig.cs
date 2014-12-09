@@ -152,6 +152,7 @@ namespace FanartHandler
     private string useArtist;
     private string useAspectRatio;
     private string useFanart;
+    private string UseGenreFanart;
     private string useSelectedMusicFanart;
     private string useSelectedOtherFanart;
 
@@ -173,9 +174,7 @@ namespace FanartHandler
         StopScraper();
         Utils.GetDbm().Close();
       }
-      catch
-      {
-      }
+      catch { }
       if (disposing && components != null)
         components.Dispose();
       base.Dispose(disposing);
@@ -1307,6 +1306,7 @@ namespace FanartHandler
           xmlwriter.SetValue("FanartHandler", "scrapeThumbnails", checkBox1.Checked ? true : false);
           xmlwriter.SetValue("FanartHandler", "scrapeThumbnailsAlbum", checkBox9.Checked ? true : false);
           xmlwriter.SetValue("FanartHandler", "doNotReplaceExistingThumbs", checkBox8.Checked ? true : false);
+          xmlwriter.SetValue("FanartHandler", "UseGenreFanart", UseGenreFanart);
         }
         MessageBox.Show("Settings is stored in memory. Make sure to press Ok when exiting MP Configuration. "+
                         "Pressing Cancel when exiting MP Configuration will result in these setting NOT being saved!", "Settings", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1418,6 +1418,7 @@ namespace FanartHandler
         scrapeThumbnails = xmlreader.GetValueAsString("FanartHandler", "scrapeThumbnails", string.Empty);
         scrapeThumbnailsAlbum = xmlreader.GetValueAsString("FanartHandler", "scrapeThumbnailsAlbum", string.Empty);
         doNotReplaceExistingThumbs = xmlreader.GetValueAsString("FanartHandler", "doNotReplaceExistingThumbs", string.Empty);
+        UseGenreFanart = xmlreader.GetValueAsString("FanartHandler", "UseGenreFanart", string.Empty);
       }
       SplashPane.IncrementProgressBar(10);
       if (!string.IsNullOrEmpty(scrapeThumbnails))
@@ -1446,6 +1447,15 @@ namespace FanartHandler
       {
         useFanart = "True";
         checkBoxXFactorFanart.Checked = true;
+      }
+      if (!string.IsNullOrEmpty(UseGenreFanart))
+      {
+        // checkBoxUseGenereFanart.Checked = UseGenreFanart.Equals("True", StringComparison.CurrentCulture);
+      }
+      else
+      {
+        UseGenreFanart = "False";
+        // checkBoxUseGenereFanart.Checked = false;
       }
       if (!string.IsNullOrEmpty(useAlbum))
       {
@@ -2297,6 +2307,7 @@ namespace FanartHandler
           isScraping = true;
           if (useFanart.Equals("True", StringComparison.CurrentCulture))
             FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHSFolder, "*.jpg", Utils.Category.MusicFanartScraped, null, Utils.Provider.Local);
+
           dataGridView1.Enabled = false;
           button6.Text = "Stop Scraper [S]";
           button2.Enabled = false;

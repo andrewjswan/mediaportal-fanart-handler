@@ -1133,7 +1133,7 @@ namespace FanartHandler
                 else
                   checked { ++num1; }
               }
-              // var collection = (ICollection) null;
+
               if (num2 == 0)
               {
                 var values2 = htAny.Values;
@@ -1159,7 +1159,6 @@ namespace FanartHandler
                     checked { ++num3; }
                 }
               }
-              // collection = null;
             }
           }
         }
@@ -1231,10 +1230,22 @@ namespace FanartHandler
       }
     }
 
-    public void SetupWindowsUsingRandomImages()
+    public void SetupWindowsUsingRandomImages(string ThemeDir = (string) null)
     {
-      WindowsUsingFanartRandom = new Hashtable();
-      var path = GUIGraphicsContext.Skin + "\\";
+      var path = string.Empty ;
+
+      if (string.IsNullOrEmpty(ThemeDir))
+      {
+        WindowsUsingFanartRandom = new Hashtable();
+        path = GUIGraphicsContext.Skin + "\\";
+        logger.Debug("Random Scan Skin folder for XML: "+path) ;
+      }
+      else
+      {
+        path = ThemeDir;
+        logger.Debug("Random Scan Skin Theme folder for XML: "+path) ;
+      }
+
       var str1 = string.Empty;
       var str2 = string.Empty;
       var files = new DirectoryInfo(path).GetFiles("*.xml");
@@ -1243,6 +1254,8 @@ namespace FanartHandler
       {
         try
         {
+          str2 = fileInfo.Name;
+
           var name = fileInfo.Name;
           var navigator = new XPathDocument(fileInfo.FullName).CreateNavigator();
           var nodeValue = GetNodeValue(navigator.Select("/window/id"));
@@ -1378,9 +1391,17 @@ namespace FanartHandler
             }
           }
         }
-        catch
+        catch (Exception ex)
         {
+          logger.Error("SetupWindowsUsingRandomImages: "+(string.IsNullOrEmpty(ThemeDir) ? "" : "Theme: "+ThemeDir+" ")+"Filename:"+ str2) ;
+          logger.Error(ex) ;
         }
+      }
+
+      if (string.IsNullOrEmpty(ThemeDir))
+      {
+        // Include Themes
+        SetupWindowsUsingRandomImages(path+@"Themes\"+GUIGraphicsContext.ThemeName.Trim()+@"\");
       }
     }
 

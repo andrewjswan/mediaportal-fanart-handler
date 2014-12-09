@@ -193,8 +193,9 @@ namespace FanartHandler
             DebugStep = 19;
             if (FanartHandlerSetup.Fh.FS.WindowsUsingFanartSelectedMusic != null && FanartHandlerSetup.Fh.FS.WindowsUsingFanartSelectedMusic.ContainsKey(activeWindow.ToString(CultureInfo.CurrentCulture)))
             {
-              if (activeWindow == 504 || activeWindow == 501 || activeWindow == 500)  
-              // My Music Genres (Main music window for database views: artist, album, genres etc) || My Music Songs (Music shares view screen) || My Music Playlist
+              if (activeWindow == 504 || // My Music Genres (Main music window for database views: artist, album, genres etc)
+                  activeWindow == 501 || // My Music Songs (Music shares view screen)
+                  activeWindow == 500)   // My Music Playlist
               {
                 FanartHandlerSetup.Fh.IsSelectedMusic = true;
                 flag2 = false;
