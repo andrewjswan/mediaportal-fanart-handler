@@ -408,6 +408,7 @@ namespace FanartHandler
     {
       if (!useDefaultBackdrop.Equals("True", StringComparison.CurrentCulture))
         return;
+
       try
       {
         foreach (var str in Directory.GetFiles(startDir, "*.jpg"))
@@ -429,6 +430,7 @@ namespace FanartHandler
           }
           checked { ++i; }
         }
+        // Include SubFolders
         foreach (var startDir1 in Directory.GetDirectories(startDir))
           SetupDefaultBackdrops(startDir1, ref i);
       }
@@ -550,6 +552,7 @@ namespace FanartHandler
         {
           key = Utils.GetArtist(key, category);
           var filenames = !obj.Equals("FanartPlaying", StringComparison.CurrentCulture) ? FS.GetCurrentArtistsImageNames() : FP.GetCurrentArtistsImageNames();
+
           if (newArtist || filenames == null || filenames.Count == 0)
           {
             if (isMusic)
@@ -590,6 +593,7 @@ namespace FanartHandler
             else
               FS.SetCurrentArtistsImageNames(filenames);
           }
+
           if (filenames != null)
           {
             if (filenames.Count > 0)
@@ -613,7 +617,7 @@ namespace FanartHandler
                 else
                   checked { ++num1; }
               }
-              // var collection = (ICollection) null;
+
               if (num2 == 0)
               {
                 var values2 = filenames.Values;
@@ -636,7 +640,6 @@ namespace FanartHandler
                     checked { ++num3; }
                 }
               }
-              // collection = null;
             }
           }
         }
@@ -667,13 +670,15 @@ namespace FanartHandler
               {
                 if (iFilePrev == -1)
                   Utils.Shuffle(ref defaultBackdropImages);
+
                 var values1 = DefaultBackdropImages.Values;
                 var num1 = 0;
                 var num2 = 0;
                 foreach (string filename in values1)
                 {
                   if ((num1 > iFilePrev || iFilePrev == -1) && 
-                      (num2 == 0 && CheckImageResolution(filename, Utils.Category.MusicFanartScraped, UseAspectRatio)) && 
+                      num2 == 0 && 
+                      CheckImageResolution(filename, Utils.Category.MusicFanartScraped, UseAspectRatio) && 
                       Utils.IsFileValid(filename)
                      )
                   {
@@ -686,7 +691,7 @@ namespace FanartHandler
                   else
                     checked { ++num1; }
                 }
-                // var collection = (ICollection) null;
+
                 if (num2 == 0)
                 {
                   var values2 = DefaultBackdropImages.Values;
@@ -696,7 +701,8 @@ namespace FanartHandler
                   foreach (string filename in values2)
                   {
                     if ((num3 > iFilePrev || iFilePrev == -1) && 
-                        (num4 == 0 && CheckImageResolution(filename, Utils.Category.MusicFanartScraped, UseAspectRatio)) && 
+                        num4 == 0 && 
+                        CheckImageResolution(filename, Utils.Category.MusicFanartScraped, UseAspectRatio) && 
                         Utils.IsFileValid(filename)
                        )
                     {
@@ -709,7 +715,6 @@ namespace FanartHandler
                       checked { ++num3; }
                   }
                 }
-                // collection = null;
               }
             }
           }
@@ -815,21 +820,36 @@ namespace FanartHandler
       return string.Empty;
     }
 
-    private void SetupWindowsUsingFanartHandlerVisibility()
+    private void SetupWindowsUsingFanartHandlerVisibility(string ThemeDir = (string) null)
     {
-      FS.WindowsUsingFanartSelectedMusic = new Hashtable();
-      FS.WindowsUsingFanartSelectedScoreCenter = new Hashtable();
-      FS.WindowsUsingFanartSelectedMovie = new Hashtable();
-      FP.WindowsUsingFanartPlay = new Hashtable();
-      var path = GUIGraphicsContext.Skin + "\\";
+      var path = string.Empty ;
+
+      if (string.IsNullOrEmpty(ThemeDir))
+      {
+        FS.WindowsUsingFanartSelectedMusic = new Hashtable();
+        FS.WindowsUsingFanartSelectedScoreCenter = new Hashtable();
+        FS.WindowsUsingFanartSelectedMovie = new Hashtable();
+        FP.WindowsUsingFanartPlay = new Hashtable();
+
+        path = GUIGraphicsContext.Skin + "\\";
+        logger.Debug("Scan Skin folder for XML: "+path) ;
+      }
+      else
+      {
+        path = ThemeDir;
+        logger.Debug("Scan Skin Theme folder for XML: "+path) ;
+      }
+
       var str1 = string.Empty;
       var files = new DirectoryInfo(path).GetFiles("*.xml");
       var str2 = string.Empty;
       var str3 = string.Empty;
+
       foreach (var fileInfo in files)
       {
         try
         {
+          str2 = fileInfo.Name;
           var _flag1Music = false;
           var _flag2Music = false;
           var _flag1ScoreCenter = false;
@@ -837,10 +857,10 @@ namespace FanartHandler
           var _flag1Movie = false;
           var _flag2Movie = false;
           var _flagPlay = false;
-          str2 = fileInfo.Name;
           var str4 = fileInfo.FullName.Substring(0, fileInfo.FullName.LastIndexOf("\\"));
           var navigator = new XPathDocument(fileInfo.FullName).CreateNavigator();
           var nodeValue = GetNodeValue(navigator.Select("/window/id"));
+
           if (!string.IsNullOrEmpty(nodeValue))
           {
             HandleXmlImports(fileInfo.FullName, nodeValue, ref _flag1Music, ref _flag2Music, ref _flag1ScoreCenter, ref _flag2ScoreCenter, ref _flag1Movie, ref _flag2Movie, ref _flagPlay);
@@ -854,6 +874,7 @@ namespace FanartHandler
                   HandleXmlImports(str5, nodeValue, ref _flag1Music, ref _flag2Music, ref _flag1ScoreCenter, ref _flag2ScoreCenter, ref _flag1Movie, ref _flag2Movie, ref _flagPlay);
               }
             }
+
             if (_flag1Music && _flag2Music && !FS.WindowsUsingFanartSelectedMusic.Contains(nodeValue))
               FS.WindowsUsingFanartSelectedMusic.Add(nodeValue, nodeValue);
             if (_flag1ScoreCenter && _flag2ScoreCenter && !FS.WindowsUsingFanartSelectedScoreCenter.Contains(nodeValue))
@@ -869,14 +890,15 @@ namespace FanartHandler
         }
         catch (Exception ex)
         {
-          logger.Error(string.Concat(new object[4]
-          {
-            "setupWindowsUsingFanartHandlerVisibility, filename:",
-            str2,
-            "): ",
-            ex
-          }));
+          logger.Error("SetupWindowsUsingFanartHandlerVisibility: "+(string.IsNullOrEmpty(ThemeDir) ? "" : "Theme: "+ThemeDir+" ")+"Filename:"+ str2) ;
+          logger.Error(ex) ;
         }
+      }
+
+      if (string.IsNullOrEmpty(ThemeDir))
+      {
+        // Include Themes
+        SetupWindowsUsingFanartHandlerVisibility(path+@"Themes\"+GUIGraphicsContext.ThemeName.Trim()+@"\");
       }
     }
 
@@ -1165,14 +1187,17 @@ namespace FanartHandler
           UseScoreCenterFanart = settings.GetValueAsString("FanartHandler", "useScoreCenterFanart", string.Empty);
           imageInterval = settings.GetValueAsString("FanartHandler", "imageInterval", string.Empty);
           minResolution = settings.GetValueAsString("FanartHandler", "minResolution", string.Empty);
-          defaultBackdrop = settings.GetValueAsString("FanartHandler", "defaultBackdrop", string.Empty);
           ScraperMaxImages = settings.GetValueAsString("FanartHandler", "scraperMaxImages", string.Empty);
           ScraperMusicPlaying = settings.GetValueAsString("FanartHandler", "scraperMusicPlaying", string.Empty);
           ScraperMPDatabase = settings.GetValueAsString("FanartHandler", "scraperMPDatabase", string.Empty);
           scraperInterval = settings.GetValueAsString("FanartHandler", "scraperInterval", string.Empty);
           UseAspectRatio = settings.GetValueAsString("FanartHandler", "useAspectRatio", string.Empty);
-          defaultBackdropIsImage = settings.GetValueAsString("FanartHandler", "defaultBackdropIsImage", string.Empty);
-          useDefaultBackdrop = settings.GetValueAsString("FanartHandler", "useDefaultBackdrop", string.Empty);
+          // defaultBackdrop = settings.GetValueAsString("FanartHandler", "defaultBackdrop", string.Empty);
+          // defaultBackdropIsImage = settings.GetValueAsString("FanartHandler", "defaultBackdropIsImage", string.Empty);
+          // useDefaultBackdrop = settings.GetValueAsString("FanartHandler", "useDefaultBackdrop", string.Empty);
+          defaultBackdrop = string.Empty;
+          defaultBackdropIsImage = string.Empty;
+          useDefaultBackdrop = string.Empty;
           scrapeThumbnails = settings.GetValueAsString("FanartHandler", "scrapeThumbnails", string.Empty);
           scrapeThumbnailsAlbum = settings.GetValueAsString("FanartHandler", "scrapeThumbnailsAlbum", string.Empty);
           doNotReplaceExistingThumbs = settings.GetValueAsString("FanartHandler", "doNotReplaceExistingThumbs", string.Empty);
@@ -1187,16 +1212,19 @@ namespace FanartHandler
           UseFanart = "True";
         if (string.IsNullOrEmpty(UseAlbum))
           UseAlbum = "True";
-        if (string.IsNullOrEmpty(useDefaultBackdrop))
-          useDefaultBackdrop = "True";
         if (string.IsNullOrEmpty(UseArtist))
           UseArtist = "True";
         if (string.IsNullOrEmpty(skipWhenHighResAvailable))
           skipWhenHighResAvailable = "True";
         if (string.IsNullOrEmpty(DisableMPTumbsForRandom))
           DisableMPTumbsForRandom = "True";
+        if (string.IsNullOrEmpty(useDefaultBackdrop))
+          useDefaultBackdrop = "True";
         if (string.IsNullOrEmpty(defaultBackdropIsImage))
-          defaultBackdropIsImage = "True";
+          defaultBackdropIsImage = "False"; //  defaultBackdropIsImage = "True";
+        // defaultBackdrop = string.IsNullOrEmpty(defaultBackdrop) ? Path.Combine(Utils.FAHUDMusic, "default.jpg")
+        //                                                        : defaultBackdrop.Replace("\\Skin FanArt\\music\\default.jpg", "\\Skin FanArt\\UserDef\\music\\default.jpg");
+        defaultBackdrop = Utils.FAHUDMusic;
         if (string.IsNullOrEmpty(UseOverlayFanart))
           UseOverlayFanart = "True";
         if (string.IsNullOrEmpty(UseMusicFanart))
@@ -1209,8 +1237,6 @@ namespace FanartHandler
           imageInterval = "30";
         if (string.IsNullOrEmpty(minResolution))
           minResolution = "0x0";
-        defaultBackdrop = string.IsNullOrEmpty(defaultBackdrop) ? Path.Combine(Utils.FAHUDMusic, "default.jpg")
-                                                                : defaultBackdrop.Replace("\\Skin FanArt\\music\\default.jpg", "\\Skin FanArt\\UserDef\\music\\default.jpg");
         if (string.IsNullOrEmpty(ScraperMaxImages))
           ScraperMaxImages = "2";
         if (string.IsNullOrEmpty(ScraperMusicPlaying))
@@ -1241,6 +1267,7 @@ namespace FanartHandler
           Utils.Shuffle(ref defaultBackdropImages);
         }
         logger.Info("Fanart Handler is using Fanart: " + UseFanart + ", Album Thumbs: " + UseAlbum + ", Artist Thumbs: " + UseArtist + ".");
+        logger.Debug("Default backdrops for Music found: " + defaultBackdropImages.Count);
         //
         Utils.SetScraperMaxImages(ScraperMaxImages);
         Utils.ScrapeThumbnails = scrapeThumbnails;
