@@ -79,6 +79,7 @@ namespace FanartHandler
                 logger.Info("Successfully Opened Database: "+dbFilename);
 
                 UpgradeDBMain(type);
+
                 if (HtAnyFanart != null)
                     return;
                 HtAnyFanart = new Hashtable();
@@ -1573,11 +1574,14 @@ namespace FanartHandler
         {
             if (HtAnyFanart == null)
                 HtAnyFanart = new Hashtable();
+
             var hashtable = !HtAnyFanart.ContainsKey(Utils.Category.MusicFanartScraped)
                             ? new Hashtable()
                             : (Hashtable) HtAnyFanart[Utils.Category.MusicFanartScraped];
+
             if (hashtable != null && hashtable.Count >= 1)
                 return;
+
             var filenames = new Hashtable();
             var str = "SELECT Id, Key1, FullPath, SourcePath, Category, Provider "+
                        "FROM Image "+
@@ -1586,21 +1590,23 @@ namespace FanartHandler
             SQLiteResultSet sqLiteResultSet;
             lock (lockObject)
                 sqLiteResultSet = dbClient.Execute(str);
+
             var num = 0;
             while (num < sqLiteResultSet.Rows.Count)
             {
-                var fanartImage = new FanartImage(sqLiteResultSet.GetField(num, 0), sqLiteResultSet.GetField(num, 1),
-                    sqLiteResultSet.GetField(num, 2), sqLiteResultSet.GetField(num, 3), sqLiteResultSet.GetField(num, 4),
-                    sqLiteResultSet.GetField(num, 5));
+                var fanartImage = new FanartImage(sqLiteResultSet.GetField(num, 0), 
+                                                  sqLiteResultSet.GetField(num, 1),
+                                                  sqLiteResultSet.GetField(num, 2), 
+                                                  sqLiteResultSet.GetField(num, 3), 
+                                                  sqLiteResultSet.GetField(num, 4),
+                                                  sqLiteResultSet.GetField(num, 5));
                 filenames.Add(num, fanartImage);
-                checked
-                {
-                    ++num;
-                }
+                checked { ++num; }
             }
             Utils.Shuffle(ref filenames);
+
             HtAnyFanart.Remove(Utils.Category.MusicFanartScraped);
-            htAnyFanart.Add(Utils.Category.MusicFanartScraped, filenames);
+            HtAnyFanart.Add(Utils.Category.MusicFanartScraped, filenames);
         }
 
         public void DeleteAllFanart(Utils.Category category)
@@ -1747,6 +1753,24 @@ namespace FanartHandler
                 SQLiteResultSet sqLiteResultSet;
                 lock (lockObject)
                     sqLiteResultSet = dbClient.Execute(SQL);
+
+                if (!string.IsNullOrEmpty(album) && (sqLiteResultSet.Rows.Count <= 0))
+                {
+                  if (category == Utils.Category.MusicFanartScraped)
+                    SQL = "SELECT Id, Key1, FullPath, SourcePath, Category, Provider "+
+                            "FROM Image "+
+                            "WHERE Key1 IN (" + Utils.HandleMultipleArtistNamesForDBQuery(Utils.PatchSql(artist)) + ") AND "+
+                                  "Enabled = 'True' AND "+
+                                  "Category in (" + Utils.GetMusicFanartCategoriesInStatement(highDef) + ");";
+                  else
+                    SQL = "SELECT Id, Key1, FullPath, SourcePath, Category, Provider "+
+                            "FROM Image "+
+                            "WHERE Key1 IN ('" + Utils.PatchSql(artist) + "') AND "+
+                                  "Enabled = 'True';";
+                  lock (lockObject)
+                      sqLiteResultSet = dbClient.Execute(SQL);
+                }
+
                 var num = 0;
                 while (num < sqLiteResultSet.Rows.Count)
                 {
@@ -1759,7 +1783,9 @@ namespace FanartHandler
                         ++num;
                     }
                 }
+
                 Utils.Shuffle(ref filenames);
+
                 /*
                 // TODO: ... Then create procedure for Delete Old Music Fanart files from Disk (Artist not in MP DB and Last_Access < NOW-100)
                 try
@@ -1966,6 +1992,7 @@ namespace FanartHandler
         {
             if (HtAnyFanart == null)
                 HtAnyFanart = new Hashtable();
+
             if (HtAnyFanart.ContainsKey(category))
                 return (Hashtable) HtAnyFanart[category];
             else
@@ -1976,8 +2003,10 @@ namespace FanartHandler
         {
             if (HtAnyFanart == null)
                 HtAnyFanart = new Hashtable();
+
             if (!HtAnyFanart.ContainsKey(category))
                 return;
+
             HtAnyFanart.Remove(category);
             HtAnyFanart.Add(category, ht);
         }
