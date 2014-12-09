@@ -1778,10 +1778,7 @@ namespace FanartHandler
                         sqLiteResultSet.GetField(num, 2), sqLiteResultSet.GetField(num, 3),
                         sqLiteResultSet.GetField(num, 4), sqLiteResultSet.GetField(num, 5));
                     filenames.Add(num, fanartImage);
-                    checked
-                    {
-                        ++num;
-                    }
+                    checked { ++num; }
                 }
 
                 Utils.Shuffle(ref filenames);

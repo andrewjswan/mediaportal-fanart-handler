@@ -546,7 +546,7 @@ namespace FanartHandler
       }
     }
 
-    internal string GetFilename(string key, ref string currFile, ref int iFilePrev, Utils.Category category, string obj, bool newArtist, bool isMusic)
+    internal string GetFilename(string key, ref string currFile, ref int iFilePrev, Utils.Category category, string obj, bool newArtist, bool isMusic) // add string Key2 = (string) null
     {
       var str = string.Empty;
       try
