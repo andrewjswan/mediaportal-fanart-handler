@@ -226,7 +226,7 @@ namespace FanartHandler
           if (string.IsNullOrEmpty(FileName))
           {
             // Genre
-            if (!string.IsNullOrEmpty(FanartHandlerSetup.Fh.CurrentGenreTag))
+            if (!string.IsNullOrEmpty(FanartHandlerSetup.Fh.CurrentGenreTag) && FanartHandlerSetup.Fh.UseGenreFanart.Equals("True", StringComparison.CurrentCulture))
               FileName = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.CurrentGenreTag, ref CurrPlayMusic, ref PrevPlayMusic, Utils.Category.MusicFanartScraped, "FanartPlaying", NewArtist, true);
             if (string.IsNullOrEmpty(FileName))
             {

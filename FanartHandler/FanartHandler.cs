@@ -220,6 +220,8 @@ namespace FanartHandler
 
     internal string UseFanart { get; set; }
 
+    internal string UseGenreFanart { get; set; }
+
     internal string UseOverlayFanart { get; set; }
 
     internal string UseAspectRatio { get; set; }
@@ -525,6 +527,7 @@ namespace FanartHandler
     {
       if (Utils.GetIsStopping())
         return;
+
       try
       {
         var windowId = string.Empty + GUIWindowManager.ActiveWindow;
@@ -604,7 +607,8 @@ namespace FanartHandler
               foreach (FanartImage fanartImage in values1)
               {
                 if ((num1 > iFilePrev || iFilePrev == -1) && 
-                    (num2 == 0 && CheckImageResolution(fanartImage.DiskImage, category, UseAspectRatio)) && 
+                    num2 == 0 && 
+                    CheckImageResolution(fanartImage.DiskImage, category, UseAspectRatio) && 
                     Utils.IsFileValid(fanartImage.DiskImage)
                    )
                 {
@@ -627,7 +631,8 @@ namespace FanartHandler
                 foreach (FanartImage fanartImage in values2)
                 {
                   if ((num3 > iFilePrev || iFilePrev == -1) && 
-                      (num4 == 0 && CheckImageResolution(fanartImage.DiskImage, category, UseAspectRatio)) && 
+                      num4 == 0 && 
+                      CheckImageResolution(fanartImage.DiskImage, category, UseAspectRatio) && 
                       Utils.IsFileValid(fanartImage.DiskImage)
                      )
                   {
@@ -1201,6 +1206,7 @@ namespace FanartHandler
           scrapeThumbnails = settings.GetValueAsString("FanartHandler", "scrapeThumbnails", string.Empty);
           scrapeThumbnailsAlbum = settings.GetValueAsString("FanartHandler", "scrapeThumbnailsAlbum", string.Empty);
           doNotReplaceExistingThumbs = settings.GetValueAsString("FanartHandler", "doNotReplaceExistingThumbs", string.Empty);
+          UseGenreFanart = settings.GetValueAsString("FanartHandler", "UseGenreFanart", string.Empty);
         }
         if (string.IsNullOrEmpty(doNotReplaceExistingThumbs))
           doNotReplaceExistingThumbs = "False";
@@ -1247,6 +1253,8 @@ namespace FanartHandler
           scraperInterval = "24";
         if (string.IsNullOrEmpty(UseAspectRatio))
           UseAspectRatio = "False";
+        if (string.IsNullOrEmpty(UseGenreFanart))
+          UseGenreFanart = "False";
         //
         FP = new FanartPlaying();
         FS = new FanartSelected();
@@ -1924,27 +1932,32 @@ namespace FanartHandler
         Utils.SetIsStopping(true);
         if (Utils.GetDbm() != null)
           Utils.GetDbm().StopScraper = true;
+
         try
         {
           UtilsMovingPictures.DisposeMovingPicturesLatest();
         }
         catch { }
+
         try
         {
           UtilsTVSeries.DisposeTVSeriesLatest();
         }
         catch { }
+
         // ISSUE: method pointer
         GUIWindowManager.OnActivateWindow -= new GUIWindowManager.WindowActivationHandler(GuiWindowManagerOnActivateWindow);
         GUIWindowManager.Receivers -= new SendMessageHandler(GUIWindowManager_OnNewMessage);
         g_Player.PlayBackStarted -= new g_Player.StartedHandler(OnPlayBackStarted);
         g_Player.PlayBackEnded -= new g_Player.EndedHandler(OnPlayBackEnded);
+
         var num = 0;
         while (Utils.GetDelayStop() && num < 20)
         {
           Thread.Sleep(500);
           checked { ++num; }
         }
+
         StopScraperNowPlaying();
         if (MyFileWatcher != null)
         {
@@ -1980,6 +1993,7 @@ namespace FanartHandler
         }
         if (Utils.GetDbm() != null)
           Utils.GetDbm().Close();
+
         EmptyAllImages(ref ListPictureHash);
         if (FR != null && FR.ListAnyGamesUser != null)
           EmptyAllImages(ref FR.ListAnyGamesUser);
@@ -2013,8 +2027,10 @@ namespace FanartHandler
           EmptyAllImages(ref FR.ListAnyPluginsUser);
         if (FR != null)
           FR.ClearPropertiesRandomPerm();
+
         if (!suspending)
           SystemEvents.PowerModeChanged -= new PowerModeChangedEventHandler(OnSystemPowerModeChanged);
+
         FP = null;
         FS = null;
         FR = null;
