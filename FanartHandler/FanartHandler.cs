@@ -900,7 +900,7 @@ namespace FanartHandler
         }
       }
 
-      if (string.IsNullOrEmpty(ThemeDir))
+      if (string.IsNullOrEmpty(ThemeDir) && !string.IsNullOrEmpty(GUIGraphicsContext.ThemeName)) 
       {
         // Include Themes
         SetupWindowsUsingFanartHandlerVisibility(path+@"Themes\"+GUIGraphicsContext.ThemeName.Trim()+@"\");
