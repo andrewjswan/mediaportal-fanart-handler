@@ -1398,7 +1398,7 @@ namespace FanartHandler
         }
       }
 
-      if (string.IsNullOrEmpty(ThemeDir))
+      if (string.IsNullOrEmpty(ThemeDir) && !string.IsNullOrEmpty(GUIGraphicsContext.ThemeName)) 
       {
         // Include Themes
         SetupWindowsUsingRandomImages(path+@"Themes\"+GUIGraphicsContext.ThemeName.Trim()+@"\");
