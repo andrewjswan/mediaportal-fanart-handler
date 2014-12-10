@@ -469,9 +469,9 @@ namespace FanartHandler
       key = GetFilenameNoPath(key);
       key = RemoveExtension(key);
       key = Regex.Replace(key, "\\(\\d{5}\\)", string.Empty).Trim();
-      key = RemoveResolutionFromFileName(key) ;
       if ((category == Category.MusicArtistThumbScraped) || (category == Category.MusicAlbumThumbScraped))
         key = Regex.Replace(key, "[L]$", string.Empty).Trim();
+      key = RemoveResolutionFromFileName(key) ;
       key = RemoveSpecialChars(key);
       return key;
     }
