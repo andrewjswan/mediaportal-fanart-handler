@@ -210,12 +210,12 @@ namespace FanartHandler
             {
               str2 = currSelectedGeneric;
             }
-            str3 = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.SelectedItem, ref currSelectedGeneric, ref PrevSelectedGeneric, category, "FanartSelected", flag, isMusic);
+            str3 = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.SelectedItem, null, ref currSelectedGeneric, ref PrevSelectedGeneric, category, "FanartSelected", flag, isMusic);
 
             if (str3.Length == 0 && (GUIWindowManager.ActiveWindow == 2003 || GUIWindowManager.ActiveWindow == 6 || GUIWindowManager.ActiveWindow == 25))  // Dialog Video Info || My Video || My Video Title
               str3 = GUIPropertyManager.GetProperty("#myvideosuserfanart");
             if (str3.Length == 0 && (GUIWindowManager.ActiveWindow == 2003 || GUIWindowManager.ActiveWindow == 6 || GUIWindowManager.ActiveWindow == 25))  // Dialog Video Info || My Video || My Video Title
-              str3 = FanartHandlerSetup.Fh.GetFilename(GUIWindowManager.ActiveWindow != 2003 ? GUIPropertyManager.GetProperty("#selecteditem") : GUIPropertyManager.GetProperty("#title"), ref currSelectedGeneric, ref PrevSelectedGeneric, category, "FanartSelected", true, isMusic);
+              str3 = FanartHandlerSetup.Fh.GetFilename(GUIWindowManager.ActiveWindow != 2003 ? GUIPropertyManager.GetProperty("#selecteditem") : GUIPropertyManager.GetProperty("#title"), null, ref currSelectedGeneric, ref PrevSelectedGeneric, category, "FanartSelected", true, isMusic);
             if (str3.Length == 0)
             {
               if (property.Equals("music", StringComparison.CurrentCulture))
@@ -313,7 +313,7 @@ namespace FanartHandler
             PrevSelectedScorecenter = -1;
             UpdateVisibilityCount = 0;
             SetCurrentArtistsImageNames(null);
-            var filename = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.SelectedItem, ref CurrSelectedScorecenter, ref PrevSelectedScorecenter, Utils.Category.SportsManual, "FanartSelected", true, false);
+            var filename = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.SelectedItem, null, ref CurrSelectedScorecenter, ref PrevSelectedScorecenter, Utils.Category.SportsManual, "FanartSelected", true, false);
             if (filename.Length == 0)
             {
               FanartAvailable = false;
@@ -334,7 +334,7 @@ namespace FanartHandler
           else if (CurrCount >= FanartHandlerSetup.Fh.MaxCountImage)
           {
             var str = CurrSelectedScorecenter;
-            var filename = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.SelectedItem, ref CurrSelectedScorecenter, ref PrevSelectedScorecenter, Utils.Category.SportsManual, "FanartSelected", false, false);
+            var filename = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.SelectedItem, null, ref CurrSelectedScorecenter, ref PrevSelectedScorecenter, Utils.Category.SportsManual, "FanartSelected", false, false);
             if (filename.Length == 0)
             {
               FanartAvailable = false;
@@ -482,7 +482,7 @@ namespace FanartHandler
             PrevSelectedMusic = -1;
             UpdateVisibilityCount = 0;
             SetCurrentArtistsImageNames(null);
-            var str2 = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.SelectedItem, ref CurrSelectedMusic, ref PrevSelectedMusic, Utils.Category.MusicFanartScraped, "FanartSelected", true, true);
+            var str2 = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.SelectedItem, null, ref CurrSelectedMusic, ref PrevSelectedMusic, Utils.Category.MusicFanartScraped, "FanartSelected", true, true);
             if (str2.Length == 0)
             {
               str2 = FanartHandlerSetup.Fh.GetRandomDefaultBackdrop(ref CurrSelectedMusic, ref PrevSelectedMusic);
@@ -509,7 +509,7 @@ namespace FanartHandler
           else if (CurrCount >= FanartHandlerSetup.Fh.MaxCountImage)
           {
             var str1 = CurrSelectedMusic;
-            var str2 = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.SelectedItem, ref CurrSelectedMusic, ref PrevSelectedMusic, Utils.Category.MusicFanartScraped, "FanartSelected", false, true);
+            var str2 = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.SelectedItem, null, ref CurrSelectedMusic, ref PrevSelectedMusic, Utils.Category.MusicFanartScraped, "FanartSelected", false, true);
             if (str2.Length == 0)
             {
               str2 = FanartHandlerSetup.Fh.GetRandomDefaultBackdrop(ref CurrSelectedMusic, ref PrevSelectedMusic);

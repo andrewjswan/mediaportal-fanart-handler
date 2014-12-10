@@ -3,10 +3,6 @@
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 // Assembly location: D:\Mes documents\Desktop\FanartHandler.dll
 
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
-using System.Web;
 using MediaPortal.Configuration;
 using MediaPortal.ExtensionMethods;
 using MediaPortal.Profile;
@@ -24,6 +20,10 @@ using System.Text;
 using System.Threading;
 using System.Xml;
 using System.Xml.XPath;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
+using System.Web;
 
 namespace FanartHandler
 {
@@ -760,7 +760,7 @@ namespace FanartHandler
             var index = 0;
             while (index < alSearchResults.Count && !dbm.StopScraper)
             {
-              var findartist = Utils.GetArtist(Utils.RemoveResolutionFromArtistName(((SearchResults) alSearchResults[index]).Title).Trim(), Utils.Category.MusicFanartScraped);
+              var findartist = Utils.GetArtist(Utils.RemoveResolutionFromFileName(((SearchResults) alSearchResults[index]).Title).Trim(), Utils.Category.MusicFanartScraped);
               if (Utils.IsMatch(dbartist, findartist, ((SearchResults) alSearchResults[index]).Alias))
               {
                 string sourceFilename;
@@ -832,7 +832,7 @@ namespace FanartHandler
             var index = 0;
             while (index < alSearchResults.Count && !dbm.StopScraper)
             {
-              var findartist = Utils.GetArtist(Utils.RemoveResolutionFromArtistName(((SearchResults) alSearchResults[index]).Title).Trim(), Utils.Category.MusicFanartScraped);
+              var findartist = Utils.GetArtist(Utils.RemoveResolutionFromFileName(((SearchResults) alSearchResults[index]).Title).Trim(), Utils.Category.MusicFanartScraped);
               if (Utils.IsMatch(dbartist, findartist, ((SearchResults) alSearchResults[index]).Alias))
               {
                 if (!dbm.StopScraper)

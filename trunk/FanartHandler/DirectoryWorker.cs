@@ -109,6 +109,17 @@ namespace FanartHandler
               FanartHandlerSetup.Fh.SyncPointDirectoryUpdate = 0;
               logger.Info("Refreshing local fanart for Music (User fanart) is done.");
             }
+            ReportProgress(45, "Importing local fanart for Music (User Album fanart)...");
+            if (strArray[0].Equals("All") || strArray[0].Contains(Utils.FAHUDMusicAlbum))
+            {
+              logger.Info("Refreshing local fanart for Music (User Album fanart) is starting.");
+              FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHUDMusicAlbum, "*.jpg", Utils.Category.MusicFanartAlbum, null, Utils.Provider.Local);
+              FanartHandlerSetup.Fh.SyncPointDirectoryUpdate = 1;
+              if (Utils.GetDbm().HtAnyFanart.ContainsKey(Utils.Category.MusicFanartManual))
+                Utils.GetDbm().HtAnyFanart.Remove(Utils.Category.MusicFanartManual);
+              FanartHandlerSetup.Fh.SyncPointDirectoryUpdate = 0;
+              logger.Info("Refreshing local fanart for Music (User Album fanart) is done.");
+            }
             ReportProgress(49, "Importing local fanart for Music (Scrapped fanart)...");
             // var s61 = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\Scraper\\music";
             if (strArray[0].Equals("All") || strArray[0].Contains(Utils.FAHSMusic))

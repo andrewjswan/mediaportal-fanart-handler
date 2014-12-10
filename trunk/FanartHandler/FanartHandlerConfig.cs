@@ -2306,7 +2306,11 @@ namespace FanartHandler
         {
           isScraping = true;
           if (useFanart.Equals("True", StringComparison.CurrentCulture))
-            FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHSFolder, "*.jpg", Utils.Category.MusicFanartScraped, null, Utils.Provider.Local);
+          {
+            FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHUDMusic, "*.jpg", Utils.Category.MusicFanartManual, null, Utils.Provider.Local);
+            FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHUDMusicAlbum, "*.jpg", Utils.Category.MusicFanartAlbum, null, Utils.Provider.Local);
+            FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHSMusic, "*.jpg", Utils.Category.MusicFanartScraped, null, Utils.Provider.Local);
+          }
 
           dataGridView1.Enabled = false;
           button6.Text = "Stop Scraper [S]";
@@ -2772,9 +2776,9 @@ namespace FanartHandler
         {
           sqlStartVal = 0;
         }
-        // *** Begin: ajs try to find configuration exception
+        // *** Begin: ajs: try to find configuration exception
         sqlStartVal = 0;
-        // *** End: ajs try to find configuration exception
+        // *** End: ajs: try to find configuration exception
         var dataForConfigTable = Utils.GetDbm().GetDataForConfigTable(sqlStartVal);
         if (dataForConfigTable != null && dataForConfigTable.Rows.Count > 0)
         {

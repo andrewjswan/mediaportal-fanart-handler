@@ -151,7 +151,6 @@ namespace FanartHandler
         if (!string.IsNullOrEmpty(album))
           album = Utils.GetAlbum(album, Utils.Category.MusicFanartScraped);
 
-        // var hashtable2 = (Hashtable) null;
         var fanart1 = Utils.GetDbm().GetFanart(artist, album, Utils.Category.MusicFanartScraped, true);
         if (fanart1 != null && 
             fanart1.Count <= 0 && 
@@ -206,7 +205,6 @@ namespace FanartHandler
           var randomDefaultBackdrop = FanartHandlerSetup.Fh.GetRandomDefaultBackdrop(ref currFile, ref iFilePrev);
           hashtable1.Add(0, randomDefaultBackdrop);
         }
-        // hashtable2 = null;
       }
       catch (Exception ex)
       {

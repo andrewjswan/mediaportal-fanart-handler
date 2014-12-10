@@ -222,12 +222,12 @@ namespace FanartHandler
             SetCurrentArtistsImageNames(null);
           }
           // Artist
-          var FileName = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.CurrentTrackTag, ref CurrPlayMusic, ref PrevPlayMusic, Utils.Category.MusicFanartScraped, "FanartPlaying", NewArtist, true);
+          var FileName = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.CurrentTrackTag, FanartHandlerSetup.Fh.CurrentAlbumTag,  ref CurrPlayMusic, ref PrevPlayMusic, Utils.Category.MusicFanartScraped, "FanartPlaying", NewArtist, true);
           if (string.IsNullOrEmpty(FileName))
           {
             // Genre
             if (!string.IsNullOrEmpty(FanartHandlerSetup.Fh.CurrentGenreTag) && FanartHandlerSetup.Fh.UseGenreFanart.Equals("True", StringComparison.CurrentCulture))
-              FileName = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.CurrentGenreTag, ref CurrPlayMusic, ref PrevPlayMusic, Utils.Category.MusicFanartScraped, "FanartPlaying", NewArtist, true);
+              FileName = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.CurrentGenreTag, null,  ref CurrPlayMusic, ref PrevPlayMusic, Utils.Category.MusicFanartScraped, "FanartPlaying", NewArtist, true);
             if (string.IsNullOrEmpty(FileName))
             {
               // Random
