@@ -792,11 +792,11 @@ namespace FanartHandler
       s = Regex.Replace(s.Trim(), @"[\-_]?[\[\(]?(3|4|5|6|7|8|9)\d{3,}[\]\)]?",string.Empty,RegexOptions.IgnoreCase);
       if (s.Trim() == string.Empty) s = old ;
       //
-      //
+      /*
       old = s.Trim() ;
       s = Regex.Replace(s.Trim(), @"\s[\(\[_\.\-]?(?:cd|dvd|p(?:ar)?t|dis[ck])[ _\.\-]?[0-9]+[\)\]]?$",string.Empty,RegexOptions.IgnoreCase);
       if (s.Trim() == string.Empty) s = old ;
-      //
+      */
       s = Utils.TrimWhiteSpace(s.Trim());
       s = Utils.TrimWhiteSpace(s.Trim());
       return s;
