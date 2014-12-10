@@ -101,6 +101,13 @@
               <ZipFileName>Installer{CopyFile}\{84381102-aa3e-443c-8e9a-8a547a5e00d9}-readme.txt</ZipFileName>
               <DestinationFilename>%Thumbs%\Skin FanArt\Scraper\music\readme.txt</DestinationFilename>
             </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>AlwaysOverwrite</UpdateOption>
+              <LocalFileName>..\Installer\Skin Fanart\UserDef\albums\readme.txt</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{3193a8b5-e214-4595-a2f2-0d21c2a94d23}-readme.txt</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\albums\readme.txt</DestinationFilename>
+            </FileItem>
           </Items>
         </Files>
       </GroupItem>
@@ -638,6 +645,13 @@ cul8er</Value>
         <LocalFileName>..\Installer\Skin FanArt\Scraper\music\readme.txt</LocalFileName>
         <ZipFileName>Installer{CopyFile}\{84381102-aa3e-443c-8e9a-8a547a5e00d9}-readme.txt</ZipFileName>
         <DestinationFilename>%Thumbs%\Skin FanArt\Scraper\music\readme.txt</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>AlwaysOverwrite</UpdateOption>
+        <LocalFileName>..\Installer\Skin Fanart\UserDef\albums\readme.txt</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{3193a8b5-e214-4595-a2f2-0d21c2a94d23}-readme.txt</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\albums\readme.txt</DestinationFilename>
       </FileItem>
       <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
         <Param1 />

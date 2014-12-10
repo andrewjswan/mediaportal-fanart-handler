@@ -1774,9 +1774,12 @@ namespace FanartHandler
                 var num = 0;
                 while (num < sqLiteResultSet.Rows.Count)
                 {
-                    var fanartImage = new FanartImage(sqLiteResultSet.GetField(num, 0), sqLiteResultSet.GetField(num, 1),
-                        sqLiteResultSet.GetField(num, 2), sqLiteResultSet.GetField(num, 3),
-                        sqLiteResultSet.GetField(num, 4), sqLiteResultSet.GetField(num, 5));
+                    var fanartImage = new FanartImage(sqLiteResultSet.GetField(num, 0), 
+                                                      sqLiteResultSet.GetField(num, 1),
+                                                      sqLiteResultSet.GetField(num, 2), 
+                                                      sqLiteResultSet.GetField(num, 3),
+                                                      sqLiteResultSet.GetField(num, 4), 
+                                                      sqLiteResultSet.GetField(num, 5));
                     filenames.Add(num, fanartImage);
                     checked { ++num; }
                 }
@@ -1836,6 +1839,8 @@ namespace FanartHandler
                     str = (provider == Utils.Provider.Local) ? diskImage : _id;
                 else if (category == Utils.Category.MusicFanartManual)
                     str = diskImage;
+                else if (category == Utils.Category.MusicFanartAlbum)
+                    str = diskImage;
                 else if (category == Utils.Category.PictureManual)
                     str = diskImage;
                 else if (category == Utils.Category.PluginManual)
@@ -1863,7 +1868,9 @@ namespace FanartHandler
                 var imageId = GetImageId(artist, diskImage, sourceImage, category, album, provider, _id);
                 var SQL = string.Empty;
                 var now = DateTime.Now;
-                album = (category != Utils.Category.MusicAlbumThumbScraped) ? null : album ;
+
+                album = ((category == Utils.Category.MusicAlbumThumbScraped || category == Utils.Category.MusicFanartAlbum) ? album : null) ;
+                category = (category == Utils.Category.MusicFanartAlbum ? Utils.Category.MusicFanartManual : category) ;
 
                 DeleteDummyItem(artist, album, category) ;
                 if (DatabaseUtility.GetAsInt(dbClient.Execute("SELECT COUNT(Key1) "+
@@ -2054,14 +2061,14 @@ namespace FanartHandler
                     var num = 0;
                     while (num < sqLiteResultSet.Rows.Count)
                     {
-                        var fanartImage = new FanartImage(sqLiteResultSet.GetField(num, 0), sqLiteResultSet.GetField(num, 1),
-                                                          sqLiteResultSet.GetField(num, 2), sqLiteResultSet.GetField(num, 3),
-                                                          sqLiteResultSet.GetField(num, 4), sqLiteResultSet.GetField(num, 5));
+                        var fanartImage = new FanartImage(sqLiteResultSet.GetField(num, 0), 
+                                                          sqLiteResultSet.GetField(num, 1),
+                                                          sqLiteResultSet.GetField(num, 2), 
+                                                          sqLiteResultSet.GetField(num, 3),
+                                                          sqLiteResultSet.GetField(num, 4), 
+                                                          sqLiteResultSet.GetField(num, 5));
                         filenames.Add(num, fanartImage);
-                        checked
-                        {
-                            ++num;
-                        }
+                        checked { ++num; }
                     }
                     Utils.Shuffle(ref filenames);
                     AddToAnyHashtable(category, filenames);
@@ -2090,10 +2097,7 @@ namespace FanartHandler
                     var field = sqLiteResultSet.GetField(num, 0);
                     if (!hashtable.Contains(field))
                         hashtable.Add(field, field);
-                    checked
-                    {
-                        ++num;
-                    }
+                    checked { ++num; }
                 }
             }
             catch (Exception ex)

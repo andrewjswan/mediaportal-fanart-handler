@@ -5,6 +5,8 @@
 
 using MediaPortal.Configuration;
 using MediaPortal.GUI.Library;
+using MediaPortal.Music.Database;
+using MediaPortal.Profile;
 using NLog;
 using SQLite.NET;
 using System;
@@ -17,7 +19,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
-using MediaPortal.Music.Database;
 
 namespace FanartHandler
 {
@@ -63,6 +64,7 @@ namespace FanartHandler
     public static string FAHUDGames { get; set; }
     public static string FAHUDMovies { get; set; }
     public static string FAHUDMusic { get; set; }
+    public static string FAHUDMusicAlbum { get; set; }
     public static string FAHUDPictures { get; set; }
     public static string FAHUDScorecenter { get; set; }
     public static string FAHUDTV { get; set; }
@@ -105,6 +107,7 @@ namespace FanartHandler
       FAHUDGames = string.Empty;
       FAHUDMovies = string.Empty;
       FAHUDMusic = string.Empty;
+      FAHUDMusicAlbum = string.Empty;
       FAHUDPictures = string.Empty;
       FAHUDScorecenter = string.Empty;
       FAHUDTV = string.Empty;
@@ -180,6 +183,8 @@ namespace FanartHandler
       logger.Debug("Fanart Handler User Movies folder: "+FAHUDMovies);
       FAHUDMusic = Path.Combine(FAHUDFolder, @"music\");
       logger.Debug("Fanart Handler User Music folder: "+FAHUDMusic);
+      FAHUDMusicAlbum = Path.Combine(FAHUDFolder, @"albums\");
+      logger.Debug("Fanart Handler User Music Album folder: "+FAHUDMusicAlbum);
       FAHUDPictures = Path.Combine(FAHUDFolder, @"pictures\");
       logger.Debug("Fanart Handler User Pictures folder: "+FAHUDPictures);
       FAHUDScorecenter = Path.Combine(FAHUDFolder, @"scorecenter\");
@@ -203,6 +208,24 @@ namespace FanartHandler
 
       FAHTVSeries = Path.Combine(MPThumbsFolder, @"Fan Art\fanart\original\");
       logger.Debug("TV-Series Fanart folder: "+FAHTVSeries);
+      #endregion
+
+      #region Music folders
+      /*
+      int MaximumShares = 250;
+      using (var xmlreader = new Settings(Config.GetFile((Config.Dir) 10, "MediaPortal.xml")))
+      {
+        for (int index = 0; index < MaximumShares; index++)
+        {
+          string sharePath = String.Format("sharepath{0}", index);
+          string sharePathData = xmlreader.GetValueAsString("music", sharePath, "");
+          if (!MediaPortal.Util.Utils.IsDVD(sharePathData) && sharePathData != string.Empty)
+          {
+            logger.Debug("Mediaportal Music folder: "+sharePathData) ;
+          }
+        }
+      }
+      */
       #endregion
 
       logger.Info("Fanart Handler folder initialize done.");
@@ -413,7 +436,7 @@ namespace FanartHandler
 
     public static bool IsInteger(string theValue)
     {
-      if (theValue == null)
+      if (string.IsNullOrEmpty(theValue))
         return false;
       else
         return new Regex("^\\d+$").Match(theValue).Success;
@@ -421,7 +444,7 @@ namespace FanartHandler
 
     public static string TrimWhiteSpace(this string self)
     {
-      if (self == null)
+      if (string.IsNullOrEmpty(self))
         return string.Empty;
       else
         return Regex.Replace(self, "\\s{2,}", " ").Trim();
@@ -429,12 +452,27 @@ namespace FanartHandler
 
     public static string RemoveSpecialChars(string key)
     {
-      if (key == null)
+      if (string.IsNullOrEmpty(key))
         return string.Empty;
-      // key = Regex.Replace(key, "_", string.Empty); // ??? AC_DC = ACDC
-      key = Regex.Replace(key, "_", " ");             // ??? AC_DC = AC DC
-      key = Regex.Replace(key, ":", string.Empty);
-      key = Regex.Replace(key, ";", string.Empty);    // ??? key = Regex.Replace(key, ";", " ");
+      // key = Regex.Replace(key, "_", string.Empty); 
+      // key = Regex.Replace(key, ":", string.Empty);
+      // key = Regex.Replace(key, ";", string.Empty);
+      key = Regex.Replace(key.Trim(), "[_;:]", " ");
+      return key;
+    }
+
+    public static string PrepareArtistAlbum (string key, Category category)
+    {
+      if (string.IsNullOrEmpty(key))
+        return string.Empty;
+
+      key = GetFilenameNoPath(key);
+      key = RemoveExtension(key);
+      key = Regex.Replace(key, "\\(\\d{5}\\)", string.Empty).Trim();
+      key = RemoveResolutionFromFileName(key) ;
+      if ((category == Category.MusicArtistThumbScraped) || (category == Category.MusicAlbumThumbScraped))
+        key = Regex.Replace(key, "[L]$", string.Empty).Trim();
+      key = RemoveSpecialChars(key);
       return key;
     }
 
@@ -443,19 +481,13 @@ namespace FanartHandler
       if (string.IsNullOrEmpty(key))
         return string.Empty;
 
-      key = GetFilenameNoPath(key);
-      key = RemoveExtension(key);
-      key = Regex.Replace(key, "\\(\\d{5}\\)", string.Empty).Trim();
-      if (category == Category.MusicArtistThumbScraped)
-        key = Regex.Replace(key, "[L]$", string.Empty).Trim();
-      key = RemoveSpecialChars(key);
-      if (category == Category.MusicAlbumThumbScraped && key.IndexOf("-", StringComparison.CurrentCulture) >= 0)
-        key = key.Substring(0, key.IndexOf("-", StringComparison.CurrentCulture));
+      key = PrepareArtistAlbum(key, category);
+      if ((category == Category.MusicAlbumThumbScraped || category == Category.MusicFanartAlbum) && key.IndexOf("-", StringComparison.CurrentCulture) >= 0)
+        key = key.Substring(0, key.LastIndexOf("-", StringComparison.CurrentCulture));
       if (category == Category.TvSeriesScraped)
         key = Regex.Replace(key, "-", " ");
       else
         key = Utils.Equalize(key);
-      // key = RemoveResolutionFromArtistName (key) ;
       key = Utils.MovePrefixToFront(key);
       return key;
     }
@@ -465,18 +497,18 @@ namespace FanartHandler
       if (string.IsNullOrEmpty(key))
         return string.Empty;
 
-      key = GetFilenameNoPath(key);
-      key = RemoveExtension(key);
-      key = Regex.Replace(key, "\\(\\d{5}\\)", string.Empty).Trim();
-      if ((category == Category.MusicArtistThumbScraped) || (category == Category.MusicAlbumThumbScraped))
-        key = Regex.Replace(key, "[L]$", string.Empty).Trim();
-      key = RemoveSpecialChars(key);
-      if (category == Category.MusicAlbumThumbScraped && key.IndexOf("-", StringComparison.CurrentCulture) >= 0)
-        key = key.Substring(checked (key.IndexOf("-", StringComparison.CurrentCulture) + 1));
-      if (category != Category.MovieScraped)
+      key = PrepareArtistAlbum(key, category);
+      if ((category == Category.MusicAlbumThumbScraped || category == Category.MusicFanartAlbum) && key.IndexOf("-", StringComparison.CurrentCulture) >= 0)
+        key = key.Substring(checked (key.LastIndexOf("-", StringComparison.CurrentCulture) + 1));
+      if ((category != Category.MovieScraped) && 
+          (category != Category.MusicArtistThumbScraped) && 
+          (category != Category.MusicAlbumThumbScraped) && 
+          (category != Category.MusicFanartManual) && 
+          (category != Category.MusicFanartScraped) &&
+          (category != Category.MusicFanartAlbum) 
+         )
         key = RemoveTrailingDigits(key);
       key = Utils.Equalize(key);
-      // key = RemoveResolutionFromArtistName (key) ;
       key = Utils.MovePrefixToFront(key);
       return key;
     }
@@ -543,9 +575,7 @@ namespace FanartHandler
         {
           externalDatabaseManager1.Close();
         }
-        catch
-        {
-        }
+        catch { }
         return arrayList;
       }
       catch (Exception ex)
@@ -612,8 +642,9 @@ namespace FanartHandler
 
     public static string GetFilenameNoPath(string key)
     {
-      if (key == null)
+      if (string.IsNullOrEmpty(key))
         return string.Empty;
+
       if (File.Exists(key))
         return Path.GetFileName(key);
       else
@@ -656,12 +687,49 @@ namespace FanartHandler
         return s.Replace("'", "''");
     }
 
-    public static string RemoveResolutionFromArtistName(string s)
+    public static string RemoveResolutionFromFileName(string s)
     {
-      if (s == null)
+      if (string.IsNullOrEmpty(s))
         return string.Empty;
+
+      var old = string.Empty ;
+      /*
       s = s.Replace("loseless", string.Empty);
       s = s.Replace("Loseless", string.Empty);
+      */
+      old = s.Trim() ;
+      s = Regex.Replace(s.Trim(), @"loseless",string.Empty,RegexOptions.IgnoreCase);
+      if (s.Trim() == string.Empty) s = old ;
+      /*
+      s = s.Replace("Thumbnail", string.Empty);
+      s = s.Replace("thumbnail", string.Empty);
+      s = s.Replace("Thumb", string.Empty);
+      s = s.Replace("thumb", string.Empty);
+      */
+      old = s.Trim() ;
+      s = Regex.Replace(s.Trim(), @"thumb(nail)?s?",string.Empty,RegexOptions.IgnoreCase);
+      if (s.Trim() == string.Empty) s = old ;
+      /*
+      s = s.Replace("400x400", string.Empty);
+      s = s.Replace("400X400", string.Empty);
+      s = s.Replace("500x500", string.Empty);
+      s = s.Replace("500X500", string.Empty);
+      s = s.Replace("600x600", string.Empty);
+      s = s.Replace("600X600", string.Empty);
+      s = s.Replace("700x700", string.Empty);
+      s = s.Replace("700X700", string.Empty);
+      s = s.Replace("800x800", string.Empty);
+      s = s.Replace("800X800", string.Empty);
+      s = s.Replace("900x900", string.Empty);
+      s = s.Replace("900X900", string.Empty);
+      s = s.Replace("1000x1000", string.Empty);
+      s = s.Replace("1000X1000", string.Empty);
+      s = s.Replace("1920x1080", string.Empty);
+      */
+      old = s.Trim() ;
+      s = Regex.Replace(s.Trim(), @"\d{3,4}x\d{3,4}",string.Empty,RegexOptions.IgnoreCase);
+      if (s.Trim() == string.Empty) s = old ;
+      /*
       s = s.Replace("-(1080P)", string.Empty);
       s = s.Replace("-(720P)", string.Empty);
       s = s.Replace("-[1080P]", string.Empty);
@@ -680,40 +748,26 @@ namespace FanartHandler
       s = s.Replace("[720P]", string.Empty);
       s = s.Replace("-1080P", string.Empty);
       s = s.Replace("-720P", string.Empty);
-      s = s.Replace("-1080", string.Empty);
-      s = s.Replace("-720", string.Empty);
       s = s.Replace("_1080P", string.Empty);
       s = s.Replace("_720P", string.Empty);
-      s = s.Replace("_1080", string.Empty);
-      s = s.Replace("_720", string.Empty);
       s = s.Replace(" 1080P", string.Empty);
       s = s.Replace(" 720P", string.Empty);
-      s = s.Replace(" 1080", string.Empty);
-      s = s.Replace(" 720", string.Empty);
       s = s.Replace("1080P", string.Empty);
       s = s.Replace("720P", string.Empty);
+      */
+      old = s.Trim() ;
+      s = Regex.Replace(s.Trim(), @"[-_]?[\[\(]?\d{3,4}(p|i)[\]\)]?",string.Empty,RegexOptions.IgnoreCase);
+      if (s.Trim() == string.Empty) s = old ;
+      /*
+      s = s.Replace("-1080", string.Empty);
+      s = s.Replace("-720", string.Empty);
+      s = s.Replace("_1080", string.Empty);
+      s = s.Replace("_720", string.Empty);
+      s = s.Replace(" 1080", string.Empty);
+      s = s.Replace(" 720", string.Empty);
       s = s.Replace("1080", string.Empty);
       s = s.Replace("720", string.Empty);
-      s = s.Replace("1920x1080", string.Empty);
       s = s.Replace("_1920", string.Empty);
-      s = s.Replace("Thumbnail", string.Empty);
-      s = s.Replace("thumbnail", string.Empty);
-      s = s.Replace("Thumb", string.Empty);
-      s = s.Replace("thumb", string.Empty);
-      s = s.Replace("400x400", string.Empty);
-      s = s.Replace("400X400", string.Empty);
-      s = s.Replace("500x500", string.Empty);
-      s = s.Replace("500X500", string.Empty);
-      s = s.Replace("600x600", string.Empty);
-      s = s.Replace("600X600", string.Empty);
-      s = s.Replace("700x700", string.Empty);
-      s = s.Replace("700X700", string.Empty);
-      s = s.Replace("800x800", string.Empty);
-      s = s.Replace("800X800", string.Empty);
-      s = s.Replace("900x900", string.Empty);
-      s = s.Replace("900X900", string.Empty);
-      s = s.Replace("1000x1000", string.Empty);
-      s = s.Replace("1000X1000", string.Empty);
       s = s.Replace("-400", string.Empty);
       s = s.Replace("-500", string.Empty);
       s = s.Replace("-600", string.Empty);
@@ -721,6 +775,25 @@ namespace FanartHandler
       s = s.Replace("-800", string.Empty);
       s = s.Replace("-900", string.Empty);
       s = s.Replace("-1000", string.Empty);
+      */
+      old = s.Trim() ;
+      s = Regex.Replace(s.Trim(), @"[-_]?[\[\(]?(720|1080|1280|1440|1714|1920|2160)[\]\)]?",string.Empty,RegexOptions.IgnoreCase);
+      if (s.Trim() == string.Empty) s = old ;
+      //
+      old = s.Trim() ;
+      s = Regex.Replace(s.Trim(), @"[-_][\[\(]?(200|300|400|500|600|700|800|900|1000)[\]\)]?",string.Empty,RegexOptions.IgnoreCase);
+      if (s.Trim() == string.Empty) s = old ;
+      //
+      old = s.Trim() ;
+      s = Regex.Replace(s.Trim(), @"[-_]?[\[\(]?(21|22|23|24|25|26|27|28|29)\d{2,}[\]\)]?",string.Empty,RegexOptions.IgnoreCase);
+      if (s.Trim() == string.Empty) s = old ;
+      //
+      old = s.Trim() ;
+      s = Regex.Replace(s.Trim(), @"[-_]?[\[\(]?(3|4|5|6|7|8|9)\d{3,}[\]\)]?",string.Empty,RegexOptions.IgnoreCase);
+      if (s.Trim() == string.Empty) s = old ;
+      //
+      s = Utils.TrimWhiteSpace(s.Trim());
+      s = Utils.TrimWhiteSpace(s.Trim());
       return s;
     }
 
@@ -915,6 +988,7 @@ namespace FanartHandler
       MusicArtistThumbScraped,
       MusicFanartManual,
       MusicFanartScraped,
+      MusicFanartAlbum,
       PictureManual,
       PluginManual,
       SportsManual,
