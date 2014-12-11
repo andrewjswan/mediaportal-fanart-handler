@@ -226,6 +226,10 @@ namespace FanartHandler
 
     internal string UseAspectRatio { get; set; }
 
+    internal string ScanMusicFoldersForFanart { get; set; }
+
+    internal string MusicFoldersArtistAlbumRegex { get; set; }
+
     internal MusicDatabase MDB { get; set; }
 
     internal int MaxCountImage
@@ -344,32 +348,63 @@ namespace FanartHandler
     /// <returns></returns>
     internal void SetupFilenames(string s, string filter, Utils.Category category, Hashtable ht, Utils.Provider provider, bool SubFolders = false)
     {
-      var hashtable = new Hashtable();
+      if (provider == Utils.Provider.MusicFolder)
+      {
+        if (string.IsNullOrEmpty(Utils.MusicFoldersArtistAlbumRegex))
+          return;
+      }
 
       try
       {
+        // logger.Debug("*** SetupFilenames: "+category.ToString()+" "+provider.ToString()+" folder: "+s+ " mask: "+filter);
         if (Directory.Exists(s))
         {
-          var allFilenames = Utils.GetDbm().GetAllFilenames(category);
-
-          filter = string.Format("^{0}$", filter.Replace(".", @"\.").Replace("*", ".*").Replace("?", ".").Replace("jpg", "(j|J)(p|P)(e|E)?(g|G)").Trim());
-          // logger.Debug("*** SetupFilenames: "+category.ToString()+" "+provider.ToString()+" filter: " + filter);
+          var allFilenames = Utils.GetDbm().GetAllFilenames((category == Utils.Category.MusicFanartAlbum ? Utils.Category.MusicFanartManual : category));
+          var localfilter = (provider != Utils.Provider.MusicFolder)
+                               ? string.Format("^{0}$", filter.Replace(".", @"\.").Replace("*", ".*").Replace("?", ".").Replace("jpg", "(j|J)(p|P)(e|E)?(g|G)").Trim())
+                               : string.Format(@"\\{0}$", filter.Replace(".", @"\.").Replace("*", ".*").Replace("?", ".").Trim()) ;
+          // logger.Debug("*** SetupFilenames: "+category.ToString()+" "+provider.ToString()+" filter: " + localfilter);
           foreach (var FileName in Enumerable.Select<FileInfo, string>(Enumerable.Where<FileInfo>(new DirectoryInfo(s).GetFiles("*.*", SearchOption.AllDirectories), fi =>
           {
-            return Regex.IsMatch(fi.FullName, filter,RegexOptions.CultureInvariant) ;
+            return Regex.IsMatch(fi.FullName, localfilter, ((provider != Utils.Provider.MusicFolder) ? RegexOptions.CultureInvariant : RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)) ;
           }), fi => fi.FullName))
           {
             if (allFilenames == null || !allFilenames.Contains(FileName))
             {
               if (!Utils.GetIsStopping())
               {
-                var artist = Utils.GetArtist(FileName, category);
-                var album = Utils.GetAlbum(FileName, category);
-                // logger.Debug("*** SetupFilenames: "+category.ToString()+" "+provider.ToString()+" artist: " + artist + " album: "+album);
-                if (ht != null && ht.Contains(artist))
-                  Utils.GetDbm().LoadFanart(ht[artist].ToString(), FileName, FileName, category, album, provider, null, null);
+                var artist = string.Empty;
+                var album = string.Empty;
+
+                if (provider != Utils.Provider.MusicFolder)
+                {
+                  artist = Utils.GetArtist(FileName, category).Trim();
+                  album = Utils.GetAlbum(FileName, category).Trim();
+                }
                 else
-                  Utils.GetDbm().LoadFanart(artist, FileName, FileName, category, album, provider, null, null);
+                {
+                  var fnWithoutFolder = string.Empty;
+                  try
+                  {
+                    fnWithoutFolder = FileName.Substring(checked (s.Length));
+                  }
+                  catch
+                  { 
+                    fnWithoutFolder = FileName; 
+                  }
+                  artist = Utils.RemoveResolutionFromFileName(Utils.GetArtist(Utils.GetArtistFromFolder(fnWithoutFolder, Utils.MusicFoldersArtistAlbumRegex), category), true).Trim();
+                  album = Utils.RemoveResolutionFromFileName(Utils.GetAlbum(Utils.GetAlbumFromFolder(fnWithoutFolder, Utils.MusicFoldersArtistAlbumRegex), category), true).Trim();
+                  if (!string.IsNullOrEmpty(artist))
+                    logger.Debug("For Artist: [" + artist + "] Album: ["+album+"] fanart found: "+FileName);
+                }
+                // logger.Debug("*** SetupFilenames: "+category.ToString()+" "+provider.ToString()+" artist: " + artist + " album: "+album+" - "+FileName);
+                if (!string.IsNullOrEmpty(artist))
+                {
+                  if (ht != null && ht.Contains(artist))
+                    Utils.GetDbm().LoadFanart(ht[artist].ToString(), FileName, FileName, category, album, provider, null, null);
+                  else
+                    Utils.GetDbm().LoadFanart(artist, FileName, FileName, category, album, provider, null, null);
+                }
               }
               else
                 break;
@@ -379,7 +414,7 @@ namespace FanartHandler
           if ((ht == null) && (SubFolders))
             // Include Subfolders
             foreach (var SubFolder in Directory.GetDirectories(s))
-              SetupFilenames(SubFolder, filter, category, ht, provider);
+              SetupFilenames(SubFolder, filter, category, ht, provider, SubFolders);
         }
 
         if (ht != null)
@@ -1231,6 +1266,8 @@ namespace FanartHandler
           scrapeThumbnailsAlbum = settings.GetValueAsString("FanartHandler", "scrapeThumbnailsAlbum", string.Empty);
           doNotReplaceExistingThumbs = settings.GetValueAsString("FanartHandler", "doNotReplaceExistingThumbs", string.Empty);
           UseGenreFanart = settings.GetValueAsString("FanartHandler", "UseGenreFanart", string.Empty);
+          ScanMusicFoldersForFanart = settings.GetValueAsString("FanartHandler", "ScanMusicFoldersForFanart", string.Empty);
+          MusicFoldersArtistAlbumRegex = settings.GetValueAsString("FanartHandler", "MusicFoldersArtistAlbumRegex", string.Empty);
         }
         if (string.IsNullOrEmpty(doNotReplaceExistingThumbs))
           doNotReplaceExistingThumbs = "False";
@@ -1279,6 +1316,15 @@ namespace FanartHandler
           UseAspectRatio = "False";
         if (string.IsNullOrEmpty(UseGenreFanart))
           UseGenreFanart = "False";
+        if (string.IsNullOrEmpty(ScanMusicFoldersForFanart))
+          ScanMusicFoldersForFanart = "False";
+        if (string.IsNullOrEmpty(MusicFoldersArtistAlbumRegex))
+          ScanMusicFoldersForFanart = "False";
+        if ((MusicFoldersArtistAlbumRegex.IndexOf("?<artist>") < 0) || (MusicFoldersArtistAlbumRegex.IndexOf("?<album>") < 0))
+          {
+            MusicFoldersArtistAlbumRegex = string.Empty;
+            ScanMusicFoldersForFanart = "False";
+          }
         //
         FP = new FanartPlaying();
         FS = new FanartSelected();
@@ -1305,6 +1351,8 @@ namespace FanartHandler
         Utils.ScrapeThumbnails = scrapeThumbnails;
         Utils.ScrapeThumbnailsAlbum = scrapeThumbnailsAlbum;
         Utils.DoNotReplaceExistingThumbs = doNotReplaceExistingThumbs;
+        Utils.ScanMusicFoldersForFanart = ScanMusicFoldersForFanart;
+        Utils.MusicFoldersArtistAlbumRegex = MusicFoldersArtistAlbumRegex;
         //
         Utils.InitiateDbm("mediaportal");
         MDB = MusicDatabase.Instance;
@@ -1923,6 +1971,7 @@ namespace FanartHandler
 
     private void SetupConfigFile()
     {
+      /*
       try
       {
         var str = Config.GetFolder((Config.Dir) 10) + "\\FanartHandler.xml";
@@ -1935,6 +1984,7 @@ namespace FanartHandler
       {
         logger.Error("setupConfigFile: " + ex);
       }
+      */
     }
 
     internal void Stop()
