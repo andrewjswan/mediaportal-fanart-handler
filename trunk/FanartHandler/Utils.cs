@@ -1076,6 +1076,36 @@ namespace FanartHandler
     #region Settings
     public static void LoadSettings()
     {
+      UpgradeSettings();
+      #region Init variables
+      UseFanart = string.Empty;
+      UseAlbum = string.Empty;
+      UseArtist = string.Empty;
+      SkipWhenHighResAvailable = string.Empty;
+      DisableMPTumbsForRandom = string.Empty;
+      ImageInterval = string.Empty;
+      MinResolution = string.Empty;
+      ScraperMaxImages = string.Empty;
+      ScraperMusicPlaying = string.Empty;
+      ScraperMPDatabase = string.Empty;
+      ScraperInterval = string.Empty;
+      UseAspectRatio = string.Empty;
+      ScrapeThumbnails = string.Empty;
+      ScrapeThumbnailsAlbum = string.Empty;
+      DoNotReplaceExistingThumbs = string.Empty;
+      UseGenreFanart = string.Empty;
+      ScanMusicFoldersForFanart = string.Empty;
+      MusicFoldersArtistAlbumRegex = string.Empty;
+      UseOverlayFanart = string.Empty;
+      UseMusicFanart = string.Empty;
+      UseVideoFanart = string.Empty;
+      UseScoreCenterFanart = string.Empty;
+      DefaultBackdrop = string.Empty;
+      DefaultBackdropIsImage = string.Empty;
+      UseDefaultBackdrop = string.Empty;
+      UseSelectedMusicFanart = string.Empty;
+      UseSelectedOtherFanart = string.Empty;
+      #endregion
       try
       {
         logger.Debug("Load settings from: "+ConfigFilename);
@@ -1167,6 +1197,103 @@ namespace FanartHandler
         logger.Debug("Save settings to: "+ConfigFilename);
         using (var xmlwriter = new Settings(Config.GetFile((Config.Dir) 10, ConfigFilename)))
         {
+          xmlwriter.SetValue("FanartHandler", "UseFanart", UseFanart);
+          xmlwriter.SetValue("FanartHandler", "UseAlbum", UseAlbum);
+          xmlwriter.SetValue("FanartHandler", "UseArtist", UseArtist);
+          xmlwriter.SetValue("FanartHandler", "SkipWhenHighResAvailable", SkipWhenHighResAvailable);
+          xmlwriter.SetValue("FanartHandler", "DisableMPTumbsForRandom", DisableMPTumbsForRandom);
+          xmlwriter.SetValue("FanartHandler", "UseSelectedMusicFanart", UseSelectedMusicFanart);
+          xmlwriter.SetValue("FanartHandler", "UseSelectedOtherFanart", UseSelectedOtherFanart);
+          xmlwriter.SetValue("FanartHandler", "ImageInterval", ImageInterval);
+          xmlwriter.SetValue("FanartHandler", "MinResolution", MinResolution);
+          xmlwriter.SetValue("FanartHandler", "ScraperMaxImages", ScraperMaxImages);
+          xmlwriter.SetValue("FanartHandler", "ScraperMusicPlaying", ScraperMusicPlaying);
+          xmlwriter.SetValue("FanartHandler", "ScraperMPDatabase", ScraperMPDatabase);
+          xmlwriter.SetValue("FanartHandler", "ScraperInterval", ScraperInterval);
+          xmlwriter.SetValue("FanartHandler", "UseAspectRatio", UseAspectRatio);
+          xmlwriter.SetValue("FanartHandler", "ScrapeThumbnails", ScrapeThumbnails);
+          xmlwriter.SetValue("FanartHandler", "ScrapeThumbnailsAlbum", ScrapeThumbnailsAlbum);
+          xmlwriter.SetValue("FanartHandler", "DoNotReplaceExistingThumbs", DoNotReplaceExistingThumbs);
+          xmlwriter.SetValue("FanartHandler", "UseGenreFanart", UseGenreFanart);
+          xmlwriter.SetValue("FanartHandler", "ScanMusicFoldersForFanart", ScanMusicFoldersForFanart);
+          xmlwriter.SetValue("FanartHandler", "MusicFoldersArtistAlbumRegex", MusicFoldersArtistAlbumRegex);
+        }
+        logger.Debug("Save settings to: "+ConfigFilename+" complete.");
+      }
+      catch (Exception ex)
+      {
+        logger.Error("SaveSettings: "+ex);
+      }
+    }
+
+    public static void UpgradeSettings()
+    {
+      try
+      {
+        logger.Debug("Upgrade settings file: "+ConfigFilename);
+        using (var xmlwriter = new Settings(Config.GetFile((Config.Dir) 10, ConfigFilename)))
+        {
+          #region Read Uld Entry
+          try
+          {
+            UseFanart = xmlwriter.GetValueAsString("FanartHandler", "useFanart", string.Empty);
+            UseAlbum = xmlwriter.GetValueAsString("FanartHandler", "useAlbum", string.Empty);
+            UseArtist = xmlwriter.GetValueAsString("FanartHandler", "useArtist", string.Empty);
+            SkipWhenHighResAvailable = xmlwriter.GetValueAsString("FanartHandler", "skipWhenHighResAvailable", string.Empty);
+            DisableMPTumbsForRandom = xmlwriter.GetValueAsString("FanartHandler", "disableMPTumbsForRandom", string.Empty);
+            ImageInterval = xmlwriter.GetValueAsString("FanartHandler", "imageInterval", string.Empty);
+            MinResolution = xmlwriter.GetValueAsString("FanartHandler", "minResolution", string.Empty);
+            ScraperMaxImages = xmlwriter.GetValueAsString("FanartHandler", "scraperMaxImages", string.Empty);
+            ScraperMusicPlaying = xmlwriter.GetValueAsString("FanartHandler", "scraperMusicPlaying", string.Empty);
+            ScraperMPDatabase = xmlwriter.GetValueAsString("FanartHandler", "scraperMPDatabase", string.Empty);
+            ScraperInterval = xmlwriter.GetValueAsString("FanartHandler", "scraperInterval", string.Empty);
+            UseAspectRatio = xmlwriter.GetValueAsString("FanartHandler", "useAspectRatio", string.Empty);
+            ScrapeThumbnails = xmlwriter.GetValueAsString("FanartHandler", "scrapeThumbnails", string.Empty);
+            ScrapeThumbnailsAlbum = xmlwriter.GetValueAsString("FanartHandler", "scrapeThumbnailsAlbum", string.Empty);
+            DoNotReplaceExistingThumbs = xmlwriter.GetValueAsString("FanartHandler", "doNotReplaceExistingThumbs", string.Empty);
+            UseSelectedMusicFanart = xmlwriter.GetValueAsString("FanartHandler", "useSelectedMusicFanart", string.Empty);
+            UseSelectedOtherFanart = xmlwriter.GetValueAsString("FanartHandler", "useSelectedOtherFanart", string.Empty);
+          }
+          catch
+          {   }
+          #endregion
+          #region Write New Entry
+          if (!string.IsNullOrEmpty(UseFanart))
+            xmlwriter.SetValue("FanartHandler", "UseFanart", UseFanart);
+          if (!string.IsNullOrEmpty(UseAlbum))
+            xmlwriter.SetValue("FanartHandler", "UseAlbum", UseAlbum);
+          if (!string.IsNullOrEmpty(UseArtist))
+            xmlwriter.SetValue("FanartHandler", "UseArtist", UseArtist);
+          if (!string.IsNullOrEmpty(SkipWhenHighResAvailable))
+            xmlwriter.SetValue("FanartHandler", "SkipWhenHighResAvailable", SkipWhenHighResAvailable);
+          if (!string.IsNullOrEmpty(DisableMPTumbsForRandom))
+            xmlwriter.SetValue("FanartHandler", "DisableMPTumbsForRandom", DisableMPTumbsForRandom);
+          if (!string.IsNullOrEmpty(UseSelectedMusicFanart))
+            xmlwriter.SetValue("FanartHandler", "UseSelectedMusicFanart", UseSelectedMusicFanart);
+          if (!string.IsNullOrEmpty(UseSelectedOtherFanart))
+            xmlwriter.SetValue("FanartHandler", "UseSelectedOtherFanart", UseSelectedOtherFanart);
+          if (!string.IsNullOrEmpty(ImageInterval))
+            xmlwriter.SetValue("FanartHandler", "ImageInterval", ImageInterval);
+          if (!string.IsNullOrEmpty(MinResolution))
+            xmlwriter.SetValue("FanartHandler", "MinResolution", MinResolution);
+          if (!string.IsNullOrEmpty(ScraperMaxImages))
+            xmlwriter.SetValue("FanartHandler", "ScraperMaxImages", ScraperMaxImages);
+          if (!string.IsNullOrEmpty(ScraperMusicPlaying))
+            xmlwriter.SetValue("FanartHandler", "ScraperMusicPlaying", ScraperMusicPlaying);
+          if (!string.IsNullOrEmpty(ScraperMPDatabase))
+            xmlwriter.SetValue("FanartHandler", "ScraperMPDatabase", ScraperMPDatabase);
+          if (!string.IsNullOrEmpty(ScraperInterval))
+            xmlwriter.SetValue("FanartHandler", "ScraperInterval", ScraperInterval);
+          if (!string.IsNullOrEmpty(UseAspectRatio))
+            xmlwriter.SetValue("FanartHandler", "UseAspectRatio", UseAspectRatio);
+          if (!string.IsNullOrEmpty(ScrapeThumbnails))
+            xmlwriter.SetValue("FanartHandler", "ScrapeThumbnails", ScrapeThumbnails);
+          if (!string.IsNullOrEmpty(ScrapeThumbnailsAlbum))
+            xmlwriter.SetValue("FanartHandler", "ScrapeThumbnailsAlbum", ScrapeThumbnailsAlbum);
+          if (!string.IsNullOrEmpty(DoNotReplaceExistingThumbs))
+            xmlwriter.SetValue("FanartHandler", "DoNotReplaceExistingThumbs", DoNotReplaceExistingThumbs);
+          #endregion
+          #region Delete old Entry
           try
           {
             xmlwriter.RemoveEntry("FanartHandler", "useFanart");
@@ -1200,28 +1327,9 @@ namespace FanartHandler
           }
           catch
           {   }
-          xmlwriter.SetValue("FanartHandler", "UseFanart", UseFanart);
-          xmlwriter.SetValue("FanartHandler", "UseAlbum", UseAlbum);
-          xmlwriter.SetValue("FanartHandler", "UseArtist", UseArtist);
-          xmlwriter.SetValue("FanartHandler", "SkipWhenHighResAvailable", SkipWhenHighResAvailable);
-          xmlwriter.SetValue("FanartHandler", "DisableMPTumbsForRandom", DisableMPTumbsForRandom);
-          xmlwriter.SetValue("FanartHandler", "UseSelectedMusicFanart", UseSelectedMusicFanart);
-          xmlwriter.SetValue("FanartHandler", "UseSelectedOtherFanart", UseSelectedOtherFanart);
-          xmlwriter.SetValue("FanartHandler", "ImageInterval", ImageInterval);
-          xmlwriter.SetValue("FanartHandler", "MinResolution", MinResolution);
-          xmlwriter.SetValue("FanartHandler", "ScraperMaxImages", ScraperMaxImages);
-          xmlwriter.SetValue("FanartHandler", "ScraperMusicPlaying", ScraperMusicPlaying);
-          xmlwriter.SetValue("FanartHandler", "ScraperMPDatabase", ScraperMPDatabase);
-          xmlwriter.SetValue("FanartHandler", "ScraperInterval", ScraperInterval);
-          xmlwriter.SetValue("FanartHandler", "UseAspectRatio", UseAspectRatio);
-          xmlwriter.SetValue("FanartHandler", "ScrapeThumbnails", ScrapeThumbnails);
-          xmlwriter.SetValue("FanartHandler", "ScrapeThumbnailsAlbum", ScrapeThumbnailsAlbum);
-          xmlwriter.SetValue("FanartHandler", "DoNotReplaceExistingThumbs", DoNotReplaceExistingThumbs);
-          xmlwriter.SetValue("FanartHandler", "UseGenreFanart", UseGenreFanart);
-          xmlwriter.SetValue("FanartHandler", "ScanMusicFoldersForFanart", ScanMusicFoldersForFanart);
-          xmlwriter.SetValue("FanartHandler", "MusicFoldersArtistAlbumRegex", MusicFoldersArtistAlbumRegex);
+          #endregion
         }
-        logger.Debug("Save settings to: "+ConfigFilename+" complete.");
+        logger.Debug("Upgrade settings file: "+ConfigFilename+" complete.");
       }
       catch (Exception ex)
       {
