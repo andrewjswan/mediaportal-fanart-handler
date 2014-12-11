@@ -1077,6 +1077,7 @@ namespace FanartHandler
     public static void LoadSettings()
     {
       UpgradeSettings();
+
       #region Init variables
       UseFanart = string.Empty;
       UseAlbum = string.Empty;
@@ -1111,41 +1112,33 @@ namespace FanartHandler
         logger.Debug("Load settings from: "+ConfigFilename);
         using (var settings = new Settings(Config.GetFile((Config.Dir) 10, ConfigFilename)))
         {
-          UseFanart = settings.GetValueAsString("FanartHandler", "UseFanart", string.Empty);
-          UseAlbum = settings.GetValueAsString("FanartHandler", "UseAlbum", string.Empty);
-          UseArtist = settings.GetValueAsString("FanartHandler", "UseArtist", string.Empty);
-          SkipWhenHighResAvailable = settings.GetValueAsString("FanartHandler", "SkipWhenHighResAvailable", string.Empty);
-          DisableMPTumbsForRandom = settings.GetValueAsString("FanartHandler", "DisableMPTumbsForRandom", string.Empty);
-          ImageInterval = settings.GetValueAsString("FanartHandler", "ImageInterval", string.Empty);
-          MinResolution = settings.GetValueAsString("FanartHandler", "MinResolution", string.Empty);
-          ScraperMaxImages = settings.GetValueAsString("FanartHandler", "ScraperMaxImages", string.Empty);
-          ScraperMusicPlaying = settings.GetValueAsString("FanartHandler", "ScraperMusicPlaying", string.Empty);
-          ScraperMPDatabase = settings.GetValueAsString("FanartHandler", "ScraperMPDatabase", string.Empty);
-          ScraperInterval = settings.GetValueAsString("FanartHandler", "ScraperInterval", string.Empty);
-          UseAspectRatio = settings.GetValueAsString("FanartHandler", "UseAspectRatio", string.Empty);
-          ScrapeThumbnails = settings.GetValueAsString("FanartHandler", "ScrapeThumbnails", string.Empty);
-          ScrapeThumbnailsAlbum = settings.GetValueAsString("FanartHandler", "ScrapeThumbnailsAlbum", string.Empty);
-          DoNotReplaceExistingThumbs = settings.GetValueAsString("FanartHandler", "DoNotReplaceExistingThumbs", string.Empty);
-          UseGenreFanart = settings.GetValueAsString("FanartHandler", "UseGenreFanart", string.Empty);
-          ScanMusicFoldersForFanart = settings.GetValueAsString("FanartHandler", "ScanMusicFoldersForFanart", string.Empty);
-          MusicFoldersArtistAlbumRegex = settings.GetValueAsString("FanartHandler", "MusicFoldersArtistAlbumRegex", string.Empty);
-          // UseOverlayFanart = settings.GetValueAsString("FanartHandler", "UseOverlayFanart", string.Empty);
-          // UseMusicFanart = settings.GetValueAsString("FanartHandler", "UseMusicFanart", string.Empty);
-          // UseVideoFanart = settings.GetValueAsString("FanartHandler", "UseVideoFanart", string.Empty);
-          // UseScoreCenterFanart = settings.GetValueAsString("FanartHandler", "UseScoreCenterFanart", string.Empty);
-          UseOverlayFanart = string.Empty;
-          UseMusicFanart = string.Empty;
-          UseVideoFanart = string.Empty;
-          UseScoreCenterFanart = string.Empty;
-          // DefaultBackdrop = settings.GetValueAsString("FanartHandler", "DefaultBackdrop", string.Empty);
-          // DefaultBackdropIsImage = settings.GetValueAsString("FanartHandler", "DefaultBackdropIsImage", string.Empty);
-          // UseDefaultBackdrop = settings.GetValueAsString("FanartHandler", "UseDefaultBackdrop", string.Empty);
-          DefaultBackdrop = string.Empty;
-          DefaultBackdropIsImage = string.Empty;
-          UseDefaultBackdrop = string.Empty;
-          //
-          UseSelectedMusicFanart = settings.GetValueAsString("FanartHandler", "UseSelectedMusicFanart", string.Empty);
-          UseSelectedOtherFanart = settings.GetValueAsString("FanartHandler", "UseSelectedOtherFanart", string.Empty);
+          UseFanart = settings.GetValueAsString("FanartHandler", "UseFanart", UseFanart);
+          UseAlbum = settings.GetValueAsString("FanartHandler", "UseAlbum", UseAlbum);
+          UseArtist = settings.GetValueAsString("FanartHandler", "UseArtist", UseArtist);
+          SkipWhenHighResAvailable = settings.GetValueAsString("FanartHandler", "SkipWhenHighResAvailable", SkipWhenHighResAvailable);
+          DisableMPTumbsForRandom = settings.GetValueAsString("FanartHandler", "DisableMPTumbsForRandom", DisableMPTumbsForRandom);
+          ImageInterval = settings.GetValueAsString("FanartHandler", "ImageInterval", ImageInterval);
+          MinResolution = settings.GetValueAsString("FanartHandler", "MinResolution", MinResolution);
+          ScraperMaxImages = settings.GetValueAsString("FanartHandler", "ScraperMaxImages", ScraperMaxImages);
+          ScraperMusicPlaying = settings.GetValueAsString("FanartHandler", "ScraperMusicPlaying", ScraperMusicPlaying);
+          ScraperMPDatabase = settings.GetValueAsString("FanartHandler", "ScraperMPDatabase", ScraperMPDatabase);
+          ScraperInterval = settings.GetValueAsString("FanartHandler", "ScraperInterval", ScraperInterval);
+          UseAspectRatio = settings.GetValueAsString("FanartHandler", "UseAspectRatio", UseAspectRatio);
+          ScrapeThumbnails = settings.GetValueAsString("FanartHandler", "ScrapeThumbnails", ScrapeThumbnails);
+          ScrapeThumbnailsAlbum = settings.GetValueAsString("FanartHandler", "ScrapeThumbnailsAlbum", ScrapeThumbnailsAlbum);
+          DoNotReplaceExistingThumbs = settings.GetValueAsString("FanartHandler", "DoNotReplaceExistingThumbs", DoNotReplaceExistingThumbs);
+          UseGenreFanart = settings.GetValueAsString("FanartHandler", "UseGenreFanart", UseGenreFanart);
+          ScanMusicFoldersForFanart = settings.GetValueAsString("FanartHandler", "ScanMusicFoldersForFanart", ScanMusicFoldersForFanart);
+          MusicFoldersArtistAlbumRegex = settings.GetValueAsString("FanartHandler", "MusicFoldersArtistAlbumRegex", MusicFoldersArtistAlbumRegex);
+          // UseOverlayFanart = settings.GetValueAsString("FanartHandler", "UseOverlayFanart", UseOverlayFanart);
+          // UseMusicFanart = settings.GetValueAsString("FanartHandler", "UseMusicFanart", UseMusicFanart);
+          // UseVideoFanart = settings.GetValueAsString("FanartHandler", "UseVideoFanart", UseVideoFanart);
+          // UseScoreCenterFanart = settings.GetValueAsString("FanartHandler", "UseScoreCenterFanart", UseScoreCenterFanart);
+          // DefaultBackdrop = settings.GetValueAsString("FanartHandler", "DefaultBackdrop", DefaultBackdrop);
+          // DefaultBackdropIsImage = settings.GetValueAsString("FanartHandler", "DefaultBackdropIsImage", DefaultBackdropIsImage);
+          // UseDefaultBackdrop = settings.GetValueAsString("FanartHandler", "UseDefaultBackdrop", UseDefaultBackdrop);
+          UseSelectedMusicFanart = settings.GetValueAsString("FanartHandler", "UseSelectedMusicFanart", UseSelectedMusicFanart);
+          UseSelectedOtherFanart = settings.GetValueAsString("FanartHandler", "UseSelectedOtherFanart", UseSelectedOtherFanart);
         }
         logger.Debug("Load settings from: "+ConfigFilename+" complete.");
       }
@@ -1233,7 +1226,7 @@ namespace FanartHandler
         logger.Debug("Upgrade settings file: "+ConfigFilename);
         using (var xmlwriter = new Settings(Config.GetFile((Config.Dir) 10, ConfigFilename)))
         {
-          #region Read Uld Entry
+          #region Read Old Entry
           try
           {
             UseFanart = xmlwriter.GetValueAsString("FanartHandler", "useFanart", string.Empty);
