@@ -155,6 +155,8 @@ namespace FanartHandler
     private string UseGenreFanart;
     private string useSelectedMusicFanart;
     private string useSelectedOtherFanart;
+    private string ScanMusicFoldersForFanart;
+    private string MusicFoldersArtistAlbumRegex;
 
     static FanartHandlerConfig()
     {
@@ -1251,6 +1253,7 @@ namespace FanartHandler
 
     private void SetupConfigFile()
     {
+      /*
       try
       {
         var file1 = Config.GetFile((Config.Dir) 10, "FanartHandler.xml");
@@ -1263,6 +1266,7 @@ namespace FanartHandler
       {
         logger.Error("setupConfigFile: " + ex);
       }
+      */
     }
 
     private void DoSave()
@@ -1307,6 +1311,8 @@ namespace FanartHandler
           xmlwriter.SetValue("FanartHandler", "scrapeThumbnailsAlbum", checkBox9.Checked ? true : false);
           xmlwriter.SetValue("FanartHandler", "doNotReplaceExistingThumbs", checkBox8.Checked ? true : false);
           xmlwriter.SetValue("FanartHandler", "UseGenreFanart", UseGenreFanart);
+          xmlwriter.SetValue("FanartHandler", "ScanMusicFoldersForFanart", ScanMusicFoldersForFanart);
+          xmlwriter.SetValue("FanartHandler", "MusicFoldersArtistAlbumRegex", MusicFoldersArtistAlbumRegex);
         }
         MessageBox.Show("Settings is stored in memory. Make sure to press Ok when exiting MP Configuration. "+
                         "Pressing Cancel when exiting MP Configuration will result in these setting NOT being saved!", "Settings", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1343,6 +1349,8 @@ namespace FanartHandler
       Utils.DelayStop = new Hashtable();
       SplashPane.IncrementProgressBar(5);
       SyncPointTableUpdate = 0;
+
+      #region Form controls
       comboBoxInterval.Enabled = true;
       comboBoxInterval.Items.Clear();
       comboBoxInterval.Items.Add("20");
@@ -1398,6 +1406,20 @@ namespace FanartHandler
       comboBox3.Items.Add("MyVideos");
       comboBox3.Items.Add("TVSeries");
       comboBox3.SelectedItem = "MovingPictures";
+      #endregion
+      lastID = 0;
+      try
+      {
+        InitLogger();
+        logger.Info("Fanart Handler configuration is starting.");
+        logger.Info("Fanart Handler version is " + Utils.GetAllVersionNumber());
+      }
+      catch (Exception ex)
+      {
+        logger.Error("FanartHandlerConfig_Load: Logger: " + ex);
+      }
+      Utils.InitFolders();
+      #region Settings from Config 
       SetupConfigFile();
       using (var xmlreader = new Settings(Config.GetFile(Config.Dir.Config, "FanartHandler.xml")))
       {
@@ -1419,6 +1441,8 @@ namespace FanartHandler
         scrapeThumbnailsAlbum = xmlreader.GetValueAsString("FanartHandler", "scrapeThumbnailsAlbum", string.Empty);
         doNotReplaceExistingThumbs = xmlreader.GetValueAsString("FanartHandler", "doNotReplaceExistingThumbs", string.Empty);
         UseGenreFanart = xmlreader.GetValueAsString("FanartHandler", "UseGenreFanart", string.Empty);
+        ScanMusicFoldersForFanart = xmlreader.GetValueAsString("FanartHandler", "ScanMusicFoldersForFanart", string.Empty);
+        MusicFoldersArtistAlbumRegex = xmlreader.GetValueAsString("FanartHandler", "MusicFoldersArtistAlbumRegex", string.Empty);
       }
       SplashPane.IncrementProgressBar(10);
       if (!string.IsNullOrEmpty(scrapeThumbnails))
@@ -1456,6 +1480,29 @@ namespace FanartHandler
       {
         UseGenreFanart = "False";
         // checkBoxUseGenereFanart.Checked = false;
+      }
+      if ((MusicFoldersArtistAlbumRegex.IndexOf("?<artist>") < 0) || (MusicFoldersArtistAlbumRegex.IndexOf("?<album>") < 0))
+        {
+          MusicFoldersArtistAlbumRegex = string.Empty;
+          ScanMusicFoldersForFanart = "False";
+        }
+      if (!string.IsNullOrEmpty(MusicFoldersArtistAlbumRegex))
+      {
+        // editMusicFoldersArtistAlbumRegex.Text = MusicFoldersArtistAlbumRegex;
+      }
+      else
+      {
+        ScanMusicFoldersForFanart = "False";
+        // editMusicFoldersArtistAlbumRegex.Text = string.Empty;
+      }
+      if (!string.IsNullOrEmpty(ScanMusicFoldersForFanart))
+      {
+        // checkBoxScanMusicFoldersForFanart.Checked = ScanMusicFoldersForFanart.Equals("True", StringComparison.CurrentCulture);
+      }
+      else
+      {
+        ScanMusicFoldersForFanart = "False";
+        // checkBoxScanMusicFoldersForFanart.Checked = false;
       }
       if (!string.IsNullOrEmpty(useAlbum))
       {
@@ -1583,18 +1630,7 @@ namespace FanartHandler
         useAspectRatio = "False";
         checkBoxAspectRatio.Checked = false;
       }
-      lastID = 0;
-      try
-      {
-        InitLogger();
-        logger.Info("Fanart Handler configuration is starting.");
-        logger.Info("Fanart Handler version is " + Utils.GetAllVersionNumber());
-      }
-      catch (Exception ex)
-      {
-        logger.Error("FanartHandlerConfig_Load: Logger: " + ex);
-      }
-      Utils.InitFolders();
+      #endregion
       try
       {
         FanartHandlerSetup.Fh = new FanartHandler();
@@ -1603,6 +1639,8 @@ namespace FanartHandler
         Utils.ScrapeThumbnails = scrapeThumbnails;
         Utils.ScrapeThumbnailsAlbum = scrapeThumbnailsAlbum;
         Utils.DoNotReplaceExistingThumbs = doNotReplaceExistingThumbs;
+        Utils.ScanMusicFoldersForFanart = ScanMusicFoldersForFanart;
+        Utils.MusicFoldersArtistAlbumRegex = MusicFoldersArtistAlbumRegex;
         Utils.InitiateDbm("config");
         FanartHandlerSetup.Fh.UpdateDirectoryTimer("All", false, "Fanart");
       }

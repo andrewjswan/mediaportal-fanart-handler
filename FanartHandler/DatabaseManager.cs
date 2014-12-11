@@ -1836,7 +1836,7 @@ namespace FanartHandler
                 else if (category == Utils.Category.MusicArtistThumbScraped)
                     str = diskImage;
                 else if (category == Utils.Category.MusicFanartScraped)
-                    str = (provider == Utils.Provider.Local) ? diskImage : _id;
+                    str = (provider == Utils.Provider.Local || provider == Utils.Provider.MusicFolder) ? diskImage : _id;
                 else if (category == Utils.Category.MusicFanartManual)
                     str = diskImage;
                 else if (category == Utils.Category.MusicFanartAlbum)
@@ -1869,7 +1869,10 @@ namespace FanartHandler
                 var SQL = string.Empty;
                 var now = DateTime.Now;
 
-                album = ((category == Utils.Category.MusicAlbumThumbScraped || category == Utils.Category.MusicFanartAlbum) ? album : null) ;
+                if (provider == Utils.Provider.MusicFolder)
+                  album = (string.IsNullOrEmpty(album) ? null : album) ;
+                else
+                  album = ((category == Utils.Category.MusicAlbumThumbScraped || category == Utils.Category.MusicFanartAlbum) ? album : null) ;
                 category = (category == Utils.Category.MusicFanartAlbum ? Utils.Category.MusicFanartManual : category) ;
 
                 DeleteDummyItem(artist, album, category) ;
