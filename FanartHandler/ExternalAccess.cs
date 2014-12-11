@@ -154,13 +154,13 @@ namespace FanartHandler
         var fanart1 = Utils.GetDbm().GetFanart(artist, album, Utils.Category.MusicFanartScraped, true);
         if (fanart1 != null && 
             fanart1.Count <= 0 && 
-            (FanartHandlerSetup.Fh.SkipWhenHighResAvailable != null && FanartHandlerSetup.Fh.SkipWhenHighResAvailable.Equals("True", StringComparison.CurrentCulture)) && 
-            (FanartHandlerSetup.Fh.UseArtist.Equals("True", StringComparison.CurrentCulture) || FanartHandlerSetup.Fh.UseAlbum.Equals("True", StringComparison.CurrentCulture))
+            (Utils.SkipWhenHighResAvailable != null && Utils.SkipWhenHighResAvailable.Equals("True", StringComparison.CurrentCulture)) && 
+            (Utils.UseArtist.Equals("True", StringComparison.CurrentCulture) || Utils.UseAlbum.Equals("True", StringComparison.CurrentCulture))
            )
           fanart1 = Utils.GetDbm().GetFanart(artist, album, Utils.Category.MusicFanartScraped, false);
-        else if (FanartHandlerSetup.Fh.SkipWhenHighResAvailable != null && 
-                 FanartHandlerSetup.Fh.SkipWhenHighResAvailable.Equals("False", StringComparison.CurrentCulture) && 
-                 (FanartHandlerSetup.Fh.UseArtist.Equals("True", StringComparison.CurrentCulture) || FanartHandlerSetup.Fh.UseAlbum.Equals("True", StringComparison.CurrentCulture))
+        else if (Utils.SkipWhenHighResAvailable != null && 
+                 Utils.SkipWhenHighResAvailable.Equals("False", StringComparison.CurrentCulture) && 
+                 (Utils.UseArtist.Equals("True", StringComparison.CurrentCulture) || Utils.UseAlbum.Equals("True", StringComparison.CurrentCulture))
                 )
         {
           if (fanart1 != null && fanart1.Count > 0)
@@ -186,7 +186,7 @@ namespace FanartHandler
           {
             if (num < 2)
             {
-              if (FanartHandlerSetup.Fh.CheckImageResolution(fanartImage.DiskImage, Utils.Category.MusicFanartScraped, FanartHandlerSetup.Fh.UseAspectRatio) && 
+              if (FanartHandlerSetup.Fh.CheckImageResolution(fanartImage.DiskImage, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio) && 
                   Utils.IsFileValid(fanartImage.DiskImage)
                  )
               {

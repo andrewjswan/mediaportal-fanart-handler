@@ -1116,7 +1116,9 @@ namespace FanartHandler
               var num2 = 0;
               foreach (FanartImage fanartImage in values1)
               {
-                if ((num1 > iFilePrev || iFilePrev == -1) && (num2 == 0 && FanartHandlerSetup.Fh.CheckImageResolution(fanartImage.DiskImage, category, FanartHandlerSetup.Fh.UseAspectRatio)) && Utils.IsFileValid(fanartImage.DiskImage))
+                if ((num1 > iFilePrev || iFilePrev == -1) && 
+                    (num2 == 0 && FanartHandlerSetup.Fh.CheckImageResolution(fanartImage.DiskImage, category, Utils.UseAspectRatio)) && 
+                    Utils.IsFileValid(fanartImage.DiskImage))
                 {
                   str = fanartImage.DiskImage;
                   iFilePrev = num1;
@@ -1142,7 +1144,9 @@ namespace FanartHandler
                 var num4 = 0;
                 foreach (FanartImage fanartImage in values2)
                 {
-                  if ((num3 > iFilePrev || iFilePrev == -1) && (num4 == 0 && FanartHandlerSetup.Fh.CheckImageResolution(fanartImage.DiskImage, category, FanartHandlerSetup.Fh.UseAspectRatio)) && Utils.IsFileValid(fanartImage.DiskImage))
+                  if ((num3 > iFilePrev || iFilePrev == -1) && 
+                      (num4 == 0 && FanartHandlerSetup.Fh.CheckImageResolution(fanartImage.DiskImage, category, Utils.UseAspectRatio)) && 
+                      Utils.IsFileValid(fanartImage.DiskImage))
                   {
                     str = fanartImage.DiskImage;
                     iFilePrev = num3;

@@ -2032,17 +2032,17 @@ namespace FanartHandler
 
                 if (category == Utils.Category.MusicFanartScraped)
                 {
-                    if (FanartHandlerSetup.Fh.UseAlbum.Equals("True", StringComparison.CurrentCulture) &&
-                        FanartHandlerSetup.Fh.DisableMPTumbsForRandom.Equals("False", StringComparison.CurrentCulture))
+                    if (Utils.UseAlbum.Equals("True", StringComparison.CurrentCulture) &&
+                        Utils.DisableMPTumbsForRandom.Equals("False", StringComparison.CurrentCulture))
                     {
                        SQLCategory = (SQLCategory.Length > 0 ? SQLCategory + "," : string.Empty) + "'" + ((object) Utils.Category.MusicAlbumThumbScraped).ToString() + "'";
                     }
-                    if (FanartHandlerSetup.Fh.UseArtist.Equals("True", StringComparison.CurrentCulture) &&
-                        FanartHandlerSetup.Fh.DisableMPTumbsForRandom.Equals("False", StringComparison.CurrentCulture))
+                    if (Utils.UseArtist.Equals("True", StringComparison.CurrentCulture) &&
+                        Utils.DisableMPTumbsForRandom.Equals("False", StringComparison.CurrentCulture))
                     {
                        SQLCategory = (SQLCategory.Length > 0 ? SQLCategory + "," : string.Empty) + "'" + ((object) Utils.Category.MusicArtistThumbScraped).ToString() + "'";
                     }
-                    if (FanartHandlerSetup.Fh.UseFanart.Equals("True", StringComparison.CurrentCulture))
+                    if (Utils.UseFanart.Equals("True", StringComparison.CurrentCulture))
                     {
                        SQLCategory = (SQLCategory.Length > 0 ? SQLCategory + "," : string.Empty) + "'" + ((object) Utils.Category.MusicFanartScraped).ToString() + "',"+
                                                                                                    "'" + ((object) Utils.Category.MusicFanartManual).ToString() + "'";
