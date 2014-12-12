@@ -115,7 +115,7 @@ namespace FanartHandler
       {
         if (Utils.GetIsStopping())
           return;
-        Thread.Sleep(1000);
+        Thread.Sleep(500); // 1000
         FanartHandlerSetup.Fh.HideScraperProgressIndicator();
         FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.completed", string.Empty);
         FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.task", string.Empty);

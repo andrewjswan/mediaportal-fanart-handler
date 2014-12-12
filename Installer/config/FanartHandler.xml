@@ -1,26 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <profile>
   <section name="FanartHandler">
-    <entry name="UseFanart">True</entry>
-    <entry name="UseAlbum">True</entry>
-    <entry name="UseArtist">True</entry>
-    <entry name="SkipWhenHighResAvailable">True</entry>
-    <entry name="DisableMPTumbsForRandom">True</entry>
-    <entry name="UseSelectedMusicFanart">True</entry>
-    <entry name="UseSelectedOtherFanart">True</entry>
+    <entry name="Test">yes</entry>
+    <entry name="UseFanart">yes</entry>
+    <entry name="UseAlbum">yes</entry>
+    <entry name="UseArtist">yes</entry>
+    <entry name="SkipWhenHighResAvailable">yes</entry>
+    <entry name="DisableMPTumbsForRandom">yes</entry>
+    <entry name="UseSelectedMusicFanart">yes</entry>
+    <entry name="UseSelectedOtherFanart">yes</entry>
     <entry name="ImageInterval">30</entry>
     <entry name="MinResolution">500x500</entry>
     <entry name="ScraperMaxImages">3</entry>
-    <entry name="ScraperMusicPlaying">True</entry>
-    <entry name="ScraperMPDatabase">True</entry>
-    <entry name="ScraperInterval">12</entry>
-    <entry name="UseAspectRatio">True</entry>
-    <entry name="ScrapeThumbnails">True</entry>
-    <entry name="ScrapeThumbnailsAlbum">True</entry>
-    <entry name="DoNotReplaceExistingThumbs">True</entry>
-    <entry name="UseGenreFanart">False</entry>
-    <entry name="ScanMusicFoldersForFanart">False</entry>
-    <entry name="MusicFoldersArtistAlbumRegex">
-    </entry>
+    <entry name="ScraperMusicPlaying">yes</entry>
+    <entry name="ScraperMPDatabase">yes</entry>
+    <entry name="ScraperInterval">6</entry>
+    <entry name="UseAspectRatio">yes</entry>
+    <entry name="ScrapeThumbnails">yes</entry>
+    <entry name="ScrapeThumbnailsAlbum">yes</entry>
+    <entry name="DoNotReplaceExistingThumbs">yes</entry>
+    <entry name="UseGenreFanart">no</entry>
+    <entry name="ScanMusicFoldersForFanart">no</entry>
+    <entry name="MusicFoldersArtistAlbumRegex"></entry>
+  </section>
+  <section name="Artists">
+    <entry name="artist0">In-Grid|In Grid</entry>
+    <entry name="artist1">Vanessa-Mae|Vanessa Mae</entry>
+    <entry name="artist2">Би-2|Би 2</entry>
+    <entry name="artist3">Annette Struck-Vrangos|Annette Struck Vrangos</entry>
+    <entry name="artist4">Dick Dale &amp; His Del-Toness|Dick Dale &amp; His Del Toness</entry>
+    <entry name="artist5">Ness-Beal|Ness Beal</entry>
+    <entry name="artist6">Julien-K|Julien K</entry>
+    <entry name="artist7">Paul Badura-Skod|Paul Badura Skod</entry>
   </section>
 </profile>

@@ -234,7 +234,7 @@ namespace FanartHandler
       }
     }
 
-    internal bool CheckImageResolution(string filename, Utils.Category category, string UseAspectRatio)
+    internal bool CheckImageResolution(string filename, Utils.Category category, bool UseAspectRatio)
     {
       try
       {
@@ -251,7 +251,7 @@ namespace FanartHandler
           var num3 = (double) image.Width;
           var num4 = (double) image.Height;
           image.Dispose();
-          return num3 >= num1 && num4 >= num2 && (!UseAspectRatio.Equals("True", StringComparison.CurrentCulture) || num4 > 0.0 && num3 / num4 >= 1.3);
+          return num3 >= num1 && num4 >= num2 && (!UseAspectRatio || num4 > 0.0 && num3 / num4 >= 1.3);
         }
       }
       catch (Exception ex)
@@ -383,7 +383,7 @@ namespace FanartHandler
 
     internal void SetupDefaultBackdrops(string startDir, ref int i)
     {
-      if (!Utils.UseDefaultBackdrop.Equals("True", StringComparison.CurrentCulture))
+      if (!Utils.UseDefaultBackdrop)
         return;
 
       try
@@ -510,7 +510,7 @@ namespace FanartHandler
             !FS.WindowsUsingFanartSelectedMusic.ContainsKey(windowId) && 
             (!FS.WindowsUsingFanartSelectedScoreCenter.ContainsKey(windowId) && !FS.WindowsUsingFanartSelectedMovie.ContainsKey(windowId)) && 
             !FP.WindowsUsingFanartPlay.ContainsKey(windowId) || 
-            (!AllowFanartInThisWindow(windowId) || Utils.ScraperMPDatabase == null || (!Utils.ScraperMPDatabase.Equals("True", StringComparison.CurrentCulture) || Utils.GetDbm().GetIsScraping()))
+            (!AllowFanartInThisWindow(windowId) || (!Utils.ScraperMPDatabase || Utils.GetDbm().GetIsScraping()))
            )
           return;
         StartScraper();
@@ -538,19 +538,11 @@ namespace FanartHandler
             if (isMusic)
             {
               filenames = Utils.GetDbm().GetFanart(key, key2, category, true);
-              if (filenames != null && 
-                  (filenames.Count <= 0 && Utils.SkipWhenHighResAvailable != null) && 
-                  (Utils.SkipWhenHighResAvailable.Equals("True", StringComparison.CurrentCulture) && 
-                   (Utils.UseArtist.Equals("True", StringComparison.CurrentCulture) || Utils.UseAlbum.Equals("True", StringComparison.CurrentCulture))
-                  )
-                 )
+              if (filenames != null && filenames.Count <= 0 && (Utils.SkipWhenHighResAvailable && (Utils.UseArtist || Utils.UseAlbum)))
               {
                 filenames = Utils.GetDbm().GetFanart(key, key2, category, false);
               }
-              else if (Utils.SkipWhenHighResAvailable != null && 
-                       Utils.SkipWhenHighResAvailable.Equals("False", StringComparison.CurrentCulture) && 
-                       (Utils.UseArtist.Equals("True", StringComparison.CurrentCulture) || Utils.UseAlbum.Equals("True", StringComparison.CurrentCulture))
-                      )
+              else if (!Utils.SkipWhenHighResAvailable && (Utils.UseArtist || Utils.UseAlbum))
               {
                 if (filenames != null && filenames.Count > 0)
                 {
@@ -650,7 +642,7 @@ namespace FanartHandler
       {
         if (!Utils.GetIsStopping())
         {
-          if (Utils.UseDefaultBackdrop.Equals("True", StringComparison.CurrentCulture))
+          if (Utils.UseDefaultBackdrop)
           {
             if (DefaultBackdropImages != null)
             {
@@ -1172,7 +1164,7 @@ namespace FanartHandler
         SetupWindowsUsingFanartHandlerVisibility();
         SetupVariables();
         SetupDirectories();
-        if (Utils.DefaultBackdropIsImage != null && Utils.DefaultBackdropIsImage.Equals("True", StringComparison.CurrentCulture))
+        if (Utils.DefaultBackdropIsImage)
         {
           DefaultBackdropImages.Add(0, Utils.DefaultBackdrop);
         }
@@ -1191,7 +1183,7 @@ namespace FanartHandler
         AddToDirectoryTimerQueue("All");
         InitRandomProperties();
         //
-        if (Utils.ScraperMPDatabase != null && Utils.ScraperMPDatabase.Equals("True", StringComparison.CurrentCulture))
+        if (Utils.ScraperMPDatabase)
         {
           myScraperTimer = new TimerCallback(UpdateScraperTimer);
           scraperTimer = new System.Threading.Timer(myScraperTimer, null, 1000, checked (Convert.ToInt32(Utils.ScraperInterval, CultureInfo.CurrentCulture) * 3600000));
@@ -1211,7 +1203,7 @@ namespace FanartHandler
         if (FR.WindowsUsingFanartRandom.ContainsKey("35") || 
             FS.WindowsUsingFanartSelectedMusic.ContainsKey("35") || 
             (FS.WindowsUsingFanartSelectedScoreCenter.ContainsKey("35") || FS.WindowsUsingFanartSelectedMovie.ContainsKey("35")) || 
-            (FP.WindowsUsingFanartPlay.ContainsKey("35") || Utils.UseOverlayFanart != null && Utils.UseOverlayFanart.Equals("True", StringComparison.CurrentCulture))
+            (FP.WindowsUsingFanartPlay.ContainsKey("35") || Utils.UseOverlayFanart)
            )
           refreshTimer.Start();
         //
@@ -1325,7 +1317,7 @@ namespace FanartHandler
               refreshTimer.Start();
           }
 
-          if ((FP.WindowsUsingFanartPlay.ContainsKey(windowId) || Utils.UseOverlayFanart != null && Utils.UseOverlayFanart.Equals("True", StringComparison.CurrentCulture)) && AllowFanartInThisWindow(windowId))
+          if ((FP.WindowsUsingFanartPlay.ContainsKey(windowId) || Utils.UseOverlayFanart) && AllowFanartInThisWindow(windowId))
           {
             if ((g_Player.Playing || g_Player.Paused) && (g_Player.IsCDA || g_Player.IsMusic || (g_Player.IsRadio || !string.IsNullOrEmpty(CurrentTrackTag))))
             {
@@ -1591,7 +1583,7 @@ namespace FanartHandler
       {
         var windowId = GUIWindowManager.ActiveWindow.ToString(CultureInfo.CurrentCulture);
         IsPlaying = true;
-        if ((FP.WindowsUsingFanartPlay.ContainsKey(windowId) || (Utils.UseOverlayFanart != null && Utils.UseOverlayFanart.Equals("True", StringComparison.CurrentCulture))) && AllowFanartInThisWindow(windowId))
+        if ((FP.WindowsUsingFanartPlay.ContainsKey(windowId) || Utils.UseOverlayFanart) && AllowFanartInThisWindow(windowId))
         {
           if (refreshTimer != null && !refreshTimer.Enabled && 
               (type == g_Player.MediaType.Music || type == g_Player.MediaType.Radio || MediaPortal.Util.Utils.IsLastFMStream(filename) || windowId.Equals("730718", StringComparison.CurrentCulture))

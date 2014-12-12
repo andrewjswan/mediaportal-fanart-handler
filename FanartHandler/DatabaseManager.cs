@@ -958,7 +958,7 @@ namespace FanartHandler
                             return GetImages;
                     #endregion
                     #region NowPlaying Album
-                        if ((album != null && album.Trim().Length > 0) && Utils.ScrapeThumbnailsAlbum.Equals("True", StringComparison.CurrentCulture))
+                        if ((album != null && album.Trim().Length > 0) && Utils.ScrapeThumbnailsAlbum)
                           if (!Utils.GetDbm().HasAlbumThumb(dbartist,dbalbum))
                           {
                             scraper = new Scraper();
@@ -1118,7 +1118,7 @@ namespace FanartHandler
                 #endregion
 
                 #region Albums
-                if (Utils.ScrapeThumbnailsAlbum.Equals("True", StringComparison.CurrentCulture))
+                if (Utils.ScrapeThumbnailsAlbum)
                 {
                   musicDatabaseAlbums = new List<AlbumInfo>();
                   m_db.GetAllAlbums(ref musicDatabaseAlbums);
@@ -1223,7 +1223,7 @@ namespace FanartHandler
             {
                 logger.Info("InitialThumbScrape is starting (only missing=" + (onlyMissing ? 1 : 0) + ")...");
                 #region Artists
-                if (Utils.ScrapeThumbnails.Equals("True", StringComparison.CurrentCulture))
+                if (Utils.ScrapeThumbnails)
                 {
                   musicDatabaseArtists = new ArrayList();
                   m_db.GetAllArtists(ref musicDatabaseArtists);
@@ -1257,7 +1257,7 @@ namespace FanartHandler
                 #endregion
 
                 #region Albums
-                if (Utils.ScrapeThumbnailsAlbum.Equals("True", StringComparison.CurrentCulture))
+                if (Utils.ScrapeThumbnailsAlbum)
                 {
                   musicDatabaseAlbums = new List<AlbumInfo>();
                   m_db.GetAllAlbums(ref musicDatabaseAlbums);
@@ -2032,17 +2032,15 @@ namespace FanartHandler
 
                 if (category == Utils.Category.MusicFanartScraped)
                 {
-                    if (Utils.UseAlbum.Equals("True", StringComparison.CurrentCulture) &&
-                        Utils.DisableMPTumbsForRandom.Equals("False", StringComparison.CurrentCulture))
+                    if (Utils.UseAlbum && !Utils.DisableMPTumbsForRandom)
                     {
                        SQLCategory = (SQLCategory.Length > 0 ? SQLCategory + "," : string.Empty) + "'" + ((object) Utils.Category.MusicAlbumThumbScraped).ToString() + "'";
                     }
-                    if (Utils.UseArtist.Equals("True", StringComparison.CurrentCulture) &&
-                        Utils.DisableMPTumbsForRandom.Equals("False", StringComparison.CurrentCulture))
+                    if (Utils.UseArtist && !Utils.DisableMPTumbsForRandom)
                     {
                        SQLCategory = (SQLCategory.Length > 0 ? SQLCategory + "," : string.Empty) + "'" + ((object) Utils.Category.MusicArtistThumbScraped).ToString() + "'";
                     }
-                    if (Utils.UseFanart.Equals("True", StringComparison.CurrentCulture))
+                    if (Utils.UseFanart)
                     {
                        SQLCategory = (SQLCategory.Length > 0 ? SQLCategory + "," : string.Empty) + "'" + ((object) Utils.Category.MusicFanartScraped).ToString() + "',"+
                                                                                                    "'" + ((object) Utils.Category.MusicFanartManual).ToString() + "'";

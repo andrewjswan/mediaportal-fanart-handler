@@ -117,10 +117,7 @@ namespace FanartHandler
             FanartHandlerSetup.Fh.CurrentGenreTag = GUIPropertyManager.GetProperty("#Play.Current.Genre");
           }
 
-          if (Utils.ScraperMPDatabase != null && 
-              Utils.ScraperMPDatabase.Equals("True", StringComparison.CurrentCulture) && 
-              (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.TriggerRefresh)
-             )
+          if (Utils.ScraperMPDatabase && (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.TriggerRefresh))
           {
             FanartHandlerSetup.Fh.FS.CurrCount = FanartHandlerSetup.Fh.MaxCountImage;
             FanartHandlerSetup.Fh.FS.SetCurrentArtistsImageNames(null);
@@ -131,10 +128,7 @@ namespace FanartHandler
           if (FanartHandlerSetup.Fh.CurrentTrackTag != null && FanartHandlerSetup.Fh.CurrentTrackTag.Trim().Length > 0 && (g_Player.Playing || g_Player.Paused))
           {
             DebugStep = 11;
-            if (Utils.ScraperMusicPlaying != null && 
-                Utils.ScraperMusicPlaying.Equals("True", StringComparison.CurrentCulture) && 
-                (FanartHandlerSetup.Fh.MyScraperNowWorker != null && FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh)
-               )
+            if (Utils.ScraperMusicPlaying && (FanartHandlerSetup.Fh.MyScraperNowWorker != null && FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh))
             {
               DebugStep = 12;
               FanartHandlerSetup.Fh.FP.CurrCountPlay = FanartHandlerSetup.Fh.MaxCountImage;
@@ -145,9 +139,7 @@ namespace FanartHandler
             if (!FanartHandlerSetup.Fh.FP.CurrPlayMusicArtist.Equals(FanartHandlerSetup.Fh.CurrentTrackTag, StringComparison.CurrentCulture))
             {
               DebugStep = 14;
-              if (Utils.ScraperMusicPlaying != null && 
-                  Utils.ScraperMusicPlaying.Equals("True", StringComparison.CurrentCulture) && 
-                  !Utils.GetDbm().GetIsScraping() && 
+              if (Utils.ScraperMusicPlaying && !Utils.GetDbm().GetIsScraping() && 
                   (FanartHandlerSetup.Fh.MyScraperNowWorker != null && !FanartHandlerSetup.Fh.MyScraperNowWorker.IsBusy || FanartHandlerSetup.Fh.MyScraperNowWorker == null)
                  )
               {
@@ -188,7 +180,7 @@ namespace FanartHandler
             checked { ++FanartHandlerSetup.Fh.IsPlayingCount; }
 
           DebugStep = 18;
-          if (Utils.UseMusicFanart != null && Utils.UseMusicFanart.Equals("True", StringComparison.CurrentCulture) && flag1)
+          if (Utils.UseMusicFanart && flag1)
           {
             DebugStep = 19;
             if (FanartHandlerSetup.Fh.FS.WindowsUsingFanartSelectedMusic != null && FanartHandlerSetup.Fh.FS.WindowsUsingFanartSelectedMusic.ContainsKey(activeWindow.ToString(CultureInfo.CurrentCulture)))
@@ -233,7 +225,7 @@ namespace FanartHandler
           }
 
           DebugStep = 21;
-          if (Utils.UseVideoFanart != null && Utils.UseVideoFanart.Equals("True", StringComparison.CurrentCulture) && flag1)
+          if (Utils.UseVideoFanart && flag1)
           {
             DebugStep = 22;
             if (FanartHandlerSetup.Fh.FS.WindowsUsingFanartSelectedMovie != null && FanartHandlerSetup.Fh.FS.WindowsUsingFanartSelectedMovie.ContainsKey(activeWindow.ToString(CultureInfo.CurrentCulture)))
@@ -305,7 +297,7 @@ namespace FanartHandler
           }
 
           DebugStep = 25;
-          if (Utils.UseScoreCenterFanart != null && Utils.UseScoreCenterFanart.Equals("True", StringComparison.CurrentCulture) && flag1)
+          if (Utils.UseScoreCenterFanart && flag1)
           {
             DebugStep = 26;
             if (FanartHandlerSetup.Fh.FS.WindowsUsingFanartSelectedScoreCenter != null && 

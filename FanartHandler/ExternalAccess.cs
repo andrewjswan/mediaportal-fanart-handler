@@ -152,16 +152,9 @@ namespace FanartHandler
           album = Utils.GetAlbum(album, Utils.Category.MusicFanartScraped);
 
         var fanart1 = Utils.GetDbm().GetFanart(artist, album, Utils.Category.MusicFanartScraped, true);
-        if (fanart1 != null && 
-            fanart1.Count <= 0 && 
-            (Utils.SkipWhenHighResAvailable != null && Utils.SkipWhenHighResAvailable.Equals("True", StringComparison.CurrentCulture)) && 
-            (Utils.UseArtist.Equals("True", StringComparison.CurrentCulture) || Utils.UseAlbum.Equals("True", StringComparison.CurrentCulture))
-           )
+        if (fanart1 != null && fanart1.Count <= 0 && (Utils.SkipWhenHighResAvailable && (Utils.UseArtist || Utils.UseAlbum)))
           fanart1 = Utils.GetDbm().GetFanart(artist, album, Utils.Category.MusicFanartScraped, false);
-        else if (Utils.SkipWhenHighResAvailable != null && 
-                 Utils.SkipWhenHighResAvailable.Equals("False", StringComparison.CurrentCulture) && 
-                 (Utils.UseArtist.Equals("True", StringComparison.CurrentCulture) || Utils.UseAlbum.Equals("True", StringComparison.CurrentCulture))
-                )
+        else if (!Utils.SkipWhenHighResAvailable && (Utils.UseArtist || Utils.UseAlbum))
         {
           if (fanart1 != null && fanart1.Count > 0)
           {
@@ -186,9 +179,7 @@ namespace FanartHandler
           {
             if (num < 2)
             {
-              if (FanartHandlerSetup.Fh.CheckImageResolution(fanartImage.DiskImage, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio) && 
-                  Utils.IsFileValid(fanartImage.DiskImage)
-                 )
+              if (FanartHandlerSetup.Fh.CheckImageResolution(fanartImage.DiskImage, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio) && Utils.IsFileValid(fanartImage.DiskImage))
               {
                 hashtable1.Add(num, fanartImage.DiskImage);
                 checked { ++num; }
