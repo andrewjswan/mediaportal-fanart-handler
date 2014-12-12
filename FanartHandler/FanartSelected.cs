@@ -112,18 +112,19 @@ namespace FanartHandler
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#TV.Guide.Title");
         else if (GUIWindowManager.ActiveWindow == 880)   // MusicVids plugin
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#MusicVids.ArtistName");
-        /*
-        else if (GUIWindowManager.ActiveWindow == 510)   // My Music Plaing Now - Why is it here?
-          FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#artist"); // #Play.Current.Artist ?
-        */
         else if (GUIWindowManager.ActiveWindow == 510)   // My Music Plaing Now - Why is it here? 
-          FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#Play.Current.Artist");
+          FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#Play.Current.Artist"); // Was: #artist
         else if (GUIWindowManager.ActiveWindow == 90478) // My Lyrics - Why is it here? 
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#Play.Current.Artist");
         else if (GUIWindowManager.ActiveWindow == 25652) // Radio Time - Why is it here? 
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#Play.Current.Artist");
         else if (GUIWindowManager.ActiveWindow == 35)    // Basic Home - Why is it here? And where there may appear tag: #Play.Current.Title
-          FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#Play.Current.Title");
+        {
+          if (!string.IsNullOrEmpty(GUIPropertyManager.GetProperty("#Play.Current.Artist")))
+              FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#Play.Current.Artist");
+          else
+            FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#Play.Current.Title");
+        }
         else if (GUIWindowManager.ActiveWindow == 6622)  // Music Trivia 
         {
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#selecteditem2");
