@@ -67,7 +67,7 @@ namespace FanartHandler
       {
         if (!Utils.GetIsStopping())
         {
-          Thread.Sleep(1000);
+          Thread.Sleep(500); // 1000
           Utils.GetDbm().TotArtistsBeingScraped = 0.0;
           Utils.GetDbm().CurrArtistsBeingScraped = 0.0;
         }

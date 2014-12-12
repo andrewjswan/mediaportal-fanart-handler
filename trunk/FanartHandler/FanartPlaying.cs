@@ -226,7 +226,7 @@ namespace FanartHandler
           if (string.IsNullOrEmpty(FileName))
           {
             // Genre
-            if (!string.IsNullOrEmpty(FanartHandlerSetup.Fh.CurrentGenreTag) && Utils.UseGenreFanart.Equals("True", StringComparison.CurrentCulture))
+            if (!string.IsNullOrEmpty(FanartHandlerSetup.Fh.CurrentGenreTag) && Utils.UseGenreFanart)
               FileName = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.CurrentGenreTag, null,  ref CurrPlayMusic, ref PrevPlayMusic, Utils.Category.MusicFanartScraped, "FanartPlaying", NewArtist, true);
             if (string.IsNullOrEmpty(FileName))
             {
@@ -243,7 +243,7 @@ namespace FanartHandler
           else
             AddPropertyPlay("#fanarthandler.music.backdrop2.play", FileName, ref ListPlayMusic);
 
-          if (Utils.UseOverlayFanart.Equals("True", StringComparison.CurrentCulture))
+          if (Utils.UseOverlayFanart)
             AddPropertyPlay("#fanarthandler.music.overlay.play", FileName, ref ListPlayMusic);
 
           if (FileName.Length == 0 || !FileName.Equals(StoreCurrPlayMusic, StringComparison.CurrentCulture))

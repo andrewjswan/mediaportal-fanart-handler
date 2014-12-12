@@ -466,7 +466,7 @@ namespace FanartHandler
           break;
 
         // *** Get Thumbs for Artist
-        if (Utils.ScrapeThumbnails.Equals("True", StringComparison.CurrentCulture))
+        if (Utils.ScrapeThumbnails)
         {
           GetArtistThumbs(artist, dbm, true) ;
         }
@@ -495,7 +495,7 @@ namespace FanartHandler
       if (string.IsNullOrEmpty(artist))
         return res ;
 
-      if (!Utils.ScrapeThumbnails.Equals("True", StringComparison.CurrentCulture))
+      if (!Utils.ScrapeThumbnails)
       {
         logger.Debug("Artist Thumbnails - Disabled.");
         return res ;
@@ -580,7 +580,7 @@ namespace FanartHandler
       if (string.IsNullOrEmpty(artist) || string.IsNullOrEmpty(album))
         return res ;
 
-      if (!Utils.ScrapeThumbnailsAlbum.Equals("True", StringComparison.CurrentCulture))
+      if (!Utils.ScrapeThumbnailsAlbum)
       {
         logger.Debug("Artist/Album Thumbnails - Disabled.");
         return res ;
@@ -1593,9 +1593,9 @@ namespace FanartHandler
 
       if (category == Utils.Category.MusicArtistThumbScraped || category == Utils.Category.MusicAlbumThumbScraped)
       {
-        if (File.Exists(FileNameLarge) && Utils.DoNotReplaceExistingThumbs.Equals("True"))
+        if (File.Exists(FileNameLarge) && Utils.DoNotReplaceExistingThumbs)
           DownloaderStatus = "Skip" ;
-        if (File.Exists(FileNameThumb) && Utils.DoNotReplaceExistingThumbs.Equals("True"))
+        if (File.Exists(FileNameThumb) && Utils.DoNotReplaceExistingThumbs)
           DownloaderStatus = "Skip" ;
       }
 
@@ -1749,11 +1749,11 @@ namespace FanartHandler
           if (Utils.GetDbm().IsImageProtectedByUser(FileNameLarge).Equals("False"))
           {
             var doDownload = true;
-            if (File.Exists(FileNameLarge) && Utils.DoNotReplaceExistingThumbs.Equals("False"))
+            if (File.Exists(FileNameLarge) && !Utils.DoNotReplaceExistingThumbs)
               ReplaceOldThumbnails(FileNameLarge, filename, ref doDownload, false, category);
             if (doDownload)
               CreateThumbnail(filename, true);
-            if (File.Exists(FileNameThumb) && Utils.DoNotReplaceExistingThumbs.Equals("False") && doDownload)
+            if (File.Exists(FileNameThumb) && !Utils.DoNotReplaceExistingThumbs && doDownload)
               ReplaceOldThumbnails(FileNameThumb, filename, ref doDownload, false, category);
             if (doDownload)
               CreateThumbnail(filename, false);
