@@ -1352,6 +1352,13 @@ namespace FanartHandler
         return -1;
       }
 
+      // Add Fanart.TV personal API Key
+      if (!string.IsNullOrEmpty(Utils.FanartTVPersonalAPIKey))
+      {
+        URL = URL+"&client_key="+Utils.FanartTVPersonalAPIKey;
+      }
+      logger.Debug("Fanart.TV: Use personal API Key: "+(!string.IsNullOrEmpty(Utils.FanartTVPersonalAPIKey)).ToString());
+
       try
       {
         logger.Debug("Fanart.TV: Trying to find pictures for "+Method+".");

@@ -79,6 +79,7 @@ namespace FanartHandler
     public static bool UseDefaultBackdrop { get; set; } 
     public static bool UseSelectedMusicFanart { get; set; } 
     public static bool UseSelectedOtherFanart { get; set; } 
+    public static string FanartTVPersonalAPIKey { get; set; } 
     #endregion
 
     #region FanartHandler folders
@@ -1093,7 +1094,7 @@ namespace FanartHandler
           {
             var Left  = ArtistData.Substring(0, ArtistData.IndexOf("|")).ToLower().Trim();
             var Right = ArtistData.Substring(checked (ArtistData.IndexOf("|") + 1)).ToLower().Trim();
-            logger.Debug("*** "+ArtistData+" "+Left+" -> "+Right);
+            // logger.Debug("*** "+ArtistData+" "+Left+" -> "+Right);
             BadArtistsList.Add(Left+"|"+Right) ;
           }
         }
@@ -1134,6 +1135,7 @@ namespace FanartHandler
       UseDefaultBackdrop = true;
       UseSelectedMusicFanart = true;
       UseSelectedOtherFanart = true;
+      FanartTVPersonalAPIKey = string.Empty;
       #endregion
       try
       {
@@ -1170,6 +1172,7 @@ namespace FanartHandler
           // UseDefaultBackdrop = settings.GetValueAsBool("FanartHandler", "UseDefaultBackdrop", UseDefaultBackdrop);
           UseSelectedMusicFanart = settings.GetValueAsBool("FanartHandler", "UseSelectedMusicFanart", UseSelectedMusicFanart);
           UseSelectedOtherFanart = settings.GetValueAsBool("FanartHandler", "UseSelectedOtherFanart", UseSelectedOtherFanart);
+          FanartTVPersonalAPIKey = settings.GetValueAsString("FanartHandler", "FanartTVPersonalAPIKey", FanartTVPersonalAPIKey);
           //
           LoadBadArtists(settings);
         }
@@ -1183,9 +1186,10 @@ namespace FanartHandler
       #region Check Settings
       DefaultBackdrop = (string.IsNullOrEmpty(DefaultBackdrop) ? Utils.FAHUDMusic : DefaultBackdrop);
       if ((string.IsNullOrEmpty(MusicFoldersArtistAlbumRegex)) || (MusicFoldersArtistAlbumRegex.IndexOf("?<artist>") < 0) || (MusicFoldersArtistAlbumRegex.IndexOf("?<album>") < 0))
-        {
-          ScanMusicFoldersForFanart = false;
-        }
+      {
+        ScanMusicFoldersForFanart = false;
+      }
+      FanartTVPersonalAPIKey = FanartTVPersonalAPIKey.Trim();
       #endregion
     }
 
@@ -1217,6 +1221,7 @@ namespace FanartHandler
           xmlwriter.SetValueAsBool("FanartHandler", "UseGenreFanart", UseGenreFanart);
           xmlwriter.SetValueAsBool("FanartHandler", "ScanMusicFoldersForFanart", ScanMusicFoldersForFanart);
           xmlwriter.SetValue("FanartHandler", "MusicFoldersArtistAlbumRegex", MusicFoldersArtistAlbumRegex);
+          xmlwriter.SetValue("FanartHandler", "FanartTVPersonalAPIKey", FanartTVPersonalAPIKey);
         }
         #endregion
         logger.Debug("Save settings to: "+ConfigFilename+" complete.");
