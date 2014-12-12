@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <profile>
   <section name="FanartHandler">
-    <entry name="Test">yes</entry>
     <entry name="UseFanart">yes</entry>
     <entry name="UseAlbum">yes</entry>
     <entry name="UseArtist">yes</entry>
