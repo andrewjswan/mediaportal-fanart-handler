@@ -1678,7 +1678,7 @@ namespace FanartHandler
           {
             DownloaderStatus = "Resume";
             logger.Debug("Download: " + sourceFilename);
-            logger.Error(ex);
+            logger.Debug(ex);
           }
           else
           {
