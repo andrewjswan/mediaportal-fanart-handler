@@ -22,6 +22,7 @@
     <entry name="UseGenreFanart">no</entry>
     <entry name="ScanMusicFoldersForFanart">no</entry>
     <entry name="MusicFoldersArtistAlbumRegex"></entry>
+    <entry name="FanartTVPersonalAPIKey"></entry>
   </section>
   <section name="Artists">
     <entry name="artist0">In-Grid|In Grid</entry>
