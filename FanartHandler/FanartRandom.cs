@@ -18,6 +18,7 @@ namespace FanartHandler
     private static readonly Logger logger = LogManager.GetCurrentClassLogger();
     private bool doShowImageOneRandom = true;
     private bool firstRandom = true;
+
     public ArrayList ListAnyGamesUser;
     public ArrayList ListAnyMoviesScraper;
     public ArrayList ListAnyMoviesUser;
@@ -29,6 +30,7 @@ namespace FanartHandler
     public ArrayList ListAnyScorecenterUser;
     public ArrayList ListAnyTVSeries;
     public ArrayList ListAnyTVUser;
+
     public int PrevSelectedGamesUser;
     public int PrevSelectedMoviesScraper;
     public int PrevSelectedMoviesUser;
@@ -40,6 +42,7 @@ namespace FanartHandler
     public int PrevSelectedScorecenterUser;
     public int PrevSelectedTVSeries;
     public int PrevSelectedTVUser;
+
     private string currAnyGamesUser;
     private string currAnyMoviesScraper;
     private string currAnyMoviesUser;
@@ -51,54 +54,23 @@ namespace FanartHandler
     private string currAnyScorecenterUser;
     private string currAnyTVSeries;
     private string currAnyTVUser;
+
     private Hashtable htAny;
     private Hashtable propertiesRandomPerm;
 
     public int CurrCountRandom { get; set; }
 
     public Random RandAnyGamesUser { get; set; }
-
     public Random RandAnyMoviesUser { get; set; }
-
     public Random RandAnyMoviesScraper { get; set; }
-
     public Random RandAnyMovingPictures { get; set; }
-
     public Random RandAnyMusicUser { get; set; }
-
     public Random RandAnyMusicScraper { get; set; }
-
     public Random RandAnyPicturesUser { get; set; }
-
     public Random RandAnyScorecenterUser { get; set; }
-
     public Random RandAnyTVSeries { get; set; }
-
     public Random RandAnyTVUser { get; set; }
-
     public Random RandAnyPluginsUser { get; set; }
-
-    public bool UseAnyPluginsUser { get; set; }
-
-    public bool UseAnyTVUser { get; set; }
-
-    public bool UseAnyTVSeries { get; set; }
-
-    public bool UseAnyScoreCenterUser { get; set; }
-
-    public bool UseAnyPicturesUser { get; set; }
-
-    public bool UseAnyMovingPictures { get; set; }
-
-    public bool UseAnyMoviesUser { get; set; }
-
-    public bool UseAnyMoviesScraper { get; set; }
-
-    public bool UseAnyMusicUser { get; set; }
-
-    public bool UseAnyMusicScraper { get; set; }
-
-    public bool UseAnyGamesUser { get; set; }
 
     public Hashtable PropertiesRandom { get; set; }
 
@@ -156,12 +128,15 @@ namespace FanartHandler
       {
         if (Utils.GetIsStopping())
           return;
+
         var doPerm = false;
         if (PropertiesRandomPerm.Count == 0)
           doPerm = true;
+
         if (CurrCountRandom >= FanartHandlerSetup.Fh.MaxCountImage || FirstRandom || CurrCountRandom == 0)
         {
           var str = string.Empty;
+          #region Movies
           if (SupportsRandomImages("useRandomMoviesUserFanart").Equals("True", StringComparison.CurrentCulture))
           {
             var randomFilename = GetRandomFilename(ref currAnyMoviesUser, Utils.Category.MovieManual, ref PrevSelectedMoviesUser);
@@ -282,6 +257,8 @@ namespace FanartHandler
             if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
               rw.ReportProgress(100, "Updated Properties");
           }
+          #endregion
+          #region Music
           if (SupportsRandomImages("useRandomMusicUserFanart").Equals("True", StringComparison.CurrentCulture))
           {
             var randomFilename = GetRandomFilename(ref currAnyMusicUser, Utils.Category.MusicFanartManual, ref PrevSelectedMusicUser);
@@ -362,6 +339,8 @@ namespace FanartHandler
             if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
               rw.ReportProgress(100, "Updated Properties");
           }
+          #endregion
+          #region TV
           if (SupportsRandomImages("useRandomTVUserFanart").Equals("True", StringComparison.CurrentCulture))
           {
             var randomFilename = GetRandomFilename(ref currAnyTVUser, Utils.Category.TvManual, ref PrevSelectedTVUser);
@@ -402,6 +381,8 @@ namespace FanartHandler
             if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
               rw.ReportProgress(100, "Updated Properties");
           }
+          #endregion
+          #region TVSeries
           if (SupportsRandomImages("useRandomTVSeriesFanart").Equals("True", StringComparison.CurrentCulture))
           {
             var randomFilename = GetRandomFilename(ref currAnyTVSeries, Utils.Category.TvSeriesScraped, ref PrevSelectedTVSeries);
@@ -442,6 +423,8 @@ namespace FanartHandler
             if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
               rw.ReportProgress(100, "Updated Properties");
           }
+          #endregion
+          #region Pictures
           if (SupportsRandomImages("useRandomPicturesUserFanart").Equals("True", StringComparison.CurrentCulture))
           {
             var randomFilename = GetRandomFilename(ref currAnyPicturesUser, Utils.Category.PictureManual, ref PrevSelectedPicturesUser);
@@ -482,6 +465,8 @@ namespace FanartHandler
             if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
               rw.ReportProgress(100, "Updated Properties");
           }
+          #endregion
+          #region Games
           if (SupportsRandomImages("useRandomGamesUserFanart").Equals("True", StringComparison.CurrentCulture))
           {
             var randomFilename = GetRandomFilename(ref currAnyGamesUser, Utils.Category.GameManual, ref PrevSelectedGamesUser);
@@ -522,6 +507,8 @@ namespace FanartHandler
             if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
               rw.ReportProgress(100, "Updated Properties");
           }
+          #endregion
+          #region ScoreCenter
           if (SupportsRandomImages("useRandomScoreCenterUserFanart").Equals("True", StringComparison.CurrentCulture))
           {
             var randomFilename = GetRandomFilename(ref currAnyScorecenterUser, Utils.Category.SportsManual, ref PrevSelectedScorecenterUser);
@@ -562,6 +549,8 @@ namespace FanartHandler
             if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
               rw.ReportProgress(100, "Updated Properties");
           }
+          #endregion
+          #region PlugIns
           if (SupportsRandomImages("useRandomPluginsUserFanart").Equals("True", StringComparison.CurrentCulture))
           {
             var randomFilename = GetRandomFilename(ref currAnyPluginsUser, Utils.Category.PluginManual, ref PrevSelectedPluginsUser);
@@ -602,6 +591,7 @@ namespace FanartHandler
             if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
               rw.ReportProgress(100, "Updated Properties");
           }
+          #endregion
           ResetCurrCountRandom();
           FirstRandom = false;
           if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
@@ -624,8 +614,10 @@ namespace FanartHandler
       {
         var doPerm = false;
         var str1 = string.Empty;
+
         if (propertiesRandomPerm == null)
           return;
+
         if (SupportsRandomImages("useRandomMoviesUserFanart").Equals("True", StringComparison.CurrentCulture) && propertiesRandomPerm.Contains("#fanarthandler.movie.userdef.backdrop"))
         {
           var str2 = PropertiesRandomPerm["#fanarthandler.movie.userdef.backdrop"].ToString();
@@ -1212,18 +1204,18 @@ namespace FanartHandler
       try
       {
         var hashtable = new Hashtable();
-        var num1 = 0;
+        var index = 0;
         foreach (DictionaryEntry dictionaryEntry in PropertiesRandom)
         {
           FanartHandlerSetup.Fh.SetProperty(dictionaryEntry.Key.ToString(), dictionaryEntry.Value.ToString());
-          hashtable.Add(num1, dictionaryEntry.Key.ToString());
-          checked { ++num1; }
+          hashtable.Add(index, dictionaryEntry.Key.ToString());
+          checked { ++index; }
         }
-        var num2 = 0;
-        while (num2 < hashtable.Count)
+        index = 0;
+        while (index < hashtable.Count)
         {
-          PropertiesRandom.Remove(hashtable[num2].ToString());
-          checked { ++num2; }
+          PropertiesRandom.Remove(hashtable[index].ToString());
+          checked { ++index; }
         }
         if (hashtable != null)
           hashtable.Clear();
@@ -1231,181 +1223,6 @@ namespace FanartHandler
       catch (Exception ex)
       {
         logger.Error("UpdatePropertiesRandom: " + ex);
-      }
-    }
-
-    public void SetupWindowsUsingRandomImages(string ThemeDir = (string) null)
-    {
-      var path = string.Empty ;
-
-      if (string.IsNullOrEmpty(ThemeDir))
-      {
-        WindowsUsingFanartRandom = new Hashtable();
-        path = GUIGraphicsContext.Skin + "\\";
-        logger.Debug("Random Scan Skin folder for XML: "+path) ;
-      }
-      else
-      {
-        path = ThemeDir;
-        logger.Debug("Random Scan Skin Theme folder for XML: "+path) ;
-      }
-
-      var str1 = string.Empty;
-      var str2 = string.Empty;
-      var files = new DirectoryInfo(path).GetFiles("*.xml");
-      var str3 = string.Empty;
-      foreach (var fileInfo in files)
-      {
-        try
-        {
-          str2 = fileInfo.Name;
-
-          var name = fileInfo.Name;
-          var navigator = new XPathDocument(fileInfo.FullName).CreateNavigator();
-          var nodeValue = GetNodeValue(navigator.Select("/window/id"));
-          if (!string.IsNullOrEmpty(nodeValue))
-          {
-            var skinFile = new SkinFile();
-            var xpathNodeIterator = navigator.Select("/window/define");
-            if (xpathNodeIterator.Count > 0)
-            {
-              while (xpathNodeIterator.MoveNext())
-              {
-                var s = xpathNodeIterator.Current.Value;
-                if (s.StartsWith("#useRandomGamesUserFanart", StringComparison.CurrentCulture))
-                  skinFile.UseRandomGamesFanartUser = ParseNodeValue(s);
-                if (s.StartsWith("#useRandomMoviesUserFanart", StringComparison.CurrentCulture))
-                  skinFile.UseRandomMoviesFanartUser = ParseNodeValue(s);
-                if (s.StartsWith("#useRandomMoviesScraperFanart", StringComparison.CurrentCulture))
-                  skinFile.UseRandomMoviesFanartScraper = ParseNodeValue(s);
-                if (s.StartsWith("#useRandomMovingPicturesFanart", StringComparison.CurrentCulture))
-                  skinFile.UseRandomMovingPicturesFanart = ParseNodeValue(s);
-                if (s.StartsWith("#useRandomMusicUserFanart", StringComparison.CurrentCulture))
-                  skinFile.UseRandomMusicFanartUser = ParseNodeValue(s);
-                if (s.StartsWith("#useRandomMusicScraperFanart", StringComparison.CurrentCulture))
-                  skinFile.UseRandomMusicFanartScraper = ParseNodeValue(s);
-                if (s.StartsWith("#useRandomPicturesUserFanart", StringComparison.CurrentCulture))
-                  skinFile.UseRandomPicturesFanartUser = ParseNodeValue(s);
-                if (s.StartsWith("#useRandomScoreCenterUserFanart", StringComparison.CurrentCulture))
-                  skinFile.UseRandomScoreCenterFanartUser = ParseNodeValue(s);
-                if (s.StartsWith("#useRandomTVSeriesFanart", StringComparison.CurrentCulture))
-                  skinFile.UseRandomTVSeriesFanart = ParseNodeValue(s);
-                if (s.StartsWith("#useRandomTVUserFanart", StringComparison.CurrentCulture))
-                  skinFile.UseRandomTVFanartUser = ParseNodeValue(s);
-                if (s.StartsWith("#useRandomPluginsUserFanart", StringComparison.CurrentCulture))
-                  skinFile.UseRandomPluginsFanartUser = ParseNodeValue(s);
-              }
-              if (!string.IsNullOrEmpty(skinFile.UseRandomGamesFanartUser))
-              {
-                if (skinFile.UseRandomGamesFanartUser.Equals("True", StringComparison.CurrentCulture))
-                  UseAnyGamesUser = true;
-              }
-              else
-                skinFile.UseRandomGamesFanartUser = "False";
-              if (!string.IsNullOrEmpty(skinFile.UseRandomMoviesFanartUser))
-              {
-                if (skinFile.UseRandomMoviesFanartUser.Equals("True", StringComparison.CurrentCulture))
-                  UseAnyMoviesUser = true;
-              }
-              else
-                skinFile.UseRandomMoviesFanartUser = "False";
-              if (!string.IsNullOrEmpty(skinFile.UseRandomMoviesFanartScraper))
-              {
-                if (skinFile.UseRandomMoviesFanartScraper.Equals("True", StringComparison.CurrentCulture))
-                  UseAnyMoviesScraper = true;
-              }
-              else
-                skinFile.UseRandomMoviesFanartScraper = "False";
-              if (!string.IsNullOrEmpty(skinFile.UseRandomMovingPicturesFanart))
-              {
-                if (skinFile.UseRandomMovingPicturesFanart.Equals("True", StringComparison.CurrentCulture))
-                  UseAnyMovingPictures = true;
-              }
-              else
-                skinFile.UseRandomMovingPicturesFanart = "False";
-              if (!string.IsNullOrEmpty(skinFile.UseRandomMusicFanartUser))
-              {
-                if (skinFile.UseRandomMusicFanartUser.Equals("True", StringComparison.CurrentCulture))
-                  UseAnyMusicUser = true;
-              }
-              else
-                skinFile.UseRandomMusicFanartUser = "False";
-              if (!string.IsNullOrEmpty(skinFile.UseRandomMusicFanartScraper))
-              {
-                if (skinFile.UseRandomMusicFanartScraper.Equals("True", StringComparison.CurrentCulture))
-                  UseAnyMusicScraper = true;
-              }
-              else
-                skinFile.UseRandomMusicFanartScraper = "False";
-              if (!string.IsNullOrEmpty(skinFile.UseRandomPicturesFanartUser))
-              {
-                if (skinFile.UseRandomPicturesFanartUser.Equals("True", StringComparison.CurrentCulture))
-                  UseAnyPicturesUser = true;
-              }
-              else
-                skinFile.UseRandomPicturesFanartUser = "False";
-              if (!string.IsNullOrEmpty(skinFile.UseRandomScoreCenterFanartUser))
-              {
-                if (skinFile.UseRandomScoreCenterFanartUser.Equals("True", StringComparison.CurrentCulture))
-                  UseAnyScoreCenterUser = true;
-              }
-              else
-                skinFile.UseRandomScoreCenterFanartUser = "False";
-              if (!string.IsNullOrEmpty(skinFile.UseRandomTVSeriesFanart))
-              {
-                if (skinFile.UseRandomTVSeriesFanart.Equals("True", StringComparison.CurrentCulture))
-                  UseAnyTVSeries = true;
-              }
-              else
-                skinFile.UseRandomTVSeriesFanart = "False";
-              if (!string.IsNullOrEmpty(skinFile.UseRandomTVFanartUser))
-              {
-                if (skinFile.UseRandomTVFanartUser.Equals("True", StringComparison.CurrentCulture))
-                  UseAnyTVUser = true;
-              }
-              else
-                skinFile.UseRandomTVFanartUser = "False";
-              if (!string.IsNullOrEmpty(skinFile.UseRandomPluginsFanartUser))
-              {
-                if (skinFile.UseRandomPluginsFanartUser.Equals("True", StringComparison.CurrentCulture))
-                  UseAnyPluginsUser = true;
-              }
-              else
-                skinFile.UseRandomPluginsFanartUser = "False";
-            }
-            try
-            {
-              if (skinFile.UseRandomGamesFanartUser.Equals("False", StringComparison.CurrentCulture) && 
-                  skinFile.UseRandomMoviesFanartUser.Equals("False", StringComparison.CurrentCulture) && 
-                  (skinFile.UseRandomMoviesFanartScraper.Equals("False", StringComparison.CurrentCulture) && skinFile.UseRandomMovingPicturesFanart.Equals("False", StringComparison.CurrentCulture)) && 
-                  (skinFile.UseRandomMusicFanartUser.Equals("False", StringComparison.CurrentCulture) && 
-                   skinFile.UseRandomMusicFanartScraper.Equals("False", StringComparison.CurrentCulture) && 
-                   (skinFile.UseRandomPicturesFanartUser.Equals("False", StringComparison.CurrentCulture) && skinFile.UseRandomScoreCenterFanartUser.Equals("False", StringComparison.CurrentCulture))
-                  ) && 
-                  (skinFile.UseRandomTVSeriesFanart.Equals("False", StringComparison.CurrentCulture) && skinFile.UseRandomTVFanartUser.Equals("False", StringComparison.CurrentCulture))
-                 )
-              {
-                if (skinFile.UseRandomPluginsFanartUser.Equals("False", StringComparison.CurrentCulture))
-                  continue;
-              }
-              WindowsUsingFanartRandom.Add(nodeValue, skinFile);
-            }
-            catch
-            {
-            }
-          }
-        }
-        catch (Exception ex)
-        {
-          logger.Error("SetupWindowsUsingRandomImages: "+(string.IsNullOrEmpty(ThemeDir) ? "" : "Theme: "+ThemeDir+" ")+"Filename:"+ str2) ;
-          logger.Error(ex) ;
-        }
-      }
-
-      if (string.IsNullOrEmpty(ThemeDir) && !string.IsNullOrEmpty(GUIGraphicsContext.ThemeName)) 
-      {
-        // Include Themes
-        SetupWindowsUsingRandomImages(path+@"Themes\"+GUIGraphicsContext.ThemeName.Trim()+@"\");
       }
     }
 
@@ -1420,24 +1237,21 @@ namespace FanartHandler
       return string.Empty;
     }
 
-    private string ParseNodeValue(string s)
-    {
-      return !string.IsNullOrEmpty(s) && s.Substring(checked (s.IndexOf(":", StringComparison.CurrentCulture) + 1)).Equals("Yes", StringComparison.CurrentCulture) ? "True" : "False";
-    }
-
     public void ShowImageOneRandom(int windowId)
     {
       GUIControl.ShowControl(windowId, 91919297);
       GUIControl.HideControl(windowId, 91919298);
+      DoShowImageOneRandom = false ;
     }
 
     public void ShowImageTwoRandom(int windowId)
     {
       GUIControl.ShowControl(windowId, 91919298);
       GUIControl.HideControl(windowId, 91919297);
+      DoShowImageOneRandom = true ;
     }
 
-    private class SkinFile
+    public class SkinFile
     {
       public string UseRandomGamesFanartUser;
       public string UseRandomMoviesFanartScraper;

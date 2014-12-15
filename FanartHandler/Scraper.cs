@@ -624,6 +624,16 @@ namespace FanartHandler
     // End: GetArtistAlbumThumbs
     #endregion
 
+    #region Movies fanart
+    public int GetMoviesFanart(string id, string imdbid)
+    {
+      var res = 0;
+      if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(imdbid))
+        res = FanartTVGetPictures(Utils.Category.MovieScraped, imdbid, id, null, -1, false, false, true) ;
+      return res;
+    }
+    #endregion
+
     #region htBackdrops
     // Begin: GetNodeInfo
     private void GetNodeInfo(XPathNavigator nav1)
@@ -1296,7 +1306,7 @@ namespace FanartHandler
     // End: Extract Fanart.TV URL
 
     // Begin: Fanart.TV Get Fanart/Tumbnails for Artist or Artist/Album
-    public int FanartTVGetPictures(Utils.Category category, string mbid, string artist, string album, int iMax, bool doTriggerRefresh, bool externalAccess, bool doScrapeFanart)
+    public int FanartTVGetPictures(Utils.Category category, string id, string artist, string album, int iMax, bool doTriggerRefresh, bool externalAccess, bool doScrapeFanart)
     {
       if (!doScrapeFanart)
         return -1 ;
@@ -1346,6 +1356,18 @@ namespace FanartHandler
         Method = "Artist/Album (Thumbs): "+artist+" - "+album ;
         URL = URL + "music/albums/" + FanArtAdd + ApiKeyFanartTV ;
         Section = "albumcover";
+      } else if (category == Utils.Category.MovieScraped) {
+        if (string.IsNullOrEmpty(artist) && string.IsNullOrEmpty(id)) {
+          logger.Debug("Fanart.TV: GetTumbnails - Movies ID/IMDBID - Empty.");
+          return -1 ;
+        }
+        Method = "Movies (Fanart): "+artist+" - "+id ;
+        URL = URL + "movies/" + FanArtAdd + ApiKeyFanartTV ;
+        Section = "moviebackground";
+        if (iMax < 0)
+          iMax = checked(Convert.ToInt32(Utils.GetScraperMaxImages(),CultureInfo.CurrentCulture));
+        if ((iMax = iMax - Utils.GetDbm().GetNumberOfFanartImages(artist)) <= 0)
+          return 8888 ;
       // Fanart.TV wrong Category ...
       } else {
         logger.Warn("Fanart.TV: GetPictures - wrong category - " + category.ToString() + ".");
@@ -1362,7 +1384,7 @@ namespace FanartHandler
       try
       {
         logger.Debug("Fanart.TV: Trying to find pictures for "+Method+".");
-        GetHtml(String.Format(URL,mbid.Trim()), out html) ;
+        GetHtml(String.Format(URL,id.Trim()), out html) ;
         try
         {
           if (html != null) {
@@ -1386,7 +1408,7 @@ namespace FanartHandler
 
           for (int i = 0; i < URLList.Count; i++)
           {
-            var id = URLList[i].Substring(0, URLList[i].IndexOf("|")) ;
+            var _id = URLList[i].Substring(0, URLList[i].IndexOf("|")) ;
             var sourceFilename = URLList[i].Substring(checked(URLList[i].IndexOf("|") + 1)) ;
 
             if (num >= iMax)
@@ -1398,21 +1420,27 @@ namespace FanartHandler
                 break ;
               }
 
-            if (category == Utils.Category.MusicFanartScraped)
-              if (Utils.GetDbm().SourceImageExist(dbartist, null, sourceFilename, category, null, Utils.Provider.FanartTV, id, mbid))
+            if ((category == Utils.Category.MusicFanartScraped) || (category == Utils.Category.MovieScraped))
+              if (Utils.GetDbm().SourceImageExist(dbartist, null, sourceFilename, category, null, Utils.Provider.FanartTV, _id, id))
                 {
                   logger.Debug("Fanart.TV: Will not download fanart image as it already exist an image in your fanart database with this source image name.");
                   checked { ++num; }
                   continue;
                 }
 
-            if (DownloadImage(ref artist, (category == Utils.Category.MusicAlbumThumbScraped) ? album : null, ref sourceFilename, ref path, ref filename, category, id)) 
+            if (DownloadImage(ref artist, 
+                              (category == Utils.Category.MusicAlbumThumbScraped) ? album : null, 
+                              ref sourceFilename, 
+                              ref path, 
+                              ref filename, 
+                              category, 
+                              (category == Utils.Category.MovieScraped) ? _id : id)) 
             {
               checked { ++num; }
-              filename = (category == Utils.Category.MusicFanartScraped) ? filename : filename.Replace("_tmp.jpg", "L.jpg") ;
-              Utils.GetDbm().LoadFanart(dbartist, filename, sourceFilename, category, dbalbum, Utils.Provider.FanartTV, id, mbid);
+              filename = ((category == Utils.Category.MusicFanartScraped) || (category == Utils.Category.MovieScraped)) ? filename : filename.Replace("_tmp.jpg", "L.jpg") ;
+              Utils.GetDbm().LoadFanart(dbartist, filename, sourceFilename, category, dbalbum, Utils.Provider.FanartTV, _id, id);
               //
-              if (category == Utils.Category.MusicFanartScraped)
+              if ((category == Utils.Category.MusicFanartScraped) || (category == Utils.Category.MovieScraped))
               {
                 if (FanartHandlerSetup.Fh.MyScraperNowWorker != null && doTriggerRefresh && !externalAccess)
                 {
@@ -1434,7 +1462,7 @@ namespace FanartHandler
               ExternalAccess.InvokeScraperCompleted(category.ToString(), dbartist);
             }
 
-            if ((num > 0) && (category != Utils.Category.MusicFanartScraped))
+            if ((num > 0) && ((category != Utils.Category.MusicFanartScraped) || (category != Utils.Category.MovieScraped)))
               break ;
             if (Utils.GetDbm().StopScraper)
               break;
@@ -1591,6 +1619,15 @@ namespace FanartHandler
           return false;
         Text = sArtist ;
         logger.Info("Download: ClearArt for " + Text + " (" + filename + ").");
+      }
+      else if (category == Utils.Category.MovieScraped)
+      {
+        path = Utils.FAHSMovies;
+        filename = Path.Combine(path, sArtist + "{"+id+"}.jpg");
+        if (File.Exists(filename))
+          return false;
+        Text = sArtist + " ["+id+"]";
+        logger.Info("Download: Fanart for Movies " + Text + " (" + filename + ").");
       }
       else
       {

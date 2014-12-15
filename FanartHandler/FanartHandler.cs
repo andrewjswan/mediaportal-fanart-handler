@@ -188,6 +188,7 @@ namespace FanartHandler
       {
         if (al == null || al.Count <= 1)
           return;
+
         var index = 0;
         while (index < checked (al.Count - 1))
         {
@@ -447,11 +448,12 @@ namespace FanartHandler
         {
           if (!FR.WindowsUsingFanartRandom.ContainsKey(windowId) && 
               !FS.WindowsUsingFanartSelectedMusic.ContainsKey(windowId) && 
-              (!FS.WindowsUsingFanartSelectedScoreCenter.ContainsKey(windowId) && !FS.WindowsUsingFanartSelectedMovie.ContainsKey(windowId))
+              !FS.WindowsUsingFanartSelectedScoreCenter.ContainsKey(windowId) && 
+              !FS.WindowsUsingFanartSelectedMovie.ContainsKey(windowId) &&
+              !FP.WindowsUsingFanartPlay.ContainsKey(windowId)
              ) 
           {
-            if (!FP.WindowsUsingFanartPlay.ContainsKey(windowId))
-              return flag;   
+            return flag;   
           }
           if (AllowFanartInThisWindow(windowId))
             flag = true;
@@ -508,9 +510,9 @@ namespace FanartHandler
         var windowId = string.Empty + GUIWindowManager.ActiveWindow;
         if (!FR.WindowsUsingFanartRandom.ContainsKey(windowId) && 
             !FS.WindowsUsingFanartSelectedMusic.ContainsKey(windowId) && 
-            (!FS.WindowsUsingFanartSelectedScoreCenter.ContainsKey(windowId) && !FS.WindowsUsingFanartSelectedMovie.ContainsKey(windowId)) && 
-            !FP.WindowsUsingFanartPlay.ContainsKey(windowId) || 
-            (!AllowFanartInThisWindow(windowId) || (!Utils.ScraperMPDatabase || Utils.GetDbm().GetIsScraping()))
+            !FS.WindowsUsingFanartSelectedScoreCenter.ContainsKey(windowId) && 
+            !FS.WindowsUsingFanartSelectedMovie.ContainsKey(windowId) && 
+            !FP.WindowsUsingFanartPlay.ContainsKey(windowId) || (!AllowFanartInThisWindow(windowId) || (!Utils.ScraperMPDatabase || Utils.GetDbm().GetIsScraping()))
            )
           return;
         StartScraper();
@@ -789,139 +791,13 @@ namespace FanartHandler
       }
     }
 
-    private string GetNodeValue(XPathNodeIterator myXPathNodeIterator)
-    {
-      if (myXPathNodeIterator.Count > 0)
-      {
-        myXPathNodeIterator.MoveNext();
-        if (myXPathNodeIterator.Current != null)
-          return myXPathNodeIterator.Current.Value;
-      }
-      return string.Empty;
-    }
-
-    private void SetupWindowsUsingFanartHandlerVisibility(string ThemeDir = (string) null)
-    {
-      var path = string.Empty ;
-
-      if (string.IsNullOrEmpty(ThemeDir))
-      {
-        FS.WindowsUsingFanartSelectedMusic = new Hashtable();
-        FS.WindowsUsingFanartSelectedScoreCenter = new Hashtable();
-        FS.WindowsUsingFanartSelectedMovie = new Hashtable();
-        FP.WindowsUsingFanartPlay = new Hashtable();
-
-        path = GUIGraphicsContext.Skin + "\\";
-        logger.Debug("Scan Skin folder for XML: "+path) ;
-      }
-      else
-      {
-        path = ThemeDir;
-        logger.Debug("Scan Skin Theme folder for XML: "+path) ;
-      }
-
-      var files = new DirectoryInfo(path).GetFiles("*.xml");
-      var XMLName = string.Empty;
-
-      foreach (var fileInfo in files)
-      {
-        try
-        {
-          XMLName = fileInfo.Name;
-
-          var _flag1Music = false;
-          var _flag2Music = false;
-          var _flag1ScoreCenter = false;
-          var _flag2ScoreCenter = false;
-          var _flag1Movie = false;
-          var _flag2Movie = false;
-          var _flagPlay = false;
-
-          var XMLFolder = fileInfo.FullName.Substring(0, fileInfo.FullName.LastIndexOf("\\"));
-          var navigator = new XPathDocument(fileInfo.FullName).CreateNavigator();
-          var nodeValue = GetNodeValue(navigator.Select("/window/id"));
-
-          if (!string.IsNullOrEmpty(nodeValue))
-          {
-            HandleXmlImports(fileInfo.FullName, nodeValue, ref _flag1Music, ref _flag2Music, ref _flag1ScoreCenter, ref _flag2ScoreCenter, ref _flag1Movie, ref _flag2Movie, ref _flagPlay);
-            var xpathNodeIterator = navigator.Select("/window/controls/import");
-            if (xpathNodeIterator.Count > 0)
-            {
-              while (xpathNodeIterator.MoveNext())
-              {
-                var XMLFullName = XMLFolder + "\\" + xpathNodeIterator.Current.Value;
-                if (File.Exists(XMLFullName))
-                  HandleXmlImports(XMLFullName, nodeValue, ref _flag1Music, ref _flag2Music, ref _flag1ScoreCenter, ref _flag2ScoreCenter, ref _flag1Movie, ref _flag2Movie, ref _flagPlay);
-              }
-            }
-
-            if (_flag1Music && _flag2Music && !FS.WindowsUsingFanartSelectedMusic.Contains(nodeValue))
-              FS.WindowsUsingFanartSelectedMusic.Add(nodeValue, nodeValue);
-            if (_flag1ScoreCenter && _flag2ScoreCenter && !FS.WindowsUsingFanartSelectedScoreCenter.Contains(nodeValue))
-              FS.WindowsUsingFanartSelectedScoreCenter.Add(nodeValue, nodeValue);
-            if (_flag1Movie && _flag2Movie && !FS.WindowsUsingFanartSelectedMovie.Contains(nodeValue))
-              FS.WindowsUsingFanartSelectedMovie.Add(nodeValue, nodeValue);
-            if (_flagPlay)
-            {
-              if (!FP.WindowsUsingFanartPlay.Contains(nodeValue))
-                FP.WindowsUsingFanartPlay.Add(nodeValue, nodeValue);
-            }
-          }
-        }
-        catch (Exception ex)
-        {
-          logger.Error("SetupWindowsUsingFanartHandlerVisibility: "+(string.IsNullOrEmpty(ThemeDir) ? "" : "Theme: "+ThemeDir+" ")+"Filename:"+ XMLName) ;
-          logger.Error(ex) ;
-        }
-      }
-
-      if (string.IsNullOrEmpty(ThemeDir) && !string.IsNullOrEmpty(GUIGraphicsContext.ThemeName)) 
-      {
-        // Include Themes
-        SetupWindowsUsingFanartHandlerVisibility(path+@"Themes\"+GUIGraphicsContext.ThemeName.Trim()+@"\");
-      }
-    }
-
-    private void HandleXmlImports(string filename, string windowId, ref bool _flag1Music, ref bool _flag2Music, ref bool _flag1ScoreCenter, ref bool _flag2ScoreCenter, ref bool _flag1Movie, ref bool _flag2Movie, ref bool _flagPlay)
-    {
-      var xpathDocument = new XPathDocument(filename);
-      var output = new StringBuilder();
-      var str1 = string.Empty;
-      using (var writer = XmlWriter.Create(output))
-        xpathDocument.CreateNavigator().WriteSubtree(writer);
-      var str2 = output.ToString();
-
-      if (str2.Contains("#useSelectedFanart:Yes"))
-      {
-        _flag1Music = true;
-        _flag1Movie = true;
-        _flag1ScoreCenter = true;
-      }
-      if (str2.Contains("#usePlayFanart:Yes"))
-      {
-        _flagPlay = true;
-      }
-      if (str2.Contains("fanarthandler.music.backdrop1.selected") || str2.Contains("fanarthandler.music.backdrop2.selected"))
-      {
-        _flag2Music = true;
-      }
-      if (str2.Contains("fanarthandler.scorecenter.backdrop1.selected") || str2.Contains("fanarthandler.scorecenter.backdrop2.selected"))
-      {
-        _flag2ScoreCenter = true;
-      }
-      if (str2.Contains("fanarthandler.movie.backdrop1.selected") || str2.Contains("fanarthandler.movie.backdrop2.selected"))
-      {
-        _flag2Movie = true;
-      }
-    }
-
     internal void InitRandomProperties()
     {
       if (Utils.GetIsStopping())
         return;
       try
       {
-        if (!FR.WindowsUsingFanartRandom.ContainsKey("35"))
+        if (!FR.WindowsUsingFanartRandom.ContainsKey("35")) // For Basic Home start later ... ???
           return;
         IsRandom = true;
         FR.RefreshRandomImageProperties(null);
@@ -1159,7 +1035,7 @@ namespace FanartHandler
         FP = new FanartPlaying();
         FS = new FanartSelected();
         FR = new FanartRandom();
-        FR.SetupWindowsUsingRandomImages();
+        // FR.SetupWindowsUsingRandomImages();
         //
         SetupWindowsUsingFanartHandlerVisibility();
         SetupVariables();
@@ -1202,8 +1078,10 @@ namespace FanartHandler
         refreshTimer.Interval = 250.0;
         if (FR.WindowsUsingFanartRandom.ContainsKey("35") || 
             FS.WindowsUsingFanartSelectedMusic.ContainsKey("35") || 
-            (FS.WindowsUsingFanartSelectedScoreCenter.ContainsKey("35") || FS.WindowsUsingFanartSelectedMovie.ContainsKey("35")) || 
-            (FP.WindowsUsingFanartPlay.ContainsKey("35") || Utils.UseOverlayFanart)
+            FS.WindowsUsingFanartSelectedScoreCenter.ContainsKey("35") || 
+            FS.WindowsUsingFanartSelectedMovie.ContainsKey("35") || 
+            FP.WindowsUsingFanartPlay.ContainsKey("35") || 
+            Utils.UseOverlayFanart
            )
           refreshTimer.Start();
         //
@@ -1284,10 +1162,10 @@ namespace FanartHandler
         var windowId = string.Empty + activeWindowId;
         if ((FR.WindowsUsingFanartRandom.ContainsKey(windowId) || 
              FS.WindowsUsingFanartSelectedMusic.ContainsKey(windowId) || 
-             (FS.WindowsUsingFanartSelectedScoreCenter.ContainsKey(windowId) || FS.WindowsUsingFanartSelectedMovie.ContainsKey(windowId)) || 
+             FS.WindowsUsingFanartSelectedScoreCenter.ContainsKey(windowId) || 
+             FS.WindowsUsingFanartSelectedMovie.ContainsKey(windowId) || 
              FP.WindowsUsingFanartPlay.ContainsKey(windowId)
-            ) && 
-            AllowFanartInThisWindow(windowId)
+            ) && AllowFanartInThisWindow(windowId)
            )
         {
           if (Utils.GetDbm().GetIsScraping())
@@ -1368,12 +1246,12 @@ namespace FanartHandler
             if (FR.DoShowImageOneRandom)
             {
               FR.ShowImageOneRandom(activeWindowId);
-              FR.DoShowImageOneRandom = true;
+              // FR.DoShowImageOneRandom = true;
             }
             else
             {
               FR.ShowImageTwoRandom(activeWindowId);
-              FR.DoShowImageOneRandom = false;
+              // FR.DoShowImageOneRandom = false;
             }
             if (refreshTimer != null && !refreshTimer.Enabled)
               refreshTimer.Start();
@@ -1721,6 +1599,7 @@ namespace FanartHandler
       {
         if (FR.IsPropertyRandomPerm(filename))
           return;
+
         GUITextureManager.ReleaseTexture(filename);
       }
       catch (Exception ex)
@@ -1886,5 +1765,215 @@ namespace FanartHandler
         logger.Error("Stop: " + ex);
       }
     }
+
+    #region Setup Windows From Skin File
+    private string GetNodeValue(XPathNodeIterator myXPathNodeIterator)
+    {
+      if (myXPathNodeIterator.Count > 0)
+      {
+        myXPathNodeIterator.MoveNext();
+        if (myXPathNodeIterator.Current != null)
+          return myXPathNodeIterator.Current.Value;
+      }
+      return string.Empty;
+    }
+
+    private string ParseNodeValue(string s)
+    {
+      return !string.IsNullOrEmpty(s) && s.Substring(checked (s.IndexOf(":", StringComparison.CurrentCulture) + 1)).Equals("Yes", StringComparison.CurrentCulture) ? "True" : "False";
+    }
+
+    private void SetupWindowsUsingFanartHandlerVisibility(string ThemeDir = (string) null)
+    {
+      var path = string.Empty ;
+
+      if (string.IsNullOrEmpty(ThemeDir))
+      {
+        FS.WindowsUsingFanartSelectedMusic = new Hashtable();
+        FS.WindowsUsingFanartSelectedScoreCenter = new Hashtable();
+        FS.WindowsUsingFanartSelectedMovie = new Hashtable();
+        FP.WindowsUsingFanartPlay = new Hashtable();
+        FR.WindowsUsingFanartRandom = new Hashtable();
+
+        path = GUIGraphicsContext.Skin + "\\";
+        logger.Debug("Scan Skin folder for XML: "+path) ;
+      }
+      else
+      {
+        path = ThemeDir;
+        logger.Debug("Scan Skin Theme folder for XML: "+path) ;
+      }
+
+      var files = new DirectoryInfo(path).GetFiles("*.xml");
+      var XMLName = string.Empty;
+
+      foreach (var fileInfo in files)
+      {
+        try
+        {
+          XMLName = fileInfo.Name;
+
+          var _flag1Music = false;
+          var _flag2Music = false;
+          var _flag1ScoreCenter = false;
+          var _flag2ScoreCenter = false;
+          var _flag1Movie = false;
+          var _flag2Movie = false;
+          var _flagPlay = false;
+
+          var XMLFolder = fileInfo.FullName.Substring(0, fileInfo.FullName.LastIndexOf("\\"));
+          var navigator = new XPathDocument(fileInfo.FullName).CreateNavigator();
+          var nodeValue = GetNodeValue(navigator.Select("/window/id"));
+
+          if (!string.IsNullOrEmpty(nodeValue))
+          {
+            HandleXmlImports(fileInfo.FullName, nodeValue, ref _flag1Music, ref _flag2Music, ref _flag1ScoreCenter, ref _flag2ScoreCenter, ref _flag1Movie, ref _flag2Movie, ref _flagPlay);
+            var xpathNodeIterator = navigator.Select("/window/controls/import");
+            if (xpathNodeIterator.Count > 0)
+            {
+              while (xpathNodeIterator.MoveNext())
+              {
+                var XMLFullName = XMLFolder + "\\" + xpathNodeIterator.Current.Value;
+                if (File.Exists(XMLFullName))
+                  HandleXmlImports(XMLFullName, nodeValue, ref _flag1Music, ref _flag2Music, ref _flag1ScoreCenter, ref _flag2ScoreCenter, ref _flag1Movie, ref _flag2Movie, ref _flagPlay);
+              }
+            }
+
+            if (_flag1Music && _flag2Music && !FS.WindowsUsingFanartSelectedMusic.Contains(nodeValue))
+              FS.WindowsUsingFanartSelectedMusic.Add(nodeValue, nodeValue);
+            if (_flag1ScoreCenter && _flag2ScoreCenter && !FS.WindowsUsingFanartSelectedScoreCenter.Contains(nodeValue))
+              FS.WindowsUsingFanartSelectedScoreCenter.Add(nodeValue, nodeValue);
+            if (_flag1Movie && _flag2Movie && !FS.WindowsUsingFanartSelectedMovie.Contains(nodeValue))
+              FS.WindowsUsingFanartSelectedMovie.Add(nodeValue, nodeValue);
+            if (_flagPlay && !FP.WindowsUsingFanartPlay.Contains(nodeValue))
+                FP.WindowsUsingFanartPlay.Add(nodeValue, nodeValue);
+
+            #region Random
+            var skinFile = new FanartRandom.SkinFile();
+            xpathNodeIterator = navigator.Select("/window/define");
+            if (xpathNodeIterator.Count > 0)
+            {
+              while (xpathNodeIterator.MoveNext())
+              {
+                var s = xpathNodeIterator.Current.Value;
+                if (s.StartsWith("#useRandomGamesUserFanart", StringComparison.CurrentCulture))
+                  skinFile.UseRandomGamesFanartUser = ParseNodeValue(s);
+                if (s.StartsWith("#useRandomMoviesUserFanart", StringComparison.CurrentCulture))
+                  skinFile.UseRandomMoviesFanartUser = ParseNodeValue(s);
+                if (s.StartsWith("#useRandomMoviesScraperFanart", StringComparison.CurrentCulture))
+                  skinFile.UseRandomMoviesFanartScraper = ParseNodeValue(s);
+                if (s.StartsWith("#useRandomMovingPicturesFanart", StringComparison.CurrentCulture))
+                  skinFile.UseRandomMovingPicturesFanart = ParseNodeValue(s);
+                if (s.StartsWith("#useRandomMusicUserFanart", StringComparison.CurrentCulture))
+                  skinFile.UseRandomMusicFanartUser = ParseNodeValue(s);
+                if (s.StartsWith("#useRandomMusicScraperFanart", StringComparison.CurrentCulture))
+                  skinFile.UseRandomMusicFanartScraper = ParseNodeValue(s);
+                if (s.StartsWith("#useRandomPicturesUserFanart", StringComparison.CurrentCulture))
+                  skinFile.UseRandomPicturesFanartUser = ParseNodeValue(s);
+                if (s.StartsWith("#useRandomScoreCenterUserFanart", StringComparison.CurrentCulture))
+                  skinFile.UseRandomScoreCenterFanartUser = ParseNodeValue(s);
+                if (s.StartsWith("#useRandomTVSeriesFanart", StringComparison.CurrentCulture))
+                  skinFile.UseRandomTVSeriesFanart = ParseNodeValue(s);
+                if (s.StartsWith("#useRandomTVUserFanart", StringComparison.CurrentCulture))
+                  skinFile.UseRandomTVFanartUser = ParseNodeValue(s);
+                if (s.StartsWith("#useRandomPluginsUserFanart", StringComparison.CurrentCulture))
+                  skinFile.UseRandomPluginsFanartUser = ParseNodeValue(s);
+              }
+              if (string.IsNullOrEmpty(skinFile.UseRandomGamesFanartUser))
+                skinFile.UseRandomGamesFanartUser = "False";
+              if (string.IsNullOrEmpty(skinFile.UseRandomMoviesFanartUser))
+                skinFile.UseRandomMoviesFanartUser = "False";
+              if (string.IsNullOrEmpty(skinFile.UseRandomMoviesFanartScraper))
+                skinFile.UseRandomMoviesFanartScraper = "False";
+              if (string.IsNullOrEmpty(skinFile.UseRandomMovingPicturesFanart))
+                skinFile.UseRandomMovingPicturesFanart = "False";
+              if (string.IsNullOrEmpty(skinFile.UseRandomMusicFanartUser))
+                skinFile.UseRandomMusicFanartUser = "False";
+              if (string.IsNullOrEmpty(skinFile.UseRandomMusicFanartScraper))
+                skinFile.UseRandomMusicFanartScraper = "False";
+              if (string.IsNullOrEmpty(skinFile.UseRandomPicturesFanartUser))
+                skinFile.UseRandomPicturesFanartUser = "False";
+              if (string.IsNullOrEmpty(skinFile.UseRandomScoreCenterFanartUser))
+                skinFile.UseRandomScoreCenterFanartUser = "False";
+              if (string.IsNullOrEmpty(skinFile.UseRandomTVSeriesFanart))
+                skinFile.UseRandomTVSeriesFanart = "False";
+              if (string.IsNullOrEmpty(skinFile.UseRandomTVFanartUser))
+                skinFile.UseRandomTVFanartUser = "False";
+              if (string.IsNullOrEmpty(skinFile.UseRandomPluginsFanartUser))
+                skinFile.UseRandomPluginsFanartUser = "False";
+            }
+            try
+            {
+              if (skinFile.UseRandomGamesFanartUser.Equals("False", StringComparison.CurrentCulture) && 
+                  skinFile.UseRandomMoviesFanartUser.Equals("False", StringComparison.CurrentCulture) && 
+                  skinFile.UseRandomMoviesFanartScraper.Equals("False", StringComparison.CurrentCulture) && 
+                  skinFile.UseRandomMovingPicturesFanart.Equals("False", StringComparison.CurrentCulture) && 
+                  skinFile.UseRandomMusicFanartUser.Equals("False", StringComparison.CurrentCulture) && 
+                  skinFile.UseRandomMusicFanartScraper.Equals("False", StringComparison.CurrentCulture) && 
+                  skinFile.UseRandomPicturesFanartUser.Equals("False", StringComparison.CurrentCulture) && 
+                  skinFile.UseRandomScoreCenterFanartUser.Equals("False", StringComparison.CurrentCulture) && 
+                  skinFile.UseRandomTVSeriesFanart.Equals("False", StringComparison.CurrentCulture) && 
+                  skinFile.UseRandomTVFanartUser.Equals("False", StringComparison.CurrentCulture) &&
+                  skinFile.UseRandomPluginsFanartUser.Equals("False", StringComparison.CurrentCulture)
+                 )
+              {
+                continue;
+              }
+              if (!FR.WindowsUsingFanartRandom.Contains(nodeValue))
+                FR.WindowsUsingFanartRandom.Add(nodeValue, skinFile);
+              else
+                FR.WindowsUsingFanartRandom[nodeValue] = skinFile ; 
+            }
+            catch {  }
+            #endregion
+          }
+        }
+        catch (Exception ex)
+        {
+          logger.Error("SetupWindowsUsingFanartHandlerVisibility: "+(string.IsNullOrEmpty(ThemeDir) ? "" : "Theme: "+ThemeDir+" ")+"Filename:"+ XMLName) ;
+          logger.Error(ex) ;
+        }
+      }
+
+      if (string.IsNullOrEmpty(ThemeDir) && !string.IsNullOrEmpty(GUIGraphicsContext.ThemeName)) 
+      {
+        // Include Themes
+        SetupWindowsUsingFanartHandlerVisibility(path+@"Themes\"+GUIGraphicsContext.ThemeName.Trim()+@"\");
+      }
+    }
+
+    private void HandleXmlImports(string filename, string windowId, ref bool _flag1Music, ref bool _flag2Music, ref bool _flag1ScoreCenter, ref bool _flag2ScoreCenter, ref bool _flag1Movie, ref bool _flag2Movie, ref bool _flagPlay)
+    {
+      var xpathDocument = new XPathDocument(filename);
+      var output = new StringBuilder();
+      var str1 = string.Empty;
+      using (var writer = XmlWriter.Create(output))
+        xpathDocument.CreateNavigator().WriteSubtree(writer);
+      var str2 = output.ToString();
+
+      if (str2.Contains("#useSelectedFanart:Yes"))
+      {
+        _flag1Music = true;
+        _flag1Movie = true;
+        _flag1ScoreCenter = true;
+      }
+      if (str2.Contains("#usePlayFanart:Yes"))
+      {
+        _flagPlay = true;
+      }
+      if (str2.Contains("fanarthandler.music.backdrop1.selected") || str2.Contains("fanarthandler.music.backdrop2.selected"))
+      {
+        _flag2Music = true;
+      }
+      if (str2.Contains("fanarthandler.scorecenter.backdrop1.selected") || str2.Contains("fanarthandler.scorecenter.backdrop2.selected"))
+      {
+        _flag2ScoreCenter = true;
+      }
+      if (str2.Contains("fanarthandler.movie.backdrop1.selected") || str2.Contains("fanarthandler.movie.backdrop2.selected"))
+      {
+        _flag2Movie = true;
+      }
+    }
+    #endregion
   }
 }

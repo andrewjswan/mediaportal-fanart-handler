@@ -37,7 +37,6 @@ namespace FanartHandler
 
     protected override void OnDoWork(DoWorkEventArgs e)
     {
-      // var num1 = 0;
       Thread.CurrentThread.Priority = !FanartHandlerSetup.Fh.FHThreadPriority.Equals("Lowest", StringComparison.CurrentCulture) ? ThreadPriority.BelowNormal : ThreadPriority.Lowest;
       Thread.CurrentThread.Name = "RefreshWorker";
       Utils.AllocateDelayStop("RefreshWorker-OnDoWork");
@@ -433,7 +432,7 @@ namespace FanartHandler
         {
           if (FanartHandlerSetup.Fh.FR.UpdateVisibilityCountRandom < 5 || FanartHandlerSetup.Fh.FR.GetPropertiesRandom() != 0)
             return;
-          FanartHandlerSetup.Fh.FR.DoShowImageOneRandom = !FanartHandlerSetup.Fh.FR.DoShowImageOneRandom;
+          // FanartHandlerSetup.Fh.FR.DoShowImageOneRandom = !FanartHandlerSetup.Fh.FR.DoShowImageOneRandom;
           FanartHandlerSetup.Fh.FR.CountSetVisibility = 0;
           FanartHandlerSetup.Fh.FR.UpdateVisibilityCountRandom = 0;
           FanartHandlerSetup.Fh.HandleOldImages(ref FanartHandlerSetup.Fh.FR.ListAnyGamesUser);

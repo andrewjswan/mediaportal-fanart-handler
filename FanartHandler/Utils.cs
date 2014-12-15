@@ -79,7 +79,8 @@ namespace FanartHandler
     public static bool UseDefaultBackdrop { get; set; } 
     public static bool UseSelectedMusicFanart { get; set; } 
     public static bool UseSelectedOtherFanart { get; set; } 
-    public static string FanartTVPersonalAPIKey { get; set; } 
+    public static string FanartTVPersonalAPIKey { get; set; }
+    public static bool DeleteMissing { get; set; }
     #endregion
 
     #region FanartHandler folders
@@ -1136,6 +1137,7 @@ namespace FanartHandler
       UseSelectedMusicFanart = true;
       UseSelectedOtherFanart = true;
       FanartTVPersonalAPIKey = string.Empty;
+      DeleteMissing = false;
       #endregion
       try
       {
@@ -1173,6 +1175,7 @@ namespace FanartHandler
           UseSelectedMusicFanart = settings.GetValueAsBool("FanartHandler", "UseSelectedMusicFanart", UseSelectedMusicFanart);
           UseSelectedOtherFanart = settings.GetValueAsBool("FanartHandler", "UseSelectedOtherFanart", UseSelectedOtherFanart);
           FanartTVPersonalAPIKey = settings.GetValueAsString("FanartHandler", "FanartTVPersonalAPIKey", FanartTVPersonalAPIKey);
+          DeleteMissing = settings.GetValueAsBool("FanartHandler", "DeleteMissing", DeleteMissing);
           //
           LoadBadArtists(settings);
         }
@@ -1222,6 +1225,7 @@ namespace FanartHandler
           xmlwriter.SetValueAsBool("FanartHandler", "ScanMusicFoldersForFanart", ScanMusicFoldersForFanart);
           xmlwriter.SetValue("FanartHandler", "MusicFoldersArtistAlbumRegex", MusicFoldersArtistAlbumRegex);
           xmlwriter.SetValue("FanartHandler", "FanartTVPersonalAPIKey", FanartTVPersonalAPIKey);
+          xmlwriter.SetValueAsBool("FanartHandler", "DeleteMissing", DeleteMissing);
         }
         #endregion
         logger.Debug("Save settings to: "+ConfigFilename+" complete.");
