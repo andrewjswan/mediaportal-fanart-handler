@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using MediaPortal.Configuration;
 using MediaPortal.Database;
 using MediaPortal.Music.Database;
+using MediaPortal.Video.Database;
 using NLog;
 using SQLite.NET;
 
@@ -27,7 +28,9 @@ namespace FanartHandler
         private SQLiteClient dbClient;
         private Hashtable htAnyFanart;
         private MusicDatabase m_db;
+        // private VideoDatabase v_db;
         private ArrayList musicDatabaseArtists;
+        private ArrayList videoDatabaseMovies;
         private List<AlbumInfo> musicDatabaseAlbums;
         private Scraper scraper;
 
@@ -76,6 +79,10 @@ namespace FanartHandler
                   CreateDBMain() ;
 
                 m_db = MusicDatabase.Instance;
+                logger.Debug("Successfully Opened Database: "+m_db.DatabaseName);
+                // v_db = VideoDatabase.Instance;
+                logger.Debug("Successfully Opened Database: "+VideoDatabase.DatabaseName);
+                //
                 logger.Info("Successfully Opened Database: "+dbFilename);
 
                 UpgradeDBMain(type);
@@ -1028,6 +1035,9 @@ namespace FanartHandler
         #region Initial Scrape
         public void InitialScrape()
         {
+            if (Utils.DeleteMissing)
+              logger.Info("Synchronised fanart database: Removed " + Utils.GetDbm().DeleteRecordsWhereFileIsMissing() + " entries.");
+
             try
             {
                 logger.Info("InitialScrape is starting...");
@@ -1035,6 +1045,7 @@ namespace FanartHandler
 
                 if (FanartHandlerSetup.Fh.MyScraperWorker != null)
                     FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, "Start");
+                TotArtistsBeingScraped = 0.0;
 
                 #region Artists
                 musicDatabaseArtists = new ArrayList();
@@ -1047,10 +1058,9 @@ namespace FanartHandler
                     musicDatabaseArtists.AddRange(musicVideoArtists);
                 }
                 #endregion
-                TotArtistsBeingScraped = checked (musicDatabaseArtists.Count);
-
                 if (musicDatabaseArtists != null && musicDatabaseArtists.Count > 0)
                 {
+                    TotArtistsBeingScraped = checked (musicDatabaseArtists.Count);
                     logger.Debug("InitialScrape initiating for Artists...");
                     var htFanart = new Hashtable();
 
@@ -1130,10 +1140,9 @@ namespace FanartHandler
                       musicDatabaseAlbums.AddRange(musicVideoAlbums);
                   }
                   #endregion
-                  TotArtistsBeingScraped = checked (TotArtistsBeingScraped + musicDatabaseAlbums.Count);
-
                   if (musicDatabaseAlbums != null && musicDatabaseAlbums.Count > 0)
                   {
+                      TotArtistsBeingScraped = checked (TotArtistsBeingScraped + musicDatabaseAlbums.Count);
                       logger.Debug("InitialScrape initiating for Artist/Albums...");
                       var htAlbums = new Hashtable();
 
@@ -1197,6 +1206,80 @@ namespace FanartHandler
                       logger.Debug("InitialScrape done for Artist/Albums.");
                   }
                   musicDatabaseAlbums = null;
+                }
+                #endregion
+                #region Movies
+                if (Utils.UseVideoFanart)
+                {
+                  videoDatabaseMovies = new ArrayList();
+                  VideoDatabase.GetMovies(ref videoDatabaseMovies);
+
+                  if (videoDatabaseMovies != null && videoDatabaseMovies.Count > 0)
+                  {
+                      TotArtistsBeingScraped = checked (TotArtistsBeingScraped + videoDatabaseMovies.Count);
+                      logger.Debug("InitialScrape initiating for Movies...");
+                      var htMovies = new Hashtable();
+
+                      var SQL = "SELECT DISTINCT Key1, sum(Count) as Count FROM ("+
+                                  "SELECT Key1, count(Key1) as Count "+
+                                    "FROM Image "+
+                                    "WHERE Category in ('" + ((object) Utils.Category.MovieScraped).ToString() + "') AND "+
+                                          "Time_Stamp >= '" + DateTime.Today.AddDays(-14.0).ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "' "+
+                                    "GROUP BY Key1 "+
+                                  "UNION ALL "+
+                                  "SELECT Key1, count(Key1) as Count "+
+                                    "FROM Image "+
+                                    "WHERE Category in ('" + ((object) Utils.Category.MovieScraped).ToString() + "') AND "+
+                                          "Enabled = 'True' AND "+
+                                          "DummyItem = 'False' "+
+                                    "GROUP BY Key1 "+
+                                    "HAVING count(key1) >= " + Utils.GetScraperMaxImages().Trim() +
+                                ") GROUP BY Key1;";
+                      SQLiteResultSet sqLiteResultSet;
+                      lock (lockObject)
+                          sqLiteResultSet = dbClient.Execute(SQL);
+
+                      var i = 0;
+                      while (i < sqLiteResultSet.Rows.Count)
+                      {
+                          var htMovie = sqLiteResultSet.GetField(i, 0) ;
+                          if (!htMovies.Contains(htMovie))
+                              htMovies.Add(htMovie,sqLiteResultSet.GetField(i, 2));
+                          checked { ++i; }
+                      }
+
+                      logger.Debug("InitialScrape Movies: ["+htMovies.Count+"]/["+videoDatabaseMovies.Count+"]");
+                      var index = 0;
+                      while (index < videoDatabaseMovies.Count)
+                      {
+                          IMDBMovie details = new IMDBMovie();
+                          details = (IMDBMovie) videoDatabaseMovies[index] ;
+                          var movieID = details.ID.ToString();
+                          var movieIMDBID = details.IMDBNumber.Trim().ToLower().Replace("unknown",string.Empty);
+                          if (!string.IsNullOrEmpty(movieID) && !string.IsNullOrEmpty(movieIMDBID))
+                          {
+                              if (!htMovies.Contains(movieID))
+                              {
+                                  if (!StopScraper && !Utils.GetIsStopping()) 
+                                  {
+                                      scraper = new Scraper();
+                                      scraper.GetMoviesFanart(movieID, movieIMDBID);
+                                      scraper = null;
+                                  }
+                                  else
+                                    break;
+                              }
+                          }
+                          #region Report
+                          ++CurrArtistsBeingScraped;
+                          if (TotArtistsBeingScraped > 0.0 && FanartHandlerSetup.Fh.MyScraperWorker != null)
+                              FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(Convert.ToInt32(CurrArtistsBeingScraped/TotArtistsBeingScraped*100.0),"Ongoing");
+                          #endregion
+                          checked { ++index; }
+                      }
+                      logger.Debug("InitialScrape done for Movies.");
+                  }
+                  videoDatabaseMovies = null;
                 }
                 #endregion
                 AddScapedFanartToAnyHash();
@@ -1334,35 +1417,23 @@ namespace FanartHandler
         {
             try
             {
-                logger.Info("NowPlayingScrape is starting for Artist: " + artist + ".");
-                TotArtistsBeingScraped = 1.0;
-                CurrArtistsBeingScraped = 0.0;
+                logger.Info("NowPlayingScrape is starting for Artist(s): " + artist + (string.IsNullOrEmpty(album) ? "" : " - " + album));
+
                 var flag = false;
-                if (artist.Contains("|"))
+                var chArray = new char[2] { '|', ';' };
+                string[] artists = artist.Split(chArray,StringSplitOptions.RemoveEmptyEntries);
+                CurrArtistsBeingScraped = 0.0;
+                TotArtistsBeingScraped = artists.Length * 1.0;
+                foreach (string sartist in artists)
                 {
-                    var chArray = new char[1] { '|' };
-                    string[] artists = artist.Split(chArray,StringSplitOptions.RemoveEmptyEntries);
-                    TotArtistsBeingScraped = artists.Length * 1.0;
-                    foreach (string sartist in artists)
-                    {
-                        if (!StopScraper) 
-                            flag = (flag || (DoScrapeNew(sartist.Trim(), album, false) > 0));
-                        else
-                            break;
-                    }
-                    logger.Info("NowPlayingScrape is done.");
-                    return flag;
+                  logger.Debug("NowPlayingScrape is starting for Artist: " + sartist + (string.IsNullOrEmpty(album) ? "" : " - " + album));
+                  if (!StopScraper) 
+                    flag = (flag || (DoScrapeNew(sartist.Trim(), album, false) > 0));
+                  else
+                    break;
                 }
-                else if (DoScrapeNew(artist, album, false) > 0)
-                {
-                    logger.Info("NowPlayingScrape is done.");
-                    return true;
-                }
-                else
-                {
-                    logger.Info("NowPlayingScrape is done.");
-                    return false;
-                }
+                logger.Info("NowPlayingScrape is done.");
+                return flag;
             }
             catch (Exception ex)
             {

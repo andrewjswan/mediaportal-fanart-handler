@@ -18,31 +18,34 @@ namespace FanartHandler
   {
     private static readonly Logger logger = LogManager.GetCurrentClassLogger();
     private bool doShowImageOne = true;
+
     public string CurrSelectedMovie;
     public string CurrSelectedMovieTitle;
     public string CurrSelectedMusic;
     public string CurrSelectedMusicArtist;
     public string CurrSelectedScorecenter;
+
     public ArrayList ListSelectedMovies;
     public ArrayList ListSelectedMusic;
     public ArrayList ListSelectedScorecenter;
+
     public int PrevSelectedGeneric;
     public int PrevSelectedMusic;
     public int PrevSelectedScorecenter;
 
-    public Hashtable CurrentArtistsImageNames { get; set; }
-
-    public Hashtable Properties { get; set; }
-
     public int CurrCount { get; set; }
-
-    public string CurrSelectedScorecenterGenre { get; set; }
-
     public int UpdateVisibilityCount { get; set; }
 
     public bool FanartAvailable { get; set; }
-
     public bool HasUpdatedCurrCount { get; set; }
+
+    public string CurrSelectedScorecenterGenre { get; set; }
+
+    public Hashtable CurrentArtistsImageNames { get; set; }
+    public Hashtable Properties { get; set; }
+    public Hashtable WindowsUsingFanartSelectedMusic { get; set; }
+    public Hashtable WindowsUsingFanartSelectedScoreCenter { get; set; }
+    public Hashtable WindowsUsingFanartSelectedMovie { get; set; }
 
     public bool DoShowImageOne
     {
@@ -55,12 +58,6 @@ namespace FanartHandler
         doShowImageOne = value;
       }
     }
-
-    public Hashtable WindowsUsingFanartSelectedMusic { get; set; }
-
-    public Hashtable WindowsUsingFanartSelectedScoreCenter { get; set; }
-
-    public Hashtable WindowsUsingFanartSelectedMovie { get; set; }
 
     static FanartSelected()
     {
@@ -137,14 +134,14 @@ namespace FanartHandler
                  GUIWindowManager.ActiveWindow == 28       // My Video Play List
                 )
         {
-          var property1 = GUIPropertyManager.GetProperty("#movieid");
-          FanartHandlerSetup.Fh.SelectedItem = property1 == null || 
-                                               property1 == string.Empty || 
-                                               property1 == "-1" ? 
+          var movieID = GUIPropertyManager.GetProperty("#movieid");
+          FanartHandlerSetup.Fh.SelectedItem = movieID == null || 
+                                               movieID == string.Empty || 
+                                               movieID == "-1" ? 
                                                  (GUIWindowManager.ActiveWindow != 2003 ? 
                                                     GUIPropertyManager.GetProperty("#selecteditem") : 
                                                     GUIPropertyManager.GetProperty("#title")) : 
-                                                 property1;
+                                                 movieID;
         }
         else if (GUIWindowManager.ActiveWindow == 9813)    // TVSeries Playlist
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#TVSeries.Episode.SeriesName");
@@ -194,7 +191,6 @@ namespace FanartHandler
 
           if ((!currSelectedGenericTitle.Equals(FanartHandlerSetup.Fh.SelectedItem, StringComparison.CurrentCulture)) || (CurrCount >= FanartHandlerSetup.Fh.MaxCountImage))
           {
-            // var str1 = string.Empty;
             var str2 = string.Empty;
             var str3 = string.Empty;
             var flag = (!currSelectedGenericTitle.Equals(FanartHandlerSetup.Fh.SelectedItem, StringComparison.CurrentCulture));
