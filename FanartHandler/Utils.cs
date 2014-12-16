@@ -722,9 +722,7 @@ namespace FanartHandler
         {
           externalDatabaseManager1.Close();
         }
-        catch
-        {
-        }
+        catch { }
         return arrayList;
       }
       catch (Exception ex)
@@ -736,13 +734,28 @@ namespace FanartHandler
       return null;
     }
 
-    public static string GetArtistLeftOfMinusSign(string key)
+    public static string GetArtistLeftOfMinusSign(string key, bool flag = false)
     {
       if (key == null)
         return string.Empty;
-      if (key.IndexOf("-", StringComparison.CurrentCulture) >= 0)
+
+      if ((flag) && (key.IndexOf(" - ", StringComparison.CurrentCulture) >= 0))
+        key = key.Substring(0, key.LastIndexOf(" - ", StringComparison.CurrentCulture));
+      else if (key.IndexOf("-", StringComparison.CurrentCulture) >= 0)
         key = key.Substring(0, key.LastIndexOf("-", StringComparison.CurrentCulture));
-      return key;
+      return key.Trim();
+    }
+
+    public static string GetAlbumRightOfMinusSign(string key, bool flag = false)
+    {
+      if (key == null)
+        return string.Empty;
+
+      if ((flag) && (key.IndexOf(" - ", StringComparison.CurrentCulture) >= 0))
+        key = key.Substring(checked (key.LastIndexOf(" - ", StringComparison.CurrentCulture) + 3));
+      else if (key.IndexOf("-", StringComparison.CurrentCulture) >= 0)
+        key = key.Substring(checked (key.LastIndexOf("-", StringComparison.CurrentCulture) + 1));
+      return key.Trim();
     }
 
     public static string GetFilenameNoPath(string key)
