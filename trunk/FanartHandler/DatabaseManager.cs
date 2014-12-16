@@ -34,6 +34,7 @@ namespace FanartHandler
         private List<AlbumInfo> musicDatabaseAlbums;
         private Scraper scraper;
 
+
         public bool IsScraping { get; set; }
 
         public double CurrArtistsBeingScraped { get; set; }
@@ -78,11 +79,6 @@ namespace FanartHandler
                 if (flag)
                   CreateDBMain() ;
 
-                m_db = MusicDatabase.Instance;
-                logger.Debug("Successfully Opened Database: "+m_db.DatabaseName);
-                // v_db = VideoDatabase.Instance;
-                logger.Debug("Successfully Opened Database: "+VideoDatabase.DatabaseName);
-                //
                 logger.Info("Successfully Opened Database: "+dbFilename);
 
                 UpgradeDBMain(type);
@@ -90,6 +86,20 @@ namespace FanartHandler
                 if (HtAnyFanart != null)
                     return;
                 HtAnyFanart = new Hashtable();
+
+                if (type.Equals("upgrade", StringComparison.CurrentCulture))
+                  return;
+
+                try
+                {
+                  m_db = MusicDatabase.Instance;
+                  logger.Debug("Successfully Opened Database: "+m_db.DatabaseName);
+                } catch { }
+                try
+                {
+                  // v_db = VideoDatabase.Instance;
+                  logger.Debug("Successfully Opened Database: "+VideoDatabase.DatabaseName);
+                } catch { }
             }
             catch (Exception ex)
             {
@@ -1217,7 +1227,7 @@ namespace FanartHandler
                   if (videoDatabaseMovies != null && videoDatabaseMovies.Count > 0)
                   {
                       TotArtistsBeingScraped = checked (TotArtistsBeingScraped + videoDatabaseMovies.Count);
-                      logger.Debug("InitialScrape initiating for Movies...");
+                      logger.Debug("InitialScrape initiating for Movies (MyVideo)...");
                       var htMovies = new Hashtable();
 
                       var SQL = "SELECT DISTINCT Key1, sum(Count) as Count FROM ("+
@@ -2200,6 +2210,10 @@ namespace FanartHandler
                 else if (category == Utils.Category.MusicFanartScraped)
                 {
                   DummyFile = Path.Combine(Utils.FAHSMusic, MediaPortal.Util.Utils.MakeFileName(artist) + " (" + randNumber.Next(10000, 99999) + ").jpg");
+                }
+                else if (category == Utils.Category.MovieScraped)
+                {
+                  DummyFile = Path.Combine(Utils.FAHSMovies, artist.Trim() + "{" + randNumber.Next(10000, 99999) + "}.jpg");
                 }
                 else
                 {
