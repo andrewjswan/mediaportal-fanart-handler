@@ -634,19 +634,21 @@ namespace FanartHandler
       return str1 + ",'" + inputName + "'";
     }
 
-    public static string RemoveMPArtistPipes(string s)
+    public static string RemoveMPArtistPipes(string s) // ajs: WTF? That this procedure does? And why should she?
     {
       if (s == null)
         return string.Empty;
       else
-        return s;
+        // ajs: return s;
+        return RemoveMPArtistPipe(s) ;
     }
 
     public static string RemoveMPArtistPipe(string s)
     {
       if (s == null)
         return string.Empty;
-      s = s.Replace("|", string.Empty);
+      // s = s.Replace("|", string.Empty);
+      s = s.Replace("|", " ").Replace(";", " ");
       s = s.Trim();
       return s;
     }
