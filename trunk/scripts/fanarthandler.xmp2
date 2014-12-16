@@ -258,6 +258,13 @@
               <ZipFileName>Installer{CopyFile}\{5e610e40-8684-4781-b370-395087fe7664}-default2.jpg</ZipFileName>
               <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\tv\default2.jpg</DestinationFilename>
             </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\Skin Fanart\UserDef\pictures\default2.jpg</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{5496ab9a-9d69-4b24-b8f3-c1791ede2730}-default2.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\pictures\default2.jpg</DestinationFilename>
+            </FileItem>
           </Items>
         </Files>
       </GroupItem>
@@ -792,6 +799,13 @@ cul8er</Value>
         <LocalFileName>..\Installer\Skin Fanart\UserDef\tv\default2.jpg</LocalFileName>
         <ZipFileName>Installer{CopyFile}\{5e610e40-8684-4781-b370-395087fe7664}-default2.jpg</ZipFileName>
         <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\tv\default2.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\Skin Fanart\UserDef\pictures\default2.jpg</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{5496ab9a-9d69-4b24-b8f3-c1791ede2730}-default2.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\pictures\default2.jpg</DestinationFilename>
       </FileItem>
       <FileItem InstallType="CopyFile" SystemFile="true" Modified="true">
         <Param1 />
