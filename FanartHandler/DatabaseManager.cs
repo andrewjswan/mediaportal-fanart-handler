@@ -1070,6 +1070,7 @@ namespace FanartHandler
                 #endregion
                 if (musicDatabaseArtists != null && musicDatabaseArtists.Count > 0)
                 {
+                    FanartHandlerSetup.Fh.SetProperty("#fanartHandler.scraper.task", "Initial Scrape - Artists");
                     TotArtistsBeingScraped = checked (musicDatabaseArtists.Count);
                     logger.Debug("InitialScrape initiating for Artists...");
                     var htFanart = new Hashtable();
@@ -1097,7 +1098,7 @@ namespace FanartHandler
                     while (num < sqLiteResultSet.Rows.Count)
                     {
                         var htArtist = Scraper.UndoArtistPrefix(sqLiteResultSet.GetField(num, 0).ToLower()) ;
-                        if (!htFanart.Contains(htArtist)) // !!! The Beatles <> Beatles
+                        if (!htFanart.Contains(htArtist))
                             htFanart.Add(htArtist, sqLiteResultSet.GetField(num, 1));
                         checked { ++num; }
                     }
@@ -1152,7 +1153,9 @@ namespace FanartHandler
                   #endregion
                   if (musicDatabaseAlbums != null && musicDatabaseAlbums.Count > 0)
                   {
-                      TotArtistsBeingScraped = checked (TotArtistsBeingScraped + musicDatabaseAlbums.Count);
+                      FanartHandlerSetup.Fh.SetProperty("#fanartHandler.scraper.task", "Initial Scrape - Albums");
+                      CurrArtistsBeingScraped = 0.0;
+                      TotArtistsBeingScraped = musicDatabaseAlbums.Count;
                       logger.Debug("InitialScrape initiating for Artist/Albums...");
                       var htAlbums = new Hashtable();
 
@@ -1226,7 +1229,9 @@ namespace FanartHandler
 
                   if (videoDatabaseMovies != null && videoDatabaseMovies.Count > 0)
                   {
-                      TotArtistsBeingScraped = checked (TotArtistsBeingScraped + videoDatabaseMovies.Count);
+                      FanartHandlerSetup.Fh.SetProperty("#fanartHandler.scraper.task", "Initial Scrape - Videos");
+                      CurrArtistsBeingScraped = 0.0;
+                      TotArtistsBeingScraped = videoDatabaseMovies.Count;
                       logger.Debug("InitialScrape initiating for Movies (MyVideo)...");
                       var htMovies = new Hashtable();
 
