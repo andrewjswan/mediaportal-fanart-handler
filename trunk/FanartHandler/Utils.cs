@@ -111,6 +111,7 @@ namespace FanartHandler
     public static string MusicBannerFolder { get; set; }
     public static string MusicCDArtFolder { get; set; }
     public static string MusicMask { get; set; }
+    public static string MoviesClearArtFolder { get; set; }
     #endregion
 
     static Utils()
@@ -127,6 +128,7 @@ namespace FanartHandler
       MusicBannerFolder = string.Empty;
       MusicCDArtFolder = string.Empty;
       MusicMask = "{0} - {1}"; // MePoTools
+      MoviesClearArtFolder = string.Empty;
 
       FAHFolder = string.Empty;
       FAHUDFolder = string.Empty;
@@ -171,7 +173,7 @@ namespace FanartHandler
             MusicClearArtFolder = string.Empty;
         }
       }
-      logger.Debug("Fanart Handler ClearArt folder: "+MusicClearArtFolder);
+      logger.Debug("Fanart Handler Music ClearArt folder: "+MusicClearArtFolder);
 
       MusicBannerFolder = Path.Combine(MPThumbsFolder, @"Banner\Music\"); // MePotools
       if (!Directory.Exists(MusicBannerFolder) || IsDirectoryEmpty(MusicBannerFolder))
@@ -180,7 +182,7 @@ namespace FanartHandler
         if (!Directory.Exists(MusicBannerFolder) || IsDirectoryEmpty(MusicBannerFolder))
           MusicBannerFolder = string.Empty;
       }
-      logger.Debug("Fanart Handler Banner folder: "+MusicBannerFolder);
+      logger.Debug("Fanart Handler Music Banner folder: "+MusicBannerFolder);
 
       MusicCDArtFolder = Path.Combine(MPThumbsFolder, @"CDArt\Music\"); // MePotools
       if (!Directory.Exists(MusicCDArtFolder) || IsDirectoryEmpty(MusicCDArtFolder))
@@ -194,7 +196,19 @@ namespace FanartHandler
         }
         MusicMask = "{0}-{1}"; // Mediaportal
       }
-      logger.Debug("Fanart Handler CD folder: "+MusicCDArtFolder+" Mask: "+MusicMask);
+      logger.Debug("Fanart Handler Music CD folder: "+MusicCDArtFolder+" Mask: "+MusicMask);
+      MoviesClearArtFolder = Path.Combine(MPThumbsFolder, @"ClearArt\Movies\"); // MePotools
+      if (!Directory.Exists(MoviesClearArtFolder) || IsDirectoryEmpty(MoviesClearArtFolder))
+      {
+        MoviesClearArtFolder = Path.Combine(MPThumbsFolder, @"Movies\ClearArt\"); // MusicInfo Handler
+        if (!Directory.Exists(MoviesClearArtFolder) || IsDirectoryEmpty(MoviesClearArtFolder))
+        {
+          MoviesClearArtFolder = Path.Combine(MPThumbsFolder, @"Movies\ClearLogo\FullSize\"); // DVDArt
+          if (!Directory.Exists(MoviesClearArtFolder) || IsDirectoryEmpty(MoviesClearArtFolder))
+            MusicClearArtFolder = string.Empty;
+        }
+      }
+      logger.Debug("Fanart Handler Movies ClearArt folder: "+MoviesClearArtFolder);
       #endregion
 
       #region Fill.FanartHandler 
