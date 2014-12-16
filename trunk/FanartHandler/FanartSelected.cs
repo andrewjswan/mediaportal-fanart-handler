@@ -87,6 +87,7 @@ namespace FanartHandler
           return;
 
         var isMusic = (property.Equals("music", StringComparison.CurrentCulture));
+        var SelectedAlbum = (string) null;
 
         if (isMusic)
         {
@@ -159,6 +160,12 @@ namespace FanartHandler
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#selecteditem");
           FanartHandlerSetup.Fh.SelectedItem = Utils.GetArtistLeftOfMinusSign(FanartHandlerSetup.Fh.SelectedItem);
         }
+        else if (GUIWindowManager.ActiveWindow == 25650)   // Radio Time
+        {
+          FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#RadioTime.Selected.Subtext"); // Artist - Album or Track?
+          // SelectedAlbum = Utils.GetAlbumRightOfMinusSign(FanartHandlerSetup.Fh.SelectedItem, true);
+          FanartHandlerSetup.Fh.SelectedItem = Utils.GetArtistLeftOfMinusSign(FanartHandlerSetup.Fh.SelectedItem, true);
+        }
         else if (GUIWindowManager.ActiveWindow == 29050 || // youtube.fm videosbase
                  GUIWindowManager.ActiveWindow == 29051 || // youtube.fm playlist
                  GUIWindowManager.ActiveWindow == 29052    // youtube.fm info
@@ -178,6 +185,7 @@ namespace FanartHandler
         }
         else
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#selecteditem");
+        SelectedAlbum = (string.IsNullOrEmpty(SelectedAlbum) ? null : SelectedAlbum); 
         #endregion
 
         if (FanartHandlerSetup.Fh.SelectedItem != null && FanartHandlerSetup.Fh.SelectedItem.Trim().Length > 0)
@@ -206,7 +214,7 @@ namespace FanartHandler
             {
               str2 = currSelectedGeneric;
             }
-            str3 = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.SelectedItem, null, ref currSelectedGeneric, ref PrevSelectedGeneric, category, "FanartSelected", flag, isMusic);
+            str3 = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.SelectedItem, SelectedAlbum, ref currSelectedGeneric, ref PrevSelectedGeneric, category, "FanartSelected", flag, isMusic);
 
             if (str3.Length == 0 && (GUIWindowManager.ActiveWindow == 2003 || GUIWindowManager.ActiveWindow == 6 || GUIWindowManager.ActiveWindow == 25))  // Dialog Video Info || My Video || My Video Title
               str3 = GUIPropertyManager.GetProperty("#myvideosuserfanart");
@@ -214,7 +222,7 @@ namespace FanartHandler
               str3 = FanartHandlerSetup.Fh.GetFilename(GUIWindowManager.ActiveWindow != 2003 ? GUIPropertyManager.GetProperty("#selecteditem") : GUIPropertyManager.GetProperty("#title"), null, ref currSelectedGeneric, ref PrevSelectedGeneric, category, "FanartSelected", true, isMusic);
             if (str3.Length == 0)
             {
-              if (property.Equals("music", StringComparison.CurrentCulture))
+              if (isMusic)
               {
                 str3 = FanartHandlerSetup.Fh.GetRandomDefaultBackdrop(ref currSelectedGeneric, ref PrevSelectedGeneric);
                 if (str3.Length == 0)
