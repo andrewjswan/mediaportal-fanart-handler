@@ -628,8 +628,13 @@ namespace FanartHandler
     public int GetMoviesFanart(string id, string imdbid)
     {
       var res = 0;
-      if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(imdbid))
-        res = FanartTVGetPictures(Utils.Category.MovieScraped, imdbid, id, null, -1, false, false, true) ;
+      if (string.IsNullOrEmpty(id) && string.IsNullOrEmpty(imdbid))
+        return res;
+
+      res = FanartTVGetPictures(Utils.Category.MovieScraped, imdbid, id, null, -1, false, false, true) ;
+      if (res == 0)
+        Utils.GetDbm().InsertDummyItem(id, null, imdbid, Utils.Category.MovieScraped);
+
       return res;
     }
     #endregion

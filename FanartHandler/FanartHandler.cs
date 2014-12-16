@@ -1795,7 +1795,7 @@ namespace FanartHandler
         FP.WindowsUsingFanartPlay = new Hashtable();
         FR.WindowsUsingFanartRandom = new Hashtable();
 
-        path = GUIGraphicsContext.Skin + "\\";
+        path = GUIGraphicsContext.Skin + @"\";
         logger.Debug("Scan Skin folder for XML: "+path) ;
       }
       else
@@ -1829,6 +1829,16 @@ namespace FanartHandler
           {
             HandleXmlImports(fileInfo.FullName, nodeValue, ref _flag1Music, ref _flag2Music, ref _flag1ScoreCenter, ref _flag2ScoreCenter, ref _flag1Movie, ref _flag2Movie, ref _flagPlay);
             var xpathNodeIterator = navigator.Select("/window/controls/import");
+            if (xpathNodeIterator.Count > 0)
+            {
+              while (xpathNodeIterator.MoveNext())
+              {
+                var XMLFullName = XMLFolder + "\\" + xpathNodeIterator.Current.Value;
+                if (File.Exists(XMLFullName))
+                  HandleXmlImports(XMLFullName, nodeValue, ref _flag1Music, ref _flag2Music, ref _flag1ScoreCenter, ref _flag2ScoreCenter, ref _flag1Movie, ref _flag2Movie, ref _flagPlay);
+              }
+            }
+            xpathNodeIterator = navigator.Select("/window/controls/include");
             if (xpathNodeIterator.Count > 0)
             {
               while (xpathNodeIterator.MoveNext())
@@ -1938,7 +1948,15 @@ namespace FanartHandler
       if (string.IsNullOrEmpty(ThemeDir) && !string.IsNullOrEmpty(GUIGraphicsContext.ThemeName)) 
       {
         // Include Themes
-        SetupWindowsUsingFanartHandlerVisibility(path+@"Themes\"+GUIGraphicsContext.ThemeName.Trim()+@"\");
+        var tThemeDir = path+@"Themes\"+GUIGraphicsContext.ThemeName.Trim()+@"\";
+        if (Directory.Exists(tThemeDir))
+          {
+            SetupWindowsUsingFanartHandlerVisibility(tThemeDir);
+            return;
+          }
+        tThemeDir = path+GUIGraphicsContext.ThemeName.Trim()+@"\";
+        if (Directory.Exists(tThemeDir))
+          SetupWindowsUsingFanartHandlerVisibility(tThemeDir);
       }
     }
 
@@ -1946,7 +1964,6 @@ namespace FanartHandler
     {
       var xpathDocument = new XPathDocument(filename);
       var output = new StringBuilder();
-      var str1 = string.Empty;
       using (var writer = XmlWriter.Create(output))
         xpathDocument.CreateNavigator().WriteSubtree(writer);
       var str2 = output.ToString();
