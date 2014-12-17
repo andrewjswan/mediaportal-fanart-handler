@@ -1783,11 +1783,11 @@ namespace FanartHandler
       return !string.IsNullOrEmpty(s) && s.Substring(checked (s.IndexOf(":", StringComparison.CurrentCulture) + 1)).Equals("Yes", StringComparison.CurrentCulture) ? "True" : "False";
     }
 
-    private void SetupWindowsUsingFanartHandlerVisibility(string ThemeDir = (string) null)
+    private void SetupWindowsUsingFanartHandlerVisibility(string SkinDir = (string) null, string ThemeDir = (string) null)
     {
       var path = string.Empty ;
 
-      if (string.IsNullOrEmpty(ThemeDir))
+      if (string.IsNullOrEmpty(SkinDir))
       {
         FS.WindowsUsingFanartSelectedMusic = new Hashtable();
         FS.WindowsUsingFanartSelectedScoreCenter = new Hashtable();
@@ -1833,9 +1833,15 @@ namespace FanartHandler
             {
               while (xpathNodeIterator.MoveNext())
               {
-                var XMLFullName = XMLFolder + "\\" + xpathNodeIterator.Current.Value;
+                var XMLFullName = Path.Combine(XMLFolder, xpathNodeIterator.Current.Value);
                 if (File.Exists(XMLFullName))
                   HandleXmlImports(XMLFullName, nodeValue, ref _flag1Music, ref _flag2Music, ref _flag1ScoreCenter, ref _flag2ScoreCenter, ref _flag1Movie, ref _flag2Movie, ref _flagPlay);
+                else if ((!string.IsNullOrEmpty(SkinDir)) && (!string.IsNullOrEmpty(ThemeDir)))
+                  {
+                    XMLFullName = Path.Combine(SkinDir, xpathNodeIterator.Current.Value);
+                    if (File.Exists(XMLFullName))
+                      HandleXmlImports(XMLFullName, nodeValue, ref _flag1Music, ref _flag2Music, ref _flag1ScoreCenter, ref _flag2ScoreCenter, ref _flag1Movie, ref _flag2Movie, ref _flagPlay);
+                  }
               }
             }
             xpathNodeIterator = navigator.Select("/window/controls/include");
@@ -1843,9 +1849,15 @@ namespace FanartHandler
             {
               while (xpathNodeIterator.MoveNext())
               {
-                var XMLFullName = XMLFolder + "\\" + xpathNodeIterator.Current.Value;
+                var XMLFullName = Path.Combine(XMLFolder, xpathNodeIterator.Current.Value);
                 if (File.Exists(XMLFullName))
                   HandleXmlImports(XMLFullName, nodeValue, ref _flag1Music, ref _flag2Music, ref _flag1ScoreCenter, ref _flag2ScoreCenter, ref _flag1Movie, ref _flag2Movie, ref _flagPlay);
+                else if ((!string.IsNullOrEmpty(SkinDir)) && (!string.IsNullOrEmpty(ThemeDir)))
+                  {
+                    XMLFullName = Path.Combine(SkinDir, xpathNodeIterator.Current.Value);
+                    if (File.Exists(XMLFullName))
+                      HandleXmlImports(XMLFullName, nodeValue, ref _flag1Music, ref _flag2Music, ref _flag1ScoreCenter, ref _flag2ScoreCenter, ref _flag1Movie, ref _flag2Movie, ref _flagPlay);
+                  }
               }
             }
 
@@ -1951,12 +1963,12 @@ namespace FanartHandler
         var tThemeDir = path+@"Themes\"+GUIGraphicsContext.ThemeName.Trim()+@"\";
         if (Directory.Exists(tThemeDir))
           {
-            SetupWindowsUsingFanartHandlerVisibility(tThemeDir);
+            SetupWindowsUsingFanartHandlerVisibility(path, tThemeDir);
             return;
           }
         tThemeDir = path+GUIGraphicsContext.ThemeName.Trim()+@"\";
         if (Directory.Exists(tThemeDir))
-          SetupWindowsUsingFanartHandlerVisibility(tThemeDir);
+          SetupWindowsUsingFanartHandlerVisibility(path, tThemeDir);
       }
     }
 

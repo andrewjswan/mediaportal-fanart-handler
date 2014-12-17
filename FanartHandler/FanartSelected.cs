@@ -162,7 +162,7 @@ namespace FanartHandler
         }
         else if (GUIWindowManager.ActiveWindow == 25650)   // Radio Time
         {
-          FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#RadioTime.Selected.Subtext"); // Artist - Album or Track?
+          FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#RadioTime.Selected.Subtext"); // Artist - Track :(
           // SelectedAlbum = Utils.GetAlbumRightOfMinusSign(FanartHandlerSetup.Fh.SelectedItem, true);
           FanartHandlerSetup.Fh.SelectedItem = Utils.GetArtistLeftOfMinusSign(FanartHandlerSetup.Fh.SelectedItem, true);
         }
