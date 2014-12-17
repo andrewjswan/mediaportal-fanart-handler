@@ -245,6 +245,26 @@ namespace FanartHandler
             currSelectedGenericTitle = FanartHandlerSetup.Fh.SelectedItem;
             if (str3.Length == 0 || !str3.Equals(str2, StringComparison.CurrentCulture))
               ResetCurrCount();
+            //
+            if (isMusic)
+            {
+              if (!string.IsNullOrEmpty(Utils.MusicClearArtFolder))
+              { 
+                var caFile = Path.Combine(Utils.MusicClearArtFolder, MediaPortal.Util.Utils.MakeFileName(FanartHandlerSetup.Fh.SelectedItem)+".png");
+                if (File.Exists(caFile))
+                  AddProperty("#fanarthandler.music.artistclearart.selected", caFile, ref listSelectedGeneric);
+                else
+                  AddProperty("#fanarthandler.music.artistclearart.selected", string.Empty, ref listSelectedGeneric);
+              }
+              if (!string.IsNullOrEmpty(Utils.MusicBannerFolder))
+              {
+                var bFile = Path.Combine(Utils.MusicBannerFolder, MediaPortal.Util.Utils.MakeFileName(FanartHandlerSetup.Fh.SelectedItem)+".png");
+                if (File.Exists(bFile))
+                  AddProperty("#fanarthandler.music.artistbanner.selected", bFile, ref listSelectedGeneric);
+                else
+                  AddProperty("#fanarthandler.music.artistbanner.selected", string.Empty, ref listSelectedGeneric);
+              }
+            }
           } // if ((!currSelectedGenericTitle.Equals(FanartHandlerSetup.Fh.SelectedItem, StringComparison.CurrentCulture)) || (CurrCount >= FanartHandlerSetup.Fh.MaxCountImage))
           IncreaseCurrCount();
         } // if (FanartHandlerSetup.Fh.SelectedItem != null && FanartHandlerSetup.Fh.SelectedItem.Trim().Length > 0)
