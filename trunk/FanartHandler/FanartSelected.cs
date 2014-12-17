@@ -163,7 +163,6 @@ namespace FanartHandler
         else if (GUIWindowManager.ActiveWindow == 25650)   // Radio Time
         {
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#RadioTime.Selected.Subtext"); // Artist - Track :(
-          // SelectedAlbum = Utils.GetAlbumRightOfMinusSign(FanartHandlerSetup.Fh.SelectedItem, true);
           FanartHandlerSetup.Fh.SelectedItem = Utils.GetArtistLeftOfMinusSign(FanartHandlerSetup.Fh.SelectedItem, true);
         }
         else if (GUIWindowManager.ActiveWindow == 29050 || // youtube.fm videosbase
