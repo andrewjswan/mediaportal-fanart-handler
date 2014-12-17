@@ -1712,7 +1712,7 @@ namespace FanartHandler
                 var str = "SELECT Key1, Enabled, AvailableRandom, FullPath, ROWID "+
                            "FROM Image "+
                            "WHERE DummyItem = 'False' AND "+
-                                 "Category IN (" + GetMusicFanartCategoriesInStatement(true) +
+                                 "Category IN (" + Utils.GetMusicFanartCategoriesInStatement(true) +
                             // ") order by Key1, FullPath LIMIT " + start + ",500;";
                                              ") "+
                            "ORDER BY Key1, FullPath;";
@@ -1735,7 +1735,7 @@ namespace FanartHandler
                            "FROM Image "+
                            "WHERE ROWID > " + lastID + " AND "+
                                  "DummyItem = 'False' AND "+
-                                 "Category IN (" + GetMusicFanartCategoriesInStatement(true) + ") "+
+                                 "Category IN (" + Utils.GetMusicFanartCategoriesInStatement(true) + ") "+
                            "ORDER BY Key1, FullPath";
                 lock (lockObject)
                     sqLiteResultSet = dbClient.Execute(str);
