@@ -8,15 +8,10 @@ namespace FanartHandler
   internal class FanartImage
   {
     public string Id { get; set; }
-
     public string Artist { get; set; }
-
     public string DiskImage { get; set; }
-
     public string SourceImage { get; set; }
-
     public string Type { get; set; }
-
     public string Source { get; set; }
 
     public FanartImage(string id, string artist, string diskImage, string sourceImage, string type, string source)

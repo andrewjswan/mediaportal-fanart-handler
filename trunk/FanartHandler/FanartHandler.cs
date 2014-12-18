@@ -382,25 +382,18 @@ namespace FanartHandler
       AddToDirectoryTimerQueue(e.FullPath);
     }
 
-    internal void SetupDefaultBackdrops(string startDir, ref int i)
+    internal void SetupDefaultBackdrops(string StartDir, ref int i)
     {
       if (!Utils.UseDefaultBackdrop)
         return;
 
       try
       {
-        foreach (var str in Directory.GetFiles(startDir, "*.jpg"))
+        foreach (var file in Directory.GetFiles(StartDir, "*.jpg"))
         {
           try
           {
-            try
-            {
-              DefaultBackdropImages.Add(i, str);
-            }
-            catch (Exception ex)
-            {
-              logger.Error("SetupDefaultBackdrops: " + ex);
-            }
+            DefaultBackdropImages.Add(i, file);
           }
           catch (Exception ex)
           {
@@ -409,8 +402,8 @@ namespace FanartHandler
           checked { ++i; }
         }
         // Include SubFolders
-        foreach (var startDir1 in Directory.GetDirectories(startDir))
-          SetupDefaultBackdrops(startDir1, ref i);
+        foreach (var SubDir in Directory.GetDirectories(StartDir))
+          SetupDefaultBackdrops(SubDir, ref i);
       }
       catch (Exception ex)
       {
