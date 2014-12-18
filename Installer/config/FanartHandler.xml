@@ -18,6 +18,7 @@
     <entry name="ScrapeThumbnails">yes</entry>
     <entry name="ScrapeThumbnailsAlbum">yes</entry>
     <entry name="DoNotReplaceExistingThumbs">yes</entry>
+    <entry name="UseDefaultBackdrop">yes</entry>
     <entry name="UseGenreFanart">no</entry>
     <entry name="ScanMusicFoldersForFanart">no</entry>
     <entry name="DeleteMissing">no</entry>

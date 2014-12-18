@@ -24,7 +24,7 @@ namespace FanartHandler
     {
       try
       {
-        var str = Config.GetFolder((Config.Dir) 4) + "\\" + dbFilename;
+        var str = Path.Combine(Config.GetFolder((Config.Dir) 4), dbFilename);
         if (File.Exists(str))
         {
           if (new FileInfo(str).Length > 0L)
@@ -74,9 +74,7 @@ namespace FanartHandler
           SQL = "SELECT DISTINCT artist FROM artist_info WHERE artist is not NULL ORDER BY artist;";
         sqLiteResultSet = dbClient.Execute(SQL);
       }
-      catch
-      {
-      }
+      catch { }
       return sqLiteResultSet;
     }
   }

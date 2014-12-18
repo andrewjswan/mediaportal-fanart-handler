@@ -26,9 +26,6 @@ namespace FanartHandler
   {
     private static readonly Logger logger = LogManager.GetCurrentClassLogger();
     private static int idleTimeInMillis = 250;
-    private const string RXMatchNonWordCharacters = "[^\\w|;&]";
-    private const string RXMatchMPvs = "({)([0-9]+)(})$";
-    private const string RXMatchMPvs2 = "(\\()([0-9]+)(\\))$";
     private static bool isStopping;
     private static DatabaseManager dbm;
     private const string ConfigFilename = "FanartHandler.xml";
@@ -257,7 +254,7 @@ namespace FanartHandler
     #region Music Fanart in Music folders
     public static void ScanMusicFoldersForFanarts()
     {
-      logger.Info("Refreshing local fanart for Music (Music folder Album Fanart) is starting.");
+      logger.Info("Refreshing local fanart for Music (Music folder Artist/Album Fanart) is starting.");
       int MaximumShares = 250;
       using (var xmlreader = new Settings(Config.GetFile((Config.Dir) 10, "MediaPortal.xml")))
       {
@@ -272,27 +269,9 @@ namespace FanartHandler
           }
         }
       }
-      logger.Info("Refreshing local fanart for Music (Music folder Album fanart) is done.");
+      logger.Info("Refreshing local fanart for Music (Music folder Artist/Album fanart) is done.");
     }
     #endregion
-
-    public static string GetMusicFanartCategoriesInStatement(bool highDef)
-    {
-      if (highDef)
-        return "'" + ((object) Category.MusicFanartManual).ToString() + "','" + ((object) Category.MusicFanartScraped).ToString() + "'";
-      else
-        return "'" + (object) ((object) Category.MusicFanartManual).ToString() + "','" + ((object) Category.MusicFanartScraped).ToString() + "','" + Category.MusicArtistThumbScraped + "','" + Category.MusicAlbumThumbScraped + "'";
-    }
-
-    public static string GetMusicAlbumCategoriesInStatement()
-    {
-      return "'" + ((object) Category.MusicAlbumThumbScraped).ToString() + "'";
-    }
-
-    public static string GetMusicArtistCategoriesInStatement()
-    {
-      return "'" + ((object) Category.MusicArtistThumbScraped).ToString() + "'";
-    }
 
     public static DatabaseManager GetDbm()
     {
@@ -322,11 +301,6 @@ namespace FanartHandler
         checked { ++num; }
       }
       return true;
-    }
-
-    public static void LogDevMsg(string msg)
-    {
-      logger.Debug("DEV MSG: " + msg);
     }
 
     public static void AllocateDelayStop(string key)
@@ -364,41 +338,52 @@ namespace FanartHandler
       ScraperMaxImages = s;
     }
 
+    public static void LogDevMsg(string msg)
+    {
+      logger.Debug("DEV MSG: " + msg);
+    }
+
+    public static string GetMusicFanartCategoriesInStatement(bool highDef)
+    {
+      if (highDef)
+        return "'" + ((object) Category.MusicFanartManual).ToString() + "','" + ((object) Category.MusicFanartScraped).ToString() + "'";
+      else
+        return "'" + (object) ((object) Category.MusicFanartManual).ToString() + "','" + ((object) Category.MusicFanartScraped).ToString() + "','" + Category.MusicArtistThumbScraped + "','" + Category.MusicAlbumThumbScraped + "'";
+    }
+
+    public static string GetMusicAlbumCategoriesInStatement()
+    {
+      return "'" + ((object) Category.MusicAlbumThumbScraped).ToString() + "'";
+    }
+
+    public static string GetMusicArtistCategoriesInStatement()
+    {
+      return "'" + ((object) Category.MusicArtistThumbScraped).ToString() + "'";
+    }
+
     public static string Equalize(this string self)
     {
       if (string.IsNullOrEmpty(self))
         return string.Empty;
-      else
-        return Utils.TrimWhiteSpace(Regex.Replace(
-                                      Regex.Replace(
-                                        Regex.Replace(
-                                          Regex.Replace(
-                                            Regex.Replace(
-                                              Regex.Replace(
-                                                Regex.Replace(
-                                                  Regex.Replace(
-                                                    Regex.Replace(
-                                                      Regex.Replace(
-                                                        Regex.Replace(
-                                                          Regex.Replace(
-                                                            Utils.RemoveDiacritics(
-                                                              Regex.Replace(
-                                                                Regex.Replace(
-                                                                  Regex.Replace(self.ToLowerInvariant(), "({)([0-9]+)(})$", string.Empty).Trim(), 
-                                                                "(\\()([0-9]+)(\\))$", string.Empty).Trim(), 
-                                                              "[^\\w|;&]", " ")), 
-                                                          "\\b(and|und|en|et|y)\\b", " & "), 
-                                                        "\\si(\\b)", " 1$1"), 
-                                                      "\\sii(\\b)", " 2$1"), 
-                                                    "\\siii(\\b)", " 3$1"), 
-                                                  "\\siv(\\b)", " 4$1"), 
-                                                "\\sv(\\b)", " 5$1"), 
-                                              "\\svi(\\b)", " 6$1"), 
-                                            "\\svii(\\b)", " 7$1"), 
-                                          "\\sviii(\\b)", " 8$1"), 
-                                        "\\six(\\b)", " 9$1"), 
-                                      "\\s(1)$", string.Empty), 
-                                    "[^\\w|;&]", " "));
+
+      var key = self.ToLowerInvariant().Trim();
+      key = Utils.RemoveDiacritics(key);
+      key = Regex.Replace(key, @"(\(|{)([0-9]+)(\)|})$", string.Empty).Trim();
+      key = Regex.Replace(key, @"[^\w|;&]", " ");
+      key = Regex.Replace(key, @"\b(and|und|en|et|y)\b", " & ");
+      key = Regex.Replace(key, @"\si(\b)", " 1$1");
+      key = Regex.Replace(key, @"\sii(\b)", " 2$1");
+      key = Regex.Replace(key, @"\siii(\b)", " 3$1");
+      key = Regex.Replace(key, @"\siv(\b)", " 4$1");    
+      key = Regex.Replace(key, @"\sv(\b)", " 5$1");       
+      key = Regex.Replace(key, @"\svi(\b)", " 6$1");        
+      key = Regex.Replace(key, @"\svii(\b)", " 7$1");         
+      key = Regex.Replace(key, @"\sviii(\b)", " 8$1");          
+      key = Regex.Replace(key, @"\six(\b)", " 9$1");
+      key = Regex.Replace(key, @"\s(1)$", string.Empty);
+      key = Regex.Replace(key, @"[^\w|;&]", " ");                     
+      key = Utils.TrimWhiteSpace(key);
+      return key;
     }
 
     public static string RemoveDiacritics(this string self)
@@ -483,7 +468,7 @@ namespace FanartHandler
       if (string.IsNullOrEmpty(theValue))
         return false;
       else
-        return new Regex("^\\d+$").Match(theValue).Success;
+        return new Regex(@"^\d+$").Match(theValue).Success;
     }
 
     public static string TrimWhiteSpace(this string self)
@@ -491,7 +476,7 @@ namespace FanartHandler
       if (string.IsNullOrEmpty(self))
         return string.Empty;
       else
-        return Regex.Replace(self, "\\s{2,}", " ").Trim();
+        return Regex.Replace(self, @"\s{2,}", " ").Trim();
     }
 
     public static string RemoveSpecialChars(string key)
@@ -527,7 +512,7 @@ namespace FanartHandler
 
       key = GetFilenameNoPath(key);
       key = RemoveExtension(key);
-      key = Regex.Replace(key, "\\(\\d{5}\\)", string.Empty).Trim();
+      key = Regex.Replace(key, @"\(\d{5}\)", string.Empty).Trim();
       if ((category == Category.MusicArtistThumbScraped) || (category == Category.MusicAlbumThumbScraped))
         key = Regex.Replace(key, "[L]$", string.Empty).Trim();
       key = RemoveResolutionFromFileName(key) ;
@@ -620,6 +605,7 @@ namespace FanartHandler
     {
       if (string.IsNullOrEmpty(inputName))
         return string.Empty;
+
       var strArray = inputName.ToLower().Replace(";", "|").Replace(" ft ", "|").Replace(" feat ", "|").Replace(" and ", "|").Replace(" & ", "|").Split(new char[1]
       {
         '|'
@@ -639,7 +625,7 @@ namespace FanartHandler
       if (s == null)
         return string.Empty;
       else
-        // ajs: return s;
+        // ajs: WAS: return s;
         return RemoveMPArtistPipe(s) ;
     }
 
@@ -794,7 +780,7 @@ namespace FanartHandler
       if (key == null)
         return string.Empty;
       else
-        return Regex.Replace(key, "\\d", string.Empty);
+        return Regex.Replace(key, @"\d", string.Empty);
     }
 
     public static string PatchSql(string s)
@@ -943,7 +929,7 @@ namespace FanartHandler
       if (self == null)
         return string.Empty;
       else
-        return new Regex("(.+?)(?: (the|a|an|ein|das|die|der|les|la|le|el|une|de|het))?\\s*$", RegexOptions.IgnoreCase).Replace(self, "$2 $1").Trim();
+        return new Regex(@"(.+?)(?: (the|a|an|ein|das|die|der|les|la|le|el|une|de|het))?\s*$", RegexOptions.IgnoreCase).Replace(self, "$2 $1").Trim();
     }
 
     public static string MovePrefixToBack(this string self)
@@ -951,7 +937,7 @@ namespace FanartHandler
       if (self == null)
         return string.Empty;
       else
-        return new Regex("^(the|a|an|ein|das|die|der|les|la|le|el|une|de|het)\\s(.+)", RegexOptions.IgnoreCase).Replace(self, "$2, $1").Trim();
+        return new Regex(@"^(the|a|an|ein|das|die|der|les|la|le|el|une|de|het)\s(.+)", RegexOptions.IgnoreCase).Replace(self, "$2, $1").Trim();
     }
 
     public static string GetAllVersionNumber()
@@ -1089,9 +1075,7 @@ namespace FanartHandler
             image2.Dispose();
         }
       }
-      catch
-      {
-      }
+      catch { }
       return false;
     }
 
@@ -1200,7 +1184,7 @@ namespace FanartHandler
           // UseScoreCenterFanart = settings.GetValueAsBool("FanartHandler", "UseScoreCenterFanart", UseScoreCenterFanart);
           // DefaultBackdrop = settings.GetValueAsString("FanartHandler", "DefaultBackdrop", DefaultBackdrop);
           // DefaultBackdropIsImage = settings.GetValueAsBool("FanartHandler", "DefaultBackdropIsImage", DefaultBackdropIsImage);
-          // UseDefaultBackdrop = settings.GetValueAsBool("FanartHandler", "UseDefaultBackdrop", UseDefaultBackdrop);
+          UseDefaultBackdrop = settings.GetValueAsBool("FanartHandler", "UseDefaultBackdrop", UseDefaultBackdrop);
           UseSelectedMusicFanart = settings.GetValueAsBool("FanartHandler", "UseSelectedMusicFanart", UseSelectedMusicFanart);
           UseSelectedOtherFanart = settings.GetValueAsBool("FanartHandler", "UseSelectedOtherFanart", UseSelectedOtherFanart);
           FanartTVPersonalAPIKey = settings.GetValueAsString("FanartHandler", "FanartTVPersonalAPIKey", FanartTVPersonalAPIKey);
@@ -1250,6 +1234,7 @@ namespace FanartHandler
           xmlwriter.SetValueAsBool("FanartHandler", "ScrapeThumbnails", ScrapeThumbnails);
           xmlwriter.SetValueAsBool("FanartHandler", "ScrapeThumbnailsAlbum", ScrapeThumbnailsAlbum);
           xmlwriter.SetValueAsBool("FanartHandler", "DoNotReplaceExistingThumbs", DoNotReplaceExistingThumbs);
+          xmlwriter.SetValueAsBool("FanartHandler", "UseDefaultBackdrop", UseDefaultBackdrop);
           xmlwriter.SetValueAsBool("FanartHandler", "UseGenreFanart", UseGenreFanart);
           xmlwriter.SetValueAsBool("FanartHandler", "ScanMusicFoldersForFanart", ScanMusicFoldersForFanart);
           xmlwriter.SetValue("FanartHandler", "MusicFoldersArtistAlbumRegex", MusicFoldersArtistAlbumRegex);
@@ -1287,6 +1272,7 @@ namespace FanartHandler
       var u_UseSelectedOtherFanart = string.Empty;
       var u_UseGenreFanart = string.Empty;
       var u_ScanMusicFoldersForFanart = string.Empty;
+      var u_UseDefaultBackdrop = string.Empty;
 
       #endregion
       try
@@ -1312,8 +1298,9 @@ namespace FanartHandler
           u_DoNotReplaceExistingThumbs = xmlwriter.GetValueAsString("FanartHandler", "doNotReplaceExistingThumbs", string.Empty);
           u_UseSelectedMusicFanart = xmlwriter.GetValueAsString("FanartHandler", "useSelectedMusicFanart", string.Empty);
           u_UseSelectedOtherFanart = xmlwriter.GetValueAsString("FanartHandler", "useSelectedOtherFanart", string.Empty);
-          u_UseGenreFanart = xmlwriter.GetValueAsString("FanartHandler", "u_UseGenreFanart", string.Empty);
-          u_ScanMusicFoldersForFanart = xmlwriter.GetValueAsString("FanartHandler", "u_ScanMusicFoldersForFanart", string.Empty);
+          u_UseDefaultBackdrop = xmlwriter.GetValueAsString("FanartHandler", "useDefaultBackdrop", string.Empty);
+          u_UseGenreFanart = xmlwriter.GetValueAsString("FanartHandler", "UseGenreFanart", string.Empty);
+          u_ScanMusicFoldersForFanart = xmlwriter.GetValueAsString("FanartHandler", "ScanMusicFoldersForFanart", string.Empty);
         }
         catch
         {   }
@@ -1353,6 +1340,8 @@ namespace FanartHandler
           xmlwriter.SetValue("FanartHandler", "ScrapeThumbnailsAlbum", u_ScrapeThumbnailsAlbum.Replace("True","yes").Replace("False","no"));
         if (!string.IsNullOrEmpty(u_DoNotReplaceExistingThumbs))
           xmlwriter.SetValue("FanartHandler", "DoNotReplaceExistingThumbs", u_DoNotReplaceExistingThumbs.Replace("True","yes").Replace("False","no"));
+        if (!string.IsNullOrEmpty(u_UseDefaultBackdrop))
+          xmlwriter.SetValue("FanartHandler", "UseDefaultBackdrop", u_UseDefaultBackdrop.Replace("True","yes").Replace("False","no"));
         if (!string.IsNullOrEmpty(u_UseGenreFanart))
           xmlwriter.SetValue("FanartHandler", "UseGenreFanart", u_UseGenreFanart.Replace("True","yes").Replace("False","no"));
         if (!string.IsNullOrEmpty(u_ScanMusicFoldersForFanart))
@@ -1378,6 +1367,7 @@ namespace FanartHandler
           xmlwriter.RemoveEntry("FanartHandler", "scrapeThumbnails");
           xmlwriter.RemoveEntry("FanartHandler", "scrapeThumbnailsAlbum");
           xmlwriter.RemoveEntry("FanartHandler", "doNotReplaceExistingThumbs");
+          xmlwriter.RemoveEntry("FanartHandler", "useDefaultBackdrop");
 
           xmlwriter.RemoveEntry("FanartHandler", "latestPictures");
           xmlwriter.RemoveEntry("FanartHandler", "latestMusic");
