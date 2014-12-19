@@ -1261,7 +1261,7 @@ namespace FanartHandler
                       var i = 0;
                       while (i < sqLiteResultSet.Rows.Count)
                       {
-                          var htMovie = sqLiteResultSet.GetField(i, 0) ;
+                          var htMovie = sqLiteResultSet.GetField(i, 0).ToLower() ;
                           if (!htMovies.Contains(htMovie))
                               htMovies.Add(htMovie,sqLiteResultSet.GetField(i, 2));
                           checked { ++i; }
@@ -1273,7 +1273,7 @@ namespace FanartHandler
                       {
                           IMDBMovie details = new IMDBMovie();
                           details = (IMDBMovie) videoDatabaseMovies[index] ;
-                          var movieID = details.ID.ToString();
+                          var movieID = details.ID.ToString().ToLower();
                           var movieIMDBID = details.IMDBNumber.Trim().ToLower().Replace("unknown",string.Empty);
                           if (!string.IsNullOrEmpty(movieID) && !string.IsNullOrEmpty(movieIMDBID))
                           {
@@ -1440,7 +1440,7 @@ namespace FanartHandler
 
                 var flag = false;
                 var chArray = new char[2] { '|', ';' };
-                string[] artists = artist.Split(chArray,StringSplitOptions.RemoveEmptyEntries);
+                string[] artists = artist.Split(chArray, StringSplitOptions.RemoveEmptyEntries);
                 CurrArtistsBeingScraped = 0.0;
                 TotArtistsBeingScraped = artists.Length * 1.0;
                 foreach (string sartist in artists)

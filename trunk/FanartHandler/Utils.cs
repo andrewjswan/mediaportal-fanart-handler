@@ -3,12 +3,6 @@
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 // Assembly location: D:\Mes documents\Desktop\FanartHandler.dll
 
-using MediaPortal.Configuration;
-using MediaPortal.GUI.Library;
-using MediaPortal.Music.Database;
-using MediaPortal.Profile;
-using NLog;
-using SQLite.NET;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,6 +13,12 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using MediaPortal.Configuration;
+using MediaPortal.GUI.Library;
+using MediaPortal.Music.Database;
+using MediaPortal.Profile;
+using NLog;
+using SQLite.NET;
 
 namespace FanartHandler
 {
@@ -101,6 +101,7 @@ namespace FanartHandler
     public static string FAHMusicAlbums { get; set; }
 
     public static string FAHTVSeries { get; set; }
+    public static string FAHMovingPictures { get; set; }
     #endregion
 
     #region Fanart.TV folders
@@ -245,6 +246,8 @@ namespace FanartHandler
 
       FAHTVSeries = Path.Combine(MPThumbsFolder, @"Fan Art\fanart\original\");
       logger.Debug("TV-Series Fanart folder: "+FAHTVSeries);
+      FAHMovingPictures = Path.Combine(MPThumbsFolder, @"MovingPictures\Backdrops\FullSize\");
+      logger.Debug("MovingPictures Fanart folder: "+FAHMovingPictures);
       #endregion
 
       logger.Info("Fanart Handler folder initialize done.");
@@ -521,7 +524,7 @@ namespace FanartHandler
       return key;
     }
 
-    public static string GetArtist(string key, Category category)
+    public static string GetArtist(string key, Category category, bool RemoveFeat = true)
     {
       if (string.IsNullOrEmpty(key))
         return string.Empty;
@@ -534,6 +537,13 @@ namespace FanartHandler
       else
         key = Utils.Equalize(key);
       key = Utils.MovePrefixToFront(key);
+      //
+      if (RemoveFeat)
+      { 
+        var i = key.IndexOf(" feat ");
+        if (i > 0) 
+          key = key.Remove(i).Trim();
+      }
       return key;
     }
 
@@ -606,18 +616,15 @@ namespace FanartHandler
       if (string.IsNullOrEmpty(inputName))
         return string.Empty;
 
-      var strArray = inputName.ToLower().Replace(";", "|").Replace(" ft ", "|").Replace(" feat ", "|").Replace(" and ", "|").Replace(" & ", "|").Split(new char[1]
+      var artists = "'" + inputName.Trim() + "'";
+      var strArray = inputName.ToLower().Replace(";", "|").Replace(" ft ", "|").Replace(" feat ", "|").Replace(" and ", "|").Replace(" & ", "|").Replace(",","|").Trim().Split(new char[] {'|'});
+
+      foreach (var artist in strArray)
       {
-        '|'
-      });
-      var str1 = string.Empty;
-      var str2 = string.Empty;
-      foreach (var str3 in strArray)
-      {
-        var str4 = str3.Trim();
-        str1 = str1.Length != 0 ? str1 + ",'" + str4 + "'" : "'" + str4 + "'";
+        if (!string.IsNullOrEmpty(artist))
+          artists = artists + "," + "'" + artist.Trim() + "'";
       }
-      return str1 + ",'" + inputName + "'";
+      return artists;
     }
 
     public static string RemoveMPArtistPipes(string s) // ajs: WTF? That this procedure does? And why should she?
@@ -797,6 +804,9 @@ namespace FanartHandler
         return string.Empty;
 
       var old = string.Empty ;
+      old = s.Trim() ;
+      s = Regex.Replace(s.Trim(), @"(.*?\S\s)(\([^\s\d]+?\))(,|\s|$)","$1$3",RegexOptions.IgnoreCase);
+      if (s.Trim() == string.Empty) s = old ;
       /*
       s = s.Replace("loseless", string.Empty);
       s = s.Replace("Loseless", string.Empty);
@@ -1092,6 +1102,11 @@ namespace FanartHandler
         return !Directory.EnumerateFileSystemEntries(path).Any();
     }
     */
+
+    public static bool Contains(this string source, string toCheck, StringComparison comp)
+    {
+      return source.IndexOf(toCheck, comp) >= 0;
+    }
 
     #region Settings
     public static void LoadBadArtists(Settings xmlreader)

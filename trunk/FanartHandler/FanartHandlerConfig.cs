@@ -2321,6 +2321,7 @@ namespace FanartHandler
       {
         if (e.FullPath.Contains("_tmp"))
           return;
+
         UpdateFanartThumbTable(e.FullPath);
       }
       catch (Exception ex)

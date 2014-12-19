@@ -21,9 +21,7 @@ namespace FanartHandler
     public int PrevPlayMusic;
 
     public Hashtable CurrentArtistsImageNames { get; set; }
-
     public Hashtable WindowsUsingFanartPlay { get; set; }
-
     public bool HasUpdatedCurrCountPlay { get; set; }
 
     public bool DoShowImageOnePlay
@@ -71,7 +69,7 @@ namespace FanartHandler
     {
       try
       {
-        if (value == null)
+        if (string.IsNullOrEmpty(value))
           value = "";
 
         if (PropertiesPlay.Contains(property))
@@ -104,50 +102,53 @@ namespace FanartHandler
 
     public void AddPlayingArtistPropertys(string artist, bool DoShowImageOnePlay)
     {
-      AddPlayingArtistThumbProperty(artist, DoShowImageOnePlay) ;
-      AddPlayingArtistClearArtProperty(artist, DoShowImageOnePlay);
-      AddPlayingArtistBannerProperty(artist, DoShowImageOnePlay);
+      var pArtist = artist;
+      AddPlayingArtistThumbProperty(ref pArtist, DoShowImageOnePlay) ;
+      AddPlayingArtistClearArtProperty(pArtist, DoShowImageOnePlay);
+      AddPlayingArtistBannerProperty(pArtist, DoShowImageOnePlay);
     }
 
-    public void AddPlayingArtistThumbProperty(string artist, bool DoShowImageOnePlay)
+    public void AddPlayingArtistThumbProperty(ref string artist, bool DoShowImageOnePlay)
     {
+      if (string.IsNullOrEmpty(artist))
+        return;
+
+      var flag = false;
+      var path = (string) null;
       try
       {
-        var flag = false;
-        var path = (string) null;
-        if (artist == null)
-          return;
-        if (artist != null && FanartHandlerSetup.Fh.CurrentAlbumTag != null && FanartHandlerSetup.Fh.CurrentAlbumTag.Length > 0)
+        // Get Album thumb name
+        if (FanartHandlerSetup.Fh.CurrentAlbumTag != null && FanartHandlerSetup.Fh.CurrentAlbumTag.Length > 0)
         {
-          path = MediaPortal.Util.Utils.GetAlbumThumbName(artist, FanartHandlerSetup.Fh.CurrentAlbumTag);
+          path = MediaPortal.Util.Utils.GetAlbumThumbName(artist, FanartHandlerSetup.Fh.CurrentAlbumTag.Trim());
           if (!string.IsNullOrEmpty(path))
           {
             path = MediaPortal.Util.Utils.ConvertToLargeCoverArt(path);
-            if (File.Exists(path))
-              flag = true;
+            flag = (File.Exists(path));
           }
         }
+        // Get Artist name
+        var strArray = artist.Split(new char[2] { '|', ';' }, StringSplitOptions.RemoveEmptyEntries);
+        if (strArray != null)
+        {
+          if (strArray.Length == 1)
+            artist = strArray[0].Trim();
+          else if (strArray.Length == 2)
+            artist = strArray[(DoShowImageOnePlay ? 0 : 1)].Trim();
+          else
+          {
+            var rand = new Random();
+            artist = strArray[rand.Next(strArray.Length-1)].Trim();
+          }
+        }
+
         if (!flag)
         {
-          path = null;
-          if (artist != null && artist.Contains("|"))
-          {
-            var strArray = artist.Split(new char[1]
-            {
-              '|'
-            });
-            if (strArray != null && strArray.Length >= 1 && DoShowImageOnePlay)
-              path = Path.Combine(Utils.FAHMusicArtists, MediaPortal.Util.Utils.MakeFileName(strArray[0].Trim()) + "L.jpg");
-            else if (strArray != null && strArray.Length >= 2 && !DoShowImageOnePlay)
-              path = Path.Combine(Utils.FAHMusicArtists, MediaPortal.Util.Utils.MakeFileName(strArray[1].Trim()) + "L.jpg");
-            else if (strArray != null && strArray.Length >= 1 && !DoShowImageOnePlay)
-              path = Path.Combine(Utils.FAHMusicArtists, MediaPortal.Util.Utils.MakeFileName(strArray[0].Trim()) + "L.jpg");
-          }
-          else
-            path = Path.Combine(Utils.FAHMusicArtists, MediaPortal.Util.Utils.MakeFileName(artist) + "L.jpg");
-          if (File.Exists(path))
-            flag = true;
+          // Get Artist thumb name
+          path = Path.Combine(Utils.FAHMusicArtists, MediaPortal.Util.Utils.MakeFileName(artist) + "L.jpg");
+          flag = (File.Exists(path));
         }
+
         if (flag)
           AddPropertyPlay("#fanarthandler.music.artisthumb.play", path, ref ListPlayMusic);
         else
