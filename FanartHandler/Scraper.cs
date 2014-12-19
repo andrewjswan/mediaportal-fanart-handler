@@ -409,6 +409,7 @@ namespace FanartHandler
       if (!doScrapeFanart)
         return 0;
 
+      artist = RemoveFeat(artist) ;
       logger.Debug("Trying to find Fanart for Artist: " + artist + ".");
 
       ReportProgress (6.0, dbm, reportProgress, externalAccess) ;
@@ -504,6 +505,7 @@ namespace FanartHandler
       if (Utils.GetDbm().HasArtistThumb(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped)) && onlyMissing)
         return 1;
 
+      artist = RemoveFeat(artist) ;
       logger.Debug("Trying to find Thumbs for Artist: " + artist + ".");
 
       // *** MuzicBrainzID
@@ -588,6 +590,7 @@ namespace FanartHandler
       if (Utils.GetDbm().HasAlbumThumb(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped), Utils.GetAlbum(album, Utils.Category.MusicFanartScraped)) && onlyMissing)
         return 1 ;
 
+      artist = RemoveFeat(artist) ;
       logger.Debug("Trying to find Thumbs for Artist/Album: " + artist + " - " + album + ".");
 
       // *** MuzicBrainzID
@@ -622,6 +625,28 @@ namespace FanartHandler
       return res;
     }
     // End: GetArtistAlbumThumbs
+
+    [MethodImpl(MethodImplOptions.Synchronized)]
+    private static string RemoveFeat(string Artist)
+    {
+      var cleanArtist = Artist;
+      var i = 0;
+
+      try
+      {
+        i = cleanArtist.ToLower().IndexOf(" feat.");
+        if (i > 0)
+          cleanArtist = cleanArtist.Remove(i);
+        else
+        {
+          i = cleanArtist.ToLower().IndexOf(" feat ");
+          if (i > 0)
+            cleanArtist = cleanArtist.Remove(i);
+        }
+      }
+      catch {}
+      return cleanArtist;
+    }
     #endregion
 
     #region Movies fanart

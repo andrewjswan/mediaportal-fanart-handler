@@ -83,17 +83,11 @@ namespace FanartHandler
     }
 
     internal bool IsRandom { get; set; }
-
     internal bool IsSelectedScoreCenter { get; set; }
-
     internal bool IsSelectedVideo { get; set; }
-
     internal bool IsSelectedMusic { get; set; }
-
     internal bool IsSelectedPicture { get; set; }
-
     internal bool IsPlaying { get; set; }
-
     internal int IsPlayingCount { get; set; }
 
     internal string CurrentTitleTag
@@ -417,7 +411,7 @@ namespace FanartHandler
       {
         if (CheckValidWindowsForDirectoryTimerQueue(string.Empty + GUIWindowManager.ActiveWindow))
         {
-          UpdateDirectoryTimer(param, true, "None");
+          UpdateDirectoryTimer(param, false, "None");
         }
         else
         {
@@ -461,12 +455,10 @@ namespace FanartHandler
 
     internal void UpdateDirectoryTimer(string param, bool doCheck, string type)
     {
-      var windowId = string.Empty + GUIWindowManager.ActiveWindow;
       if (doCheck)
-      {
-        if (!CheckValidWindowsForDirectoryTimerQueue(windowId))
+        if (!CheckValidWindowsForDirectoryTimerQueue(string.Empty + GUIWindowManager.ActiveWindow))
           return;
-      }
+
       try
       {
         if (Interlocked.CompareExchange(ref SyncPointDirectory, 1, 0) == 0 && (MyDirectoryWorker == null || MyDirectoryWorker != null && !MyDirectoryWorker.IsBusy))
@@ -477,11 +469,7 @@ namespace FanartHandler
             MyDirectoryWorker.ProgressChanged += new ProgressChangedEventHandler(MyDirectoryWorker.OnProgressChanged);
             MyDirectoryWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(MyDirectoryWorker.OnRunWorkerCompleted);
           }
-          MyDirectoryWorker.RunWorkerAsync(new string[2]
-          {
-              param,
-              type
-          });
+          MyDirectoryWorker.RunWorkerAsync(new string[2] { param, type });
         }
         else
           SyncPointDirectory = 0;
@@ -523,7 +511,7 @@ namespace FanartHandler
       {
         if (!Utils.GetIsStopping())
         {
-          key = Utils.GetArtist(key, category);
+          key = Utils.GetArtist(key, category, false);
           key2 = Utils.GetAlbum(key2, category);
 
           var filenames = !obj.Equals("FanartPlaying", StringComparison.CurrentCulture) ? FS.GetCurrentArtistsImageNames() : FP.GetCurrentArtistsImageNames();
@@ -955,6 +943,7 @@ namespace FanartHandler
         return;
       if (al.Contains(value))
         return;
+
       try
       {
         al.Add(value);
@@ -1304,7 +1293,7 @@ namespace FanartHandler
         {
           if (CheckValidWindowsForDirectoryTimerQueue(windowId))
           {
-            UpdateDirectoryTimer(str, true, "None");
+            UpdateDirectoryTimer(str, false, "None");
             hashtable.Add(str, str);
           }
         }
@@ -1973,13 +1962,13 @@ namespace FanartHandler
         xpathDocument.CreateNavigator().WriteSubtree(writer);
       var str2 = output.ToString();
 
-      if (str2.Contains("#useSelectedFanart:Yes"))
+      if (str2.Contains("#useSelectedFanart:Yes", StringComparison.OrdinalIgnoreCase))
       {
         _flag1Music = true;
         _flag1Movie = true;
         _flag1ScoreCenter = true;
       }
-      if (str2.Contains("#usePlayFanart:Yes"))
+      if (str2.Contains("#usePlayFanart:Yes", StringComparison.OrdinalIgnoreCase))
       {
         _flagPlay = true;
       }

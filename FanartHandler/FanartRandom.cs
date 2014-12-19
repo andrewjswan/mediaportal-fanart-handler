@@ -1037,8 +1037,9 @@ namespace FanartHandler
     {
       try
       {
-        if (value == null)
+        if (string.IsNullOrEmpty(value))
           value = "";
+
         if (PropertiesRandom.Contains(property))
           PropertiesRandom[property] = value;
         else

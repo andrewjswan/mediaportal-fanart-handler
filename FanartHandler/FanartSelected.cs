@@ -643,8 +643,9 @@ namespace FanartHandler
     {
       try
       {
-        if (value == null)
+        if (string.IsNullOrEmpty(value))
           value = "";
+
         if (Properties.Contains(property))
           Properties[property] = value;
         else
