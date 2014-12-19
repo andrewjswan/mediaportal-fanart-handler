@@ -565,7 +565,6 @@ namespace FanartHandler
               foreach (FanartImage fanartImage in values1)
               {
                 if ((num1 > iFilePrev || iFilePrev == -1) && 
-                    num2 == 0 && 
                     CheckImageResolution(fanartImage.DiskImage, category, Utils.UseAspectRatio) && 
                     Utils.IsFileValid(fanartImage.DiskImage)
                    )
@@ -585,11 +584,9 @@ namespace FanartHandler
                 var values2 = filenames.Values;
                 iFilePrev = -1;
                 var num3 = 0;
-                var num4 = 0;
                 foreach (FanartImage fanartImage in values2)
                 {
                   if ((num3 > iFilePrev || iFilePrev == -1) && 
-                      num4 == 0 && 
                       CheckImageResolution(fanartImage.DiskImage, category, Utils.UseAspectRatio) && 
                       Utils.IsFileValid(fanartImage.DiskImage)
                      )
@@ -639,8 +636,7 @@ namespace FanartHandler
                 var num2 = 0;
                 foreach (string filename in values1)
                 {
-                  if ((num1 > iFilePrev || iFilePrev == -1) && 
-                      num2 == 0 && 
+                  if ((num1 > iFilePrev || iFilePrev == -1) &&  
                       CheckImageResolution(filename, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio) && 
                       Utils.IsFileValid(filename)
                      )
@@ -660,11 +656,9 @@ namespace FanartHandler
                   var values2 = DefaultBackdropImages.Values;
                   iFilePrev = -1;
                   var num3 = 0;
-                  var num4 = 0;
                   foreach (string filename in values2)
                   {
-                    if ((num3 > iFilePrev || iFilePrev == -1) && 
-                        num4 == 0 && 
+                    if ((num3 > iFilePrev || iFilePrev == -1) && // WTF? iFilePrev always -1
                         CheckImageResolution(filename, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio) && 
                         Utils.IsFileValid(filename)
                        )
