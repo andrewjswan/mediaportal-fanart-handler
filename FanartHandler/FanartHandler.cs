@@ -1061,14 +1061,7 @@ namespace FanartHandler
            )
           refreshTimer.Start();
         //
-        MyFileWatcher = new FileSystemWatcher();
-        MyFileWatcher.Path = Utils.FAHFolder;
-        MyFileWatcher.Filter = "*.jpg";
-        MyFileWatcher.IncludeSubdirectories = true;
-        MyFileWatcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.LastWrite;
-        MyFileWatcher.Created += new FileSystemEventHandler(MyFileWatcher_Created);
-        MyFileWatcher.EnableRaisingEvents = true;
-        //
+        InitFileWatcher();
         try
         {
           UtilsMovingPictures.SetupMovingPicturesLatest();
@@ -1087,6 +1080,24 @@ namespace FanartHandler
       catch (Exception ex)
       {
         logger.Error("Start: " + ex);
+      }
+    }
+
+    private void InitFileWatcher()
+    {
+      try
+      {
+        MyFileWatcher = new FileSystemWatcher();
+        MyFileWatcher.Path = Utils.FAHWatchFolder;
+        MyFileWatcher.Filter = "*.jpg";
+        MyFileWatcher.IncludeSubdirectories = true;
+        MyFileWatcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.LastWrite;
+        MyFileWatcher.Created += new FileSystemEventHandler(MyFileWatcher_Created);
+        MyFileWatcher.EnableRaisingEvents = true;
+      }
+      catch (Exception ex)
+      {
+        logger.Error("InitFileWatcher: "+ex);
       }
     }
 

@@ -19,6 +19,7 @@ using MediaPortal.Music.Database;
 using MediaPortal.Profile;
 using NLog;
 using SQLite.NET;
+using Monitor.Core.Utilities;
 
 namespace FanartHandler
 {
@@ -102,6 +103,7 @@ namespace FanartHandler
 
     public static string FAHTVSeries { get; set; }
     public static string FAHMovingPictures { get; set; }
+    public static string FAHWatchFolder { get; set; }
     #endregion
 
     #region Fanart.TV folders
@@ -110,6 +112,12 @@ namespace FanartHandler
     public static string MusicCDArtFolder { get; set; }
     public static string MusicMask { get; set; }
     public static string MoviesClearArtFolder { get; set; }
+    #endregion
+
+    #region Junction
+    public static bool IsJunction { get; set; }
+    public static string JunctionSource { get; set; }
+    public static string JunctionTarget { get; set; }
     #endregion
 
     static Utils()
@@ -147,16 +155,16 @@ namespace FanartHandler
       FAHMusicAlbums = string.Empty;
 
       FAHTVSeries = string.Empty;
+      FAHMovingPictures = string.Empty;
+
+      FAHWatchFolder = string.Empty;
+
+      IsJunction = false;
+      JunctionSource = string.Empty;
+      JunctionTarget = string.Empty;
       #endregion
 
-      var MPThumbsFolder = Config.GetFolder((Config.Dir) 6) ;
-      /*
-      if ((string.IsNullOrEmpty(MPThumbsFolder)) || (!Directory.Exists(MPThumbsFolder)))
-      {
-        logger.Info("Fanart Handler folder initialize failed.");
-        return;
-      }
-      */
+      MPThumbsFolder = Config.GetFolder((Config.Dir) 6) ;
       logger.Debug("Mediaportal Thumb folder: "+MPThumbsFolder);
 
       #region Fill.MusicFanartFolders
@@ -248,6 +256,44 @@ namespace FanartHandler
       logger.Debug("TV-Series Fanart folder: "+FAHTVSeries);
       FAHMovingPictures = Path.Combine(MPThumbsFolder, @"MovingPictures\Backdrops\FullSize\");
       logger.Debug("MovingPictures Fanart folder: "+FAHMovingPictures);
+      #endregion
+      
+      #region Junction
+      var iIsJunction = false ;
+      // Check MP Thumbs folder for Junction
+      try
+      {
+        iIsJunction = JunctionPoint.Exists(MPThumbsFolder);
+        if (iIsJunction)
+        {
+          JunctionSource = MPThumbsFolder;
+          JunctionTarget = JunctionPoint.GetTarget(JunctionSource);
+          FAHWatchFolder = Path.Combine(JunctionTarget, @"Skin FanArt\");
+          logger.Debug("Junction detected: "+JunctionSource+" -> "+JunctionTarget);
+          IsJunction = iIsJunction;
+        }
+        else
+          FAHWatchFolder = FAHFolder;
+      }
+      catch
+      {
+        FAHWatchFolder = FAHFolder;
+      }
+      // Check Fanart Handler Fanart folder for Junction
+      try
+      {
+        iIsJunction = JunctionPoint.Exists(FAHWatchFolder);
+        if (iIsJunction)
+        {
+          JunctionSource = MPThumbsFolder;
+          JunctionTarget = JunctionPoint.GetTarget(JunctionSource);
+          FAHWatchFolder = JunctionTarget ;
+          logger.Debug("Junction detected: "+Utils.JunctionSource+" -> "+Utils.JunctionTarget);
+          IsJunction = iIsJunction;
+        }
+      }
+      catch { }
+      logger.Debug("Fanart Handler file watcher folder: "+FAHWatchFolder);
       #endregion
 
       logger.Info("Fanart Handler folder initialize done.");
