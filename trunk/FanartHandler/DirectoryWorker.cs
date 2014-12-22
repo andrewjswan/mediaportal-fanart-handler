@@ -49,6 +49,13 @@ namespace FanartHandler
               type = strArray[1];
             All = strArray[0].Equals("All");
 
+            if(!All && Utils.IsJunction)
+            {
+              var str = strArray[0].Replace(Utils.JunctionTarget, Utils.JunctionSource) ;
+              logger.Debug("Revert junction: "+strArray[0]+" -> "+str);
+              strArray[0] = str ;
+            }
+
             ReportProgress(1, "Importing local fanart for Games...");
             // var s1 = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\UserDef\\games";
             if (All || strArray[0].Contains(Utils.FAHUDGames, StringComparison.OrdinalIgnoreCase))
