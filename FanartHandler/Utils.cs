@@ -269,7 +269,7 @@ namespace FanartHandler
         {
           JunctionSource = MPThumbsFolder;
           JunctionTarget = JunctionPoint.GetTarget(JunctionSource);
-          FAHWatchFolder = Path.Combine(JunctionTarget, @"Skin FanArt\");
+          FAHWatchFolder = Path.Combine(JunctionTarget, @"Skin FanArt\").Trim().Replace(@"UNC\", @"\\");
           logger.Debug("Junction detected: "+JunctionSource+" -> "+JunctionTarget);
           IsJunction = iIsJunction;
         }
@@ -288,7 +288,7 @@ namespace FanartHandler
         {
           JunctionSource = MPThumbsFolder;
           JunctionTarget = JunctionPoint.GetTarget(JunctionSource);
-          FAHWatchFolder = JunctionTarget ;
+          FAHWatchFolder = JunctionTarget.Trim().Replace(@"UNC\", @"\\") ;
           logger.Debug("Junction detected: "+Utils.JunctionSource+" -> "+Utils.JunctionTarget);
           IsJunction = iIsJunction;
         }
