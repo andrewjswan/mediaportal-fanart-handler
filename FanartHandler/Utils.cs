@@ -73,6 +73,7 @@ namespace FanartHandler
     public static bool UseVideoFanart { get; set; } 
     public static bool UseScoreCenterFanart { get; set; } 
     public static string DefaultBackdrop { get; set; } 
+    public static string DefaultBackdropMask { get; set; } 
     public static bool DefaultBackdropIsImage { get; set; } 
     public static bool UseDefaultBackdrop { get; set; } 
     public static bool UseSelectedMusicFanart { get; set; } 
@@ -1206,6 +1207,7 @@ namespace FanartHandler
       UseVideoFanart = true;
       UseScoreCenterFanart = true;
       DefaultBackdrop = string.Empty;
+      DefaultBackdropMask = "*.jpg";
       DefaultBackdropIsImage = false;
       UseDefaultBackdrop = true;
       UseSelectedMusicFanart = true;
@@ -1244,6 +1246,7 @@ namespace FanartHandler
           // UseVideoFanart = settings.GetValueAsBool("FanartHandler", "UseVideoFanart", UseVideoFanart);
           // UseScoreCenterFanart = settings.GetValueAsBool("FanartHandler", "UseScoreCenterFanart", UseScoreCenterFanart);
           // DefaultBackdrop = settings.GetValueAsString("FanartHandler", "DefaultBackdrop", DefaultBackdrop);
+          DefaultBackdropMask = settings.GetValueAsString("FanartHandler", "DefaultBackdropMask", DefaultBackdropMask);
           // DefaultBackdropIsImage = settings.GetValueAsBool("FanartHandler", "DefaultBackdropIsImage", DefaultBackdropIsImage);
           UseDefaultBackdrop = settings.GetValueAsBool("FanartHandler", "UseDefaultBackdrop", UseDefaultBackdrop);
           UseSelectedMusicFanart = settings.GetValueAsBool("FanartHandler", "UseSelectedMusicFanart", UseSelectedMusicFanart);
@@ -1295,6 +1298,7 @@ namespace FanartHandler
           xmlwriter.SetValueAsBool("FanartHandler", "ScrapeThumbnails", ScrapeThumbnails);
           xmlwriter.SetValueAsBool("FanartHandler", "ScrapeThumbnailsAlbum", ScrapeThumbnailsAlbum);
           xmlwriter.SetValueAsBool("FanartHandler", "DoNotReplaceExistingThumbs", DoNotReplaceExistingThumbs);
+          xmlwriter.SetValue("FanartHandler", "DefaultBackdropMask", DefaultBackdropMask);
           xmlwriter.SetValueAsBool("FanartHandler", "UseDefaultBackdrop", UseDefaultBackdrop);
           xmlwriter.SetValueAsBool("FanartHandler", "UseGenreFanart", UseGenreFanart);
           xmlwriter.SetValueAsBool("FanartHandler", "ScanMusicFoldersForFanart", ScanMusicFoldersForFanart);
