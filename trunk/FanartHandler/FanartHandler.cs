@@ -1027,7 +1027,7 @@ namespace FanartHandler
           Utils.Shuffle(ref defaultBackdropImages);
         }
         logger.Info("Fanart Handler is using Fanart: " + Utils.UseFanart + ", Album Thumbs: " + Utils.UseAlbum + ", Artist Thumbs: " + Utils.UseArtist + ".");
-        logger.Debug("Default backdrops ["+Utils.DefaultBackdropMask+"] for Music found: " + defaultBackdropImages.Count);
+        logger.Debug("Default backdrops ["+Utils.UseDefaultBackdrop+" - "+Utils.DefaultBackdropMask+"] for Music found: " + defaultBackdropImages.Count);
         //
         Utils.InitiateDbm("mediaportal");
         MDB = MusicDatabase.Instance;
