@@ -373,6 +373,7 @@ namespace FanartHandler
     {
       if (MyScraperWorker != null && MyScraperWorker.IsBusy || MyScraperNowWorker != null && MyScraperNowWorker.IsBusy)
         return;
+
       AddToDirectoryTimerQueue(e.FullPath);
     }
 
