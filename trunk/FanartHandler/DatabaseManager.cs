@@ -1143,7 +1143,7 @@ namespace FanartHandler
                 #endregion
 
                 #region Albums
-                if (Utils.ScrapeThumbnailsAlbum)
+                if (Utils.ScrapeThumbnailsAlbum && !StopScraper && !Utils.GetIsStopping())
                 {
                   musicDatabaseAlbums = new List<AlbumInfo>();
                   m_db.GetAllAlbums(ref musicDatabaseAlbums);
@@ -1226,8 +1226,10 @@ namespace FanartHandler
                 }
                 #endregion
                 #region Movies
-                if (Utils.UseVideoFanart)
+                if (Utils.UseVideoFanart && !StopScraper && !Utils.GetIsStopping())
                 {
+                  FanartHandlerSetup.Fh.UpdateDirectoryTimer(Utils.FAHSMovies, false, "None");
+
                   videoDatabaseMovies = new ArrayList();
                   VideoDatabase.GetMovies(ref videoDatabaseMovies);
 

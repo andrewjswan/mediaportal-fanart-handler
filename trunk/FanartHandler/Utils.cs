@@ -204,6 +204,7 @@ namespace FanartHandler
         MusicMask = "{0}-{1}"; // Mediaportal
       }
       logger.Debug("Fanart Handler Music CD folder: "+MusicCDArtFolder+" Mask: "+MusicMask);
+
       MoviesClearArtFolder = Path.Combine(MPThumbsFolder, @"ClearArt\Movies\"); // MePotools
       if (!Directory.Exists(MoviesClearArtFolder) || IsDirectoryEmpty(MoviesClearArtFolder))
       {
@@ -212,7 +213,7 @@ namespace FanartHandler
         {
           MoviesClearArtFolder = Path.Combine(MPThumbsFolder, @"Movies\ClearLogo\FullSize\"); // DVDArt
           if (!Directory.Exists(MoviesClearArtFolder) || IsDirectoryEmpty(MoviesClearArtFolder))
-            MusicClearArtFolder = string.Empty;
+            MoviesClearArtFolder = string.Empty;
         }
       }
       logger.Debug("Fanart Handler Movies ClearArt folder: "+MoviesClearArtFolder);
@@ -268,8 +269,8 @@ namespace FanartHandler
         if (iIsJunction)
         {
           JunctionSource = MPThumbsFolder;
-          JunctionTarget = JunctionPoint.GetTarget(JunctionSource);
-          FAHWatchFolder = Path.Combine(JunctionTarget, @"Skin FanArt\").Trim().Replace(@"UNC\", @"\\");
+          JunctionTarget = JunctionPoint.GetTarget(JunctionSource).Trim().Replace(@"UNC\", @"\\");
+          FAHWatchFolder = Path.Combine(JunctionTarget, @"Skin FanArt\");
           logger.Debug("Junction detected: "+JunctionSource+" -> "+JunctionTarget);
           IsJunction = iIsJunction;
         }
@@ -287,8 +288,8 @@ namespace FanartHandler
         if (iIsJunction)
         {
           JunctionSource = MPThumbsFolder;
-          JunctionTarget = JunctionPoint.GetTarget(JunctionSource);
-          FAHWatchFolder = JunctionTarget.Trim().Replace(@"UNC\", @"\\") ;
+          JunctionTarget = JunctionPoint.GetTarget(JunctionSource).Trim().Replace(@"UNC\", @"\\");
+          FAHWatchFolder = JunctionTarget ;
           logger.Debug("Junction detected: "+Utils.JunctionSource+" -> "+Utils.JunctionTarget);
           IsJunction = iIsJunction;
         }
