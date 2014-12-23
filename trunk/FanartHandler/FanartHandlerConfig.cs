@@ -57,7 +57,10 @@ namespace FanartHandler
     private TabPage tabPage6;
     private Label label13;
     private Label label12;
+    private Label labelFanartTVPersonalAPIKey;
     private ComboBox comboBoxScraperInterval;
+    private CheckBox CheckBoxDeleteMissing;
+    private TextBox edtFanartTVPersonalAPIKey;
     private Label label7;
     private Label label6;
     private ComboBox comboBoxMaxImages;
@@ -95,6 +98,11 @@ namespace FanartHandler
     private CheckBox checkBoxXFactorFanart;
     private GroupBox groupBox3;
     private CheckBox checkBoxEnableMusicFanart;
+    private CheckBox CheckBoxUseGenreFanart;
+    private CheckBox CheckBoxScanMusicFoldersForFanart;
+    private TextBox edtMusicFoldersArtistAlbumRegex;
+    private CheckBox CheckBoxUseDefaultBackdrop;
+    private TextBox edtDefaultBackdropMask;
     private TabControl tabControl3;
     private TabPage tabPage3;
     private TabPage tabPage4;
@@ -193,10 +201,17 @@ namespace FanartHandler
       checkBoxScraperMusicPlaying = new CheckBox();
       comboBoxMaxImages = new ComboBox();
       comboBoxScraperInterval = new ComboBox();
+      CheckBoxDeleteMissing = new CheckBox();
+      edtFanartTVPersonalAPIKey = new TextBox();
       comboBoxMinResolution = new ComboBox();
       checkBoxAspectRatio = new CheckBox();
       comboBoxInterval = new ComboBox();
       checkBoxEnableMusicFanart = new CheckBox();
+      CheckBoxScanMusicFoldersForFanart = new CheckBox();
+      CheckBoxUseGenreFanart = new CheckBox();
+      edtMusicFoldersArtistAlbumRegex = new TextBox();
+      CheckBoxUseDefaultBackdrop = new CheckBox();
+      edtDefaultBackdropMask = new TextBox();
       checkBoxXFactorFanart = new CheckBox();
       checkBoxThumbsAlbum = new CheckBox();
       checkBoxThumbsArtist = new CheckBox();
@@ -232,6 +247,7 @@ namespace FanartHandler
       tabPage6 = new TabPage();
       label13 = new Label();
       label12 = new Label();
+      labelFanartTVPersonalAPIKey = new Label();
       label7 = new Label();
       label6 = new Label();
       tabPage7 = new TabPage();
@@ -531,6 +547,25 @@ namespace FanartHandler
       comboBoxScraperInterval.Size = new Size(124, 21);
       comboBoxScraperInterval.TabIndex = 12;
       //this.toolTip1.SetToolTip((Control) this.comboBoxScraperInterval, "Select the  number of hours between each new scraper attempt.");
+      CheckBoxDeleteMissing.AutoSize = true;
+      CheckBoxDeleteMissing.Font = new Font("Microsoft Sans Serif", 9.75f, FontStyle.Regular, GraphicsUnit.Point, 0);
+      CheckBoxDeleteMissing.Location = new Point(12, 139);
+      CheckBoxDeleteMissing.Name = "CheckBoxDeleteMissing";
+      CheckBoxDeleteMissing.Size = new Size(411, 20);
+      CheckBoxDeleteMissing.TabIndex = 13;
+      CheckBoxDeleteMissing.Text = "Delete missing enries from DB, when FanartHandler Initial Scrape start.";
+      //this.toolTip1.SetToolTip((Control) this.CheckBoxDeleteMissing, componentResourceManager.GetString("CheckBoxDeleteMissing.ToolTip"));
+      CheckBoxDeleteMissing.UseVisualStyleBackColor = true;
+      CheckBoxDeleteMissing.CheckedChanged += new EventHandler(CheckBoxDeleteMissing_CheckedChanged);
+      edtFanartTVPersonalAPIKey.AcceptsReturn = true;
+      edtFanartTVPersonalAPIKey.Multiline = false;
+      edtFanartTVPersonalAPIKey.Text = "";
+      edtFanartTVPersonalAPIKey.Name = "edtFanartTVPersonalAPIKey";
+      edtFanartTVPersonalAPIKey.Location = new Point(215, 164);
+      edtFanartTVPersonalAPIKey.Size = new Size(300, 20);
+      edtFanartTVPersonalAPIKey.TabIndex = 14;
+      edtFanartTVPersonalAPIKey.Font = new Font("Microsoft Sans Serif", 9.75f, FontStyle.Regular, GraphicsUnit.Point, 0);
+      //
       comboBoxMinResolution.DropDownStyle = ComboBoxStyle.DropDownList;
       comboBoxMinResolution.FormattingEnabled = true;
       comboBoxMinResolution.Location = new Point(12, 25);
@@ -564,7 +599,58 @@ namespace FanartHandler
       checkBoxEnableMusicFanart.TabIndex = 7;
       checkBoxEnableMusicFanart.Text = "Enable Fanart For Selected Items";
       //this.toolTip1.SetToolTip((Control) this.checkBoxEnableMusicFanart, componentResourceManager.GetString("checkBoxEnableMusicFanart.ToolTip"));
-      checkBoxEnableMusicFanart.UseVisualStyleBackColor = true;
+      checkBoxEnableMusicFanart.UseVisualStyleBackColor = true;  
+      CheckBoxUseGenreFanart.AutoSize = true;
+      CheckBoxUseGenreFanart.Checked = true;
+      CheckBoxUseGenreFanart.CheckState = CheckState.Checked;
+      CheckBoxUseGenreFanart.Font = new Font("Microsoft Sans Serif", 9.75f, FontStyle.Regular, GraphicsUnit.Point, 0);
+      CheckBoxUseGenreFanart.Location = new Point(9, 51);
+      CheckBoxUseGenreFanart.Name = "CheckBoxUseGenreFanart";
+      CheckBoxUseGenreFanart.Size = new Size(400, 20);
+      CheckBoxUseGenreFanart.TabIndex = 8;
+      CheckBoxUseGenreFanart.Text = "Enable Genre Fanart For Played music if not found Artist Fanart.";
+      //this.toolTip1.SetToolTip((Control) this.CheckBoxUseGenreFanart, componentResourceManager.GetString("CheckBoxUseGenreFanart.ToolTip"));
+      CheckBoxUseGenreFanart.UseVisualStyleBackColor = true;
+      CheckBoxScanMusicFoldersForFanart.AutoSize = true;
+      CheckBoxScanMusicFoldersForFanart.Checked = true;
+      CheckBoxScanMusicFoldersForFanart.CheckState = CheckState.Checked;
+      CheckBoxScanMusicFoldersForFanart.Font = new Font("Microsoft Sans Serif", 9.75f, FontStyle.Regular, GraphicsUnit.Point, 0);
+      CheckBoxScanMusicFoldersForFanart.Location = new Point(9, 76);
+      CheckBoxScanMusicFoldersForFanart.Name = "CheckBoxScanMusicFoldersForFanart";
+      CheckBoxScanMusicFoldersForFanart.Size = new Size(400, 20);
+      CheckBoxScanMusicFoldersForFanart.TabIndex = 9;
+      CheckBoxScanMusicFoldersForFanart.Text = "Enable Scan Music folders for Fanarts, regex:";
+      //this.toolTip1.SetToolTip((Control) this.CheckBoxScanMusicFoldersForFanart, componentResourceManager.GetString("CheckBoxScanMusicFoldersForFanart.ToolTip"));
+      CheckBoxScanMusicFoldersForFanart.UseVisualStyleBackColor = true;
+      edtMusicFoldersArtistAlbumRegex.AcceptsReturn = true;
+      edtMusicFoldersArtistAlbumRegex.Multiline = false;
+      edtMusicFoldersArtistAlbumRegex.Text = "";
+      edtMusicFoldersArtistAlbumRegex.Name = "edtMusicFoldersArtistAlbumRegex";
+      edtMusicFoldersArtistAlbumRegex.Location = new Point(9, 101);
+      edtMusicFoldersArtistAlbumRegex.Size = new Size(400, 20);
+      edtMusicFoldersArtistAlbumRegex.TabIndex = 10;
+      edtMusicFoldersArtistAlbumRegex.Font = new Font("Microsoft Sans Serif", 9.75f, FontStyle.Regular, GraphicsUnit.Point, 0);
+      //
+      CheckBoxUseDefaultBackdrop.AutoSize = true;
+      CheckBoxUseDefaultBackdrop.Checked = true;
+      CheckBoxUseDefaultBackdrop.CheckState = CheckState.Checked;
+      CheckBoxUseDefaultBackdrop.Font = new Font("Microsoft Sans Serif", 9.75f, FontStyle.Regular, GraphicsUnit.Point, 0);
+      CheckBoxUseDefaultBackdrop.Location = new Point(9, 126);
+      CheckBoxUseDefaultBackdrop.Name = "CheckBoxUseDefaultBackdrop";
+      CheckBoxUseDefaultBackdrop.Size = new Size(400, 20);
+      CheckBoxUseDefaultBackdrop.TabIndex = 11;
+      CheckBoxUseDefaultBackdrop.Text = "Enable Default Backdrops for Music from UserDef folder, mask:";
+      //this.toolTip1.SetToolTip((Control) this.CheckBoxUseDefaultBackdrop, componentResourceManager.GetString("CheckBoxUseDefaultBackdrop.ToolTip"));
+      CheckBoxUseDefaultBackdrop.UseVisualStyleBackColor = true;
+      edtDefaultBackdropMask.AcceptsReturn = true;
+      edtDefaultBackdropMask.Multiline = false;
+      edtDefaultBackdropMask.Text = "*.jpg";
+      edtDefaultBackdropMask.Name = "edtDefaultBackdropMask";
+      edtDefaultBackdropMask.Location = new Point(9, 151);
+      edtDefaultBackdropMask.Size = new Size(400, 20);
+      edtDefaultBackdropMask.TabIndex = 12;
+      edtDefaultBackdropMask.Font = new Font("Microsoft Sans Serif", 9.75f, FontStyle.Regular, GraphicsUnit.Point, 0);
+      //
       checkBoxXFactorFanart.AutoSize = true;
       checkBoxXFactorFanart.Checked = true;
       checkBoxXFactorFanart.CheckState = CheckState.Checked;
@@ -883,17 +969,25 @@ namespace FanartHandler
       label1.TabIndex = 2;
       label1.Text = "Select Music Fanart Sources:";
       groupBox3.Controls.Add(checkBoxEnableMusicFanart);
+      groupBox3.Controls.Add(CheckBoxUseGenreFanart);
+      groupBox3.Controls.Add(CheckBoxScanMusicFoldersForFanart);
+      groupBox3.Controls.Add(edtMusicFoldersArtistAlbumRegex);
+      groupBox3.Controls.Add(CheckBoxUseDefaultBackdrop);
+      groupBox3.Controls.Add(edtDefaultBackdropMask);
       groupBox3.Font = new Font("Microsoft Sans Serif", 11.25f, FontStyle.Bold);
       groupBox3.Location = new Point(395, 7);
       groupBox3.Name = "groupBox3";
-      groupBox3.Size = new Size(325, 182);
+      groupBox3.Size = new Size(425, 182);
       groupBox3.TabIndex = 9;
       groupBox3.TabStop = false;
       groupBox3.Text = "Music Plugins Fanart Options";
       tabPage6.Controls.Add(label13);
       tabPage6.Controls.Add(label12);
+      tabPage6.Controls.Add(labelFanartTVPersonalAPIKey);
       tabPage6.Controls.Add(checkBoxEnableScraperMPDatabase);
       tabPage6.Controls.Add(comboBoxScraperInterval);
+      tabPage6.Controls.Add(CheckBoxDeleteMissing);
+      tabPage6.Controls.Add(edtFanartTVPersonalAPIKey);
       tabPage6.Controls.Add(checkBoxScraperMusicPlaying);
       tabPage6.Controls.Add(label7);
       tabPage6.Controls.Add(comboBoxMaxImages);
@@ -919,6 +1013,13 @@ namespace FanartHandler
       label12.Size = new Size(102, 16);
       label12.TabIndex = 13;
       label12.Text = "Scraper Interval";
+      labelFanartTVPersonalAPIKey.AutoSize = true;
+      labelFanartTVPersonalAPIKey.Font = new Font("Microsoft Sans Serif", 9.75f, FontStyle.Regular, GraphicsUnit.Point, 0);
+      labelFanartTVPersonalAPIKey.Location = new Point(12, 164);
+      labelFanartTVPersonalAPIKey.Name = "labelFanartTVPersonalAPIKey";
+      labelFanartTVPersonalAPIKey.Size = new Size(102, 16);
+      labelFanartTVPersonalAPIKey.TabIndex = 14;
+      labelFanartTVPersonalAPIKey.Text = "Fanart.TV Personal API key:";
       label7.AutoSize = true;
       label7.Font = new Font("Microsoft Sans Serif", 9.75f, FontStyle.Regular, GraphicsUnit.Point, 0);
       label7.Location = new Point(12, 80);
@@ -1270,9 +1371,13 @@ namespace FanartHandler
         Utils.ScrapeThumbnails = checkBox1.Checked;
         Utils.ScrapeThumbnailsAlbum = checkBox9.Checked;
         Utils.DoNotReplaceExistingThumbs = checkBox8.Checked;
-        // Utils.UseGenreFanart = ComboBoxUseGenreFanart.Checked;
-        // Utils.ScanMusicFoldersForFanart = ComboBoxScanMusicFoldersForFanart.Checked;
-        // Utils.MusicFoldersArtistAlbumRegex = edtMusicFoldersArtistAlbumRegex.Text;
+        Utils.UseGenreFanart = CheckBoxUseGenreFanart.Checked;
+        Utils.ScanMusicFoldersForFanart = CheckBoxScanMusicFoldersForFanart.Checked;
+        Utils.MusicFoldersArtistAlbumRegex = edtMusicFoldersArtistAlbumRegex.Text.Trim();
+        Utils.UseDefaultBackdrop = CheckBoxUseDefaultBackdrop.Checked;
+        Utils.DefaultBackdropMask = edtDefaultBackdropMask.Text.Trim();
+        Utils.DeleteMissing = CheckBoxDeleteMissing.Checked;
+        Utils.FanartTVPersonalAPIKey = edtFanartTVPersonalAPIKey.Text.Trim();
         Utils.SaveSettings();
         MessageBox.Show("Settings is stored in memory. Make sure to press Ok when exiting MP Configuration. "+
                         "Pressing Cancel when exiting MP Configuration will result in these setting NOT being saved!", "Settings", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1387,9 +1492,9 @@ namespace FanartHandler
       checkBox1.Checked = Utils.ScrapeThumbnails;
       checkBox9.Checked = Utils.ScrapeThumbnailsAlbum;
       checkBoxXFactorFanart.Checked = Utils.UseFanart;
-      // checkBoxUseGenereFanart.Checked = Utils.UseGenreFanart;
-      // checkBoxScanMusicFoldersForFanart.Checked = Utils.ScanMusicFoldersForFanart;
-      // editMusicFoldersArtistAlbumRegex.Text = Utils.MusicFoldersArtistAlbumRegex;
+      CheckBoxUseGenreFanart.Checked = Utils.UseGenreFanart;
+      CheckBoxScanMusicFoldersForFanart.Checked = Utils.ScanMusicFoldersForFanart;
+      edtMusicFoldersArtistAlbumRegex.Text = Utils.MusicFoldersArtistAlbumRegex;
       checkBoxThumbsAlbum.Checked = Utils.UseAlbum;
       checkBox8.Checked = Utils.DoNotReplaceExistingThumbs;
       checkBoxThumbsArtist.Checked = Utils.UseArtist;
@@ -1404,6 +1509,10 @@ namespace FanartHandler
       checkBoxEnableScraperMPDatabase.Checked = Utils.ScraperMPDatabase;
       comboBoxScraperInterval.SelectedItem = Utils.ScraperInterval;
       checkBoxAspectRatio.Checked = Utils.UseAspectRatio;
+      CheckBoxUseDefaultBackdrop.Checked = Utils.UseDefaultBackdrop;
+      edtDefaultBackdropMask.Text = Utils.DefaultBackdropMask;
+      CheckBoxDeleteMissing.Checked = Utils.DeleteMissing;
+      edtFanartTVPersonalAPIKey.Text = Utils.FanartTVPersonalAPIKey;
       #endregion
       try
       {
@@ -2787,16 +2896,13 @@ namespace FanartHandler
 
     private void checkBoxEnableScraperMPDatabase_CheckedChanged(object sender, EventArgs e)
     {
-      if (checkBoxEnableScraperMPDatabase.Checked)
-      {
-        Utils.ScraperMPDatabase = checkBoxEnableScraperMPDatabase.Checked;
-        button6.Enabled = true;
-      }
-      else
-      {
-        Utils.ScraperMPDatabase = checkBoxEnableScraperMPDatabase.Checked;
-        button6.Enabled = false;
-      }
+      Utils.ScraperMPDatabase = checkBoxEnableScraperMPDatabase.Checked;
+      button6.Enabled = Utils.ScraperMPDatabase;
+    }
+
+    private void CheckBoxDeleteMissing_CheckedChanged(object sender, EventArgs e)
+    {
+      Utils.DeleteMissing = CheckBoxDeleteMissing.Checked;
     }
 
     private void ImportMusicFanart()
