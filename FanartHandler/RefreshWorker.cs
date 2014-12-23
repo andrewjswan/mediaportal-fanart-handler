@@ -142,7 +142,7 @@ namespace FanartHandler
           {
             DebugStep = 14;
             if (Utils.ScraperMusicPlaying && !Utils.GetDbm().GetIsScraping() && 
-                (FanartHandlerSetup.Fh.MyScraperNowWorker != null && !FanartHandlerSetup.Fh.MyScraperNowWorker.IsBusy || FanartHandlerSetup.Fh.MyScraperNowWorker == null)
+                ((FanartHandlerSetup.Fh.MyScraperNowWorker != null && !FanartHandlerSetup.Fh.MyScraperNowWorker.IsBusy) || FanartHandlerSetup.Fh.MyScraperNowWorker == null)
                )
             {
               DebugStep = 15;

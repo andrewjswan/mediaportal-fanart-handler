@@ -371,10 +371,18 @@ namespace FanartHandler
 
     private void MyFileWatcher_Created(object sender, FileSystemEventArgs e)
     {
-      if (MyScraperWorker != null && MyScraperWorker.IsBusy || MyScraperNowWorker != null && MyScraperNowWorker.IsBusy)
-        return;
+      var FileName = e.FullPath ;
 
-      AddToDirectoryTimerQueue(e.FullPath);
+      if (FileName.Contains(Utils.FAHSMusic, StringComparison.OrdinalIgnoreCase) || 
+          FileName.Contains(Utils.FAHMusicArtists, StringComparison.OrdinalIgnoreCase) ||
+          FileName.Contains(Utils.FAHMusicAlbums, StringComparison.OrdinalIgnoreCase))
+        if ((MyScraperWorker != null && MyScraperWorker.IsBusy) || (MyScraperNowWorker != null && MyScraperNowWorker.IsBusy))
+          return;
+      if (FileName.Contains(Utils.FAHSMovies, StringComparison.OrdinalIgnoreCase) && (MyScraperWorker != null && MyScraperWorker.IsBusy))
+          return;
+
+      logger.Debug("MyFileWatcher_Created: "+FileName);
+      AddToDirectoryTimerQueue(FileName);
     }
 
     internal void SetupDefaultBackdrops(string StartDir, ref int i)
@@ -462,7 +470,7 @@ namespace FanartHandler
 
       try
       {
-        if (Interlocked.CompareExchange(ref SyncPointDirectory, 1, 0) == 0 && (MyDirectoryWorker == null || MyDirectoryWorker != null && !MyDirectoryWorker.IsBusy))
+        if (Interlocked.CompareExchange(ref SyncPointDirectory, 1, 0) == 0 && (MyDirectoryWorker == null || (MyDirectoryWorker != null && !MyDirectoryWorker.IsBusy)))
         {
           if (MyDirectoryWorker == null)
           {
@@ -793,7 +801,7 @@ namespace FanartHandler
         return;
       try
       {
-        if (Interlocked.CompareExchange(ref SyncPointRefresh, 1, 0) == 0 && SyncPointDirectoryUpdate == 0 && (MyRefreshWorker == null || MyRefreshWorker != null && !MyRefreshWorker.IsBusy))
+        if (Interlocked.CompareExchange(ref SyncPointRefresh, 1, 0) == 0 && SyncPointDirectoryUpdate == 0 && (MyRefreshWorker == null || (MyRefreshWorker != null && !MyRefreshWorker.IsBusy)))
         {
           if (MyRefreshWorker == null)
           {
