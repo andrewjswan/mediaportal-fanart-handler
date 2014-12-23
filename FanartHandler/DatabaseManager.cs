@@ -379,7 +379,7 @@ namespace FanartHandler
                         logger.Info("Upgraded Database to version "+DBVersion);
                     }
                     logger.Debug("Upgrading Step 7 - Fill tables ...");
-                    FanartHandlerSetup.Fh.UpdateDirectoryTimer("All", false, "All");
+                    FanartHandlerSetup.Fh.UpdateDirectoryTimer("All", false, "Upgrade");
                     logger.Info("Upgrading Step 7 - finished");
                 }
                 #endregion
@@ -737,7 +737,7 @@ namespace FanartHandler
                     #endregion
 
                     logger.Debug("Upgrading [Step 7] - Fill tables ...");
-                    FanartHandlerSetup.Fh.UpdateDirectoryTimer("All", false, "All");
+                    FanartHandlerSetup.Fh.UpdateDirectoryTimer("All", false, "Upgrade");
                     logger.Info("Upgrading [Step 7] - finished");
 
                     DBVersion = "3.3";
@@ -1228,7 +1228,7 @@ namespace FanartHandler
                 #region Movies
                 if (Utils.UseVideoFanart && !StopScraper && !Utils.GetIsStopping())
                 {
-                  FanartHandlerSetup.Fh.UpdateDirectoryTimer(Utils.FAHSMovies, false, "None");
+                  FanartHandlerSetup.Fh.UpdateDirectoryTimer(Utils.FAHSMovies, false, "InitialScrape");
 
                   videoDatabaseMovies = new ArrayList();
                   VideoDatabase.GetMovies(ref videoDatabaseMovies);

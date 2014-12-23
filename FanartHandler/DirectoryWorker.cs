@@ -45,15 +45,19 @@ namespace FanartHandler
           var strArray = e.Argument as string[];
           if (strArray != null)
           {
+            strArray[0] = strArray[0].Trim();
             if (strArray.Length == 2)
               type = strArray[1];
             All = strArray[0].Equals("All");
 
             if(!All && Utils.IsJunction)
             {
-              var str = strArray[0].Replace(Utils.JunctionTarget, Utils.JunctionSource) ;
-              logger.Debug("Revert junction: "+strArray[0]+" -> "+str);
-              strArray[0] = str ;
+              if (strArray[0].Contains(Utils.JunctionTarget, StringComparison.OrdinalIgnoreCase))
+              {
+                var str = strArray[0].Replace(Utils.JunctionTarget, Utils.JunctionSource) ;
+                logger.Debug("Revert junction: "+strArray[0]+" -> "+str);
+                strArray[0] = str ;
+              }
             }
 
             ReportProgress(1, "Importing local fanart for Games...");
@@ -256,7 +260,10 @@ namespace FanartHandler
     {
       try
       {
-        if (Utils.GetIsStopping() || type == null || !type.Equals("All") && !type.Equals("Fanart") && (!type.Equals("Thumbs") && !type.Equals("External")))
+        if (Utils.GetIsStopping() || type == null)
+          return;
+
+        if (!type.Equals("All") && !type.Equals("Fanart") && (!type.Equals("Thumbs") && !type.Equals("External")))
           return;
 
         FanartHandlerConfig.toolStripStatusLabel1.Text = e.UserState.ToString();
@@ -270,17 +277,22 @@ namespace FanartHandler
 
     internal void OnRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
     {
+      var flag = false;
+
       try
       {
         Utils.ReleaseDelayStop("DirectoryWorker-OnDoWork");
         FanartHandlerSetup.Fh.SyncPointDirectory = 0;
+
         if (type == null)
           return;
+
         if (type.Equals("All") || type.Equals("Fanart"))
         {
           FanartHandlerConfig.UpdateFanartTableOnStartup(0);
-          FanartHandlerConfig.toolStripStatusLabel1.Text = "Done / Idle";
-          FanartHandlerConfig.toolStripProgressBar1.Value = 0;
+          flag = true;
+          // FanartHandlerConfig.toolStripStatusLabel1.Text = "Done / Idle";
+          // FanartHandlerConfig.toolStripProgressBar1.Value = 0;
         }
         if (type.Equals("All") || type.Equals("Thumbs"))
         {
@@ -289,14 +301,24 @@ namespace FanartHandler
             Utils.Category.MusicAlbumThumbScraped,
             Utils.Category.MusicArtistThumbScraped
           }, 0);
+          flag = true;
+          // FanartHandlerConfig.toolStripStatusLabel1.Text = "Done / Idle";
+          // FanartHandlerConfig.toolStripProgressBar1.Value = 0;
+        }
+        if (type.Equals("All") || type.Equals("External"))
+        {
+          FanartHandlerConfig.UpdateFanartExternalTable();
+          flag = true;
+          // FanartHandlerConfig.toolStripStatusLabel1.Text = "Done / Idle";
+          // FanartHandlerConfig.toolStripProgressBar1.Value = 0;
+        }
+
+        if (flag)
+        {
           FanartHandlerConfig.toolStripStatusLabel1.Text = "Done / Idle";
           FanartHandlerConfig.toolStripProgressBar1.Value = 0;
         }
-        if (!type.Equals("All") && !type.Equals("External"))
-          return;
-        FanartHandlerConfig.UpdateFanartExternalTable();
-        FanartHandlerConfig.toolStripStatusLabel1.Text = "Done / Idle";
-        FanartHandlerConfig.toolStripProgressBar1.Value = 0;
+
       }
       catch (Exception ex)
       {

@@ -612,6 +612,14 @@ namespace FanartHandler
         {
           res = LastFMGetTumbnails(Utils.Category.MusicAlbumThumbScraped, artist, album, externalAccess);
         }
+        if (Utils.GetDbm().StopScraper)
+          break;
+
+        // *** CoverArtArchive.org
+        if (res == 0 && mbid != null && (mbid.Length > 10)) 
+        {
+          res = CoverartArchiveGetTumbnails(Utils.Category.MusicAlbumThumbScraped, artist, album, mbid, externalAccess);
+        }
         break;
       } // while
 
@@ -777,7 +785,7 @@ namespace FanartHandler
     }
     // End: GethtBackdropsSearchResult
 
-    public int HtBackdropGetFanart(string artist, int iMax, DatabaseManager dbm, /*bool reportProgress,*/ bool doTriggerRefresh, bool externalAccess, bool doScrapeFanart)
+    public int HtBackdropGetFanart(string artist, int iMax, DatabaseManager dbm, bool doTriggerRefresh, bool externalAccess, bool doScrapeFanart)
     {
       try
       {
@@ -813,7 +821,7 @@ namespace FanartHandler
                     sourceFilename = "http://htbackdrops.org/api/"+ApiKeyhtBackdrops+"/download/" + ((SearchResults) alSearchResults[index]).Id + "/fullsize";
                     if (!dbm.SourceImageExist(dbartist, null, sourceFilename, Utils.Category.MusicFanartScraped, null, Utils.Provider.HtBackdrops, ((SearchResults) alSearchResults[index]).Id, mbid))
                     {
-                      if (DownloadImage(ref dbartist, null, ref sourceFilename, ref path, ref filename, /*ref requestPic, ref responsePic,*/ Utils.Category.MusicFanartScraped, ((SearchResults) alSearchResults[index]).Id))
+                      if (DownloadImage(ref dbartist, null, ref sourceFilename, ref path, ref filename, Utils.Category.MusicFanartScraped, ((SearchResults) alSearchResults[index]).Id))
                       {
                         checked { ++num; }
                         dbm.LoadFanart(dbartist, filename, sourceFilename, Utils.Category.MusicFanartScraped, null, Utils.Provider.HtBackdrops, ((SearchResults) alSearchResults[index]).Id, mbid);
@@ -882,12 +890,10 @@ namespace FanartHandler
                     string mbid = ((SearchResults) alSearchResults[index]).MBID;
                     logger.Debug("HtBackdrops: Found thumbnail for Artist: " + artist + ". MBID: "+mbid);
                     var sourceFilename = "http://htbackdrops.org/api/"+ApiKeyhtBackdrops+"/download/" + ((SearchResults) alSearchResults[index]).Id + "/fullsize";
-                    if (DownloadImage(ref artist, null, ref sourceFilename, ref path, ref filename, /*ref requestPic, ref responsePic,*/ Utils.Category.MusicArtistThumbScraped, null))
+                    if (DownloadImage(ref artist, null, ref sourceFilename, ref path, ref filename, Utils.Category.MusicArtistThumbScraped, null))
                     {
                       checked { ++num; }
                       dbm.LoadFanart(dbartist, filename.Replace("_tmp.jpg", "L.jpg"), sourceFilename, Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.HtBackdrops, null, mbid);
-                      // dbm.LoadFanart(dbartist, filename.Replace("_tmp.jpg", ".jpg"), sourceFilename, Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.HtBackdrops, null);
-                      // flag = true;
                       ExternalAccess.InvokeScraperCompleted(Utils.Category.MusicArtistThumbScraped.ToString(), dbartist);
                       break;
                     }
@@ -1288,7 +1294,7 @@ namespace FanartHandler
         return num;
       }
       catch (Exception ex) {
-        logger.Error("LastFM: GetTumbnails: " + Method + " - " + ex);
+        logger.Error("Last.FM: GetTumbnails: " + Method + " - " + ex);
       }
       finally
       {
@@ -1566,6 +1572,106 @@ namespace FanartHandler
     // End: Fanart.TV Get Fanart/Tumbnails for Artist or Artist/Album
     #endregion
 
+    #region CoverArtArchive.org
+    // Begin: Extract CoverArtArchive Front Thumb  URL
+    public string GetCoverArtFrontThumbURL (string AInputString)
+    {
+      const string URLRE = @"Front[^\}]+?image.[^\""]+?\""(.+?)\""" ;
+      var Result = (string) null ;         
+
+      if (string.IsNullOrEmpty(AInputString))
+        return Result ;
+
+      Regex ru = new Regex(URLRE,RegexOptions.IgnoreCase);
+      MatchCollection mcu = ru.Matches(AInputString) ;
+      foreach(Match mu in mcu)
+      {
+        Result = mu.Groups[1].Value.ToString();
+        if (Result.Length > 10)
+        {
+          logger.Debug("CoverArtArchive: Extract Front Thumb URL: " + Result) ;
+          break;
+        }
+      }
+      return Result ;
+    }
+    // End: Extract CoverArtArchive Front Thumb  URL
+
+    // Begin: CoverArtArchive Get Tumbnails for Artist/Album
+    public int CoverartArchiveGetTumbnails(Utils.Category category, string artist, string album, string mbid, bool externalAccess)
+    {
+      var Method = (string) null;
+      var URL = (string) null;
+
+      URL = "http://coverartarchive.org/release-group/{0}/";
+
+      // CoverArtArchive.org get Artist/Album Tumbnails
+      if (category == Utils.Category.MusicAlbumThumbScraped) 
+      {
+        if (string.IsNullOrEmpty(artist) && string.IsNullOrEmpty(album) && string.IsNullOrEmpty(mbid)) {
+          logger.Debug("CoverArtArchive: GetTumbnails - Artist/Album/MBID - Empty.");
+          return -1 ;
+        }
+        Method = "Artist/Album: "+artist+" - "+album+" - "+mbid ;
+      // Last.FM wrong Category ...
+      } else {
+        logger.Warn("CoverArtArchive: GetTumbnails - wrong category - " + category.ToString() + ".");
+        return -1;
+      }
+
+      try
+      {
+        var num = 0;
+        var html = (string) null;
+        var path = (string) null;
+        var filename = (string) null;
+        var sourceFilename = (string) null;
+        var flag = false;
+        logger.Debug("CoverArtArchive: Trying to find thumbnail for "+Method+".");
+        GetHtml(String.Format(URL,mbid.Trim()), out html) ;
+        try
+        {
+          if (html != null) {
+            if (html.Length > 0) {
+              sourceFilename = GetCoverArtFrontThumbURL(html) ;
+              flag = !string.IsNullOrEmpty(sourceFilename);
+            }
+          }
+        }
+        catch (Exception ex)
+        {
+          logger.Error(ex.ToString());
+        }
+
+        if (flag) 
+        {
+          var dbartist = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
+          var dbalbum  = (category == Utils.Category.MusicAlbumThumbScraped) ? Utils.GetAlbum(album, Utils.Category.MusicFanartScraped) : null;
+
+          if (DownloadImage(ref artist, (category == Utils.Category.MusicAlbumThumbScraped) ? album : null, ref sourceFilename, ref path, ref filename, category, null)) 
+          {
+            checked { ++num; }
+            Utils.GetDbm().LoadFanart(dbartist, filename.Replace("_tmp.jpg", "L.jpg"), sourceFilename, category, dbalbum, Utils.Provider.CoverArtArchive, null, mbid);
+            if (FanartHandlerSetup.Fh.IsPlaying && !externalAccess) {
+              FanartHandlerSetup.Fh.FP.AddPlayingArtistPropertys(FanartHandlerSetup.Fh.CurrentTrackTag, FanartHandlerSetup.Fh.FP.DoShowImageOnePlay);
+              FanartHandlerSetup.Fh.FP.UpdatePropertiesPlay();
+            }
+            ExternalAccess.InvokeScraperCompleted(category.ToString(), dbartist);
+          }
+        }
+        return num;
+      }
+      catch (Exception ex) {
+        logger.Error("CoverArtArchive: GetTumbnails: " + Method + " - " + ex);
+      }
+      finally
+      {
+      }
+      return 9999;
+    }
+    // End: CoverArtArchive Get Tumbnails for Artist/Album
+    #endregion
+
     #region HTTP
     // Begin GetHtml
 
@@ -1590,7 +1696,7 @@ namespace FanartHandler
         w.ContentType = "application/x-www-form-urlencoded";
         w.ProtocolVersion = HttpVersion.Version11;
         w.Timeout = 30000;
-        w.AllowAutoRedirect = false;
+        w.AllowAutoRedirect = true;
 
         using (var r = (HttpWebResponse)w.GetResponse())
         {

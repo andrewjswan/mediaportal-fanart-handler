@@ -563,6 +563,8 @@ namespace FanartHandler
 
       key = GetFilenameNoPath(key);
       key = RemoveExtension(key);
+      if (category == Category.TvSeriesScraped)
+        return key;
       key = Regex.Replace(key, @"\(\d{5}\)", string.Empty).Trim();
       if ((category == Category.MusicArtistThumbScraped) || (category == Category.MusicAlbumThumbScraped))
         key = Regex.Replace(key, "[L]$", string.Empty).Trim();
@@ -1490,6 +1492,7 @@ namespace FanartHandler
       TVSeries,
       MyFilms,
       MusicFolder, 
+      CoverArtArchive, 
       Local,
       Dummy, 
     }
