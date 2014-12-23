@@ -1299,8 +1299,8 @@ namespace FanartHandler
           xmlwriter.SetValueAsBool("FanartHandler", "ScrapeThumbnails", ScrapeThumbnails);
           xmlwriter.SetValueAsBool("FanartHandler", "ScrapeThumbnailsAlbum", ScrapeThumbnailsAlbum);
           xmlwriter.SetValueAsBool("FanartHandler", "DoNotReplaceExistingThumbs", DoNotReplaceExistingThumbs);
-          xmlwriter.SetValue("FanartHandler", "DefaultBackdropMask", DefaultBackdropMask);
           xmlwriter.SetValueAsBool("FanartHandler", "UseDefaultBackdrop", UseDefaultBackdrop);
+          xmlwriter.SetValue("FanartHandler", "DefaultBackdropMask", DefaultBackdropMask);
           xmlwriter.SetValueAsBool("FanartHandler", "UseGenreFanart", UseGenreFanart);
           xmlwriter.SetValueAsBool("FanartHandler", "ScanMusicFoldersForFanart", ScanMusicFoldersForFanart);
           xmlwriter.SetValue("FanartHandler", "MusicFoldersArtistAlbumRegex", MusicFoldersArtistAlbumRegex);
