@@ -75,13 +75,6 @@
             </FileItem>
             <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
               <Param1 />
-              <UpdateOption>NeverOverwrite</UpdateOption>
-              <LocalFileName>..\Installer\Skin FanArt\UserDef\music\default.jpg</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{70f349ac-b6d3-4646-9552-b94404a0008b}-default.jpg</ZipFileName>
-              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\music\default.jpg</DestinationFilename>
-            </FileItem>
-            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-              <Param1 />
               <UpdateOption>AlwaysOverwrite</UpdateOption>
               <LocalFileName>..\Installer\Skin FanArt\transparent.png</LocalFileName>
               <ZipFileName>Installer{CopyFile}\{0f391274-9682-42ab-bab6-55d2a7296417}-transparent.png</ZipFileName>
@@ -152,6 +145,13 @@
               <LocalFileName>..\Installer\Skin Fanart\UserDef\movies\default1.jpg</LocalFileName>
               <ZipFileName>Installer{CopyFile}\{e23368ed-cbe2-4b5d-9b65-2c0a39a2e82f}-default1.jpg</ZipFileName>
               <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\movies\default1.jpg</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\Skin FanArt\UserDef\music\default.jpg</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{70f349ac-b6d3-4646-9552-b94404a0008b}-default.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\music\default.jpg</DestinationFilename>
             </FileItem>
             <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
               <Param1 />
@@ -468,12 +468,12 @@ cul8er</Value>
         </MinVersion>
         <MaxVersion>
           <Major>1</Major>
-          <Minor>9</Minor>
+          <Minor>10</Minor>
           <Build>999</Build>
           <Revision>999</Revision>
         </MaxVersion>
         <WarnOnly>true</WarnOnly>
-        <Message>requires Installer version 1.9.0.0 to 1.9.999.999</Message>
+        <Message>requires Installer version 1.9.0.0 to 1.10.999.999</Message>
         <Name>Installer</Name>
       </DependencyItem>
     </Items>
