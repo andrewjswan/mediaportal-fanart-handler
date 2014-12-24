@@ -2304,6 +2304,7 @@ namespace FanartHandler
           button43.Enabled = false;
         else
           button44.Enabled = false;
+
         Utils.GetDbm().TotArtistsBeingScraped = 0.0;
         Utils.GetDbm().CurrArtistsBeingScraped = 0.0;
         myScraperThumbWorker = new ScraperThumbWorker();
@@ -3120,11 +3121,6 @@ namespace FanartHandler
       }
     }
 
-    private void button43_Click(object sender, EventArgs e)
-    {
-      StartThumbsScrape("True");
-    }
-
     private void button41_Click(object sender, EventArgs e)
     {
       DeleteSelectedThumbsImages(true);
@@ -3133,6 +3129,11 @@ namespace FanartHandler
     private void button42_Click(object sender, EventArgs e)
     {
       DeleteAllThumbsImages();
+    }
+
+    private void button43_Click(object sender, EventArgs e)
+    {
+      StartThumbsScrape("True");
     }
 
     private void button44_Click(object sender, EventArgs e)
