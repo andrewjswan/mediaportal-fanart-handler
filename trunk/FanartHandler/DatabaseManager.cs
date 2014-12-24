@@ -83,12 +83,11 @@ namespace FanartHandler
 
                 UpgradeDBMain(type);
 
-                if (HtAnyFanart != null)
-                    return;
-                HtAnyFanart = new Hashtable();
-
                 if (type.Equals("upgrade", StringComparison.CurrentCulture))
                   return;
+
+                if (HtAnyFanart == null)
+                  HtAnyFanart = new Hashtable();
 
                 try
                 {
@@ -100,6 +99,7 @@ namespace FanartHandler
                   // v_db = VideoDatabase.Instance;
                   logger.Debug("Successfully Opened Database: "+VideoDatabase.DatabaseName);
                 } catch { }
+
             }
             catch (Exception ex)
             {
@@ -131,7 +131,7 @@ namespace FanartHandler
             {
                 var date = DateTime.Today.ToString("yyyyMMdd", CultureInfo.CurrentCulture);
                 #region Create table
-                logger.Info("Creating Database, version 3.3");
+                logger.Info("Creating Database, version 3.4");
                 lock (lockObject)
                     dbClient.Execute("CREATE TABLE [Image] ([Id] TEXT, "+
                                                            "[Category] TEXT, "+
@@ -145,6 +145,8 @@ namespace FanartHandler
                                                            "[DummyItem] TEXT, "+
                                                            "[MBID] TEXT, "+
                                                            "[Time_Stamp] TEXT, "+
+                                                           "[Last_Access] TEXT, "+
+                                                           "[Protected] TEXT, "+
                                                            "CONSTRAINT [i_IdProviderKey1] PRIMARY KEY ([Id], [Provider], [Key1]) ON CONFLICT REPLACE);");
                 lock (lockObject)
                     dbClient.Execute("CREATE TABLE Version (Id INTEGER PRIMARY KEY, Version TEXT, Time_Stamp TEXT);");
@@ -180,14 +182,24 @@ namespace FanartHandler
                     dbClient.Execute("CREATE INDEX [i_Key1MBID] ON [Image] ([Key1], [MBID]);");
                 lock (lockObject)
                     dbClient.Execute("CREATE INDEX [i_Key1Key2MBID] ON [Image] ([Key1], [Key2], [MBID]);");
+                lock (lockObject)                                                               
+                    dbClient.Execute("CREATE INDEX [i_Key1LastAccess] ON [Image] ([Key1], [Last_Access]);");
+                lock (lockObject)                                                               
+                    dbClient.Execute("CREATE INDEX [i_Key1EnabledLastAccess] ON [Image] ([Key1], [Enabled], [Last_Access]);");
+                lock (lockObject)                                                               
+                    dbClient.Execute("CREATE INDEX [i_Key1CategoryLastAccess] ON [Image] ([Key1], [Category], [Last_Access]);");
+                lock (lockObject)                                                               
+                    dbClient.Execute("CREATE INDEX [i_Key1EnabledCategoryLastAccess] ON [Image] ([Key1], [Enabled], [Category], [Last_Access]);");
+                lock (lockObject)                                                               
+                    dbClient.Execute("CREATE INDEX [i_FullPathProtected] ON [Image] ([FullPath], [Protected]);");
                 logger.Info("Create indexes [Step 2] - finished");
                 #endregion
 
                 lock (lockObject)
-                    dbClient.Execute("INSERT INTO Version (Version,Time_Stamp) VALUES ('3.3','"+date+"');");
+                    dbClient.Execute("INSERT INTO Version (Version,Time_Stamp) VALUES ('3.4','"+date+"');");
                 lock (lockObject)
-                    dbClient.Execute("PRAGMA user_version=33;");
-                logger.Info("Create database, version 3.3 - finished");
+                    dbClient.Execute("PRAGMA user_version=34;");
+                logger.Info("Create database, version 3.4 - finished");
             }
             catch (Exception ex)
             {
@@ -750,7 +762,6 @@ namespace FanartHandler
                 #endregion
                 
                 #region 3.4
-                /*
                 if (DBVersion != null && DBVersion.Equals("3.3", StringComparison.CurrentCulture))
                 {
                     logger.Info("Upgrading Database to version 3.4");
@@ -761,10 +772,14 @@ namespace FanartHandler
 
                     lock (lockObject)
                         dbClient.Execute("ALTER TABLE [Image] ADD COLUMN [Last_Access] TEXT;");
+                    lock (lockObject)
+                        dbClient.Execute("ALTER TABLE [Image] ADD COLUMN [Protected] TEXT;");
                     logger.Info("Upgrading Step 1 - finished");
 
                     lock (lockObject)
                         dbClient.Execute("UPDATE [Image] SET [Last_Access] = '"+date+"';");
+                    lock (lockObject)
+                        dbClient.Execute("UPDATE [Image] SET [Protected] = 'False';");
                     logger.Info("Upgrading Step 2 - finished");
 
                     try
@@ -782,9 +797,19 @@ namespace FanartHandler
                     catch { }
 
                     try
+                    {
+                        lock (lockObject)                                                               
+                            dbClient.Execute("CREATE INDEX [i_FullPathProtected] ON [Image] ([FullPath], [Protected]);");
+                        logger.Info("Upgrading Step 4 - finished");
+                    }
+                    catch { }
+
+                    try
+                    {
                         lock (lockObject)
                             dbClient.Execute("PRAGMA integrity_check;");
-                        logger.Info("Upgrading Step 4 - finished");
+                        logger.Info("Upgrading Step 5 - finished");
+                    }
                     catch { }
 
                     DBVersion = "3.4";
@@ -794,7 +819,6 @@ namespace FanartHandler
                         dbClient.Execute("PRAGMA user_version="+DBVersion.Replace(".","")+";");
                     logger.Info("Upgraded Database to version "+DBVersion);
                 }
-                */
                 #endregion
                 #region 3.Dummy Alter Table
                 /*
@@ -1547,7 +1571,7 @@ namespace FanartHandler
             var Protected = "False";
             try
             {
-                var SQL = "SELECT AvailableRandom FROM Image WHERE FullPath = '" + Utils.PatchSql(diskImage) + "';";
+                var SQL = "SELECT Protected FROM Image WHERE FullPath = '" + Utils.PatchSql(diskImage) + "';";
                 SQLiteResultSet sqLiteResultSet;
                 lock (lockObject)
                     sqLiteResultSet = dbClient.Execute(SQL);
@@ -1570,8 +1594,8 @@ namespace FanartHandler
             try
             {
                 var SQL = !protect
-                          ? "UPDATE Image Set AvailableRandom = 'False' WHERE FullPath = '" + Utils.PatchSql(diskImage) + "';"
-                          : "UPDATE Image Set AvailableRandom = 'True' WHERE FullPath = '" + Utils.PatchSql(diskImage) + "';";
+                          ? "UPDATE Image Set Protected = 'False' WHERE FullPath = '" + Utils.PatchSql(diskImage) + "';"
+                          : "UPDATE Image Set Protected = 'True' WHERE FullPath = '" + Utils.PatchSql(diskImage) + "';";
                 lock (lockObject)
                     dbClient.Execute(SQL);
             }
@@ -1857,30 +1881,28 @@ namespace FanartHandler
 
                 Utils.Shuffle(ref filenames);
 
-                /*
                 // TODO: ... Then create procedure for Delete Old Music Fanart files from Disk (Artist not in MP DB and Last_Access < NOW-100)
                 try
                 {
                   if (category == Utils.Category.MusicFanartScraped)
-                    SQL = "UPDATE Image SET Last_Access = '"+DateTime.Today.ToString("yyyyMMdd", CultureInfo.CurrentCulture)+"' "
+                    SQL = "UPDATE Image SET Last_Access = '"+DateTime.Today.ToString("yyyyMMdd", CultureInfo.CurrentCulture)+"' "+
                             "WHERE Key1 IN (" + Utils.HandleMultipleArtistNamesForDBQuery(Utils.PatchSql(artist)) + ") AND "+
-                                  (album == null ? "" : "Key2 = '"+PathSql(album)+"' AND ")+
+                                  (album == null ? "" : "Key2 = '"+Utils.PatchSql(album)+"' AND ")+
                                   "Enabled = 'True' AND "+
                                   "Category in (" + Utils.GetMusicFanartCategoriesInStatement(highDef) + ");";
                   else
-                    SQL = "UPDATE Image SET Last_Access = '"+DateTime.Today.ToString("yyyyMMdd", CultureInfo.CurrentCulture)+"' "
+                    SQL = "UPDATE Image SET Last_Access = '"+DateTime.Today.ToString("yyyyMMdd", CultureInfo.CurrentCulture)+"' "+
                             "WHERE Key1 IN ('" + Utils.PatchSql(artist) + "') AND "+
-                                  (album == null ? "" : "Key2 = '"+PathSql(album)+"' AND ")+
+                                  (album == null ? "" : "Key2 = '"+Utils.PatchSql(album)+"' AND ")+
                                   "Enabled = 'True';";
                   lock (lockObject)
                       dbClient.Execute(SQL);
                 }
-                cacth (Exception ex)
+                catch (Exception ex)
                 {
                   logger.Debug("getFanart: Last Access update:");
                   logger.Debug(ex);
                 }
-                */
             }
             catch (Exception ex)
             {
@@ -1959,7 +1981,6 @@ namespace FanartHandler
                                            "Key2 = '" + Utils.PatchSql(album) + "', "+
                                            "FullPath = '" + Utils.PatchSql(diskImage) + "', "+
                                            "SourcePath = '" + Utils.PatchSql(sourceImage) + "', "+
-                                           "AvailableRandom = 'True', "+
                                            "Enabled = 'True', "+
                                            "DummyItem = 'False', "+
                                            "Time_Stamp = '" + now.ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "' "+
@@ -1972,7 +1993,7 @@ namespace FanartHandler
                 }
                 else
                 {
-                    SQL = "INSERT INTO Image (Id, Category, Provider, Key1, Key2, FullPath, SourcePath, AvailableRandom, Enabled, DummyItem, Time_Stamp, MBID) "+
+                    SQL = "INSERT INTO Image (Id, Category, Provider, Key1, Key2, FullPath, SourcePath, AvailableRandom, Enabled, DummyItem, Time_Stamp, MBID, Last_Access, Protected) "+
                            "VALUES('" + Utils.PatchSql(imageId) + "',"+
                                   "'" + ((object) category).ToString() + "',"+
                                   "'" + ((object) provider).ToString() + "',"+
@@ -1980,9 +2001,11 @@ namespace FanartHandler
                                   "'" + Utils.PatchSql(album) + "',"+
                                   "'" + Utils.PatchSql(diskImage) + "',"+
                                   "'" + Utils.PatchSql(sourceImage) + "',"+
-                                  "'True', 'True', 'False',"+
+                                  "'True', 'True', 'False'," +
                                   "'" + now.ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "',"+
-                                  "'"+Utils.PatchSql(mbid)+"');";
+                                  "'" + Utils.PatchSql(mbid) + "',"+
+                                  "'" + now.ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "',"+
+                                  "'False');";
                     lock (lockObject)
                         dbClient.Execute(SQL);
                     logger.Info("Importing fanart into fanart handler database (" + diskImage + ").");
@@ -2008,11 +2031,11 @@ namespace FanartHandler
                     return false;
                 lock (lockObject)
                     dbClient.Execute("UPDATE Image "+
-                                      "SET Time_Stamp = '" + DateTime.Now.ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "' "+
-                                      (string.IsNullOrEmpty(mbid) ? "" : ", MBID ='"+Utils.PatchSql(mbid)+"' ") +
-                                      "WHERE Id = '" + Utils.PatchSql(imageId) + "' AND "+
-                                            (string.IsNullOrEmpty(artist) ? string.Empty : "Key1 = '" + Utils.PatchSql(artist) + "' AND ") +
-                                            "Provider = '" + ((object) provider).ToString() + "';");
+                                        "SET Time_Stamp = '" + DateTime.Now.ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "' "+
+                                        (string.IsNullOrEmpty(mbid) ? "" : ", MBID ='"+Utils.PatchSql(mbid)+"' ") +
+                                        "WHERE Id = '" + Utils.PatchSql(imageId) + "' AND "+
+                                              (string.IsNullOrEmpty(artist) ? string.Empty : "Key1 = '" + Utils.PatchSql(artist) + "' AND ") +
+                                              "Provider = '" + ((object) provider).ToString() + "';");
                 return true;
             }
             catch (Exception ex)
@@ -2277,7 +2300,7 @@ namespace FanartHandler
                 var now = DateTime.Now;
                 var SQL = string.Empty;
                 DeleteDummyItem(artist, album, category) ;
-                SQL = "INSERT INTO Image (Id, Category, Provider, Key1, Key2, FullPath, SourcePath, AvailableRandom, Enabled, DummyItem, Time_Stamp, MBID) "+
+                SQL = "INSERT INTO Image (Id, Category, Provider, Key1, Key2, FullPath, SourcePath, AvailableRandom, Enabled, DummyItem, Time_Stamp, MBID, Last_Access, Protected) "+
                                   "VALUES('" + Utils.PatchSql(DummyFile) + "', "+
                                          "'" + ((object) category).ToString() + "', "+
                                          "'" + ((object) Utils.Provider.Dummy).ToString() + "', "+
@@ -2289,7 +2312,9 @@ namespace FanartHandler
                                          "'False', "+
                                          "'True', "+
                                          "'" + now.ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "', "+
-                                         "'" + Utils.PatchSql(mbid)+"');";
+                                         "'" + Utils.PatchSql(mbid)+"', "+
+                                         "'" + now.ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "', "+
+                                         "'False');";
                 lock (lockObject)
                     dbClient.Execute(SQL);
             }
