@@ -326,8 +326,8 @@ namespace FanartHandler
     }
     #endregion
 
-    #region MuzicBrainz
-    // Begin: Extract MuzicBrainz ID
+    #region MusicBrainz
+    // Begin: Extract MusicBrainz ID
     public string ExtractMID (string AInputString)
     {
       const string URLRE = @"id=\""(.+?)\""" ;
@@ -343,21 +343,21 @@ namespace FanartHandler
         Result = mu.Groups[1].Value.ToString();
         if (Result.Length > 10)
         {
-          logger.Debug("MuzicBrainz: Extract ID: " + Result) ;
+          logger.Debug("MusicBrainz: Extract ID: " + Result) ;
           break;
         }
       }
       return Result ;
     }
-    // End: Extract MuzicBrainz ID
+    // End: Extract MusicBrainz ID
 
-    // Begin: GetMuzicBrainzID
-    private string GetMuzicBrainzID(string artist, string album)
+    // Begin: GetMusicBrainzID
+    private string GetMusicBrainzID(string artist, string album)
     {
-      var res = Utils.GetDbm().GetDBMuzicBrainzID(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped), (string.IsNullOrEmpty(album)) ? null : Utils.GetAlbum(album, Utils.Category.MusicFanartScraped)) ;
+      var res = Utils.GetDbm().GetDBMusicBrainzID(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped), (string.IsNullOrEmpty(album)) ? null : Utils.GetAlbum(album, Utils.Category.MusicFanartScraped)) ;
       if ((res != null) && (res.Length > 10))
       {
-        logger.Debug("MuzicBrainz: DB ID: " + res) ;
+        logger.Debug("MusicBrainz: DB ID: " + res) ;
         return res ;
       }
 
@@ -375,7 +375,7 @@ namespace FanartHandler
 
       return ExtractMID (html) ;
     }
-    // End: GetMuzicBrainzID
+    // End: GetMusicBrainzID
     #endregion
 
     #region ReportProgress
@@ -417,8 +417,8 @@ namespace FanartHandler
 
       ReportProgress (6.0, dbm, reportProgress, externalAccess) ;
 
-      // *** MuzicBrainzID
-      mbid = GetMuzicBrainzID(artist, null) ;
+      // *** MusicBrainzID
+      mbid = GetMusicBrainzID(artist, null) ;
       if (string.IsNullOrEmpty(mbid) || (mbid.Length < 10))
         // *** Get MBID & Search result from htBackdrop
         if (alSearchResults == null)
@@ -511,8 +511,8 @@ namespace FanartHandler
       artist = RemoveFeat(artist) ;
       logger.Debug("Trying to find Thumbs for Artist: " + artist + ".");
 
-      // *** MuzicBrainzID
-      mbid = GetMuzicBrainzID(artist, null) ;
+      // *** MusicBrainzID
+      mbid = GetMusicBrainzID(artist, null) ;
       if (string.IsNullOrEmpty(mbid) || (mbid.Length < 10))
         // *** Get MBID & Search result from htBackdrop
         if (alSearchResults == null)
@@ -596,8 +596,8 @@ namespace FanartHandler
       artist = RemoveFeat(artist) ;
       logger.Debug("Trying to find Thumbs for Artist/Album: " + artist + " - " + album + ".");
 
-      // *** MuzicBrainzID
-      mbid = GetMuzicBrainzID(artist, album) ;
+      // *** MusicBrainzID
+      mbid = GetMusicBrainzID(artist, album) ;
       //
       while (true)
       {

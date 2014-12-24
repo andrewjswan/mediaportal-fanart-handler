@@ -408,7 +408,7 @@ namespace FanartHandler
       buttonChMBID.Name = "buttonChMBID";
       buttonChMBID.Size = new Size(186, 22);
       buttonChMBID.TabIndex = 26;
-      buttonChMBID.Text = "Change MuzicBrainz ID";
+      buttonChMBID.Text = "Change MusicBrainz ID";
       //this.toolTip1.SetToolTip((Control) FanartHandlerConfig.buttonChMBID, "This will start scraping for Artist/Album thumbnails\r\n    for all artists/albums regardless if thumbnail allready exists. \r\n    This can take quite some time.");
       buttonChMBID.UseVisualStyleBackColor = true;
       buttonChMBID.Click += new EventHandler(buttonChMBID_Click);
@@ -531,7 +531,7 @@ namespace FanartHandler
       buttonChFanartMBID.Name = "buttonChFanartMBID";
       buttonChFanartMBID.Size = new Size(174, 22);
       buttonChFanartMBID.TabIndex = 20;
-      buttonChFanartMBID.Text = "Change MuzicBrainz ID";
+      buttonChFanartMBID.Text = "Change MusicBrainz ID";
       //this.toolTip1.SetToolTip((Control) FanartHandlerConfig.buttonChFanartMBID, "This will start scraping for Artist/Album thumbnails\r\n    for all artists/albums regardless if thumbnail allready exists. \r\n    This can take quite some time.");
       buttonChFanartMBID.UseVisualStyleBackColor = true;
       buttonChFanartMBID.Click += new EventHandler(buttonChFanartMBID_Click);
@@ -3149,7 +3149,7 @@ namespace FanartHandler
 
         var dbartist = dataGridViewThumbs.CurrentRow.Cells[0].Value.ToString().Trim();
         var dbalbum = dataGridViewThumbs.CurrentRow.Cells[1].Value.ToString().Trim();
-        var dbmbid = Utils.GetDbm().GetDBMuzicBrainzID(dbartist, dbalbum);
+        var dbmbid = Utils.GetDbm().GetDBMusicBrainzID(dbartist, dbalbum);
 
         var newmbid = Prompt.ShowDialog("Change MBID:","For ["+dbartist+" - "+dbalbum+"]", dbmbid).Trim();
         var flag = false ;
@@ -3157,7 +3157,7 @@ namespace FanartHandler
         if (newmbid.Equals(dbmbid, StringComparison.CurrentCulture))
           return ;
         if (!string.IsNullOrEmpty(newmbid) && ((newmbid.Length > 10) || (newmbid.Trim().Equals("<none>", StringComparison.CurrentCulture))))
-          flag = Utils.GetDbm().ChangeDBMuzicBrainzID(dbartist, dbalbum, dbmbid, newmbid);
+          flag = Utils.GetDbm().ChangeDBMusicBrainzID(dbartist, dbalbum, dbmbid, newmbid);
 
         logger.Debug("Change MBID ["+dbartist+"/"+dbalbum+"] "+dbmbid+" -> "+newmbid) ;
         if (flag)
@@ -3180,7 +3180,7 @@ namespace FanartHandler
 
         var dbartist = dataGridViewFanart.CurrentRow.Cells[0].Value.ToString().Trim();
         var dbalbum = (string) null;
-        var dbmbid = Utils.GetDbm().GetDBMuzicBrainzID(dbartist, dbalbum);
+        var dbmbid = Utils.GetDbm().GetDBMusicBrainzID(dbartist, dbalbum);
 
         var newmbid = Prompt.ShowDialog("Change MBID:","For ["+dbartist+"]", dbmbid).Trim();
         var flag = false ;
@@ -3188,7 +3188,7 @@ namespace FanartHandler
         if (newmbid.Equals(dbmbid, StringComparison.CurrentCulture))
           return ;
         if (!string.IsNullOrEmpty(newmbid) && ((newmbid.Length > 10) || (newmbid.Trim().Equals("<none>", StringComparison.CurrentCulture))))
-          flag = Utils.GetDbm().ChangeDBMuzicBrainzID(dbartist, dbalbum, dbmbid, newmbid);
+          flag = Utils.GetDbm().ChangeDBMusicBrainzID(dbartist, dbalbum, dbmbid, newmbid);
 
         logger.Debug("Change MBID ["+dbartist+"] "+dbmbid+" -> "+newmbid) ;
         if (flag)
