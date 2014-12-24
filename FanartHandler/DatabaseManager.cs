@@ -1338,10 +1338,10 @@ namespace FanartHandler
                     musicDatabaseArtists.AddRange(musicVideoArtists);
                   }
                   #endregion
-                  TotArtistsBeingScraped = checked (musicDatabaseArtists.Count + musicDatabaseAlbums.Count);
+                  TotArtistsBeingScraped = checked (musicDatabaseArtists.Count);
                   if (musicDatabaseArtists != null && musicDatabaseArtists.Count > 0)
                   {
-                    logger.Debug("InitialThumbScrape Artists: ["+musicVideoArtists.Count+"]");
+                    logger.Debug("InitialThumbScrape Artists: ["+musicDatabaseArtists.Count+"]");
                     var index = 0;
                     while (index < musicDatabaseArtists.Count)
                     {
