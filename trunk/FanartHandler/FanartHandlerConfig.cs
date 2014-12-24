@@ -1927,7 +1927,7 @@ namespace FanartHandler
         var str = dataGridViewFanart.CurrentRow.Cells[4].Value.ToString();
         Utils.GetDbm().DeleteImage(str);
         if (File.Exists(str))
-          File.Delete(str);
+          MediaPortal.Util.Utils.FileDelete(str);
         if (!doRemove)
           return;
         dataGridViewFanart.Rows.Remove(dataGridViewFanart.CurrentRow);
@@ -1959,7 +1959,7 @@ namespace FanartHandler
         foreach (var str in Directory.GetFiles(Utils.FAHSMusic, "*.jpg"))
         {
           if (!Utils.GetFilenameNoPath(str).ToLower(CultureInfo.CurrentCulture).StartsWith("default", StringComparison.CurrentCulture))
-            File.Delete(str);
+            MediaPortal.Util.Utils.FileDelete(str);
         }
         dataGridViewFanart.ClearSelection();
         myDataTableFanart.Rows.Clear();
@@ -2058,7 +2058,7 @@ namespace FanartHandler
           pictureBox9.Image = null;
           Utils.GetDbm().DeleteImage(dataGridViewThumbs.CurrentRow.Cells[5].Value.ToString());
           if (File.Exists(str))
-            File.Delete(str);
+            MediaPortal.Util.Utils.FileDelete(str);
           if (!doRemove)
             return;
           dataGridViewThumbs.Rows.Remove(dataGridViewThumbs.CurrentRow);
@@ -2113,7 +2113,8 @@ namespace FanartHandler
               if (Utils.GetDbm().IsImageProtectedByUser(fileInfo.FullName).Equals("False"))
               {
                 Utils.GetDbm().DeleteImage(fileInfo.FullName);
-                File.Delete(fileInfo.FullName);
+                if (File.Exists(fileInfo.FullName))
+                  MediaPortal.Util.Utils.FileDelete(fileInfo.FullName);
               }
             }
             else
@@ -2130,7 +2131,8 @@ namespace FanartHandler
               if (Utils.GetDbm().IsImageProtectedByUser(fileInfo.FullName).Equals("False"))
               {
                 Utils.GetDbm().DeleteImage(fileInfo.FullName);
-                File.Delete(fileInfo.FullName);
+                if (File.Exists(fileInfo.FullName))
+                  MediaPortal.Util.Utils.FileDelete(fileInfo.FullName);
               }
             }
             else
@@ -3045,7 +3047,7 @@ namespace FanartHandler
         var str = dataGridViewUserManaged.CurrentRow.Cells[3].Value.ToString();
         Utils.GetDbm().DeleteImage(str);
         if (File.Exists(str))
-          File.Delete(str);
+          MediaPortal.Util.Utils.FileDelete(str);
         dataGridViewUserManaged.Rows.Remove(dataGridViewUserManaged.CurrentRow);
       }
       catch (Exception ex)
@@ -3091,7 +3093,7 @@ namespace FanartHandler
           return;
         Utils.GetDbm().DeleteAllFanart(GetCategoryFromComboFilter(comboBox2.SelectedItem.ToString()));
         foreach (var path in Directory.GetFiles(Utils.FAHUDFolder + (string) comboBox2.SelectedItem, "*.jpg"))
-          File.Delete(path);
+          MediaPortal.Util.Utils.FileDelete(path);
         dataGridViewUserManaged.ClearSelection();
         myDataTableUserManaged.Rows.Clear();
         myDataTableUserManaged.AcceptChanges();
