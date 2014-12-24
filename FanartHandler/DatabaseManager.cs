@@ -2045,8 +2045,8 @@ namespace FanartHandler
         }
         // End: UpdateTimeStamp
 
-        // Begin: GetDBMuzicBrainzID
-        public string GetDBMuzicBrainzID(string artist, string album)
+        // Begin: GetDBMusicBrainzID
+        public string GetDBMusicBrainzID(string artist, string album)
         {
           try
           {
@@ -2059,14 +2059,14 @@ namespace FanartHandler
           }
           catch (Exception ex)
           {
-              logger.Error("GetDBMuzicBrainzID: " + ex);
+              logger.Error("GetDBMusicBrainzID: " + ex);
               return null;
           }
         }
-        // End: GetDBMuzicBrainzID
+        // End: GetDBMusicBrainzID
 
-        // Begin: ChangeDBMuzicBrainzID
-        public bool ChangeDBMuzicBrainzID(string artist, string album, string oldmbid, string newmbid)
+        // Begin: ChangeDBMusicBrainzID
+        public bool ChangeDBMusicBrainzID(string artist, string album, string oldmbid, string newmbid)
         {
           try
           {
@@ -2080,7 +2080,7 @@ namespace FanartHandler
           }
           catch (Exception ex)
           {
-            logger.Error("ChangeDBMuzicBrainzID: " + ex);
+            logger.Error("ChangeDBMusicBrainzID: " + ex);
             return false;
           }
 
@@ -2112,7 +2112,7 @@ namespace FanartHandler
                 }
                 catch (Exception ex)
                 {
-                  logger.Error("ChangeDBMuzicBrainzID: Deleting: " + field);
+                  logger.Error("ChangeDBMusicBrainzID: Deleting: " + field);
                   logger.Error(ex) ;
                 }
               }
@@ -2121,12 +2121,12 @@ namespace FanartHandler
           }
           catch (Exception ex)
           {
-            logger.Error("ChangeDBMuzicBrainzID: " + ex);
+            logger.Error("ChangeDBMusicBrainzID: " + ex);
             return false;
           }
           return true;
         }
-        // End: ChangeDBMuzicBrainzID
+        // End: ChangeDBMusicBrainzID
 
         #region Hash
         public Hashtable GetAnyHashtable(Utils.Category category)
