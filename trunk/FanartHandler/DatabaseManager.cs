@@ -1784,7 +1784,7 @@ namespace FanartHandler
                         categories = "'" + category[index] + "'";
                     checked { ++index; }
                 }
-                var SQL = "SELECT FullPath, AvailableRandom, Category, Key1 "+
+                var SQL = "SELECT FullPath, AvailableRandom, Category, Key1, Key2 "+
                             "FROM image "+
                             "WHERE Category IN (" +
                 //                   (object) str3 + ") AND DummyItem = 'False' order by Key1, FullPath LIMIT " + start + ",500;";
@@ -2064,6 +2064,69 @@ namespace FanartHandler
           }
         }
         // End: GetDBMuzicBrainzID
+
+        // Begin: ChangeDBMuzicBrainzID
+        public bool ChangeDBMuzicBrainzID(string artist, string album, string oldmbid, string newmbid)
+        {
+          try
+          {
+            lock (lockObject)
+              dbClient.Execute("UPDATE IMAGE "+
+                               "SET MBID = '"+Utils.PatchSql(newmbid)+"', "+
+                                   "DummyItem = 'True' "+
+                               "WHERE Key1 = '"+Utils.PatchSql(artist)+"' AND "+
+                                     "Key2 = '"+Utils.PatchSql(album)+"' AND "+
+                                     "MBID = '"+Utils.PatchSql(oldmbid)+"';");
+          }
+          catch (Exception ex)
+          {
+            logger.Error("ChangeDBMuzicBrainzID: " + ex);
+            return false;
+          }
+
+          try
+          {
+            SQLiteResultSet sqLiteResultSet;
+            lock (lockObject)
+              sqLiteResultSet = dbClient.Execute("SELECT FullPath "+
+                                                   "FROM Image "+
+                                                   "WHERE DummyItem = 'True' AND "+                                       
+                                                         "Key1 = '"+Utils.PatchSql(artist)+"' AND "+
+                                                         "Key2 = '"+Utils.PatchSql(album)+"' AND "+
+                                                         "MBID = '"+Utils.PatchSql(newmbid)+"'");
+            var index = 0;
+            while (index < sqLiteResultSet.Rows.Count)
+            {
+              var field = sqLiteResultSet.GetField(index, 0);
+              if (File.Exists(field))
+              {
+                try
+                {
+                  MediaPortal.Util.Utils.FileDelete(field);
+                  if (field.IndexOf("L.") > 0)
+                  {
+                    field = field.Replace("L.","."); 
+                    if (File.Exists(field))
+                      MediaPortal.Util.Utils.FileDelete(field);
+                  }  
+                }
+                catch (Exception ex)
+                {
+                  logger.Error("ChangeDBMuzicBrainzID: Deleting: " + field);
+                  logger.Error(ex) ;
+                }
+              }
+              checked { ++index; }
+            }
+          }
+          catch (Exception ex)
+          {
+            logger.Error("ChangeDBMuzicBrainzID: " + ex);
+            return false;
+          }
+          return true;
+        }
+        // End: ChangeDBMuzicBrainzID
 
         #region Hash
         public Hashtable GetAnyHashtable(Utils.Category category)
