@@ -361,6 +361,9 @@ namespace FanartHandler
         return res ;
       }
 
+      if (res.Trim().Equals("<none>", StringComparison.CurrentCulture))
+        return (string) null;
+          
       const string MBURL    = "http://www.musicbrainz.org/ws/2" ;
       const string MIDURL   = "/artist/?query=artist:" ;
       const string MIDURLA  = "/release-group/?query=artist:" ;
@@ -446,7 +449,7 @@ namespace FanartHandler
         if ((res == 0) || (res < iMax))
         {
           if (flag)
-            res = HtBackdropGetFanart(artist, iMax, dbm, /*reportProgress,*/ doTriggerRefresh, externalAccess, doScrapeFanart);
+            res = HtBackdropGetFanart(artist, iMax, dbm, doTriggerRefresh, externalAccess, doScrapeFanart);
         }
         ReportProgress (0.0, dbm, reportProgress, externalAccess) ;
         if (dbm.StopScraper)
@@ -885,7 +888,7 @@ namespace FanartHandler
               {
                 if (!dbm.StopScraper)
                 {
-                  if (((SearchResults) alSearchResults[index]).Album.Equals("5", StringComparison.CurrentCulture) /* && /*!flag &&*/ /*(!Utils.GetDbm().HasArtistThumb(dbartist) || !onlyMissing)*/)
+                  if (((SearchResults) alSearchResults[index]).Album.Equals("5", StringComparison.CurrentCulture))
                   {
                     string mbid = ((SearchResults) alSearchResults[index]).MBID;
                     logger.Debug("HtBackdrops: Found thumbnail for Artist: " + artist + ". MBID: "+mbid);
@@ -1187,9 +1190,6 @@ namespace FanartHandler
     // Begin: Last.FM Get Tumbnails for Artist or Artist/Album
     public int LastFMGetTumbnails(Utils.Category category, string artist, string album, bool externalAccess)
     {
-      // var requestPic = (HttpWebRequest) null;
-      // var responsePic = (WebResponse) null;
-
       var Method = (string) null;
       var URL = (string) null;
       var POST = (string) null;
@@ -1674,7 +1674,6 @@ namespace FanartHandler
 
     #region HTTP
     // Begin GetHtml
-
     private static bool GetHtml(string strURL, out string strHtml)
     {
       strHtml = string.Empty;
