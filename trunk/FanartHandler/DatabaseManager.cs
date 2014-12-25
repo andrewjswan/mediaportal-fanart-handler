@@ -1347,11 +1347,11 @@ namespace FanartHandler
 
         public void InitialThumbScrape(bool onlyMissing)
         {
+            CurrArtistsBeingScraped = 0.0;
+            TotArtistsBeingScraped = 0.0;
             try
             {
-                logger.Info("InitialThumbScrape is starting (only missing=" + (onlyMissing ? 1 : 0) + ")...");
-                CurrArtistsBeingScraped = 0.0;
-                TotArtistsBeingScraped = 0.0;
+                logger.Info("InitialThumbScrape is starting (Only missing = " + onlyMissing.ToString() + ")...");
                 #region Artists
                 if (Utils.ScrapeThumbnails)
                 {
@@ -1373,13 +1373,11 @@ namespace FanartHandler
                     {
                       var artist = musicDatabaseArtists[index].ToString();
                       if (!StopScraper && !Utils.GetIsStopping())
-                      {
                         DoScrapeThumbs(artist, onlyMissing);
-                        ++CurrArtistsBeingScraped;
-                        checked { ++index; }
-                      }
                       else
                         break;
+                      ++CurrArtistsBeingScraped;
+                      checked { ++index; }
                     }
                   }
                   musicDatabaseArtists = null;
@@ -1389,7 +1387,7 @@ namespace FanartHandler
                 #endregion
 
                 #region Albums
-                if (Utils.ScrapeThumbnailsAlbum)
+                if ((Utils.ScrapeThumbnailsAlbum) && (!StopScraper && !Utils.GetIsStopping()))
                 {
                   musicDatabaseAlbums = new List<AlbumInfo>();
                   m_db.GetAllAlbums(ref musicDatabaseAlbums);
@@ -1403,7 +1401,7 @@ namespace FanartHandler
                   if (musicDatabaseAlbums != null && musicDatabaseAlbums.Count > 0)
                   {
                     logger.Debug("InitialThumbScrape Artists - Albums: ["+musicDatabaseAlbums.Count+"]");
-                    TotArtistsBeingScraped = checked (musicDatabaseArtists.Count+musicDatabaseAlbums.Count);
+                    TotArtistsBeingScraped = checked (TotArtistsBeingScraped + musicDatabaseAlbums.Count);
                     scraper = new Scraper();
                     var index = 0;
                     while (index < musicDatabaseAlbums.Count)
