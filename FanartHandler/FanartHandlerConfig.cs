@@ -45,6 +45,7 @@ namespace FanartHandler
     private CheckBox checkBox9;
     private CheckBox checkBox8;
     private CheckBox checkBox1;
+    private CheckBox checkBoxUseHighDefThumbnails;
     private TabPage tabPage22;
     private Button button39;
     private Label label34;
@@ -194,6 +195,7 @@ namespace FanartHandler
       checkBox1 = new CheckBox();
       checkBox8 = new CheckBox();
       checkBox9 = new CheckBox();
+      checkBoxUseHighDefThumbnails = new CheckBox();
       button6 = new Button();
       button2 = new Button();
       button3 = new Button();
@@ -434,35 +436,46 @@ namespace FanartHandler
       checkBox1.Checked = true;
       checkBox1.CheckState = CheckState.Checked;
       checkBox1.Font = new Font("Microsoft Sans Serif", 9.75f, FontStyle.Regular, GraphicsUnit.Point, 0);
-      checkBox1.Location = new Point(12, 37);
+      checkBox1.Location = new Point(12, 40);
       checkBox1.Name = "checkBox1";
-      checkBox1.Size = new Size(263, 20);
+      checkBox1.Size = new Size(300, 20);
       checkBox1.TabIndex = 9;
       checkBox1.Text = "Enable Music Artist Thumbnail Scraping";
       //this.toolTip1.SetToolTip((Control) this.checkBox1, "Check this opton if you want to enable scraping music artist thumbnail scraping in MP.");
       checkBox1.UseVisualStyleBackColor = true;
-      checkBox8.AutoSize = true;
-      checkBox8.Checked = true;
-      checkBox8.CheckState = CheckState.Checked;
-      checkBox8.Font = new Font("Microsoft Sans Serif", 9.75f, FontStyle.Regular, GraphicsUnit.Point, 0);
-      checkBox8.Location = new Point(12, 122);
-      checkBox8.Name = "checkBox8";
-      checkBox8.Size = new Size(230, 20);
-      checkBox8.TabIndex = 10;
-      checkBox8.Text = "Do not replace existing thumbnails";
-      //this.toolTip1.SetToolTip((Control) this.checkBox8, "Check this opton if you do not want existing thumbnails to be replaced");
-      checkBox8.UseVisualStyleBackColor = true;
       checkBox9.AutoSize = true;
       checkBox9.Checked = true;
       checkBox9.CheckState = CheckState.Checked;
       checkBox9.Font = new Font("Microsoft Sans Serif", 9.75f, FontStyle.Regular, GraphicsUnit.Point, 0);
-      checkBox9.Location = new Point(12, 77);
+      checkBox9.Location = new Point(12, 65);
       checkBox9.Name = "checkBox9";
-      checkBox9.Size = new Size(272, 20);
-      checkBox9.TabIndex = 11;
+      checkBox9.Size = new Size(300, 20);
+      checkBox9.TabIndex = 10;
       checkBox9.Text = "Enable Music Album Thumbnail Scraping";
       //this.toolTip1.SetToolTip((Control) this.checkBox9, "Check this opton if you want to enable scraping music album thumbnail scraping in MP.");
       checkBox9.UseVisualStyleBackColor = true;
+      checkBox8.AutoSize = true;
+      checkBox8.Checked = true;
+      checkBox8.CheckState = CheckState.Checked;
+      checkBox8.Font = new Font("Microsoft Sans Serif", 9.75f, FontStyle.Regular, GraphicsUnit.Point, 0);
+      checkBox8.Location = new Point(12, 90);
+      checkBox8.Name = "checkBox8";
+      checkBox8.Size = new Size(300, 20);
+      checkBox8.TabIndex = 11;
+      checkBox8.Text = "Do not replace existing thumbnails";
+      //this.toolTip1.SetToolTip((Control) this.checkBox8, "Check this opton if you do not want existing thumbnails to be replaced");
+      checkBox8.UseVisualStyleBackColor = true;
+      checkBoxUseHighDefThumbnails.AutoSize = true;
+      checkBoxUseHighDefThumbnails.Checked = true;
+      checkBoxUseHighDefThumbnails.CheckState = CheckState.Checked;
+      checkBoxUseHighDefThumbnails.Font = new Font("Microsoft Sans Serif", 9.75f, FontStyle.Regular, GraphicsUnit.Point, 0);
+      checkBoxUseHighDefThumbnails.Location = new Point(12, 115);
+      checkBoxUseHighDefThumbnails.Name = "checkBoxUseHighDefThumbnails";
+      checkBoxUseHighDefThumbnails.Size = new Size(300, 20);
+      checkBoxUseHighDefThumbnails.TabIndex = 12;
+      checkBoxUseHighDefThumbnails.Text = "Use High Def Thumbnails (Override MP settings)";
+      //this.toolTip1.SetToolTip((Control) this.checkBoxUseHighDefThumbnails, "Check this opton if you want to enable scraping music album thumbnail scraping in MP.");
+      checkBoxUseHighDefThumbnails.UseVisualStyleBackColor = true;
       button6.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
       button6.Location = new Point(7, 424);
       button6.Name = "button6";
@@ -821,6 +834,7 @@ namespace FanartHandler
       tabPage21.Text = "Thumbnails Settings";
       tabPage21.UseVisualStyleBackColor = true;
       groupBox10.Controls.Add(checkBox9);
+      groupBox10.Controls.Add(checkBoxUseHighDefThumbnails);
       groupBox10.Controls.Add(checkBox8);
       groupBox10.Controls.Add(checkBox1);
       groupBox10.Font = new Font("Microsoft Sans Serif", 11.25f, FontStyle.Bold, GraphicsUnit.Point, 0);
@@ -1402,6 +1416,7 @@ namespace FanartHandler
         Utils.DefaultBackdropMask = edtDefaultBackdropMask.Text.Trim();
         Utils.DeleteMissing = CheckBoxDeleteMissing.Checked;
         Utils.FanartTVPersonalAPIKey = edtFanartTVPersonalAPIKey.Text.Trim();
+        Utils.UseHighDefThumbnails = checkBoxUseHighDefThumbnails.Checked;
         Utils.SaveSettings();
         MessageBox.Show("Settings is stored in memory. Make sure to press Ok when exiting MP Configuration. "+
                         "Pressing Cancel when exiting MP Configuration will result in these setting NOT being saved!", "Settings", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1538,6 +1553,7 @@ namespace FanartHandler
       edtDefaultBackdropMask.Text = Utils.DefaultBackdropMask;
       CheckBoxDeleteMissing.Checked = Utils.DeleteMissing;
       edtFanartTVPersonalAPIKey.Text = Utils.FanartTVPersonalAPIKey;
+      checkBoxUseHighDefThumbnails.Checked = Utils.UseHighDefThumbnails;
       #endregion
       try
       {
@@ -2385,6 +2401,13 @@ namespace FanartHandler
         if (!isScraping)
         {
           isScraping = true;
+
+          Utils.ScrapeThumbnails = checkBox1.Checked;
+          Utils.ScrapeThumbnailsAlbum = checkBox9.Checked;
+          Utils.DoNotReplaceExistingThumbs = checkBox8.Checked;
+          Utils.UseHighDefThumbnails = checkBoxUseHighDefThumbnails.Checked;
+          Utils.UseFanart = checkBoxXFactorFanart.Checked;
+
           if (Utils.UseFanart)
           {
             FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHUDMusic, "*.jpg", Utils.Category.MusicFanartManual, null, Utils.Provider.Local);
@@ -2441,6 +2464,12 @@ namespace FanartHandler
           button43.Enabled = false;
         else
           button44.Enabled = false;
+
+        Utils.UseFanart = checkBoxXFactorFanart.Checked;
+        Utils.ScrapeThumbnails = checkBox1.Checked;
+        Utils.ScrapeThumbnailsAlbum = checkBox9.Checked;
+        Utils.DoNotReplaceExistingThumbs = checkBox8.Checked;
+        Utils.UseHighDefThumbnails = checkBoxUseHighDefThumbnails.Checked;
 
         Utils.GetDbm().TotArtistsBeingScraped = 0.0;
         Utils.GetDbm().CurrArtistsBeingScraped = 0.0;
@@ -2583,7 +2612,10 @@ namespace FanartHandler
           var fileName = Path.GetFileName(str1);
           var str2 = fileName.IndexOf("L.") <= 0 ? fileName.Substring(0, fileName.LastIndexOf(".")) : fileName.Substring(0, fileName.LastIndexOf("L."));
           row["Artist"] = Utils.GetArtist(str2, Utils.Category.MusicAlbumThumbScraped);
-          row["Album"] = Utils.GetAlbum(str2, Utils.Category.MusicAlbumThumbScraped);
+          if (str2.IndexOf("-", StringComparison.CurrentCulture) > 0)
+            row["Album"] = Utils.GetAlbum(str2, Utils.Category.MusicAlbumThumbScraped);
+          else
+            row["Album"] = string.Empty ;
           row["Type"] = (string.IsNullOrEmpty(row["Album"].ToString().Trim()) ? "Artist" : "Album");
           row["Locked"] = Utils.GetDbm().IsImageProtectedByUser(str1);
           row["Image"] = fileName;
@@ -3050,6 +3082,12 @@ namespace FanartHandler
     {
       try
       {
+        Utils.ScrapeThumbnails = checkBox1.Checked;
+        Utils.ScrapeThumbnailsAlbum = checkBox9.Checked;
+        Utils.DoNotReplaceExistingThumbs = checkBox8.Checked;
+        Utils.UseHighDefThumbnails = checkBoxUseHighDefThumbnails.Checked;
+        Utils.UseFanart = checkBoxXFactorFanart.Checked;
+
         button6.Enabled = false;
         Utils.GetDbm().TotArtistsBeingScraped = 0.0;
         Utils.GetDbm().CurrArtistsBeingScraped = 0.0;

@@ -80,6 +80,7 @@ namespace FanartHandler
     public static bool UseSelectedOtherFanart { get; set; } 
     public static string FanartTVPersonalAPIKey { get; set; }
     public static bool DeleteMissing { get; set; }
+    public static bool UseHighDefThumbnails { get; set; }
     #endregion
 
     #region FanartHandler folders
@@ -580,7 +581,7 @@ namespace FanartHandler
         return string.Empty;
 
       key = PrepareArtistAlbum(key, category);
-      if ((category == Category.MusicAlbumThumbScraped || category == Category.MusicFanartAlbum) && key.IndexOf("-", StringComparison.CurrentCulture) >= 0)
+      if ((category == Category.MusicAlbumThumbScraped || category == Category.MusicFanartAlbum) && key.IndexOf("-", StringComparison.CurrentCulture) > 0)
         key = key.Substring(0, key.IndexOf("-", StringComparison.CurrentCulture));
       if (category == Category.TvSeriesScraped)
         key = Regex.Replace(key, "-", " ");
@@ -603,7 +604,7 @@ namespace FanartHandler
         return string.Empty;
 
       key = PrepareArtistAlbum(key, category);
-      if ((category == Category.MusicAlbumThumbScraped || category == Category.MusicFanartAlbum) && key.IndexOf("-", StringComparison.CurrentCulture) >= 0)
+      if ((category == Category.MusicAlbumThumbScraped || category == Category.MusicFanartAlbum) && key.IndexOf("-", StringComparison.CurrentCulture) > 0)
         key = key.Substring(checked (key.IndexOf("-", StringComparison.CurrentCulture) + 1));
       if ((category != Category.MovieScraped) && 
           (category != Category.MusicArtistThumbScraped) && 
@@ -1217,6 +1218,7 @@ namespace FanartHandler
       UseSelectedOtherFanart = true;
       FanartTVPersonalAPIKey = string.Empty;
       DeleteMissing = false;
+      UseHighDefThumbnails = false;
       #endregion
       try
       {
@@ -1256,6 +1258,7 @@ namespace FanartHandler
           UseSelectedOtherFanart = settings.GetValueAsBool("FanartHandler", "UseSelectedOtherFanart", UseSelectedOtherFanart);
           FanartTVPersonalAPIKey = settings.GetValueAsString("FanartHandler", "FanartTVPersonalAPIKey", FanartTVPersonalAPIKey);
           DeleteMissing = settings.GetValueAsBool("FanartHandler", "DeleteMissing", DeleteMissing);
+          UseHighDefThumbnails = settings.GetValueAsBool("FanartHandler", "UseHighDefThumbnails", UseHighDefThumbnails);
           //
           LoadBadArtists(settings);
         }
@@ -1308,6 +1311,7 @@ namespace FanartHandler
           xmlwriter.SetValue("FanartHandler", "MusicFoldersArtistAlbumRegex", MusicFoldersArtistAlbumRegex);
           xmlwriter.SetValue("FanartHandler", "FanartTVPersonalAPIKey", FanartTVPersonalAPIKey);
           xmlwriter.SetValueAsBool("FanartHandler", "DeleteMissing", DeleteMissing);
+          xmlwriter.SetValueAsBool("FanartHandler", "UseHighDefThumbnails", UseHighDefThumbnails);
         }
         #endregion
         logger.Debug("Save settings to: "+ConfigFilename+" complete.");

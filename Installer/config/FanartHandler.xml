@@ -25,6 +25,7 @@
     <entry name="DeleteMissing">no</entry>
     <entry name="MusicFoldersArtistAlbumRegex"></entry>
     <entry name="FanartTVPersonalAPIKey"></entry>
+    <entry name="UseHighDefThumbnails">no</entry>
   </section>
   <section name="Artists">
     <entry name="artist0">In-Grid|In Grid</entry>

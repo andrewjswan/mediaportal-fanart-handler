@@ -143,11 +143,10 @@ namespace FanartHandler
 
     public bool CreateThumbnail(string aInputFilename, bool bigThumb)
     {
-      var bitmap1 = (Bitmap) null;
-      var bitmap2 = (Bitmap) null;
       var templateWidth = 75;
       var templateHeight = 75;
       var iText = string.Empty;
+
       string NewFile;
 
       #region ThumbsQuality
@@ -192,6 +191,40 @@ namespace FanartHandler
       logger.Debug("CreateThumbnail: "+((bigThumb) ? "Big" : "")+"Thumbs mode: "+iText+" size: "+templateWidth+"x"+templateHeight);
       #endregion
 
+      #region HighDefThumbnails
+      if (bigThumb && Utils.UseHighDefThumbnails)
+      {
+        var SourceBitmap = (Bitmap) null;
+        try
+        {
+          SourceBitmap = (Bitmap) Utils.LoadImageFastFromFile(aInputFilename);
+          if (SourceBitmap != null)
+          {
+            if ((SourceBitmap.Width > templateWidth) || (SourceBitmap.Height > templateHeight))
+            {
+              if (templateWidth == templateHeight)
+              {
+                templateWidth  = (SourceBitmap.Width > SourceBitmap.Height) ? (int) SourceBitmap.Width : (int) SourceBitmap.Height;
+                templateHeight = templateWidth;
+              }
+              else
+              {
+                templateWidth  = (int) SourceBitmap.Width;
+                templateHeight = (int) SourceBitmap.Height;
+              }
+              logger.Debug("CreateThumbnail: "+((bigThumb) ? "Big" : "")+"Thumbs mode: overrided size: "+templateWidth+"x"+templateHeight);
+            }
+          }
+        }
+        finally
+        {
+          if (SourceBitmap != null)
+            ObjectMethods.SafeDispose(SourceBitmap);
+          SourceBitmap = null;
+        }
+      }
+      #endregion
+
       NewFile = aInputFilename.Substring(0, aInputFilename.IndexOf("_tmp.jpg", StringComparison.CurrentCulture)) + ((bigThumb) ? "L" : "") + ".jpg";
       try
       {
@@ -205,10 +238,6 @@ namespace FanartHandler
       }
       finally
       {
-        if (bitmap1 != null)
-          ObjectMethods.SafeDispose((object) bitmap1);
-        if (bitmap2 != null)
-          ObjectMethods.SafeDispose((object) bitmap2);
       }
     }
 
