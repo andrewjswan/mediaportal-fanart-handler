@@ -324,35 +324,6 @@ namespace FanartHandler
       }
       return true;
     }
-
-    private bool IsFileValid(string filename)
-    {
-      if (string.IsNullOrEmpty(filename))
-        return false;
-
-      var image1 = (Image) null;
-      try
-      {
-        image1 = CreateNonIndexedImage(filename);
-        if (image1 != null && image1.Width > 0)
-        {
-          ObjectMethods.SafeDispose(image1);
-          image1 = null;
-          return true;
-        }
-        else
-        {
-          if (image1 != null)
-            ObjectMethods.SafeDispose(image1);
-        }
-      }
-      catch
-      {
-        if (image1 != null)
-          ObjectMethods.SafeDispose(image1);
-      }
-      return false;
-    }
     #endregion
 
     #region MusicBrainz
@@ -1889,7 +1860,7 @@ namespace FanartHandler
             ObjectMethods.SafeDispose(fileStream);
             fileStream = null;
           }
-          if (!IsFileValid(filename))
+          if (!Utils.IsFileValid(filename))
           {
             DownloaderStatus = "Stop";
             logger.Warn("Download: Deleting downloaded file because it is corrupt.");
@@ -1932,8 +1903,6 @@ namespace FanartHandler
             ObjectMethods.SafeDispose(fileStream);
             fileStream = null;
           }
-          if (File.Exists(filename))
-            File.Delete(filename);
           DownloaderStatus = "Stop";
           logger.Error("Download: " + ex);
         }
@@ -1943,23 +1912,16 @@ namespace FanartHandler
           DownloaderStatus = "Stop";
         }
 
-        if (fileStream != null && DownloaderStatus.Equals("Stop", StringComparison.CurrentCulture))
+        if (fileStream != null)
         {
           fileStream.Close();
           ObjectMethods.SafeDispose(fileStream);
           fileStream = null;
-          if (File.Exists(filename))
-            File.Delete(filename);
         }
         if (stream != null)
         {
           stream.Close();
           ObjectMethods.SafeDispose(stream);
-        }
-        if (fileStream != null)
-        {
-          fileStream.Close();
-          ObjectMethods.SafeDispose(fileStream);
         }
         if (responsePic != null)
         {
@@ -1980,7 +1942,14 @@ namespace FanartHandler
         ObjectMethods.SafeDispose(responsePic);
       }
 
+      if (DownloaderStatus.Equals("Success", StringComparison.CurrentCulture) && File.Exists(filename) && Utils.UseMinimumResolutionForDownload)
+      {
+        if (!FanartHandlerSetup.Fh.CheckImageResolution(filename, category, false))
+          DownloaderStatus = "Stop";
+      }
+
       if (DownloaderStatus.Equals("Success", StringComparison.CurrentCulture) && File.Exists(filename))
+      {
         if ((category == Utils.Category.MusicArtistThumbScraped) || (category == Utils.Category.MusicAlbumThumbScraped))
         { 
           if (Utils.GetDbm().IsImageProtectedByUser(FileNameLarge).Equals("False"))
@@ -2005,9 +1974,11 @@ namespace FanartHandler
             logger.Error(ex) ;
           }
         }
+      }
 
       if (!DownloaderStatus.Equals("Success", StringComparison.CurrentCulture) && File.Exists(filename))
         File.Delete(filename);
+
       if (DownloaderStatus.Equals("Success", StringComparison.CurrentCulture) && File.Exists(filename))
         logger.Debug("Download: Image for " + Text + " (" + filename + "): Complete.");
       if (DownloaderStatus.Equals("Skip", StringComparison.CurrentCulture))

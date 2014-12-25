@@ -1497,6 +1497,7 @@ namespace FanartHandler
       comboBoxMinResolution.Items.Add("960x540");
       comboBoxMinResolution.Items.Add("1024x576");
       comboBoxMinResolution.Items.Add("1280x720");
+      comboBoxMinResolution.Items.Add("1000x1000");
       comboBoxMinResolution.Items.Add("1920x1080");
       comboBox2.Items.Add("Games");
       comboBox2.Items.Add("Movies");

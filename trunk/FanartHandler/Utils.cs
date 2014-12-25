@@ -81,6 +81,7 @@ namespace FanartHandler
     public static string FanartTVPersonalAPIKey { get; set; }
     public static bool DeleteMissing { get; set; }
     public static bool UseHighDefThumbnails { get; set; }
+    public static bool UseMinimumResolutionForDownload { get; set; }
     #endregion
 
     #region FanartHandler folders
@@ -1069,6 +1070,7 @@ namespace FanartHandler
     {
       if (isStopping)
         return;
+
       try
       {
         if (string.IsNullOrEmpty(filename))
@@ -1119,25 +1121,29 @@ namespace FanartHandler
 
     public static bool IsFileValid(string filename)
     {
-      if (filename == null)
-        return false;
+      var flag = false;
+
+      if (string.IsNullOrEmpty(filename))
+        return flag;
       
+      if (!File.Exists(filename))
+        return flag;
+
+      var TestImage = (Image) null;
       try
       {
-        var image2 = LoadImageFastFromFile(filename);
-        if (image2 != null && image2.Width > 0)
-        {
-          image2.Dispose();
-          return true;
-        }
-        else
-        {
-          if (image2 != null)
-            image2.Dispose();
-        }
+        TestImage = LoadImageFastFromFile(filename);
+        flag = (TestImage != null && TestImage.Width > 0);
       }
-      catch { }
-      return false;
+      catch 
+      { 
+        flag = false;
+      }
+
+      if (TestImage != null)
+        TestImage.Dispose();
+
+      return flag;
     }
 
     public static bool IsDirectoryEmpty (string path) 
@@ -1219,6 +1225,7 @@ namespace FanartHandler
       FanartTVPersonalAPIKey = string.Empty;
       DeleteMissing = false;
       UseHighDefThumbnails = false;
+      UseMinimumResolutionForDownload = false;
       #endregion
       try
       {
@@ -1259,6 +1266,7 @@ namespace FanartHandler
           FanartTVPersonalAPIKey = settings.GetValueAsString("FanartHandler", "FanartTVPersonalAPIKey", FanartTVPersonalAPIKey);
           DeleteMissing = settings.GetValueAsBool("FanartHandler", "DeleteMissing", DeleteMissing);
           UseHighDefThumbnails = settings.GetValueAsBool("FanartHandler", "UseHighDefThumbnails", UseHighDefThumbnails);
+          UseMinimumResolutionForDownload = settings.GetValueAsBool("FanartHandler", "UseMinimumResolutionForDownload", UseMinimumResolutionForDownload);
           //
           LoadBadArtists(settings);
         }
@@ -1312,6 +1320,7 @@ namespace FanartHandler
           xmlwriter.SetValue("FanartHandler", "FanartTVPersonalAPIKey", FanartTVPersonalAPIKey);
           xmlwriter.SetValueAsBool("FanartHandler", "DeleteMissing", DeleteMissing);
           xmlwriter.SetValueAsBool("FanartHandler", "UseHighDefThumbnails", UseHighDefThumbnails);
+          // xmlwriter.SetValueAsBool("FanartHandler", "UseMinimumResolutionForDownload", UseMinimumResolutionForDownload);
         }
         #endregion
         logger.Debug("Save settings to: "+ConfigFilename+" complete.");
