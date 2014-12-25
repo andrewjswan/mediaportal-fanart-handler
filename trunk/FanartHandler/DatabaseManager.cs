@@ -1350,6 +1350,8 @@ namespace FanartHandler
             try
             {
                 logger.Info("InitialThumbScrape is starting (only missing=" + (onlyMissing ? 1 : 0) + ")...");
+                CurrArtistsBeingScraped = 0.0;
+                TotArtistsBeingScraped = 0.0;
                 #region Artists
                 if (Utils.ScrapeThumbnails)
                 {
@@ -1362,10 +1364,10 @@ namespace FanartHandler
                     musicDatabaseArtists.AddRange(musicVideoArtists);
                   }
                   #endregion
-                  TotArtistsBeingScraped = checked (musicDatabaseArtists.Count);
                   if (musicDatabaseArtists != null && musicDatabaseArtists.Count > 0)
                   {
                     logger.Debug("InitialThumbScrape Artists: ["+musicDatabaseArtists.Count+"]");
+                    TotArtistsBeingScraped = checked (musicDatabaseArtists.Count);
                     var index = 0;
                     while (index < musicDatabaseArtists.Count)
                     {
@@ -1401,6 +1403,7 @@ namespace FanartHandler
                   if (musicDatabaseAlbums != null && musicDatabaseAlbums.Count > 0)
                   {
                     logger.Debug("InitialThumbScrape Artists - Albums: ["+musicDatabaseAlbums.Count+"]");
+                    TotArtistsBeingScraped = checked (musicDatabaseArtists.Count+musicDatabaseAlbums.Count);
                     scraper = new Scraper();
                     var index = 0;
                     while (index < musicDatabaseAlbums.Count)
