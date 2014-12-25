@@ -33,8 +33,8 @@ copy fanarthandler.xmp2 fanarthandlerTemp.xmp2
 Tools\sed.exe -i "s/fanarthandler-{VERSION}.xml/fanarthandler-%version%.xml/g" fanarthandlerTemp.xmp2
 
 :: Build MPE1
-REM "%PROGS%\Team MediaPortal\MediaPortal\MPEMaker.exe" fanarthandlerTemp.xmp2 /B /V=%version% /UpdateXML
-"D:\MediaPortal\MPEMaker.exe" fanarthandlerTemp.xmp2 /B /V=%version% /UpdateXML
+"%PROGS%\Team MediaPortal\MediaPortal\MPEMaker.exe" fanarthandlerTemp.xmp2 /B /V=%version% /UpdateXML
+REM "D:\MediaPortal\MPEMaker.exe" fanarthandlerTemp.xmp2 /B /V=%version% /UpdateXML
 
 :: Cleanup
 del fanarthandlerTemp.xmp2
