@@ -1382,6 +1382,8 @@ namespace FanartHandler
                   }
                   musicDatabaseArtists = null;
                 }
+                else
+                  logger.Debug("ThumbScrape for Artists disabled in config ...");
                 #endregion
 
                 #region Albums
@@ -1424,6 +1426,8 @@ namespace FanartHandler
                   }
                   musicDatabaseAlbums = null;
                 }
+                else
+                  logger.Debug("ThumbScrape for Albums disabled in config ...");
                 #endregion
                 logger.Info("InitialThumbScrape is done.");
             }
@@ -1735,7 +1739,7 @@ namespace FanartHandler
             var sqLiteResultSet = (SQLiteResultSet) null;
             try
             {
-                var str = "SELECT Key1, Enabled, AvailableRandom, FullPath, ROWID "+
+                var str = "SELECT Key1, Enabled, AvailableRandom, FullPath, Protected, ROWID "+
                            "FROM Image "+
                            "WHERE DummyItem = 'False' AND "+
                                  "Category IN (" + Utils.GetMusicFanartCategoriesInStatement(true) +
@@ -1757,7 +1761,7 @@ namespace FanartHandler
             var sqLiteResultSet = (SQLiteResultSet) null;
             try
             {
-                var str = "SELECT Key1, Enabled, AvailableRandom, FullPath, ROWID "+
+                var str = "SELECT Key1, Enabled, AvailableRandom, FullPath, Protected, ROWID "+
                            "FROM Image "+
                            "WHERE ROWID > " + lastID + " AND "+
                                  "DummyItem = 'False' AND "+
@@ -1778,7 +1782,7 @@ namespace FanartHandler
             var sqLiteResultSet = (SQLiteResultSet) null;
             try
             {
-                var str = "SELECT Category, AvailableRandom, FullPath, ROWID "+
+                var str = "SELECT Category, AvailableRandom, FullPath, Protected, ROWID "+
                            "FROM Image "+
                            "WHERE ROWID > " + lastID + " AND DummyItem = 'False' AND "+
                                  "Category IN ('" + category + "') "+
@@ -1808,7 +1812,7 @@ namespace FanartHandler
                         categories = "'" + category[index] + "'";
                     checked { ++index; }
                 }
-                var SQL = "SELECT FullPath, AvailableRandom, Category, Key1, Key2 "+
+                var SQL = "SELECT FullPath, Protected, Category, Key1, Key2 "+
                             "FROM image "+
                             "WHERE Category IN (" +
                 //                   (object) str3 + ") AND DummyItem = 'False' order by Key1, FullPath LIMIT " + start + ",500;";

@@ -61,7 +61,7 @@
             </FileItem>
             <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
               <Param1 />
-              <UpdateOption>AlwaysOverwrite</UpdateOption>
+              <UpdateOption>NeverOverwrite</UpdateOption>
               <LocalFileName>..\Installer\config\FanartHandler.xml</LocalFileName>
               <ZipFileName>Installer{CopyFile}\{216864ea-ea6a-486c-a1a1-45b8e36c0987}-FanartHandler.xml</ZipFileName>
               <DestinationFilename>%Config%\FanartHandler.xml</DestinationFilename>
@@ -620,7 +620,7 @@ cul8er</Value>
       </FileItem>
       <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
         <Param1 />
-        <UpdateOption>AlwaysOverwrite</UpdateOption>
+        <UpdateOption>NeverOverwrite</UpdateOption>
         <LocalFileName>..\Installer\config\FanartHandler.xml</LocalFileName>
         <ZipFileName>Installer{CopyFile}\{216864ea-ea6a-486c-a1a1-45b8e36c0987}-FanartHandler.xml</ZipFileName>
         <DestinationFilename>%Config%\FanartHandler.xml</DestinationFilename>
@@ -631,13 +631,6 @@ cul8er</Value>
         <LocalFileName>..\FanartHandler\bin\Release\FanartHandler.dll</LocalFileName>
         <ZipFileName>Installer{CopyFile}\{19ff6fb3-f128-4ab2-8c3b-7ccec2210fe2}-FanartHandler.dll</ZipFileName>
         <DestinationFilename>%Plugins%\process\FanartHandler.dll</DestinationFilename>
-      </FileItem>
-      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-        <Param1 />
-        <UpdateOption>NeverOverwrite</UpdateOption>
-        <LocalFileName>..\Installer\Skin FanArt\UserDef\music\default.jpg</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{70f349ac-b6d3-4646-9552-b94404a0008b}-default.jpg</ZipFileName>
-        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\music\default.jpg</DestinationFilename>
       </FileItem>
       <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
         <Param1 />
@@ -701,6 +694,13 @@ cul8er</Value>
         <LocalFileName>..\Installer\Skin Fanart\UserDef\movies\default1.jpg</LocalFileName>
         <ZipFileName>Installer{CopyFile}\{e23368ed-cbe2-4b5d-9b65-2c0a39a2e82f}-default1.jpg</ZipFileName>
         <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\movies\default1.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\Skin FanArt\UserDef\music\default.jpg</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{70f349ac-b6d3-4646-9552-b94404a0008b}-default.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\music\default.jpg</DestinationFilename>
       </FileItem>
       <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
         <Param1 />
