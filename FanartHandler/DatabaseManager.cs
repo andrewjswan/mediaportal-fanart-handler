@@ -1834,9 +1834,12 @@ namespace FanartHandler
         public Hashtable GetFanart(string artist, string album, Utils.Category category, bool highDef)
         {
             var filenames = new Hashtable();
+            var flag = false;
             try
             {
                 string SQL;
+                SQLiteResultSet sqLiteResultSet;
+
                 if (category == Utils.Category.MusicFanartScraped)
                   SQL = "SELECT Id, Key1, FullPath, SourcePath, Category, Provider "+
                           "FROM Image "+
@@ -1850,12 +1853,12 @@ namespace FanartHandler
                           "WHERE Key1 IN ('" + Utils.PatchSql(artist) + "') AND "+
                                 (album == null ? "" : "Key2 = '"+Utils.PatchSql(album)+"' AND ")+
                                 "Enabled = 'True';";
-                SQLiteResultSet sqLiteResultSet;
                 lock (lockObject)
                     sqLiteResultSet = dbClient.Execute(SQL);
 
                 if (!string.IsNullOrEmpty(album) && (sqLiteResultSet.Rows.Count <= 0))
                 {
+                  flag = true ;
                   if (category == Utils.Category.MusicFanartScraped)
                     SQL = "SELECT Id, Key1, FullPath, SourcePath, Category, Provider "+
                             "FROM Image "+
@@ -1887,26 +1890,29 @@ namespace FanartHandler
                 Utils.Shuffle(ref filenames);
 
                 // TODO: ... Then create procedure for Delete Old Music Fanart files from Disk (Artist not in MP DB and Last_Access < NOW-100)
-                try
+                if (sqLiteResultSet.Rows.Count > 0) 
                 {
-                  if (category == Utils.Category.MusicFanartScraped)
-                    SQL = "UPDATE Image SET Last_Access = '"+DateTime.Today.ToString("yyyyMMdd", CultureInfo.CurrentCulture)+"' "+
-                            "WHERE Key1 IN (" + Utils.HandleMultipleArtistNamesForDBQuery(Utils.PatchSql(artist)) + ") AND "+
-                                  (album == null ? "" : "Key2 = '"+Utils.PatchSql(album)+"' AND ")+
-                                  "Enabled = 'True' AND "+
-                                  "Category in (" + Utils.GetMusicFanartCategoriesInStatement(highDef) + ");";
-                  else
-                    SQL = "UPDATE Image SET Last_Access = '"+DateTime.Today.ToString("yyyyMMdd", CultureInfo.CurrentCulture)+"' "+
-                            "WHERE Key1 IN ('" + Utils.PatchSql(artist) + "') AND "+
-                                  (album == null ? "" : "Key2 = '"+Utils.PatchSql(album)+"' AND ")+
-                                  "Enabled = 'True';";
-                  lock (lockObject)
-                      dbClient.Execute(SQL);
-                }
-                catch (Exception ex)
-                {
-                  logger.Debug("getFanart: Last Access update:");
-                  logger.Debug(ex);
+                  try
+                  {
+                    if (category == Utils.Category.MusicFanartScraped)
+                      SQL = "UPDATE Image SET Last_Access = '"+DateTime.Today.ToString("yyyyMMdd", CultureInfo.CurrentCulture)+"' "+
+                              "WHERE Key1 IN (" + Utils.HandleMultipleArtistNamesForDBQuery(Utils.PatchSql(artist)) + ") AND "+
+                                    (album == null || flag ? "" : "Key2 = '"+Utils.PatchSql(album)+"' AND ")+
+                                    "Enabled = 'True' AND "+
+                                    "Category in (" + Utils.GetMusicFanartCategoriesInStatement(highDef) + ");";
+                    else
+                      SQL = "UPDATE Image SET Last_Access = '"+DateTime.Today.ToString("yyyyMMdd", CultureInfo.CurrentCulture)+"' "+
+                              "WHERE Key1 IN ('" + Utils.PatchSql(artist) + "') AND "+
+                                    (album == null || flag ? "" : "Key2 = '"+Utils.PatchSql(album)+"' AND ")+
+                                    "Enabled = 'True';";
+                    lock (lockObject)
+                        dbClient.Execute(SQL);
+                  }
+                  catch (Exception ex)
+                  {
+                    logger.Debug("getFanart: Last Access update:");
+                    logger.Debug(ex);
+                  }
                 }
             }
             catch (Exception ex)

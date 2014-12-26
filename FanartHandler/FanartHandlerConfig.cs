@@ -58,6 +58,7 @@ namespace FanartHandler
     private Label label13;
     private Label label12;
     private Label labelFanartTVPersonalAPIKey;
+    private LinkLabel labelGetFanartTVPersonalAPIKey;
     private ComboBox comboBoxScraperInterval;
     private CheckBox CheckBoxDeleteMissing;
     private TextBox edtFanartTVPersonalAPIKey;
@@ -102,6 +103,7 @@ namespace FanartHandler
     private CheckBox CheckBoxScanMusicFoldersForFanart;
     private TextBox edtMusicFoldersArtistAlbumRegex;
     private CheckBox CheckBoxUseDefaultBackdrop;
+    private CheckBox CheckBoxUseMinimumResolutionForDownload;
     private TextBox edtDefaultBackdropMask;
     private TabControl tabControl3;
     private TabPage tabPage3;
@@ -217,6 +219,7 @@ namespace FanartHandler
       CheckBoxUseGenreFanart = new CheckBox();
       edtMusicFoldersArtistAlbumRegex = new TextBox();
       CheckBoxUseDefaultBackdrop = new CheckBox();
+      CheckBoxUseMinimumResolutionForDownload = new CheckBox();
       edtDefaultBackdropMask = new TextBox();
       checkBoxXFactorFanart = new CheckBox();
       checkBoxThumbsAlbum = new CheckBox();
@@ -254,6 +257,7 @@ namespace FanartHandler
       label13 = new Label();
       label12 = new Label();
       labelFanartTVPersonalAPIKey = new Label();
+      labelGetFanartTVPersonalAPIKey = new LinkLabel();
       label7 = new Label();
       label6 = new Label();
       tabPage7 = new TabPage();
@@ -582,25 +586,6 @@ namespace FanartHandler
       comboBoxScraperInterval.Size = new Size(124, 21);
       comboBoxScraperInterval.TabIndex = 12;
       //this.toolTip1.SetToolTip((Control) this.comboBoxScraperInterval, "Select the  number of hours between each new scraper attempt.");
-      CheckBoxDeleteMissing.AutoSize = true;
-      CheckBoxDeleteMissing.Font = new Font("Microsoft Sans Serif", 9.75f, FontStyle.Regular, GraphicsUnit.Point, 0);
-      CheckBoxDeleteMissing.Location = new Point(12, 139);
-      CheckBoxDeleteMissing.Name = "CheckBoxDeleteMissing";
-      CheckBoxDeleteMissing.Size = new Size(411, 20);
-      CheckBoxDeleteMissing.TabIndex = 13;
-      CheckBoxDeleteMissing.Text = "Delete missing enries from DB, when FanartHandler Initial Scrape start.";
-      //this.toolTip1.SetToolTip((Control) this.CheckBoxDeleteMissing, componentResourceManager.GetString("CheckBoxDeleteMissing.ToolTip"));
-      CheckBoxDeleteMissing.UseVisualStyleBackColor = true;
-      CheckBoxDeleteMissing.CheckedChanged += new EventHandler(CheckBoxDeleteMissing_CheckedChanged);
-      edtFanartTVPersonalAPIKey.AcceptsReturn = true;
-      edtFanartTVPersonalAPIKey.Multiline = false;
-      edtFanartTVPersonalAPIKey.Text = "";
-      edtFanartTVPersonalAPIKey.Name = "edtFanartTVPersonalAPIKey";
-      edtFanartTVPersonalAPIKey.Location = new Point(215, 164);
-      edtFanartTVPersonalAPIKey.Size = new Size(300, 20);
-      edtFanartTVPersonalAPIKey.TabIndex = 14;
-      edtFanartTVPersonalAPIKey.Font = new Font("Microsoft Sans Serif", 9.75f, FontStyle.Regular, GraphicsUnit.Point, 0);
-      //
       comboBoxMinResolution.DropDownStyle = ComboBoxStyle.DropDownList;
       comboBoxMinResolution.FormattingEnabled = true;
       comboBoxMinResolution.Location = new Point(12, 25);
@@ -1020,11 +1005,8 @@ namespace FanartHandler
       groupBox3.Text = "Music Plugins Fanart Options";
       tabPage6.Controls.Add(label13);
       tabPage6.Controls.Add(label12);
-      tabPage6.Controls.Add(labelFanartTVPersonalAPIKey);
       tabPage6.Controls.Add(checkBoxEnableScraperMPDatabase);
       tabPage6.Controls.Add(comboBoxScraperInterval);
-      tabPage6.Controls.Add(CheckBoxDeleteMissing);
-      tabPage6.Controls.Add(edtFanartTVPersonalAPIKey);
       tabPage6.Controls.Add(checkBoxScraperMusicPlaying);
       tabPage6.Controls.Add(label7);
       tabPage6.Controls.Add(comboBoxMaxImages);
@@ -1050,13 +1032,6 @@ namespace FanartHandler
       label12.Size = new Size(102, 16);
       label12.TabIndex = 13;
       label12.Text = "Scraper Interval";
-      labelFanartTVPersonalAPIKey.AutoSize = true;
-      labelFanartTVPersonalAPIKey.Font = new Font("Microsoft Sans Serif", 9.75f, FontStyle.Regular, GraphicsUnit.Point, 0);
-      labelFanartTVPersonalAPIKey.Location = new Point(12, 164);
-      labelFanartTVPersonalAPIKey.Name = "labelFanartTVPersonalAPIKey";
-      labelFanartTVPersonalAPIKey.Size = new Size(102, 16);
-      labelFanartTVPersonalAPIKey.TabIndex = 14;
-      labelFanartTVPersonalAPIKey.Text = "Fanart.TV Personal API key:";
       label7.AutoSize = true;
       label7.Font = new Font("Microsoft Sans Serif", 9.75f, FontStyle.Regular, GraphicsUnit.Point, 0);
       label7.Location = new Point(12, 80);
@@ -1234,6 +1209,11 @@ namespace FanartHandler
       tabControl1.TabIndex = 15;
       tabPage8.Controls.Add(groupBox2);
       tabPage8.Controls.Add(groupBox7);
+      tabPage8.Controls.Add(CheckBoxUseMinimumResolutionForDownload);
+      tabPage8.Controls.Add(CheckBoxDeleteMissing);
+      tabPage8.Controls.Add(labelFanartTVPersonalAPIKey);
+      tabPage8.Controls.Add(edtFanartTVPersonalAPIKey);
+      tabPage8.Controls.Add(labelGetFanartTVPersonalAPIKey);
       tabPage8.Location = new Point(4, 22);
       tabPage8.Name = "tabPage8";
       tabPage8.Padding = new Padding(3);
@@ -1250,6 +1230,56 @@ namespace FanartHandler
       groupBox2.TabIndex = 12;
       groupBox2.TabStop = false;
       groupBox2.Text = "Show Each Fanart Image For";
+      //
+      CheckBoxUseMinimumResolutionForDownload.AutoSize = true;
+      CheckBoxUseMinimumResolutionForDownload.Checked = true;
+      CheckBoxUseMinimumResolutionForDownload.CheckState = CheckState.Checked;
+      CheckBoxUseMinimumResolutionForDownload.Font = new Font("Microsoft Sans Serif", 9.75f, FontStyle.Regular, GraphicsUnit.Point, 0);
+      CheckBoxUseMinimumResolutionForDownload.Location = new Point(17, 200);
+      CheckBoxUseMinimumResolutionForDownload.Name = "CheckBoxUseMinimumResolutionForDownload";
+      CheckBoxUseMinimumResolutionForDownload.Size = new Size(500, 20);
+      CheckBoxUseMinimumResolutionForDownload.TabIndex = 13;
+      CheckBoxUseMinimumResolutionForDownload.Text = "Use minimal resolution (above) for Downloaded pictures (if less dont store)";
+      //this.toolTip1.SetToolTip((Control) this.CheckBoxUseMinimumResolutionForDownload, componentResourceManager.GetString("CheckBoxUseMinimumResolutionForDownload.ToolTip"));
+      CheckBoxUseMinimumResolutionForDownload.UseVisualStyleBackColor = true;
+      //
+      CheckBoxDeleteMissing.AutoSize = true;
+      CheckBoxDeleteMissing.Font = new Font("Microsoft Sans Serif", 9.75f, FontStyle.Regular, GraphicsUnit.Point, 0);
+      CheckBoxDeleteMissing.Location = new Point(17, 225);
+      CheckBoxDeleteMissing.Name = "CheckBoxDeleteMissing";
+      CheckBoxDeleteMissing.Size = new Size(500, 20);
+      CheckBoxDeleteMissing.TabIndex = 14;
+      CheckBoxDeleteMissing.Text = "Delete missing enries from DB, when FanartHandler Initial Scrape start.";
+      //this.toolTip1.SetToolTip((Control) this.CheckBoxDeleteMissing, componentResourceManager.GetString("CheckBoxDeleteMissing.ToolTip"));
+      CheckBoxDeleteMissing.UseVisualStyleBackColor = true;
+      CheckBoxDeleteMissing.CheckedChanged += new EventHandler(CheckBoxDeleteMissing_CheckedChanged);
+      //
+      labelFanartTVPersonalAPIKey.AutoSize = true;
+      labelFanartTVPersonalAPIKey.Font = new Font("Microsoft Sans Serif", 9.75f, FontStyle.Regular, GraphicsUnit.Point, 0);
+      labelFanartTVPersonalAPIKey.Location = new Point(17, 250);
+      labelFanartTVPersonalAPIKey.Name = "labelFanartTVPersonalAPIKey";
+      labelFanartTVPersonalAPIKey.Size = new Size(180, 16);
+      labelFanartTVPersonalAPIKey.TabIndex = 15;
+      labelFanartTVPersonalAPIKey.Text = "Fanart.TV Personal API key:";
+      //
+      edtFanartTVPersonalAPIKey.AcceptsReturn = true;
+      edtFanartTVPersonalAPIKey.Multiline = false;
+      edtFanartTVPersonalAPIKey.Text = "";
+      edtFanartTVPersonalAPIKey.Name = "edtFanartTVPersonalAPIKey";
+      edtFanartTVPersonalAPIKey.Location = new Point(200, 250);
+      edtFanartTVPersonalAPIKey.Size = new Size(250, 20);
+      edtFanartTVPersonalAPIKey.TabIndex = 16;
+      edtFanartTVPersonalAPIKey.Font = new Font("Microsoft Sans Serif", 9.75f, FontStyle.Regular, GraphicsUnit.Point, 0);
+      //
+      labelGetFanartTVPersonalAPIKey.AutoSize = true;
+      labelGetFanartTVPersonalAPIKey.Font = new Font("Microsoft Sans Serif", 9.75f, FontStyle.Regular, GraphicsUnit.Point, 0);
+      labelGetFanartTVPersonalAPIKey.Location = new Point(470, 250);
+      labelGetFanartTVPersonalAPIKey.Name = "labelGetFanartTVPersonalAPIKey";
+      labelGetFanartTVPersonalAPIKey.Size = new Size(180, 16);
+      labelGetFanartTVPersonalAPIKey.TabIndex = 17;
+      labelGetFanartTVPersonalAPIKey.Text = "Get Personal API key";
+      labelGetFanartTVPersonalAPIKey.LinkClicked += new LinkLabelLinkClickedEventHandler(labelGetFanartTVPersonalAPIKey_LinkClicked);
+      //
       label3.AutoSize = true;
       label3.Font = new Font("Microsoft Sans Serif", 9.75f, FontStyle.Regular, GraphicsUnit.Point, 0);
       label3.Location = new Point(142, 31);
@@ -1388,35 +1418,41 @@ namespace FanartHandler
       */
     }
 
+    private void UpdateSettings()
+    {
+       Utils.UseFanart = checkBoxXFactorFanart.Checked;
+       Utils.UseAlbum = checkBoxThumbsAlbum.Checked;
+       Utils.UseArtist = checkBoxThumbsArtist.Checked;
+       Utils.SkipWhenHighResAvailable = checkBoxSkipMPThumbsIfFanartAvailble.Checked;
+       Utils.DisableMPTumbsForRandom = checkBoxThumbsDisabled.Checked;
+       Utils.UseSelectedMusicFanart = checkBoxEnableMusicFanart.Checked;
+       Utils.UseSelectedOtherFanart = checkBoxEnableVideoFanart.Checked;
+       Utils.ImageInterval = comboBoxInterval.SelectedItem.ToString();
+       Utils.MinResolution = comboBoxMinResolution.SelectedItem.ToString();
+       Utils.ScraperMaxImages = comboBoxMaxImages.SelectedItem.ToString();
+       Utils.ScraperMusicPlaying = checkBoxScraperMusicPlaying.Checked;
+       Utils.ScraperMPDatabase = checkBoxEnableScraperMPDatabase.Checked;
+       Utils.ScraperInterval = comboBoxScraperInterval.SelectedItem.ToString();
+       Utils.UseAspectRatio = checkBoxAspectRatio.Checked;
+       Utils.ScrapeThumbnails = checkBox1.Checked;
+       Utils.ScrapeThumbnailsAlbum = checkBox9.Checked;
+       Utils.DoNotReplaceExistingThumbs = checkBox8.Checked;
+       Utils.UseGenreFanart = CheckBoxUseGenreFanart.Checked;
+       Utils.ScanMusicFoldersForFanart = CheckBoxScanMusicFoldersForFanart.Checked;
+       Utils.MusicFoldersArtistAlbumRegex = edtMusicFoldersArtistAlbumRegex.Text.Trim();
+       Utils.UseDefaultBackdrop = CheckBoxUseDefaultBackdrop.Checked;
+       Utils.DefaultBackdropMask = edtDefaultBackdropMask.Text.Trim();
+       Utils.DeleteMissing = CheckBoxDeleteMissing.Checked;
+       Utils.FanartTVPersonalAPIKey = edtFanartTVPersonalAPIKey.Text.Trim();
+       Utils.UseHighDefThumbnails = checkBoxUseHighDefThumbnails.Checked;
+       Utils.UseMinimumResolutionForDownload = CheckBoxUseMinimumResolutionForDownload.Checked;
+    }
+
     private void DoSave()
     {
       if (CheckValidity())
       {
-        Utils.UseFanart = checkBoxXFactorFanart.Checked;
-        Utils.UseAlbum = checkBoxThumbsAlbum.Checked;
-        Utils.UseArtist = checkBoxThumbsArtist.Checked;
-        Utils.SkipWhenHighResAvailable = checkBoxSkipMPThumbsIfFanartAvailble.Checked;
-        Utils.DisableMPTumbsForRandom = checkBoxThumbsDisabled.Checked;
-        Utils.UseSelectedMusicFanart = checkBoxEnableMusicFanart.Checked;
-        Utils.UseSelectedOtherFanart = checkBoxEnableVideoFanart.Checked;
-        Utils.ImageInterval = comboBoxInterval.SelectedItem.ToString();
-        Utils.MinResolution = comboBoxMinResolution.SelectedItem.ToString();
-        Utils.ScraperMaxImages = comboBoxMaxImages.SelectedItem.ToString();
-        Utils.ScraperMusicPlaying = checkBoxScraperMusicPlaying.Checked;
-        Utils.ScraperMPDatabase = checkBoxEnableScraperMPDatabase.Checked;
-        Utils.ScraperInterval = comboBoxScraperInterval.SelectedItem.ToString();
-        Utils.UseAspectRatio = checkBoxAspectRatio.Checked;
-        Utils.ScrapeThumbnails = checkBox1.Checked;
-        Utils.ScrapeThumbnailsAlbum = checkBox9.Checked;
-        Utils.DoNotReplaceExistingThumbs = checkBox8.Checked;
-        Utils.UseGenreFanart = CheckBoxUseGenreFanart.Checked;
-        Utils.ScanMusicFoldersForFanart = CheckBoxScanMusicFoldersForFanart.Checked;
-        Utils.MusicFoldersArtistAlbumRegex = edtMusicFoldersArtistAlbumRegex.Text.Trim();
-        Utils.UseDefaultBackdrop = CheckBoxUseDefaultBackdrop.Checked;
-        Utils.DefaultBackdropMask = edtDefaultBackdropMask.Text.Trim();
-        Utils.DeleteMissing = CheckBoxDeleteMissing.Checked;
-        Utils.FanartTVPersonalAPIKey = edtFanartTVPersonalAPIKey.Text.Trim();
-        Utils.UseHighDefThumbnails = checkBoxUseHighDefThumbnails.Checked;
+        UpdateSettings();
         Utils.SaveSettings();
         MessageBox.Show("Settings is stored in memory. Make sure to press Ok when exiting MP Configuration. "+
                         "Pressing Cancel when exiting MP Configuration will result in these setting NOT being saved!", "Settings", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1524,6 +1560,8 @@ namespace FanartHandler
         logger.Error("FanartHandlerConfig_Load: Logger: " + ex);
       }
       //
+      Text = Text + " " + Utils.GetAllVersionNumber();
+      //
       SetupConfigFile();
       Utils.InitFolders();
       Utils.LoadSettings();
@@ -1555,6 +1593,7 @@ namespace FanartHandler
       CheckBoxDeleteMissing.Checked = Utils.DeleteMissing;
       edtFanartTVPersonalAPIKey.Text = Utils.FanartTVPersonalAPIKey;
       checkBoxUseHighDefThumbnails.Checked = Utils.UseHighDefThumbnails;
+      CheckBoxUseMinimumResolutionForDownload.Checked = Utils.UseMinimumResolutionForDownload;
       #endregion
       try
       {
@@ -2403,11 +2442,7 @@ namespace FanartHandler
         {
           isScraping = true;
 
-          Utils.ScrapeThumbnails = checkBox1.Checked;
-          Utils.ScrapeThumbnailsAlbum = checkBox9.Checked;
-          Utils.DoNotReplaceExistingThumbs = checkBox8.Checked;
-          Utils.UseHighDefThumbnails = checkBoxUseHighDefThumbnails.Checked;
-          Utils.UseFanart = checkBoxXFactorFanart.Checked;
+          UpdateSettings();
 
           if (Utils.UseFanart)
           {
@@ -2466,11 +2501,7 @@ namespace FanartHandler
         else
           button44.Enabled = false;
 
-        Utils.UseFanart = checkBoxXFactorFanart.Checked;
-        Utils.ScrapeThumbnails = checkBox1.Checked;
-        Utils.ScrapeThumbnailsAlbum = checkBox9.Checked;
-        Utils.DoNotReplaceExistingThumbs = checkBox8.Checked;
-        Utils.UseHighDefThumbnails = checkBoxUseHighDefThumbnails.Checked;
+        UpdateSettings();
 
         Utils.GetDbm().TotArtistsBeingScraped = 0.0;
         Utils.GetDbm().CurrArtistsBeingScraped = 0.0;
@@ -3083,11 +3114,7 @@ namespace FanartHandler
     {
       try
       {
-        Utils.ScrapeThumbnails = checkBox1.Checked;
-        Utils.ScrapeThumbnailsAlbum = checkBox9.Checked;
-        Utils.DoNotReplaceExistingThumbs = checkBox8.Checked;
-        Utils.UseHighDefThumbnails = checkBoxUseHighDefThumbnails.Checked;
-        Utils.UseFanart = checkBoxXFactorFanart.Checked;
+        UpdateSettings();
 
         button6.Enabled = false;
         Utils.GetDbm().TotArtistsBeingScraped = 0.0;
@@ -3548,6 +3575,12 @@ namespace FanartHandler
         button10.Enabled = false;
       else
         button10.Enabled = true;
+    }
+
+    private void labelGetFanartTVPersonalAPIKey_LinkClicked(object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
+    {
+        // Navigate to a URL.
+        System.Diagnostics.Process.Start("https://fanart.tv/?mymail=17744&k=ecb615a5720121199c56fea1471a4a02&t=fanart.tv%2Fget-an-api-key%2F&c=0&s=1");
     }
 
     public delegate void ScrollDelegate();
