@@ -1320,7 +1320,7 @@ namespace FanartHandler
           xmlwriter.SetValue("FanartHandler", "FanartTVPersonalAPIKey", FanartTVPersonalAPIKey);
           xmlwriter.SetValueAsBool("FanartHandler", "DeleteMissing", DeleteMissing);
           xmlwriter.SetValueAsBool("FanartHandler", "UseHighDefThumbnails", UseHighDefThumbnails);
-          // xmlwriter.SetValueAsBool("FanartHandler", "UseMinimumResolutionForDownload", UseMinimumResolutionForDownload);
+          xmlwriter.SetValueAsBool("FanartHandler", "UseMinimumResolutionForDownload", UseMinimumResolutionForDownload);
         }
         #endregion
         logger.Debug("Save settings to: "+ConfigFilename+" complete.");
