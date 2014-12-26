@@ -1524,7 +1524,7 @@ namespace FanartHandler
                     logger.Debug("Cleanup images initiating for Artists...");
                     var htFanart = new Hashtable();
 
-                    var SQL = "SELECT DISTINCT Key1, Image_Name"+
+                    var SQL = "SELECT DISTINCT Key1, FullPath"+
                                   "FROM Image "+
                                   "WHERE Category in ('" + ((object) Utils.Category.MusicFanartScraped).ToString() + "','" + Utils.Category.MusicArtistThumbScraped + "') AND "+
                                         "Protected = 'False' AND "+
@@ -1610,7 +1610,7 @@ namespace FanartHandler
                     logger.Debug("Cleanup images initiating for Artists - Albums...");
                     var htAlbums = new Hashtable();
 
-                    var SQL = "SELECT DISTINCT Key1, Key2, Image_Name"+
+                    var SQL = "SELECT DISTINCT Key1, Key2, FullPath"+
                                   "FROM Image "+
                                   "WHERE Category IN ('" + ((object) Utils.Category.MusicAlbumThumbScraped).ToString() + "') AND "+
                                         "Trim(Key1) <> '' AND "+
@@ -1854,6 +1854,7 @@ namespace FanartHandler
             var str = "SELECT Id, Key1, FullPath, SourcePath, Category, Provider "+
                        "FROM Image "+
                        "WHERE Enabled = 'True' AND "+
+                             "DummyItem = 'False' AND "+ 
                              "Category = '" + ((object) Utils.Category.MusicFanartScraped).ToString() + "';";
             SQLiteResultSet sqLiteResultSet;
             lock (lockObject)
@@ -2423,6 +2424,7 @@ namespace FanartHandler
                     var SQL = "SELECT Id, Key1, FullPath, SourcePath, Category, Provider "+
                                "FROM Image "+
                                "WHERE Enabled = 'True' AND "+
+                                     "DummyItem = 'False' AND "+ 
                                      "AvailableRandom = 'True' AND "+
                                      "Category IN (" + SQLCategory + ");";
                     SQLiteResultSet sqLiteResultSet;
@@ -2457,7 +2459,7 @@ namespace FanartHandler
             var hashtable = new Hashtable();
             try
             {
-                var SQL = "SELECT FullPath FROM image WHERE Category = '" + ((object) category).ToString() + "';";
+                var SQL = "SELECT FullPath FROM image WHERE DummyItem = 'False' AND Category = '" + ((object) category).ToString() + "';";
                 SQLiteResultSet sqLiteResultSet;
                 lock (lockObject)
                     sqLiteResultSet = dbClient.Execute(SQL);
@@ -2501,7 +2503,7 @@ namespace FanartHandler
                 }
                 else if (category == Utils.Category.MovieScraped)
                 {
-                  DummyFile = Path.Combine(Utils.FAHSMovies, artist.Trim() + "{" + randNumber.Next(10000, 99999) + "}.jpg");
+                  DummyFile = Path.Combine(Utils.FAHSMovies, artist.Trim() + "{99999}.jpg");
                 }
                 else
                 {

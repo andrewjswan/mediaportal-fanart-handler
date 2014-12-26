@@ -1884,7 +1884,7 @@ namespace FanartHandler
             logger.Error("Download: " + ex);
           } else if (ex.Message.Contains("416"))
           {
-            DownloaderStatus = "Resume";
+            DownloaderStatus = "Stop";
             logger.Debug("Download: " + sourceFilename);
             logger.Debug(ex);
           }
