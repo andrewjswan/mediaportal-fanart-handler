@@ -1080,7 +1080,6 @@ namespace FanartHandler
             {
                 logger.Info("InitialScrape is starting...");
                 var flag = true;
-                var htFanart = new Hashtable();
 
                 if (FanartHandlerSetup.Fh.MyScraperWorker != null)
                     FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, "Start");
@@ -1102,6 +1101,8 @@ namespace FanartHandler
                     FanartHandlerSetup.Fh.SetProperty("#fanartHandler.scraper.task", "Initial Scrape - Artists");
                     TotArtistsBeingScraped = checked (musicDatabaseArtists.Count);
                     logger.Debug("InitialScrape initiating for Artists...");
+                    var htFanart = new Hashtable();
+
                     var SQL = "SELECT DISTINCT Key1, sum(Count) as Count FROM ("+
                                 "SELECT Key1, count(Key1) as Count "+
                                   "FROM Image "+
@@ -1499,7 +1500,6 @@ namespace FanartHandler
             {
                 logger.Info("Cleanup images is starting...");
                 var flag = false;
-                var htFanart = new Hashtable();
 
                 if (FanartHandlerSetup.Fh.MyScraperWorker != null)
                     FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, "Start");
@@ -1522,6 +1522,7 @@ namespace FanartHandler
                     FanartHandlerSetup.Fh.SetProperty("#fanartHandler.scraper.task", "Cleanup images - Artists");
                     TotArtistsBeingScraped = checked (musicDatabaseArtists.Count);
                     logger.Debug("Cleanup images initiating for Artists...");
+                    var htFanart = new Hashtable();
 
                     var SQL = "SELECT DISTINCT Key1, Image_Name"+
                                   "FROM Image "+
