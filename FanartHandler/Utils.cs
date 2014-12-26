@@ -420,8 +420,7 @@ namespace FanartHandler
         return string.Empty;
 
       var key = self.ToLowerInvariant().Trim();
-      key = Utils.RemoveDiacritics(key);
-      key = Regex.Replace(key, @"(\(|{)([0-9]+)(\)|})$", string.Empty).Trim();
+      key = Utils.RemoveDiacritics(key).Trim();
       key = Regex.Replace(key, @"[^\w|;&]", " ");
       key = Regex.Replace(key, @"\b(and|und|en|et|y)\b", " & ");
       key = Regex.Replace(key, @"\si(\b)", " 1$1");
@@ -570,6 +569,7 @@ namespace FanartHandler
       key = Regex.Replace(key, @"\(\d{5}\)", string.Empty).Trim();
       if ((category == Category.MusicArtistThumbScraped) || (category == Category.MusicAlbumThumbScraped))
         key = Regex.Replace(key, "[L]$", string.Empty).Trim();
+      key = Regex.Replace(key, @"(\(|{)([0-9]+)(\)|})$", string.Empty).Trim();
       key = RemoveResolutionFromFileName(key) ;
       key = RemoveSpecialChars(key);
       key = RemoveMinusFromArtistName(key);
@@ -858,14 +858,14 @@ namespace FanartHandler
       var old = string.Empty ;
       old = s.Trim() ;
       s = Regex.Replace(s.Trim(), @"(.*?\S\s)(\([^\s\d]+?\))(,|\s|$)","$1$3",RegexOptions.IgnoreCase);
-      if (s.Trim() == string.Empty) s = old ;
+      if (string.IsNullOrEmpty(s.Trim())) s = old ;
       /*
       s = s.Replace("loseless", string.Empty);
       s = s.Replace("Loseless", string.Empty);
       */
       old = s.Trim() ;
       s = Regex.Replace(s.Trim(), @"([^\S]|^)[\[\(]?loseless[\]\)]?([^\S]|$)","$1$2",RegexOptions.IgnoreCase);
-      if (s.Trim() == string.Empty) s = old ;
+      if (string.IsNullOrEmpty(s.Trim())) s = old ;
       /*
       s = s.Replace("Thumbnail", string.Empty);
       s = s.Replace("thumbnail", string.Empty);
@@ -874,7 +874,7 @@ namespace FanartHandler
       */
       old = s.Trim() ;
       s = Regex.Replace(s.Trim(), @"([^\S]|^)thumb(nail)?s?([^\S]|$)","$1$3",RegexOptions.IgnoreCase);
-      if (s.Trim() == string.Empty) s = old ;
+      if (string.IsNullOrEmpty(s.Trim())) s = old ;
       /*
       s = s.Replace("400x400", string.Empty);
       s = s.Replace("400X400", string.Empty);
@@ -894,7 +894,7 @@ namespace FanartHandler
       */
       old = s.Trim() ;
       s = Regex.Replace(s.Trim(), @"\d{3,4}x\d{3,4}",string.Empty,RegexOptions.IgnoreCase);
-      if (s.Trim() == string.Empty) s = old ;
+      if (string.IsNullOrEmpty(s.Trim())) s = old ;
       /*
       s = s.Replace("-(1080P)", string.Empty);
       s = s.Replace("-(720P)", string.Empty);
@@ -923,7 +923,7 @@ namespace FanartHandler
       */
       old = s.Trim() ;
       s = Regex.Replace(s.Trim(), @"[-_]?[\[\(]?\d{3,4}(p|i)[\]\)]?",string.Empty,RegexOptions.IgnoreCase);
-      if (s.Trim() == string.Empty) s = old ;
+      if (string.IsNullOrEmpty(s.Trim())) s = old ;
       /*
       s = s.Replace("-1080", string.Empty);
       s = s.Replace("-720", string.Empty);
@@ -944,32 +944,32 @@ namespace FanartHandler
       */
       old = s.Trim() ;
       s = Regex.Replace(s.Trim(), @"([^\S]|^)([\-_]?[\[\(]?(720|1080|1280|1440|1714|1920|2160)[\]\)]?)","$1",RegexOptions.IgnoreCase);
-      if (s.Trim() == string.Empty) s = old ;
+      if (string.IsNullOrEmpty(s.Trim())) s = old ;
       //
       old = s.Trim() ;
       s = Regex.Replace(s.Trim(), @"[\-_][\[\(]?(400|500|600|700|800|900|1000)[\]\)]?",string.Empty,RegexOptions.IgnoreCase);
-      if (s.Trim() == string.Empty) s = old ;
+      if (string.IsNullOrEmpty(s.Trim())) s = old ;
       //
       old = s.Trim() ;
       s = Regex.Replace(s.Trim(), @"([^\S]|^)([\-_]?[\[\(]?(21|22|23|24|25|26|27|28|29)\d{2,}[\]\)]?)","$1",RegexOptions.IgnoreCase);
-      if (s.Trim() == string.Empty) s = old ;
+      if (string.IsNullOrEmpty(s.Trim())) s = old ;
       //
       old = s.Trim() ;
       s = Regex.Replace(s.Trim(), @"([^\S]|^)([\-_]?[\[\(]?(3|4|5|6|7|8|9)\d{3,}[\]\)]?)","$1",RegexOptions.IgnoreCase);
-      if (s.Trim() == string.Empty) s = old ;
+      if (string.IsNullOrEmpty(s.Trim())) s = old ;
       if (flag)
       {
         old = s.Trim() ;
         s = Regex.Replace(s.Trim(), @"\s[\(\[_\.\-]?(?:cd|dvd|p(?:ar)?t|dis[ck])[ _\.\-]?[0-9]+[\)\]]?$",string.Empty,RegexOptions.IgnoreCase);
-        if (s.Trim() == string.Empty) s = old ;
+        if (string.IsNullOrEmpty(s.Trim())) s = old ;
 
         old = s.Trim() ;
         s = Regex.Replace(s.Trim(), @"([^\S]|^)(cd|mp3|ape|wre|flac|dvd)([^\S]|$)","$1$3",RegexOptions.IgnoreCase);
-        if (s.Trim() == string.Empty) s = old ;
+        if (string.IsNullOrEmpty(s.Trim())) s = old ;
 
         old = s.Trim() ;
         s = Regex.Replace(s.Trim(), @"([^\S]|^)(cd|mp3|ape|wre|flac|dvd)([^\S]|$)","$1$3",RegexOptions.IgnoreCase);
-        if (s.Trim() == string.Empty) s = old ;
+        if (string.IsNullOrEmpty(s.Trim())) s = old ;
       }
       s = Utils.TrimWhiteSpace(s.Trim());
       s = Utils.TrimWhiteSpace(s.Trim());
