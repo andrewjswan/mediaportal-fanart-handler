@@ -1945,7 +1945,10 @@ namespace FanartHandler
       if (DownloaderStatus.Equals("Success", StringComparison.CurrentCulture) && File.Exists(filename) && Utils.UseMinimumResolutionForDownload)
       {
         if (!FanartHandlerSetup.Fh.CheckImageResolution(filename, category, false))
+        {
           DownloaderStatus = "Stop";
+          logger.Debug("Image less than " + Utils.MinResolution + " deleted.") ; 
+        }
       }
 
       if (DownloaderStatus.Equals("Success", StringComparison.CurrentCulture) && File.Exists(filename))

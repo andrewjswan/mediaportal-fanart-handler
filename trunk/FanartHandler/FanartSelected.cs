@@ -322,6 +322,7 @@ namespace FanartHandler
             UpdateVisibilityCount = 0;
             SetCurrentArtistsImageNames(null);
             var album = GUIPropertyManager.GetProperty("#music.album");
+            logger.Error("*** *** 1 "+FanartHandlerSetup.Fh.SelectedItem+" - "+album) ;
             var str2 = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.SelectedItem, album, ref CurrSelectedMusic, ref PrevSelectedMusic, Utils.Category.MusicFanartScraped, "FanartSelected", true, true);
             if (str2.Length == 0)
             {
@@ -350,6 +351,7 @@ namespace FanartHandler
           {
             var str1 = CurrSelectedMusic;
             var album = GUIPropertyManager.GetProperty("#music.album");
+            logger.Error("*** *** 2 "+FanartHandlerSetup.Fh.SelectedItem+" - "+album) ;
             var str2 = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.SelectedItem, album, ref CurrSelectedMusic, ref PrevSelectedMusic, Utils.Category.MusicFanartScraped, "FanartSelected", false, true);
             if (str2.Length == 0)
             {
@@ -518,10 +520,12 @@ namespace FanartHandler
       try
       {
         var SelectedArtist = GUIPropertyManager.GetProperty("#music.albumArtist");
+        logger.Error("*** 1 "+SelectedArtist) ;
         if (!string.IsNullOrEmpty(SelectedArtist))
           return SelectedArtist.Trim();
 
         var selectedListItem = GUIControl.GetSelectedListItem(GUIWindowManager.ActiveWindow, 50);
+        logger.Error("*** 2 "+selectedListItem) ;
         if (selectedListItem == null)
           return null;
 
@@ -557,11 +561,13 @@ namespace FanartHandler
             else
               checked { ++index; }
           }
+          logger.Error("*** 3 "+s) ;
           if (arrayList != null)
             arrayList.Clear();
           arrayList = null;
 
           var artistLeftOfMinusSign = Utils.GetArtistLeftOfMinusSign(GUIPropertyManager.GetProperty("#selecteditem"));
+          logger.Error("*** 4 "+artistLeftOfMinusSign) ;
           if (s == null)
           {
             arrayList = new ArrayList();
@@ -572,8 +578,10 @@ namespace FanartHandler
                 s = albumInfo.Artist == null || albumInfo.Artist.Length <= 0 ? albumInfo.AlbumArtist : albumInfo.Artist;
             }
           }
+          logger.Error("*** 5 "+s) ;
 
           var str3 = Utils.MovePrefixToBack(Utils.RemoveMPArtistPipes(Utils.GetArtistLeftOfMinusSign(artistLeftOfMinusSign)));
+          logger.Error("*** 6 "+str3) ;
           if (s == null)
           {
             arrayList = new ArrayList();
@@ -587,6 +595,8 @@ namespace FanartHandler
           if (arrayList != null)
             arrayList.Clear();
           arrayList = null;
+          logger.Error("*** 7 "+s) ;
+          logger.Error("*** 8 "+Utils.RemoveMPArtistPipes(s)) ;
 
           return Utils.MovePrefixToBack(Utils.RemoveMPArtistPipes(s));
         }
@@ -595,6 +605,7 @@ namespace FanartHandler
           var musicTag = (MusicTag) selectedListItem.MusicTag;
           if (musicTag == null)
             return null;
+          logger.Error("*** *** "+musicTag.Artist+" - "+musicTag.AlbumArtist+" | "+Utils.RemoveMPArtistPipes(musicTag.Artist)+" - "+Utils.RemoveMPArtistPipes(musicTag.AlbumArtist)) ;
           if (musicTag.Artist != null && musicTag.Artist.Length > 0)
             return Utils.MovePrefixToBack(Utils.RemoveMPArtistPipes(musicTag.Artist));
           else
