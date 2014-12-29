@@ -373,15 +373,31 @@ namespace FanartHandler
     {
       var FileName = e.FullPath ;
 
+      if (Utils.IsJunction)
+      {
+        if (FileName.Contains(Utils.JunctionTarget, StringComparison.OrdinalIgnoreCase))
+        {
+          var str = FileName.Replace(Utils.JunctionTarget, Utils.JunctionSource) ;
+          logger.Debug("MyFileWatcher: Revert junction: "+FileName+" -> "+str);
+          FileName = str ;
+        }
+      }
+
+      if (!FileName.Contains(Utils.FAHMusicArtists, StringComparison.OrdinalIgnoreCase) &&
+          !FileName.Contains(Utils.FAHMusicAlbums, StringComparison.OrdinalIgnoreCase) &&
+          !FileName.Contains(Utils.FAHFolder, StringComparison.OrdinalIgnoreCase))
+        return;
+
       if (FileName.Contains(Utils.FAHSMusic, StringComparison.OrdinalIgnoreCase) || 
           FileName.Contains(Utils.FAHMusicArtists, StringComparison.OrdinalIgnoreCase) ||
           FileName.Contains(Utils.FAHMusicAlbums, StringComparison.OrdinalIgnoreCase))
         if ((MyScraperWorker != null && MyScraperWorker.IsBusy) || (MyScraperNowWorker != null && MyScraperNowWorker.IsBusy))
           return;
-      if (FileName.Contains(Utils.FAHSMovies, StringComparison.OrdinalIgnoreCase) && (MyScraperWorker != null && MyScraperWorker.IsBusy))
-          return;
 
-      logger.Debug("MyFileWatcher_Created: "+FileName);
+      if (FileName.Contains(Utils.FAHSMovies, StringComparison.OrdinalIgnoreCase) && (MyScraperWorker != null && MyScraperWorker.IsBusy))
+        return;
+
+      logger.Debug("MyFileWatcher: Created: "+FileName);
       AddToDirectoryTimerQueue(FileName);
     }
 

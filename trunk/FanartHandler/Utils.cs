@@ -92,6 +92,8 @@ namespace FanartHandler
     public static bool UseCoverArtArchive { get; set; }
     #endregion
 
+    public static bool WatchFullThumbFolder { get; set; }
+
     #region FanartHandler folders
     public static string MPThumbsFolder { get; set; }
     public static string FAHFolder { get; set; }
@@ -269,42 +271,68 @@ namespace FanartHandler
       FAHMovingPictures = Path.Combine(MPThumbsFolder, @"MovingPictures\Backdrops\FullSize\");
       logger.Debug("MovingPictures Fanart folder: "+FAHMovingPictures);
       #endregion
+
+      WatchFullThumbFolder = true ;
       
       #region Junction
-      var iIsJunction = false ;
-      // Check MP Thumbs folder for Junction
-      try
+      if (WatchFullThumbFolder)
       {
-        iIsJunction = JunctionPoint.Exists(MPThumbsFolder);
-        if (iIsJunction)
+        // Check MP Thumbs folder for Junction
+        try
         {
-          JunctionSource = MPThumbsFolder;
-          JunctionTarget = JunctionPoint.GetTarget(JunctionSource).Trim().Replace(@"UNC\", @"\\");
-          FAHWatchFolder = Path.Combine(JunctionTarget, @"Skin FanArt\");
-          logger.Debug("Junction detected: "+JunctionSource+" -> "+JunctionTarget);
-          IsJunction = iIsJunction;
+          IsJunction = JunctionPoint.Exists(MPThumbsFolder);
+          if (IsJunction)
+          {
+            JunctionSource = MPThumbsFolder;
+            JunctionTarget = JunctionPoint.GetTarget(JunctionSource).Trim().Replace(@"UNC\", @"\\");
+            FAHWatchFolder = JunctionTarget;
+            logger.Debug("Junction detected: "+JunctionSource+" -> "+JunctionTarget);
+          }
+          else
+            FAHWatchFolder = MPThumbsFolder;
         }
-        else
+        catch
+        {
+          FAHWatchFolder = MPThumbsFolder;
+        }
+      }
+      else // Watch Only FA folders ...
+      {
+        var iIsJunction = false ;
+        // Check MP Thumbs folder for Junction
+        try
+        {
+          iIsJunction = JunctionPoint.Exists(MPThumbsFolder);
+          if (iIsJunction)
+          {
+            JunctionSource = MPThumbsFolder;
+            JunctionTarget = JunctionPoint.GetTarget(JunctionSource).Trim().Replace(@"UNC\", @"\\");
+            FAHWatchFolder = Path.Combine(JunctionTarget, @"Skin FanArt\");
+            logger.Debug("Junction detected: "+JunctionSource+" -> "+JunctionTarget);
+            IsJunction = iIsJunction;
+          }
+          else
+            FAHWatchFolder = FAHFolder;
+        }
+        catch
+        {
           FAHWatchFolder = FAHFolder;
-      }
-      catch
-      {
-        FAHWatchFolder = FAHFolder;
-      }
-      // Check Fanart Handler Fanart folder for Junction
-      try
-      {
-        iIsJunction = JunctionPoint.Exists(FAHWatchFolder);
-        if (iIsJunction)
-        {
-          JunctionSource = MPThumbsFolder;
-          JunctionTarget = JunctionPoint.GetTarget(JunctionSource).Trim().Replace(@"UNC\", @"\\");
-          FAHWatchFolder = JunctionTarget ;
-          logger.Debug("Junction detected: "+Utils.JunctionSource+" -> "+Utils.JunctionTarget);
-          IsJunction = iIsJunction;
         }
+        // Check Fanart Handler Fanart folder for Junction
+        try
+        {
+          iIsJunction = JunctionPoint.Exists(FAHWatchFolder);
+          if (iIsJunction)
+          {
+            JunctionSource = FAHWatchFolder;
+            JunctionTarget = JunctionPoint.GetTarget(JunctionSource).Trim().Replace(@"UNC\", @"\\");
+            FAHWatchFolder = JunctionTarget ;
+            logger.Debug("Junction detected: "+Utils.JunctionSource+" -> "+Utils.JunctionTarget);
+            IsJunction = iIsJunction;
+          }
+        }
+        catch { }
       }
-      catch { }
       logger.Debug("Fanart Handler file watcher folder: "+FAHWatchFolder);
       #endregion
 
