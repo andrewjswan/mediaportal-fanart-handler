@@ -522,7 +522,7 @@ namespace FanartHandler
         {
           key = Utils.GetArtist(key, category, false);
           key2 = Utils.GetAlbum(key2, category);
-
+          // logger.Debug("*** "+key+" - "+key2) ;
           var filenames = !obj.Equals("FanartPlaying", StringComparison.CurrentCulture) ? FS.GetCurrentArtistsImageNames() : FP.GetCurrentArtistsImageNames();
 
           if (newArtist || filenames == null || filenames.Count == 0)

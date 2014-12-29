@@ -1335,7 +1335,7 @@ namespace FanartHandler
           {
             URLList.Add(mu.Groups[1]+"|"+mu.Groups[2]);
           }
-          logger.Debug("Extract URL - URLs Found: " + URLList.Count) ;
+          logger.Debug("Extract URL - ["+Sec+"] URLs Found: " + URLList.Count) ;
         }
       return URLList;
     }
@@ -1369,7 +1369,7 @@ namespace FanartHandler
           logger.Debug("Fanart.TV: GetFanart - Artist - Empty.");
           return -1 ;
         }
-        Method = "Artist (Fanart): "+artist ;
+        Method = "Artist (Fanart): "+artist+" - "+id ;
         URL = URL + "music/" + FanArtAdd + ApiKeyFanartTV ;
         Section = "artistbackground";
         if ((iMax = iMax - Utils.GetDbm().GetNumberOfFanartImages(dbartist)) <= 0)
@@ -1380,7 +1380,7 @@ namespace FanartHandler
           logger.Debug("Fanart.TV: GetTumbnails - Artist - Empty.");
           return -1 ;
         }
-        Method = "Artist (Thumbs): "+artist ;
+        Method = "Artist (Thumbs): "+artist+" - "+id ;
         URL = URL + "music/" + FanArtAdd + ApiKeyFanartTV ;
         Section = "artistthumb";
       // Fanart.TV get Artist/Album Tumbnails
@@ -1389,7 +1389,7 @@ namespace FanartHandler
           logger.Debug("Fanart.TV: GetTumbnails - Artist/Album - Empty.");
           return -1 ;
         }
-        Method = "Artist/Album (Thumbs): "+artist+" - "+album ;
+        Method = "Artist/Album (Thumbs): "+artist+" - "+album+" - "+id ;
         URL = URL + "music/albums/" + FanArtAdd + ApiKeyFanartTV ;
         Section = "albumcover";
       } else if (category == Utils.Category.MovieScraped) {
@@ -1863,7 +1863,7 @@ namespace FanartHandler
           if (!Utils.IsFileValid(filename))
           {
             DownloaderStatus = "Stop";
-            logger.Warn("Download: Deleting downloaded file because it is corrupt.");
+            logger.Warn("Download: Downloaded file is corrupt. Will be deleted.");
           }
         }
         catch (ExternalException ex)
@@ -1947,7 +1947,7 @@ namespace FanartHandler
         if (!FanartHandlerSetup.Fh.CheckImageResolution(filename, category, false))
         {
           DownloaderStatus = "Stop";
-          logger.Debug("Image less than " + Utils.MinResolution + " deleted.") ; 
+          logger.Debug("Image less than " + Utils.MinResolution + " will be deleted.") ; 
         }
       }
 
@@ -1980,7 +1980,10 @@ namespace FanartHandler
       }
 
       if (!DownloaderStatus.Equals("Success", StringComparison.CurrentCulture) && File.Exists(filename))
+      {
         File.Delete(filename);
+        logger.Debug("Download: Status: " + DownloaderStatus + " deleting temporary: " + filename);
+      }
 
       if (DownloaderStatus.Equals("Success", StringComparison.CurrentCulture) && File.Exists(filename))
         logger.Debug("Download: Image for " + Text + " (" + filename + "): Complete.");
