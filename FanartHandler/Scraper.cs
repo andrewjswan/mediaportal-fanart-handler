@@ -1470,7 +1470,7 @@ namespace FanartHandler
                               ref path, 
                               ref filename, 
                               category, 
-                              (category == Utils.Category.MovieScraped) ? _id : id)) 
+                              ((category == Utils.Category.MusicFanartScraped) || (category == Utils.Category.MovieScraped)) ? _id : id)) 
             {
               checked { ++num; }
               filename = ((category == Utils.Category.MusicFanartScraped) || (category == Utils.Category.MovieScraped)) ? filename : filename.Replace("_tmp.jpg", "L.jpg") ;
@@ -1498,7 +1498,7 @@ namespace FanartHandler
               ExternalAccess.InvokeScraperCompleted(category.ToString(), dbartist);
             }
 
-            if ((num > 0) && ((category != Utils.Category.MusicFanartScraped) || (category != Utils.Category.MovieScraped)))
+            if ((num > 0) && (category != Utils.Category.MusicFanartScraped) && (category != Utils.Category.MovieScraped))
               break ;
             if (Utils.GetDbm().StopScraper)
               break;
