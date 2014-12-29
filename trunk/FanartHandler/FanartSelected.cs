@@ -308,8 +308,8 @@ namespace FanartHandler
         AddProperty("#fanarthandler.music.artistbanner.selected", string.Empty, ref ListSelectedMusic);
         //
         // logger.Debug("Album Artist: "+GUIPropertyManager.GetProperty("#music.albumArtist")+ " Artist: "+GUIPropertyManager.GetProperty("#music.Artist")+ "Album: "+GUIPropertyManager.GetProperty("#music.album"));
-        //
         FanartHandlerSetup.Fh.SelectedItem = GetMusicArtistFromListControl();
+        // logger.Debug("*** "+FanartHandlerSetup.Fh.SelectedItem);
         if (FanartHandlerSetup.Fh.SelectedItem == null || FanartHandlerSetup.Fh.SelectedItem.Length <= 0)
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#selecteditem");
         if (FanartHandlerSetup.Fh.SelectedItem != null && !FanartHandlerSetup.Fh.SelectedItem.Equals("..", StringComparison.CurrentCulture) && FanartHandlerSetup.Fh.SelectedItem.Trim().Length > 0)
@@ -322,7 +322,6 @@ namespace FanartHandler
             UpdateVisibilityCount = 0;
             SetCurrentArtistsImageNames(null);
             var album = GUIPropertyManager.GetProperty("#music.album");
-            logger.Error("*** *** 1 "+FanartHandlerSetup.Fh.SelectedItem+" - "+album) ;
             var str2 = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.SelectedItem, album, ref CurrSelectedMusic, ref PrevSelectedMusic, Utils.Category.MusicFanartScraped, "FanartSelected", true, true);
             if (str2.Length == 0)
             {
@@ -351,7 +350,6 @@ namespace FanartHandler
           {
             var str1 = CurrSelectedMusic;
             var album = GUIPropertyManager.GetProperty("#music.album");
-            logger.Error("*** *** 2 "+FanartHandlerSetup.Fh.SelectedItem+" - "+album) ;
             var str2 = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.SelectedItem, album, ref CurrSelectedMusic, ref PrevSelectedMusic, Utils.Category.MusicFanartScraped, "FanartSelected", false, true);
             if (str2.Length == 0)
             {
@@ -519,18 +517,29 @@ namespace FanartHandler
     {
       try
       {
-        var SelectedArtist = GUIPropertyManager.GetProperty("#music.albumArtist");
-        logger.Error("*** 1 "+SelectedArtist) ;
-        if (!string.IsNullOrEmpty(SelectedArtist))
-          return SelectedArtist.Trim();
-
         var selectedListItem = GUIControl.GetSelectedListItem(GUIWindowManager.ActiveWindow, 50);
-        logger.Error("*** 2 "+selectedListItem) ;
         if (selectedListItem == null)
           return null;
 
         if (selectedListItem.MusicTag == null && selectedListItem.Label.Equals("..", StringComparison.CurrentCulture))
           return "..";
+
+        var selAlbumArtist = GUIPropertyManager.GetProperty("#music.albumArtist").Trim();
+        var selArtist = GUIPropertyManager.GetProperty("#music.artist").Trim();
+        var selAlbum = GUIPropertyManager.GetProperty("#music.album").Trim();
+        var selItem = GUIPropertyManager.GetProperty("#selecteditem").Trim();
+
+        if (!string.IsNullOrEmpty(selArtist))
+          if (!string.IsNullOrEmpty(selAlbumArtist))
+            if (selArtist.Equals(selAlbumArtist, StringComparison.InvariantCultureIgnoreCase))
+              return selArtist;
+            else
+              return selArtist + '|' + selAlbumArtist;
+          else
+            return selArtist;
+        else
+          if (!string.IsNullOrEmpty(selAlbumArtist))
+            return selAlbumArtist;
 
         if (selectedListItem.MusicTag == null)
         {
@@ -561,13 +570,11 @@ namespace FanartHandler
             else
               checked { ++index; }
           }
-          logger.Error("*** 3 "+s) ;
           if (arrayList != null)
             arrayList.Clear();
           arrayList = null;
 
           var artistLeftOfMinusSign = Utils.GetArtistLeftOfMinusSign(GUIPropertyManager.GetProperty("#selecteditem"));
-          logger.Error("*** 4 "+artistLeftOfMinusSign) ;
           if (s == null)
           {
             arrayList = new ArrayList();
@@ -578,10 +585,8 @@ namespace FanartHandler
                 s = albumInfo.Artist == null || albumInfo.Artist.Length <= 0 ? albumInfo.AlbumArtist : albumInfo.Artist;
             }
           }
-          logger.Error("*** 5 "+s) ;
 
           var str3 = Utils.MovePrefixToBack(Utils.RemoveMPArtistPipes(Utils.GetArtistLeftOfMinusSign(artistLeftOfMinusSign)));
-          logger.Error("*** 6 "+str3) ;
           if (s == null)
           {
             arrayList = new ArrayList();
@@ -595,8 +600,6 @@ namespace FanartHandler
           if (arrayList != null)
             arrayList.Clear();
           arrayList = null;
-          logger.Error("*** 7 "+s) ;
-          logger.Error("*** 8 "+Utils.RemoveMPArtistPipes(s)) ;
 
           return Utils.MovePrefixToBack(Utils.RemoveMPArtistPipes(s));
         }
@@ -605,11 +608,28 @@ namespace FanartHandler
           var musicTag = (MusicTag) selectedListItem.MusicTag;
           if (musicTag == null)
             return null;
-          logger.Error("*** *** "+musicTag.Artist+" - "+musicTag.AlbumArtist+" | "+Utils.RemoveMPArtistPipes(musicTag.Artist)+" - "+Utils.RemoveMPArtistPipes(musicTag.AlbumArtist)) ;
-          if (musicTag.Artist != null && musicTag.Artist.Length > 0)
-            return Utils.MovePrefixToBack(Utils.RemoveMPArtistPipes(musicTag.Artist));
+
+          selArtist = string.Empty ;
+          selAlbumArtist = string.Empty ;
+
+          if (!string.IsNullOrEmpty(musicTag.Artist))
+            selArtist = Utils.MovePrefixToBack(Utils.RemoveMPArtistPipes(musicTag.Artist)).Trim();
+          if (!string.IsNullOrEmpty(musicTag.AlbumArtist))
+            selAlbumArtist = Utils.MovePrefixToBack(Utils.RemoveMPArtistPipes(musicTag.AlbumArtist)).Trim();
+
+          if (!string.IsNullOrEmpty(selArtist))
+            if (!string.IsNullOrEmpty(selAlbumArtist))
+              if (selArtist.Equals(selAlbumArtist, StringComparison.InvariantCultureIgnoreCase))
+                return selArtist;
+              else
+                return selArtist + '|' + selAlbumArtist;
+            else
+              return selArtist;
           else
-            return Utils.MovePrefixToBack(Utils.RemoveMPArtistPipes(musicTag.AlbumArtist));
+            if (!string.IsNullOrEmpty(selAlbumArtist))
+              return selAlbumArtist;
+            else
+              return null;
         }
       }
       catch (Exception ex)

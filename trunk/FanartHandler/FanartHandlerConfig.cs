@@ -2658,7 +2658,7 @@ namespace FanartHandler
           */
           progressBar2.Minimum = 0;
           progressBar2.Maximum = Convert.ToInt32(Utils.GetDbm().TotArtistsBeingScraped);
-          progressBar2.Value = Convert.ToInt32(Utils.GetDbm().CurrArtistsBeingScraped);
+          progressBar2.Value = (Convert.ToInt32(Utils.GetDbm().CurrArtistsBeingScraped) >= progressBar2.Maximum) ? progressBar2.Maximum : Convert.ToInt32(Utils.GetDbm().CurrArtistsBeingScraped) ;
         }
       }
       catch (Exception ex)

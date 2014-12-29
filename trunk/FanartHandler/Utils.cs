@@ -82,6 +82,14 @@ namespace FanartHandler
     public static bool DeleteMissing { get; set; }
     public static bool UseHighDefThumbnails { get; set; }
     public static bool UseMinimumResolutionForDownload { get; set; }
+    public static bool ShowDummyItems { get; set; }
+    #endregion
+
+    #region Providers
+    public static bool UseFanartTV { get; set; }
+    public static bool UseHtBackdrops { get; set; }
+    public static bool UseLastFM { get; set; }
+    public static bool UseCoverArtArchive { get; set; }
     #endregion
 
     #region FanartHandler folders
@@ -1226,6 +1234,13 @@ namespace FanartHandler
       DeleteMissing = false;
       UseHighDefThumbnails = false;
       UseMinimumResolutionForDownload = false;
+      ShowDummyItems = false;
+      #endregion
+      #region Init Providers
+      UseFanartTV = true;
+      UseHtBackdrops = true;
+      UseLastFM = true;
+      UseCoverArtArchive = true;
       #endregion
       try
       {
@@ -1267,6 +1282,12 @@ namespace FanartHandler
           DeleteMissing = settings.GetValueAsBool("FanartHandler", "DeleteMissing", DeleteMissing);
           UseHighDefThumbnails = settings.GetValueAsBool("FanartHandler", "UseHighDefThumbnails", UseHighDefThumbnails);
           UseMinimumResolutionForDownload = settings.GetValueAsBool("FanartHandler", "UseMinimumResolutionForDownload", UseMinimumResolutionForDownload);
+          ShowDummyItems = settings.GetValueAsBool("FanartHandler", "ShowDummyItems", ShowDummyItems);
+          //
+          UseFanartTV = settings.GetValueAsBool("Providers", "UseFanartTV", UseFanartTV);
+          UseHtBackdrops = settings.GetValueAsBool("Providers", "UseHtBackdrops", UseHtBackdrops);
+          UseLastFM = settings.GetValueAsBool("Providers", "UseLastFM", UseLastFM);
+          UseCoverArtArchive = settings.GetValueAsBool("Providers", "UseCoverArtArchive", UseCoverArtArchive);
           //
           LoadBadArtists(settings);
         }
@@ -1321,6 +1342,12 @@ namespace FanartHandler
           xmlwriter.SetValueAsBool("FanartHandler", "DeleteMissing", DeleteMissing);
           xmlwriter.SetValueAsBool("FanartHandler", "UseHighDefThumbnails", UseHighDefThumbnails);
           xmlwriter.SetValueAsBool("FanartHandler", "UseMinimumResolutionForDownload", UseMinimumResolutionForDownload);
+          // xmlwriter.SetValueAsBool("FanartHandler", "ShowDummyItems", ShowDummyItems);
+          //
+          // xmlwriter.SetValueAsBool("Providers", "UseFanartTV", UseFanartTV);
+          // xmlwriter.SetValueAsBool("Providers", "UseHtBackdrops", UseHtBackdrops);
+          // xmlwriter.SetValueAsBool("Providers", "UseLastFM", UseLastFM);
+          // xmlwriter.SetValueAsBool("Providers", "UseCoverArtArchive", UseCoverArtArchive);
         }
         #endregion
         logger.Debug("Save settings to: "+ConfigFilename+" complete.");
