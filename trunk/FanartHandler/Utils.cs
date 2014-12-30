@@ -36,6 +36,7 @@ namespace FanartHandler
     public static Hashtable DelayStop { get; set; }
 
     public static List<string> BadArtistsList;  
+    public static string[] PipesArray ;
 
     public static int IdleTimeInMillis
     {
@@ -83,6 +84,7 @@ namespace FanartHandler
     public static bool UseHighDefThumbnails { get; set; }
     public static bool UseMinimumResolutionForDownload { get; set; }
     public static bool ShowDummyItems { get; set; }
+    public static bool AndSignAsSeparator { get; set; }
     #endregion
 
     #region Providers
@@ -705,7 +707,7 @@ namespace FanartHandler
         return string.Empty;
 
       var artists = "'" + inputName.Trim() + "'";
-      var strArray = inputName.ToLower().Replace(";", "|").Replace(" ft ", "|").Replace(" feat ", "|").Replace(" and ", "|").Replace(" & ", "|").Replace(",","|").Trim().Split(new char[] {'|'});
+      var strArray = inputName.ToLower().Replace(";", "|").Replace(" ft ", "|").Replace(" feat ", "|").Replace(" and ", "|").Replace(" & ", "|").Replace(",","|").Trim().Split(new char[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
 
       foreach (var artist in strArray)
       {
@@ -1263,6 +1265,7 @@ namespace FanartHandler
       UseHighDefThumbnails = false;
       UseMinimumResolutionForDownload = false;
       ShowDummyItems = false;
+      AndSignAsSeparator = false;
       #endregion
       #region Init Providers
       UseFanartTV = true;
@@ -1311,6 +1314,7 @@ namespace FanartHandler
           UseHighDefThumbnails = settings.GetValueAsBool("FanartHandler", "UseHighDefThumbnails", UseHighDefThumbnails);
           UseMinimumResolutionForDownload = settings.GetValueAsBool("FanartHandler", "UseMinimumResolutionForDownload", UseMinimumResolutionForDownload);
           ShowDummyItems = settings.GetValueAsBool("FanartHandler", "ShowDummyItems", ShowDummyItems);
+          AndSignAsSeparator = settings.GetValueAsBool("FanartHandler", "AndSignAsSeparator", AndSignAsSeparator);
           //
           UseFanartTV = settings.GetValueAsBool("Providers", "UseFanartTV", UseFanartTV);
           UseHtBackdrops = settings.GetValueAsBool("Providers", "UseHtBackdrops", UseHtBackdrops);
@@ -1332,7 +1336,16 @@ namespace FanartHandler
       {
         ScanMusicFoldersForFanart = false;
       }
+      //
       FanartTVPersonalAPIKey = FanartTVPersonalAPIKey.Trim();
+      //
+      PipesArray = new string[2] { "|", ";" };
+      if (AndSignAsSeparator)
+      {
+        Array.Resize(ref PipesArray, PipesArray.Length + 1);
+        PipesArray[PipesArray.Length - 1] = " & ";
+      }
+      logger.Debug("Artists pipes: ["+string.Join(", ", PipesArray)+"]");
       #endregion
     }
 
@@ -1371,6 +1384,7 @@ namespace FanartHandler
           xmlwriter.SetValueAsBool("FanartHandler", "UseHighDefThumbnails", UseHighDefThumbnails);
           xmlwriter.SetValueAsBool("FanartHandler", "UseMinimumResolutionForDownload", UseMinimumResolutionForDownload);
           // xmlwriter.SetValueAsBool("FanartHandler", "ShowDummyItems", ShowDummyItems);
+          // xmlwriter.SetValueAsBool("FanartHandler", "AndSignAsSeparator", AndSignAsSeparator);
           //
           // xmlwriter.SetValueAsBool("Providers", "UseFanartTV", UseFanartTV);
           // xmlwriter.SetValueAsBool("Providers", "UseHtBackdrops", UseHtBackdrops);

@@ -128,7 +128,7 @@ namespace FanartHandler
           }
         }
         // Get Artist name
-        var strArray = artist.Split(new char[2] { '|', ';' }, StringSplitOptions.RemoveEmptyEntries);
+        var strArray = artist.Split(Utils.PipesArray /*new char[2] { '|', ';' }*/, StringSplitOptions.RemoveEmptyEntries);
         if (strArray != null)
         {
           if (strArray.Length == 1)
