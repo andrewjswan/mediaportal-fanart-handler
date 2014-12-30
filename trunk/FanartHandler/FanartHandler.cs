@@ -378,7 +378,7 @@ namespace FanartHandler
         if (FileName.Contains(Utils.JunctionTarget, StringComparison.OrdinalIgnoreCase))
         {
           var str = FileName.Replace(Utils.JunctionTarget, Utils.JunctionSource) ;
-          logger.Debug("MyFileWatcher: Revert junction: "+FileName+" -> "+str);
+          // logger.Debug("MyFileWatcher: Revert junction: "+FileName+" -> "+str);
           FileName = str ;
         }
       }
@@ -1576,6 +1576,7 @@ namespace FanartHandler
         }
         if (MyScraperNowWorker.IsBusy)
           return;
+
         MyScraperNowWorker.RunWorkerAsync(new string[2]
         {
             artist,

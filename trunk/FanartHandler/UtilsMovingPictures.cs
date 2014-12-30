@@ -3,13 +3,14 @@
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 // Assembly location: D:\Mes documents\Desktop\FanartHandler.dll
 
+using NLog;
+using System;
+using System.IO;
+using System.Collections;
+using System.Collections.Generic;
 using Cornerstone.Database.Tables;
 using MediaPortal.Plugins.MovingPictures;
 using MediaPortal.Plugins.MovingPictures.Database;
-using NLog;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace FanartHandler
 {
@@ -53,6 +54,7 @@ namespace FanartHandler
       {
         if (obj.GetType() != typeof (DBMovieInfo))
           return;
+
         FanartHandlerSetup.Fh.AddToDirectoryTimerQueue("MovingPictures");
       }
       catch (Exception ex)
@@ -73,8 +75,16 @@ namespace FanartHandler
           {
             var current = enumerator.Current;
             var backdropFullPath = current.BackdropFullPath;
+            var ImdbID = current.ImdbID.Trim();
+
             if (backdropFullPath != null && backdropFullPath.Trim().Length > 0 && (allFilenames == null || !allFilenames.Contains(backdropFullPath)))
-              Utils.GetDbm().LoadFanart(Utils.GetArtist(current.Title, Utils.Category.MovingPictureManual), backdropFullPath, backdropFullPath, Utils.Category.MovingPictureManual, null, Utils.Provider.MovingPictures, null, null);
+              if (File.Exists(backdropFullPath))
+                Utils.GetDbm().LoadFanart(Utils.GetArtist(current.Title, Utils.Category.MovingPictureManual), backdropFullPath, backdropFullPath, Utils.Category.MovingPictureManual, null, Utils.Provider.MovingPictures, null, ImdbID);
+
+            backdropFullPath = Path.Combine(Utils.FAHMovingPictures, ImdbID+".jpg");
+            if (ImdbID != null && ImdbID.Trim().Length > 0 && (allFilenames == null || !allFilenames.Contains(backdropFullPath)))
+              if (File.Exists(backdropFullPath))
+                Utils.GetDbm().LoadFanart(Utils.GetArtist(current.Title, Utils.Category.MovingPictureManual), backdropFullPath, backdropFullPath, Utils.Category.MovingPictureManual, null, Utils.Provider.MovingPictures, null, ImdbID);
           }
         }
         if (all != null)
