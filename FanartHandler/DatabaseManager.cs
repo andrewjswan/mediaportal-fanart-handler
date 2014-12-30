@@ -1265,7 +1265,7 @@ namespace FanartHandler
                                   }
                                 }
                               // Piped Artists
-                              var pipedartist = musicDatabaseAlbums[index].Artist.Trim();
+                              var pipedartist = musicDatabaseAlbums[index].Artist.Trim()+" | "+musicDatabaseAlbums[index].AlbumArtist.Trim();
                               var chArray = new char[2] { '|', ';' };
                               string[] artists = pipedartist.Split(chArray, StringSplitOptions.RemoveEmptyEntries);
                               foreach (string sartist in artists)
@@ -1489,7 +1489,7 @@ namespace FanartHandler
                             }
                           }
                         // Piped Artists
-                        var pipedartist = musicDatabaseAlbums[index].Artist.Trim();
+                        var pipedartist = musicDatabaseAlbums[index].Artist.Trim()+" | "+musicDatabaseAlbums[index].AlbumArtist.Trim();
                         var chArray = new char[2] { '|', ';' };
                         string[] artists = pipedartist.Split(chArray, StringSplitOptions.RemoveEmptyEntries);
                         foreach (string sartist in artists)
@@ -1631,6 +1631,17 @@ namespace FanartHandler
                       if (!htFanart.Contains(htArtist))
                           htFanart.Add(htArtist, htArtist);
 
+                      var chArray = new char[2] { '|', ';' };
+                      string[] artists = artist.Split(chArray, StringSplitOptions.RemoveEmptyEntries);
+                      foreach (string sartist in artists)
+                      {
+                        dbartist = Utils.GetArtist(sartist.Trim(), Utils.Category.MusicFanartScraped);
+                        htArtist = Scraper.UndoArtistPrefix(dbartist.ToLower()) ;
+
+                        if (!htFanart.Contains(htArtist))
+                            htFanart.Add(htArtist, htArtist);
+                      }
+
                       #region Report
                       ++CurrArtistsBeingScraped;
                       if (TotArtistsBeingScraped > 0.0 && FanartHandlerSetup.Fh.MyScraperWorker != null)
@@ -1714,6 +1725,7 @@ namespace FanartHandler
                       var album = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Album).Trim();
                       if (album != null && album.Length > 0)
                       {
+                        // Artist
                         var artist   = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Artist).Trim();
                         var dbartist = Scraper.UndoArtistPrefix(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped)).ToLower();
                         var dbalbum  = Utils.GetAlbum(album, Utils.Category.MusicFanartScraped).ToLower();
@@ -1723,14 +1735,30 @@ namespace FanartHandler
                           if (!htAlbums.Contains(htArtistAlbum))
                               htAlbums.Add(htArtistAlbum,htArtistAlbum);
 
+                        // Album Artist
                         artist   = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].AlbumArtist).Trim();
                         dbartist = Scraper.UndoArtistPrefix(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped)).ToLower();
-                        dbalbum  = Utils.GetAlbum(album, Utils.Category.MusicFanartScraped).ToLower();
+                        // dbalbum  = Utils.GetAlbum(album, Utils.Category.MusicFanartScraped).ToLower();
                         htArtistAlbum = dbartist + "-" + dbalbum ;
 
                         if (!string.IsNullOrEmpty(artist))
                           if (!htAlbums.Contains(htArtistAlbum))
                               htAlbums.Add(htArtistAlbum,htArtistAlbum);
+
+                        // Piped Artists
+                        artist = musicDatabaseAlbums[index].Artist.Trim()+" | "+musicDatabaseAlbums[index].AlbumArtist.Trim();
+                        var chArray = new char[2] { '|', ';' };
+                        string[] artists = artist.Split(chArray, StringSplitOptions.RemoveEmptyEntries);
+                        foreach (string sartist in artists)
+                        {
+                          dbartist = Scraper.UndoArtistPrefix(Utils.GetArtist(sartist.Trim(), Utils.Category.MusicFanartScraped)).ToLower();
+                          // dbalbum  = Utils.GetAlbum(album, Utils.Category.MusicFanartScraped).ToLower();
+                          htArtistAlbum = dbartist + "-" + dbalbum ;
+
+                          if (!string.IsNullOrEmpty(artist))
+                            if (!htAlbums.Contains(htArtistAlbum))
+                                htAlbums.Add(htArtistAlbum,htArtistAlbum);
+                        }
 
                         #region Report
                         ++CurrArtistsBeingScraped;
