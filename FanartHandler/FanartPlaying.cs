@@ -70,7 +70,7 @@ namespace FanartHandler
       try
       {
         if (string.IsNullOrEmpty(value))
-          value = "";
+          value = string.Empty;
 
         if (PropertiesPlay.Contains(property))
           PropertiesPlay[property] = value;

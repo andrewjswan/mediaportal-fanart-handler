@@ -194,7 +194,7 @@ namespace FanartHandler
           iText = "default";
           break;
       }
-      logger.Debug("CreateThumbnail: "+((bigThumb) ? "Big" : "")+"Thumbs mode: "+iText+" size: "+templateWidth+"x"+templateHeight);
+      logger.Debug("CreateThumbnail: "+((bigThumb) ? "Big" : string.Empty)+"Thumbs mode: "+iText+" size: "+templateWidth+"x"+templateHeight);
       #endregion
 
       #region HighDefThumbnails
@@ -218,7 +218,7 @@ namespace FanartHandler
                 templateWidth  = (int) SourceBitmap.Width;
                 templateHeight = (int) SourceBitmap.Height;
               }
-              logger.Debug("CreateThumbnail: "+((bigThumb) ? "Big" : "")+"Thumbs mode: overrided size: "+templateWidth+"x"+templateHeight);
+              logger.Debug("CreateThumbnail: "+((bigThumb) ? "Big" : string.Empty)+"Thumbs mode: overrided size: "+templateWidth+"x"+templateHeight);
             }
           }
         }
@@ -231,7 +231,7 @@ namespace FanartHandler
       }
       #endregion
 
-      NewFile = aInputFilename.Substring(0, aInputFilename.IndexOf("_tmp.jpg", StringComparison.CurrentCulture)) + ((bigThumb) ? "L" : "") + ".jpg";
+      NewFile = aInputFilename.Substring(0, aInputFilename.IndexOf("_tmp.jpg", StringComparison.CurrentCulture)) + ((bigThumb) ? "L" : string.Empty) + ".jpg";
       try
       {
         return CropImage(aInputFilename, templateWidth, templateHeight, NewFile);
@@ -419,7 +419,8 @@ namespace FanartHandler
         return 0;
 
       artist = RemoveFeat(artist) ;
-      logger.Debug("Trying to find Fanart for Artist: " + artist + ".");
+      logger.Debug("--- Fanart --- " + artist + " ---");
+      logger.Debug("Trying to find Fanart for Artist: " + artist);
 
       ReportProgress (6.0, dbm, reportProgress, externalAccess) ;
 
@@ -515,7 +516,8 @@ namespace FanartHandler
         return 1;
 
       artist = RemoveFeat(artist) ;
-      logger.Debug("Trying to find Thumbs for Artist: " + artist + ".");
+      logger.Debug("--- Thumb --- " + artist + " ---");
+      logger.Debug("Trying to find Thumbs for Artist: " + artist);
 
       // *** MusicBrainzID
       mbid = GetMusicBrainzID(artist, null) ;
@@ -600,7 +602,8 @@ namespace FanartHandler
         return 1 ;
 
       artist = RemoveFeat(artist) ;
-      logger.Debug("Trying to find Thumbs for Artist/Album: " + artist + " - " + album + ".");
+      logger.Debug("--- Thumb --- " + artist + " - " + album + " ---");
+      logger.Debug("Trying to find Thumbs for Artist/Album: " + artist + " - " + album);
 
       // *** MusicBrainzID
       mbid = GetMusicBrainzID(artist, album) ;
@@ -941,8 +944,8 @@ namespace FanartHandler
         //if (Regex.IsMatch(strFileName, pattern[i], RegexOptions.IgnoreCase))
         if (stackReg[i].IsMatch(strFileName))
         {
-          strFileName = stackReg[i].Replace(strFileName, "");
-          //Regex.Replace(strFileName, pattern[i], "", RegexOptions.IgnoreCase);
+          strFileName = stackReg[i].Replace(strFileName, string.Empty);
+          //Regex.Replace(strFileName, pattern[i], string.Empty, RegexOptions.IgnoreCase);
         }
       }
     }
@@ -993,9 +996,9 @@ namespace FanartHandler
           {
             // Both strings had the special pattern. Now see if the filenames are the same.
             // Do this by removing the special pattern and compare the remains.
-            //if (Regex.Replace(strFileName1, pattern[i], "", RegexOptions.IgnoreCase)
-            //    == Regex.Replace(strFileName2, pattern[i], "", RegexOptions.IgnoreCase))
-            if (stackReg[i].Replace(strFileName1, "") == stackReg[i].Replace(strFileName2, ""))
+            //if (Regex.Replace(strFileName1, pattern[i], string.Empty, RegexOptions.IgnoreCase)
+            //    == Regex.Replace(strFileName2, pattern[i], string.Empty, RegexOptions.IgnoreCase))
+            if (stackReg[i].Replace(strFileName1, string.Empty) == stackReg[i].Replace(strFileName2, string.Empty))
             {
               // It was a match so stack it
               return true;
@@ -1284,7 +1287,7 @@ namespace FanartHandler
           if (sourceFilename != null && !sourceFilename.Contains("bad_tag")) {
             var dbartist = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
             var dbalbum  = (category == Utils.Category.MusicAlbumThumbScraped) ? Utils.GetAlbum(album, Utils.Category.MusicFanartScraped) : null;
-            // logger.Debug("*** " + artist + " | " + dbartist + " | ["+ ((category == Utils.Category.MusicArtistThumbScraped) ? "" : album) +"]");
+            // logger.Debug("*** " + artist + " | " + dbartist + " | ["+ ((category == Utils.Category.MusicArtistThumbScraped) ? string.Empty : album) +"]");
             if (DownloadImage(ref artist, (category == Utils.Category.MusicAlbumThumbScraped) ? album : null, ref sourceFilename, ref path, ref filename, /*ref requestPic, ref responsePic,*/ category, null)) 
             {
               checked { ++num; }
@@ -1796,7 +1799,7 @@ namespace FanartHandler
         filename = Path.Combine(path, MediaPortal.Util.Utils.MakeFileName((string.IsNullOrEmpty(id) ? sArtist : id)) + ".png");
         if (File.Exists(filename))
           return false;
-        Text = sArtist + (string.IsNullOrEmpty(id) ? "" : " - "  + id) ;
+        Text = sArtist + (string.IsNullOrEmpty(id) ? string.Empty : " - "  + id) ;
         logger.Info("Download: ClearArt for " + Text + " (" + filename + ").");
       }
       else

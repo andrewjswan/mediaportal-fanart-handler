@@ -352,7 +352,7 @@ namespace FanartHandler
         for (int index = 0; index < MaximumShares; index++)
         {
           string sharePath = String.Format("sharepath{0}", index);
-          string sharePathData = xmlreader.GetValueAsString("music", sharePath, "");
+          string sharePathData = xmlreader.GetValueAsString("music", sharePath, string.Empty);
           if (!MediaPortal.Util.Utils.IsDVD(sharePathData) && sharePathData != string.Empty)
           {
             logger.Debug("Mediaportal Music folder: "+sharePathData) ;
@@ -1314,12 +1314,13 @@ namespace FanartHandler
           UseHighDefThumbnails = settings.GetValueAsBool("FanartHandler", "UseHighDefThumbnails", UseHighDefThumbnails);
           UseMinimumResolutionForDownload = settings.GetValueAsBool("FanartHandler", "UseMinimumResolutionForDownload", UseMinimumResolutionForDownload);
           ShowDummyItems = settings.GetValueAsBool("FanartHandler", "ShowDummyItems", ShowDummyItems);
-          AndSignAsSeparator = settings.GetValueAsBool("FanartHandler", "AndSignAsSeparator", AndSignAsSeparator);
           //
           UseFanartTV = settings.GetValueAsBool("Providers", "UseFanartTV", UseFanartTV);
           UseHtBackdrops = settings.GetValueAsBool("Providers", "UseHtBackdrops", UseHtBackdrops);
           UseLastFM = settings.GetValueAsBool("Providers", "UseLastFM", UseLastFM);
           UseCoverArtArchive = settings.GetValueAsBool("Providers", "UseCoverArtArchive", UseCoverArtArchive);
+          //
+          AndSignAsSeparator = settings.GetValueAsBool("Scraper", "AndSignAsSeparator", AndSignAsSeparator);
           //
           LoadBadArtists(settings);
         }
@@ -1345,7 +1346,7 @@ namespace FanartHandler
         Array.Resize(ref PipesArray, PipesArray.Length + 1);
         PipesArray[PipesArray.Length - 1] = " & ";
       }
-      logger.Debug("Artists pipes: ["+string.Join(", ", PipesArray)+"]");
+      logger.Debug("Artists pipes: ["+string.Join("][", PipesArray)+"]");
       #endregion
     }
 
@@ -1384,12 +1385,13 @@ namespace FanartHandler
           xmlwriter.SetValueAsBool("FanartHandler", "UseHighDefThumbnails", UseHighDefThumbnails);
           xmlwriter.SetValueAsBool("FanartHandler", "UseMinimumResolutionForDownload", UseMinimumResolutionForDownload);
           // xmlwriter.SetValueAsBool("FanartHandler", "ShowDummyItems", ShowDummyItems);
-          // xmlwriter.SetValueAsBool("FanartHandler", "AndSignAsSeparator", AndSignAsSeparator);
           //
           // xmlwriter.SetValueAsBool("Providers", "UseFanartTV", UseFanartTV);
           // xmlwriter.SetValueAsBool("Providers", "UseHtBackdrops", UseHtBackdrops);
           // xmlwriter.SetValueAsBool("Providers", "UseLastFM", UseLastFM);
           // xmlwriter.SetValueAsBool("Providers", "UseCoverArtArchive", UseCoverArtArchive);
+          //
+          // xmlwriter.SetValueAsBool("Scraper", "AndSignAsSeparator", AndSignAsSeparator);
         }
         #endregion
         logger.Debug("Save settings to: "+ConfigFilename+" complete.");

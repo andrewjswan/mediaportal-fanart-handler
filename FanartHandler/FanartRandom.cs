@@ -1038,7 +1038,7 @@ namespace FanartHandler
       try
       {
         if (string.IsNullOrEmpty(value))
-          value = "";
+          value = string.Empty;
 
         if (PropertiesRandom.Contains(property))
           PropertiesRandom[property] = value;
@@ -1077,7 +1077,7 @@ namespace FanartHandler
       try
       {
         if (value == null)
-          value = "";
+          value = string.Empty;
         foreach (DictionaryEntry dictionaryEntry in PropertiesRandomPerm)
         {
           if (dictionaryEntry.Value.ToString().Equals(value))
