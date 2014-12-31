@@ -217,6 +217,7 @@ namespace FanartHandler
             FanartHandlerSetup.Fh.EmptyAllImages(ref FanartHandlerSetup.Fh.FS.ListSelectedMusic);
             FanartHandlerSetup.Fh.FS.CurrSelectedMusic = string.Empty;
             FanartHandlerSetup.Fh.FS.CurrSelectedMusicArtist = string.Empty;
+            FanartHandlerSetup.Fh.FS.CurrSelectedMusicAlbum = string.Empty;
             FanartHandlerSetup.Fh.FS.PrevSelectedMusic = -1;
             FanartHandlerSetup.Fh.FS.PrevSelectedGeneric = -1;
             FanartHandlerSetup.Fh.FS.SetCurrentArtistsImageNames(null);

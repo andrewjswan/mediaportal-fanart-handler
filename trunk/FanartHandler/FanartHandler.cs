@@ -870,6 +870,7 @@ namespace FanartHandler
       FS.CurrSelectedMovieTitle = string.Empty;
       FP.CurrPlayMusicArtist = string.Empty;
       FS.CurrSelectedMusicArtist = string.Empty;
+      FS.CurrSelectedMusicAlbum = string.Empty;
       FS.CurrSelectedScorecenterGenre = string.Empty;
       FS.CurrSelectedMovie = string.Empty;
       FP.CurrPlayMusic = string.Empty;
@@ -1374,6 +1375,7 @@ namespace FanartHandler
           EmptyAllImages(ref FS.ListSelectedMusic);
           FS.CurrSelectedMusic = string.Empty;
           FS.CurrSelectedMusicArtist = string.Empty;
+          FS.CurrSelectedMusicAlbum = string.Empty;
           FS.SetCurrentArtistsImageNames(null);
           FS.CurrCount = 0;
           FS.UpdateVisibilityCount = 0;
@@ -1965,7 +1967,7 @@ namespace FanartHandler
         }
         catch (Exception ex)
         {
-          logger.Error("SetupWindowsUsingFanartHandlerVisibility: "+(string.IsNullOrEmpty(ThemeDir) ? "" : "Theme: "+ThemeDir+" ")+"Filename:"+ XMLName) ;
+          logger.Error("SetupWindowsUsingFanartHandlerVisibility: "+(string.IsNullOrEmpty(ThemeDir) ? string.Empty : "Theme: "+ThemeDir+" ")+"Filename:"+ XMLName) ;
           logger.Error(ex) ;
         }
       }

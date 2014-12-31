@@ -191,7 +191,7 @@ namespace FanartHandler
         }
         if (num == 0)
         {
-          var currFile = "";
+          var currFile = string.Empty;
           var iFilePrev = -1;
           var randomDefaultBackdrop = FanartHandlerSetup.Fh.GetRandomDefaultBackdrop(ref currFile, ref iFilePrev);
           hashtable1.Add(0, randomDefaultBackdrop);
