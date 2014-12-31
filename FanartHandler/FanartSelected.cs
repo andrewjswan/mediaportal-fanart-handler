@@ -248,22 +248,7 @@ namespace FanartHandler
             //
             if (isMusic)
             {
-              if (!string.IsNullOrEmpty(Utils.MusicClearArtFolder))
-              { 
-                var caFile = Path.Combine(Utils.MusicClearArtFolder, MediaPortal.Util.Utils.MakeFileName(FanartHandlerSetup.Fh.SelectedItem)+".png");
-                if (File.Exists(caFile))
-                  AddProperty("#fanarthandler.music.artistclearart.selected", caFile, ref listSelectedGeneric);
-                else
-                  AddProperty("#fanarthandler.music.artistclearart.selected", string.Empty, ref listSelectedGeneric);
-              }
-              if (!string.IsNullOrEmpty(Utils.MusicBannerFolder))
-              {
-                var bFile = Path.Combine(Utils.MusicBannerFolder, MediaPortal.Util.Utils.MakeFileName(FanartHandlerSetup.Fh.SelectedItem)+".png");
-                if (File.Exists(bFile))
-                  AddProperty("#fanarthandler.music.artistbanner.selected", bFile, ref listSelectedGeneric);
-                else
-                  AddProperty("#fanarthandler.music.artistbanner.selected", string.Empty, ref listSelectedGeneric);
-              }
+              AddSelectedArtistProperty(currSelectedGenericTitle) ;
             }
           } // if ((!currSelectedGenericTitle.Equals(FanartHandlerSetup.Fh.SelectedItem, StringComparison.CurrentCulture)) || (CurrCount >= FanartHandlerSetup.Fh.MaxCountImage))
           IncreaseCurrCount();
@@ -380,22 +365,7 @@ namespace FanartHandler
           }
           IncreaseCurrCount();
           //
-          if (!string.IsNullOrEmpty(Utils.MusicClearArtFolder))
-          { 
-            var caFile = Path.Combine(Utils.MusicClearArtFolder, MediaPortal.Util.Utils.MakeFileName(CurrSelectedMusicArtist)+".png");
-            if (File.Exists(caFile))
-              AddProperty("#fanarthandler.music.artistclearart.selected", caFile, ref ListSelectedMusic);
-            else
-              AddProperty("#fanarthandler.music.artistclearart.selected", string.Empty, ref ListSelectedMusic);
-          }
-          if (!string.IsNullOrEmpty(Utils.MusicBannerFolder))
-          {
-            var bFile = Path.Combine(Utils.MusicBannerFolder, MediaPortal.Util.Utils.MakeFileName(CurrSelectedMusicArtist)+".png");
-            if (File.Exists(bFile))
-              AddProperty("#fanarthandler.music.artistbanner.selected", bFile, ref ListSelectedMusic);
-            else
-              AddProperty("#fanarthandler.music.artistbanner.selected", string.Empty, ref ListSelectedMusic);
-          }
+          AddSelectedArtistProperty(CurrSelectedMusicArtist) ;
           //
         }
         else if (FanartHandlerSetup.Fh.SelectedItem != null && FanartHandlerSetup.Fh.SelectedItem.Equals("..", StringComparison.CurrentCulture))
@@ -665,6 +635,72 @@ namespace FanartHandler
         logger.Error("getMusicArtistFromListControl: " + ex);
       }
       return null;
+    }
+
+    public void AddSelectedArtistProperty(string artist)
+    {
+      if (string.IsNullOrEmpty(artist))
+        return;
+
+      var caFile = string.Empty;
+      var bnFile = string.Empty;
+      var caFileNames = new List<string>() ;  
+      var bnFileNames = new List<string>() ;  
+      try
+      {
+        // Get Artist name
+        var artists = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
+        if (artists != null)
+        {
+          foreach (string sartist in artists)
+          {
+            caFile = string.Empty ;
+            if (!string.IsNullOrEmpty(Utils.MusicClearArtFolder))
+              caFile = Path.Combine(Utils.MusicClearArtFolder, MediaPortal.Util.Utils.MakeFileName(sartist.Trim())+".png");
+            if (!string.IsNullOrEmpty(caFile) && File.Exists(caFile))
+              caFileNames.Add(caFile) ;
+            //
+            bnFile = string.Empty ;
+            if (!string.IsNullOrEmpty(Utils.MusicBannerFolder))
+              bnFile = Path.Combine(Utils.MusicBannerFolder, MediaPortal.Util.Utils.MakeFileName(sartist.Trim())+".png");
+            if (!string.IsNullOrEmpty(bnFile) && File.Exists(bnFile))
+              bnFileNames.Add(bnFile) ;
+          }
+
+          if (caFileNames.Count == 0)
+            caFile = string.Empty ;
+          else if (caFileNames.Count == 1)
+            caFile = caFileNames[0].Trim();
+          else if (caFileNames.Count == 2)
+            caFile = caFileNames[(DoShowImageOne ? 0 : 1)].Trim();
+          else
+          {
+            var rand = new Random();
+            caFile = caFileNames[rand.Next(caFileNames.Count-1)].Trim();
+          }
+
+          if (bnFileNames.Count == 0)
+            bnFile = string.Empty ;
+          else if (bnFileNames.Count == 1)
+            bnFile = bnFileNames[0].Trim();
+          else if (bnFileNames.Count == 2)
+            bnFile = bnFileNames[(DoShowImageOne ? 0 : 1)].Trim();
+          else
+          {
+            var rand = new Random();
+            bnFile = bnFileNames[rand.Next(bnFileNames.Count-1)].Trim();
+          }
+        }
+
+        AddProperty("#fanarthandler.music.artistclearart.selected", caFile, ref ListSelectedMusic);
+        // logger.Debug("*** "+artist+" - "+caFile) ;
+        AddProperty("#fanarthandler.music.artistbanner.selected", bnFile, ref ListSelectedMusic);
+        // logger.Debug("*** "+artist+" - "+bnFile) ;
+      }
+      catch (Exception ex)
+      {
+        logger.Error("AddSelectedArtistProperty: " + ex);
+      }
     }
 
     private void IncreaseCurrCount()
