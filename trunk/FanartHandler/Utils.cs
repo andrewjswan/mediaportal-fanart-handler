@@ -127,6 +127,7 @@ namespace FanartHandler
     public static string MusicCDArtFolder { get; set; }
     public static string MusicMask { get; set; }
     public static string MoviesClearArtFolder { get; set; }
+    public static string MoviesBannerFolder { get; set; }
     #endregion
 
     #region Junction
@@ -150,6 +151,7 @@ namespace FanartHandler
       MusicCDArtFolder = string.Empty;
       MusicMask = "{0} - {1}"; // MePoTools
       MoviesClearArtFolder = string.Empty;
+      MoviesBannerFolder = string.Empty;
 
       FAHFolder = string.Empty;
       FAHUDFolder = string.Empty;
@@ -222,15 +224,20 @@ namespace FanartHandler
       MoviesClearArtFolder = Path.Combine(MPThumbsFolder, @"ClearArt\Movies\"); // MePotools
       if (!Directory.Exists(MoviesClearArtFolder) || IsDirectoryEmpty(MoviesClearArtFolder))
       {
-        MoviesClearArtFolder = Path.Combine(MPThumbsFolder, @"Movies\ClearArt\"); // MusicInfo Handler
+        MoviesClearArtFolder = Path.Combine(MPThumbsFolder, @"Movies\ClearArt\FullSize\"); // DVDArt
         if (!Directory.Exists(MoviesClearArtFolder) || IsDirectoryEmpty(MoviesClearArtFolder))
-        {
-          MoviesClearArtFolder = Path.Combine(MPThumbsFolder, @"Movies\ClearLogo\FullSize\"); // DVDArt
-          if (!Directory.Exists(MoviesClearArtFolder) || IsDirectoryEmpty(MoviesClearArtFolder))
-            MoviesClearArtFolder = string.Empty;
-        }
+          MoviesClearArtFolder = string.Empty;
       }
       logger.Debug("Fanart Handler Movies ClearArt folder: "+MoviesClearArtFolder);
+
+      MoviesBannerFolder = Path.Combine(MPThumbsFolder, @"Banner\Movies\"); // MePotools
+      if (!Directory.Exists(MoviesBannerFolder) || IsDirectoryEmpty(MoviesBannerFolder))
+      {
+        MoviesBannerFolder = Path.Combine(MPThumbsFolder, @"Movies\Banner\FullSize\"); // DVDArt
+        if (!Directory.Exists(MoviesBannerFolder) || IsDirectoryEmpty(MoviesBannerFolder))
+          MoviesBannerFolder = string.Empty;
+      }
+      logger.Debug("Fanart Handler Movies Banner folder: "+MoviesClearArtFolder);
       #endregion
 
       #region Fill.FanartHandler 
