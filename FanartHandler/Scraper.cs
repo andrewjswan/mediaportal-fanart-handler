@@ -1513,6 +1513,7 @@ namespace FanartHandler
               break;
           }
         }
+
         #region ClearArt
         // Music
         if (!string.IsNullOrEmpty(Utils.MusicClearArtFolder) && (category == Utils.Category.MusicFanartScraped) && !Utils.GetDbm().StopScraper)
@@ -1566,6 +1567,50 @@ namespace FanartHandler
             var sourceFilename = URLList[0].Substring(checked(URLList[0].IndexOf("|") + 1)) ;
             if (DownloadImage(ref artist, null, ref sourceFilename, ref path, ref filename, Utils.Category.ClearArt, id))
               logger.Debug("Fanart.TV: Movies ClearArt for "+Method+" download complete.");
+          }
+        }
+        #endregion
+        #region Banner
+        // Music
+        if (!string.IsNullOrEmpty(Utils.MusicBannerFolder) && (category == Utils.Category.MusicFanartScraped) && !Utils.GetDbm().StopScraper)
+        {
+          flag = false;
+          if (html != null) {
+            if (html.Length > 0) 
+            {
+              URLList = ExtractURL("musicbanner", html);
+              if (URLList != null)
+                flag = (URLList.Count > 0);
+            }
+          }
+          if (flag)
+          {
+            var path = Utils.MusicBannerFolder;
+            var filename = (string) null;
+            var sourceFilename = URLList[0].Substring(checked(URLList[0].IndexOf("|") + 1)) ;
+            if (DownloadImage(ref artist, null, ref sourceFilename, ref path, ref filename, Utils.Category.ClearArt, null))
+              logger.Debug("Fanart.TV: Music Banner for "+Method+" download complete.");
+          }
+        }
+        // Movies
+        if (!string.IsNullOrEmpty(Utils.MoviesBannerFolder) && (category == Utils.Category.MovieScraped) && !Utils.GetDbm().StopScraper)
+        {
+          flag = false;
+          if (html != null) {
+            if (html.Length > 0) 
+            {
+              URLList = ExtractURL("moviebanner", html);
+              if (URLList != null)
+                flag = (URLList.Count > 0);
+            }
+          }
+          if (flag)
+          {
+            var path = Utils.MoviesBannerFolder;
+            var filename = (string) null;
+            var sourceFilename = URLList[0].Substring(checked(URLList[0].IndexOf("|") + 1)) ;
+            if (DownloadImage(ref artist, null, ref sourceFilename, ref path, ref filename, Utils.Category.ClearArt, id))
+              logger.Debug("Fanart.TV: Movies Banner for "+Method+" download complete.");
           }
         }
         #endregion
