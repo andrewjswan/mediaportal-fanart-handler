@@ -1,4 +1,4 @@
-﻿// Type: FanartHandler.FanartHandler
+// Type: FanartHandler.FanartHandler
 // Assembly: FanartHandler, Version=3.1.0.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 // Assembly location: D:\Mes documents\Desktop\FanartHandler.dll
@@ -1037,7 +1037,6 @@ namespace FanartHandler
         FP = new FanartPlaying();
         FS = new FanartSelected();
         FR = new FanartRandom();
-        // FR.SetupWindowsUsingRandomImages();
         //
         SetupWindowsUsingFanartHandlerVisibility();
         SetupVariables();
@@ -1588,7 +1587,7 @@ namespace FanartHandler
       catch (Exception ex)
       {
         Utils.ReleaseDelayStop("FanartHandlerSetup-StartScraperNowPlaying");
-        logger.Error("startScraperNowPlaying: " + ex);
+        logger.Error("StartScraperNowPlaying: " + ex);
       }
     }
 
@@ -1604,7 +1603,7 @@ namespace FanartHandler
       }
       catch (Exception ex)
       {
-        logger.Error("stopScraperNowPlaying: " + ex);
+        logger.Error("StopScraperNowPlaying: " + ex);
       }
     }
 
@@ -1704,7 +1703,9 @@ namespace FanartHandler
           MyFileWatcher.Dispose();
         }
         if (scraperTimer != null)
+        {
           scraperTimer.Dispose();
+        }
         if (refreshTimer != null)
         {
           refreshTimer.Stop();

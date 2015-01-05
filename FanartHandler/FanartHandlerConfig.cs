@@ -1470,6 +1470,7 @@ namespace FanartHandler
       isStopping = true;
       if (DesignMode)
         return;
+
       var dialogResult = MessageBox.Show("Do you want to save your changes?", "Save Changes?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
       StopScraper();
       // if (MyDirectoryWorker != null)

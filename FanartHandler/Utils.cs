@@ -379,6 +379,7 @@ namespace FanartHandler
     {
       if (DelayStop.Count == 0)
         return false;
+
       var num = 0;
       foreach (DictionaryEntry dictionaryEntry in DelayStop)
       {
