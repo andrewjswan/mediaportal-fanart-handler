@@ -145,6 +145,7 @@ namespace FanartHandler
                                                     GUIPropertyManager.GetProperty("#selecteditem") : 
                                                     GUIPropertyManager.GetProperty("#title")) : 
                                                  movieID;
+          // logger.Debug("*** "+movieID+" - "+GUIPropertyManager.GetProperty("#selecteditem")+" - "+GUIPropertyManager.GetProperty("#title")+" -> "+FanartHandlerSetup.Fh.SelectedItem);
         }
         else if (GUIWindowManager.ActiveWindow == 9813)    // TVSeries Playlist
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#TVSeries.Episode.SeriesName");
@@ -238,6 +239,7 @@ namespace FanartHandler
             }
             else
               FanartAvailable = true;
+            // logger.Debug("*** "+str3) ;
             if (DoShowImageOne)
               AddProperty("#fanarthandler." + property + ".backdrop1.selected", str3, ref listSelectedGeneric);
             else

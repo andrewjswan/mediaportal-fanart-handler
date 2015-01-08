@@ -1372,6 +1372,7 @@ namespace FanartHandler
                           details = (IMDBMovie) videoDatabaseMovies[index] ;
                           var movieID = details.ID.ToString().ToLower();
                           var movieIMDBID = details.IMDBNumber.Trim().ToLower().Replace("unknown",string.Empty);
+                          var movieTitle = details.Title.Trim();
                           if (!string.IsNullOrEmpty(movieID) && !string.IsNullOrEmpty(movieIMDBID))
                           {
                               if (!htMovies.Contains(movieID))
@@ -1379,7 +1380,7 @@ namespace FanartHandler
                                   if (!StopScraper && !Utils.GetIsStopping()) 
                                   {
                                       scraper = new Scraper();
-                                      scraper.GetMoviesFanart(movieID, movieIMDBID);
+                                      scraper.GetMoviesFanart(movieID, movieIMDBID, movieTitle);
                                       scraper = null;
                                   }
                                   else
@@ -2397,17 +2398,23 @@ namespace FanartHandler
                 var imageId = GetImageId(artist, diskImage, sourceImage, category, album, provider, _id);
                 if (DatabaseUtility.GetAsInt(dbClient.Execute("SELECT COUNT(Key1) "+
                                                                "FROM Image "+
-                                                               "WHERE Id = '" + Utils.PatchSql(imageId) + "' AND "+
-                                                                     (string.IsNullOrEmpty(artist) ? string.Empty : "Key1 = '" + Utils.PatchSql(artist) + "' AND ") +
-                                                                     "Provider = '" + ((object) provider).ToString() + "';"),0, 0) <= 0)
+                                                               "WHERE "+
+                                                                 ((category == Utils.Category.MovieScraped) && (provider == Utils.Provider.FanartTV) ? 
+                                                                   "SourcePath = '" + Utils.PatchSql(sourceImage) + "'" : 
+                                                                   "Id = '" + Utils.PatchSql(imageId) + "'") + " AND "+
+                                                                 (string.IsNullOrEmpty(artist) ? string.Empty : "Key1 = '" + Utils.PatchSql(artist) + "' AND ") +
+                                                                 "Provider = '" + ((object) provider).ToString() + "';"),0, 0) <= 0)
                     return false;
                 lock (lockObject)
                     dbClient.Execute("UPDATE Image "+
                                         "SET Time_Stamp = '" + DateTime.Now.ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "' "+
                                         (string.IsNullOrEmpty(mbid) ? string.Empty : ", MBID ='"+Utils.PatchSql(mbid)+"' ") +
-                                        "WHERE Id = '" + Utils.PatchSql(imageId) + "' AND "+
-                                              (string.IsNullOrEmpty(artist) ? string.Empty : "Key1 = '" + Utils.PatchSql(artist) + "' AND ") +
-                                              "Provider = '" + ((object) provider).ToString() + "';");
+                                        "WHERE "+
+                                          ((category == Utils.Category.MovieScraped) && (provider == Utils.Provider.FanartTV) ? 
+                                            "SourcePath = '" + Utils.PatchSql(sourceImage) + "'" : 
+                                            "Id = '" + Utils.PatchSql(imageId) + "'") + " AND "+
+                                          (string.IsNullOrEmpty(artist) ? string.Empty : "Key1 = '" + Utils.PatchSql(artist) + "' AND ") +
+                                          "Provider = '" + ((object) provider).ToString() + "';");
                 return true;
             }
             catch (Exception ex)
