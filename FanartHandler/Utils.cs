@@ -1397,6 +1397,13 @@ namespace FanartHandler
       }
       logger.Debug("Artists pipes: ["+string.Join("][", PipesArray)+"]");
       #endregion
+
+      logger.Debug("Providers: "+(UseFanartTV ? "Fanart.TV " : "")+(UseHtBackdrops ? "HtBackdrops " : "")+(UseLastFM ? "Last.fm " : "")+(UseCoverArtArchive ? "CoverArtArchive" : ""));
+      if (UseFanartTV)
+      {
+        logger.Debug("Fanart.TV: Music: ClearArt:"+MusicClearArtDownload+" Banner: "+MusicBannerDownload+" CD: "+MusicCDArtDownload);
+        logger.Debug("Fanart.TV: Movie: ClearArt:"+MoviesClearArtDownload+" Banner: "+MoviesBannerDownload+" ClearLogo: "+MoviesClearLogoDownload);
+      }
     }
 
     public static void SaveSettings()
