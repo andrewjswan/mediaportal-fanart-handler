@@ -1891,7 +1891,7 @@ namespace FanartHandler
         if (File.Exists(filename))
           return false;
         Text = sArtist + (string.IsNullOrEmpty(id) ? string.Empty : " - "  + id) ;
-        logger.Info("Download: ClearArt for " + Text + " (" + filename + ").");
+        logger.Info("Download: Fanart.TV image for " + Text + " (" + filename + ").");
       }
       else
       {
