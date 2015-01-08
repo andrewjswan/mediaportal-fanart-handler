@@ -94,6 +94,15 @@ namespace FanartHandler
     public static bool UseCoverArtArchive { get; set; }
     #endregion
 
+    #region Fanart.TV 
+    public static bool MusicClearArtDownload { get; set; }
+    public static bool MusicBannerDownload { get; set; }
+    public static bool MusicCDArtDownload { get; set; }
+    public static bool MoviesClearArtDownload { get; set; }
+    public static bool MoviesBannerDownload { get; set; }
+    public static bool MoviesClearLogoDownload { get; set; }
+    #endregion
+
     public static bool WatchFullThumbFolder { get; set; }
 
     #region FanartHandler folders
@@ -128,6 +137,7 @@ namespace FanartHandler
     public static string MusicMask { get; set; }
     public static string MoviesClearArtFolder { get; set; }
     public static string MoviesBannerFolder { get; set; }
+    public static string MoviesClearLogoFolder { get; set; }
     #endregion
 
     #region Junction
@@ -152,6 +162,7 @@ namespace FanartHandler
       MusicMask = "{0} - {1}"; // MePoTools
       MoviesClearArtFolder = string.Empty;
       MoviesBannerFolder = string.Empty;
+      MoviesClearLogoFolder= string.Empty;
 
       FAHFolder = string.Empty;
       FAHUDFolder = string.Empty;
@@ -237,7 +248,16 @@ namespace FanartHandler
         if (!Directory.Exists(MoviesBannerFolder) || IsDirectoryEmpty(MoviesBannerFolder))
           MoviesBannerFolder = string.Empty;
       }
-      logger.Debug("Fanart Handler Movies Banner folder: "+MoviesClearArtFolder);
+      logger.Debug("Fanart Handler Movies Banner folder: "+MoviesBannerFolder);
+
+      MoviesClearLogoFolder = Path.Combine(MPThumbsFolder, @"ClearLogo\Movies\"); // MePotools
+      if (!Directory.Exists(MoviesClearLogoFolder) || IsDirectoryEmpty(MoviesClearLogoFolder))
+      {
+        MoviesClearLogoFolder = Path.Combine(MPThumbsFolder, @"Movies\ClearLogo\FullSize\"); // DVDArt
+        if (!Directory.Exists(MoviesClearLogoFolder) || IsDirectoryEmpty(MoviesClearLogoFolder))
+          MoviesBannerFolder = string.Empty;
+      }
+      logger.Debug("Fanart Handler Movies ClearLogo folder: "+MoviesClearLogoFolder);
       #endregion
 
       #region Fill.FanartHandler 
@@ -1287,6 +1307,14 @@ namespace FanartHandler
       UseLastFM = true;
       UseCoverArtArchive = true;
       #endregion
+      #region Fanart.TV
+      MusicClearArtDownload = true ;
+      MusicBannerDownload = true;
+      MusicCDArtDownload = true;
+      MoviesClearArtDownload = true;
+      MoviesBannerDownload = true;
+      MoviesClearLogoDownload = true;
+      #endregion
       try
       {
         logger.Debug("Load settings from: "+ConfigFilename);
@@ -1335,6 +1363,13 @@ namespace FanartHandler
           UseCoverArtArchive = settings.GetValueAsBool("Providers", "UseCoverArtArchive", UseCoverArtArchive);
           //
           AndSignAsSeparator = settings.GetValueAsBool("Scraper", "AndSignAsSeparator", AndSignAsSeparator);
+          //
+          MusicClearArtDownload = settings.GetValueAsBool("FanartTV", "MusicClearArtDownload", MusicClearArtDownload);
+          MusicBannerDownload = settings.GetValueAsBool("FanartTV", "MusicBannerDownload", MusicBannerDownload);
+          MusicCDArtDownload = settings.GetValueAsBool("FanartTV", "MusicCDArtDownload", MusicCDArtDownload);
+          MoviesClearArtDownload = settings.GetValueAsBool("FanartTV", "MoviesClearArtDownload", MoviesClearArtDownload);
+          MoviesBannerDownload = settings.GetValueAsBool("FanartTV", "MoviesBannerDownload", MoviesBannerDownload);
+          MoviesClearLogoDownload = settings.GetValueAsBool("FanartTV", "MoviesClearLogoDownload", MoviesClearLogoDownload);
           //
           LoadBadArtists(settings);
         }
@@ -1406,7 +1441,14 @@ namespace FanartHandler
           // xmlwriter.SetValueAsBool("Providers", "UseCoverArtArchive", UseCoverArtArchive);
           //
           // xmlwriter.SetValueAsBool("Scraper", "AndSignAsSeparator", AndSignAsSeparator);
-        }
+          //
+          // xmlwriter.SetValueAsBool("FanartTV", "MusicClearArtDownload", MusicClearArtDownload);
+          // xmlwriter.SetValueAsBool("FanartTV", "MusicBannerDownload", MusicBannerDownload);
+          // xmlwriter.SetValueAsBool("FanartTV", "MusicCDArtDownload", MusicCDArtDownload);
+          // xmlwriter.SetValueAsBool("FanartTV", "MoviesClearArtDownload", MoviesClearArtDownload);
+          // xmlwriter.SetValueAsBool("FanartTV", "MoviesBannerDownload", MoviesBannerDownload);
+          // xmlwriter.SetValueAsBool("FanartTV", "MoviesClearLogoDownload", MoviesClearLogoDownload);
+        } 
         #endregion
         logger.Debug("Save settings to: "+ConfigFilename+" complete.");
       }
