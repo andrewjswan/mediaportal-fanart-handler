@@ -1199,6 +1199,12 @@ namespace FanartHandler
       return /*dirs.Length == 0 &&*/ files.Length == 0;
     }
 
+    public static int GetFilesCountByMask (string path, string mask) 
+    { 
+      string[] files = System.IO.Directory.GetFiles( path, mask, SearchOption.TopDirectoryOnly ); 
+      return files.Length;
+    }
+
     /* .Net 4.0
     public static bool IsDirectoryEmpty(string path)
     {
