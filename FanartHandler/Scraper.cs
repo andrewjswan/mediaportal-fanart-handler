@@ -799,6 +799,9 @@ namespace FanartHandler
 
     public int HtBackdropGetFanart(string artist, int iMax, DatabaseManager dbm, bool doTriggerRefresh, bool externalAccess, bool doScrapeFanart)
     {
+      if (!Utils.UseHtBackdrops)
+        return -1 ;
+
       try
       {
         var dbartist = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
@@ -878,6 +881,9 @@ namespace FanartHandler
 
     public int HtBackdropGetThumbsImages(string artist, DatabaseManager dbm, bool onlyMissing)
     {
+      if (!Utils.UseHtBackdrops)
+        return -1 ;
+
       try
       {
         var dbartist = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
@@ -1199,6 +1205,9 @@ namespace FanartHandler
     // Begin: Last.FM Get Tumbnails for Artist or Artist/Album
     public int LastFMGetTumbnails(Utils.Category category, string artist, string album, bool externalAccess)
     {
+      if (!Utils.UseLastFM)
+        return -1 ;
+
       var Method = (string) null;
       var URL = (string) null;
       var POST = (string) null;
@@ -1353,7 +1362,7 @@ namespace FanartHandler
     // Begin: Fanart.TV Get Fanart/Tumbnails for Artist or Artist/Album
     public int FanartTVGetPictures(Utils.Category category, string id, string artist, string album, int iMax, bool doTriggerRefresh, bool externalAccess, bool doScrapeFanart, string info=null)
     {
-      if (!doScrapeFanart)
+      if (!doScrapeFanart || !Utils.UseFanartTV)
         return -1 ;
 
       var Method = (string) null;
@@ -1516,7 +1525,7 @@ namespace FanartHandler
 
         #region ClearArt
         // Music
-        if (!string.IsNullOrEmpty(Utils.MusicClearArtFolder) && (category == Utils.Category.MusicFanartScraped) && !Utils.GetDbm().StopScraper)
+        if (!string.IsNullOrEmpty(Utils.MusicClearArtFolder) && (category == Utils.Category.MusicFanartScraped) && !Utils.GetDbm().StopScraper && Utils.MusicClearArtDownload)
         {
           flag = false;
           if (html != null) {
@@ -1543,7 +1552,7 @@ namespace FanartHandler
           }
         }
         // Movies
-        if (!string.IsNullOrEmpty(Utils.MoviesClearArtFolder) && (category == Utils.Category.MovieScraped) && !Utils.GetDbm().StopScraper)
+        if (!string.IsNullOrEmpty(Utils.MoviesClearArtFolder) && (category == Utils.Category.MovieScraped) && !Utils.GetDbm().StopScraper && Utils.MoviesClearArtDownload)
         {
           flag = false;
           if (html != null) {
@@ -1572,7 +1581,7 @@ namespace FanartHandler
         #endregion
         #region Banner
         // Music
-        if (!string.IsNullOrEmpty(Utils.MusicBannerFolder) && (category == Utils.Category.MusicFanartScraped) && !Utils.GetDbm().StopScraper)
+        if (!string.IsNullOrEmpty(Utils.MusicBannerFolder) && (category == Utils.Category.MusicFanartScraped) && !Utils.GetDbm().StopScraper && Utils.MusicBannerDownload)
         {
           flag = false;
           if (html != null) {
@@ -1593,7 +1602,7 @@ namespace FanartHandler
           }
         }
         // Movies
-        if (!string.IsNullOrEmpty(Utils.MoviesBannerFolder) && (category == Utils.Category.MovieScraped) && !Utils.GetDbm().StopScraper)
+        if (!string.IsNullOrEmpty(Utils.MoviesBannerFolder) && (category == Utils.Category.MovieScraped) && !Utils.GetDbm().StopScraper && Utils.MoviesBannerDownload)
         {
           flag = false;
           if (html != null) {
@@ -1611,6 +1620,35 @@ namespace FanartHandler
             var sourceFilename = URLList[0].Substring(checked(URLList[0].IndexOf("|") + 1)) ;
             if (DownloadImage(ref artist, null, ref sourceFilename, ref path, ref filename, Utils.Category.ClearArt, id))
               logger.Debug("Fanart.TV: Movies Banner for "+Method+" download complete.");
+          }
+        }
+        #endregion
+        #region ClearLogo
+        // Movies
+        if (!string.IsNullOrEmpty(Utils.MoviesClearLogoFolder) && (category == Utils.Category.MovieScraped) && !Utils.GetDbm().StopScraper && Utils.MoviesClearLogoDownload)
+        {
+          flag = false;
+          if (html != null) {
+            if (html.Length > 0) 
+            {
+              URLList = ExtractURL("hdmovielogo", html);
+              if (URLList != null)
+                flag = (URLList.Count > 0);
+              if (!flag)
+              {
+                URLList = ExtractURL("movielogo", html);
+                if (URLList != null)
+                  flag = (URLList.Count > 0);
+              }
+            }
+          }
+          if (flag)
+          {
+            var path = Utils.MoviesClearLogoFolder;
+            var filename = (string) null;
+            var sourceFilename = URLList[0].Substring(checked(URLList[0].IndexOf("|") + 1)) ;
+            if (DownloadImage(ref artist, null, ref sourceFilename, ref path, ref filename, Utils.Category.ClearArt, id))
+              logger.Debug("Fanart.TV: Movies ClearLogo for "+Method+" download complete.");
           }
         }
         #endregion
@@ -1654,6 +1692,9 @@ namespace FanartHandler
     // Begin: CoverArtArchive Get Tumbnails for Artist/Album
     public int CoverartArchiveGetTumbnails(Utils.Category category, string artist, string album, string mbid, bool externalAccess)
     {
+      if (!Utils.UseCoverArtArchive)
+        return -1 ;
+
       var Method = (string) null;
       var URL = (string) null;
 
