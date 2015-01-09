@@ -300,7 +300,7 @@ namespace FanartHandler
                   artist = Utils.GetArtist(FileName, category).Trim();
                   album = Utils.GetAlbum(FileName, category).Trim();
                 }
-                else
+                else // Fanart from Music folders 
                 {
                   var fnWithoutFolder = string.Empty;
                   try
@@ -320,7 +320,11 @@ namespace FanartHandler
                 if (!string.IsNullOrEmpty(artist))
                 {
                   if (ht != null && ht.Contains(artist))
+                  {
                     Utils.GetDbm().LoadFanart(ht[artist].ToString(), FileName, FileName, category, album, provider, null, null);
+                    if (category == Utils.Category.TvSeriesScraped)
+                      Utils.GetDbm().LoadFanart(artist, FileName, FileName, category, album, provider, null, null);
+                  }
                   else
                     Utils.GetDbm().LoadFanart(artist, FileName, FileName, category, album, provider, null, null);
                 }
