@@ -666,8 +666,13 @@ namespace FanartHandler
       key = PrepareArtistAlbum(key, category);
       if ((category == Category.MusicAlbumThumbScraped || category == Category.MusicFanartAlbum) && key.IndexOf("-", StringComparison.CurrentCulture) > 0)
         key = key.Substring(0, key.IndexOf("-", StringComparison.CurrentCulture));
-      if (category == Category.TvSeriesScraped)
-        key = Regex.Replace(key, "-", " ");
+      if (category == Category.TvSeriesScraped)  // [SeriesID]S[Season]*.jpg
+      { 
+        if (key.IndexOf("S", StringComparison.CurrentCulture) > 0)
+          key = key.Substring(0, key.IndexOf("S", StringComparison.CurrentCulture)).Trim();
+        if (key.IndexOf("-", StringComparison.CurrentCulture) > 0)
+          key = key.Substring(0, key.IndexOf("-", StringComparison.CurrentCulture)).Trim();
+      }
       else
         key = Utils.Equalize(key);
       key = Utils.MovePrefixToFront(key);
@@ -697,7 +702,15 @@ namespace FanartHandler
           (category != Category.MusicFanartAlbum) 
          )
         key = RemoveTrailingDigits(key);
-      key = Utils.Equalize(key);
+      if (category == Category.TvSeriesScraped) // [SeriesID]S[Season]*.jpg
+      {
+        if (key.IndexOf("S", StringComparison.CurrentCulture) > 0)
+          key = key.Substring(checked (key.IndexOf("S", StringComparison.CurrentCulture) + 1)).Trim();
+        if (key.IndexOf("-", StringComparison.CurrentCulture) > 0)
+          key = key.Substring(0, key.IndexOf("-", StringComparison.CurrentCulture)).Trim();
+      }
+      else
+        key = Utils.Equalize(key);
       key = Utils.MovePrefixToFront(key);
       return key;
     }

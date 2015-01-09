@@ -64,31 +64,20 @@ namespace FanartHandler
       var hashtable = new Hashtable();
       try
       {
-        var str1 = string.Empty;
-        var str2 = string.Empty;
         var allSeries = DBOnlineSeries.getAllSeries();
         if (allSeries != null)
         {
-          //using (List<DBOnlineSeries>.Enumerator enumerator = allSeries.GetEnumerator())
-          //{
-          //  while (enumerator.MoveNext())
-          //  {
-          //    DBOnlineSeries current = enumerator.Current;
-          //    string artist = Utils.GetArtist(DBValue.op_Implicit(((DBTable) current).get_Item("Parsed_Name")), category);
-          //    string str3 = DBValue.op_Implicit(((DBTable) current).get_Item("ID"));
-          //    if (!hashtable.Contains((object) str3))
-          //      hashtable.Add((object) str3, (object) artist);
-          //  }
-          //}
-          if (allSeries != null)
+          foreach (var series in allSeries)
           {
-            foreach (var series in allSeries)
+            DBSeries mytv = Helper.getCorrespondingSeries(series[DBOnlineSeries.cID]);
+            if (mytv != null)
             {
-              var artist = Utils.GetArtist(series[DBSeries.cParsedName], category);
-              string seriesId = series[DBSeries.cID];
+              var SeriesName = Utils.GetArtist(mytv[DBSeries.cParsedName], category);
+              string seriesId = mytv[DBSeries.cID];
+              // logger.Debug("*** "+seriesId + " - " + SeriesName + " - " + mytv[DBSeries.cParsedName]);
               if (!hashtable.Contains(seriesId))
               {
-                hashtable.Add(seriesId, artist);
+                hashtable.Add(seriesId, SeriesName);
               }
             }
           }
