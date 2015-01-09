@@ -322,8 +322,8 @@ namespace FanartHandler
                   if (ht != null && ht.Contains(artist))
                   {
                     Utils.GetDbm().LoadFanart(ht[artist].ToString(), FileName, FileName, category, album, provider, null, null);
-                    if (category == Utils.Category.TvSeriesScraped)
-                      Utils.GetDbm().LoadFanart(artist, FileName, FileName, category, album, provider, null, null);
+                    // if (category == Utils.Category.TvSeriesScraped)
+                    //   Utils.GetDbm().LoadFanart(artist, FileName, FileName, category, album, provider, null, null);
                   }
                   else
                     Utils.GetDbm().LoadFanart(artist, FileName, FileName, category, album, provider, null, null);
