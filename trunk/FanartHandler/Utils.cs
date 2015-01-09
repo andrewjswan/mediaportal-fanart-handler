@@ -101,6 +101,11 @@ namespace FanartHandler
     public static bool MoviesClearArtDownload { get; set; }
     public static bool MoviesBannerDownload { get; set; }
     public static bool MoviesClearLogoDownload { get; set; }
+    public static bool MoviesCDArtDownload { get; set; }
+    public static bool MoviesFanartNameAsMediaportal { get; set; }  // movieid{0..9} instead movieid{FanartTVImageID}
+    public static string FanartTVLanguage { get; set; }
+    public static string FanartTVLanguageDef { get; set; }
+    public static bool FanartTVLanguageToAny { get; set; }
     #endregion
 
     public static bool WatchFullThumbFolder { get; set; }
@@ -138,6 +143,7 @@ namespace FanartHandler
     public static string MoviesClearArtFolder { get; set; }
     public static string MoviesBannerFolder { get; set; }
     public static string MoviesClearLogoFolder { get; set; }
+    public static string MoviesCDArtFolder { get; set; }
     #endregion
 
     #region Junction
@@ -162,6 +168,7 @@ namespace FanartHandler
       MusicMask = "{0} - {1}"; // MePoTools
       MoviesClearArtFolder = string.Empty;
       MoviesBannerFolder = string.Empty;
+      MoviesCDArtFolder = string.Empty;
       MoviesClearLogoFolder= string.Empty;
 
       FAHFolder = string.Empty;
@@ -249,6 +256,15 @@ namespace FanartHandler
           MoviesBannerFolder = string.Empty;
       }
       logger.Debug("Fanart Handler Movies Banner folder: "+MoviesBannerFolder);
+
+      MoviesCDArtFolder = Path.Combine(MPThumbsFolder, @"CDArt\Movies\"); // MePotools
+      if (!Directory.Exists(MoviesCDArtFolder) || IsDirectoryEmpty(MoviesCDArtFolder))
+      {
+        MoviesCDArtFolder = Path.Combine(MPThumbsFolder, @"Movies\DVDArt\FullSize\"); // DVDArt
+        if (!Directory.Exists(MoviesCDArtFolder) || IsDirectoryEmpty(MoviesCDArtFolder))
+          MoviesCDArtFolder = string.Empty;
+      }
+      logger.Debug("Fanart Handler Movies CD folder: "+MoviesCDArtFolder);
 
       MoviesClearLogoFolder = Path.Combine(MPThumbsFolder, @"ClearLogo\Movies\"); // MePotools
       if (!Directory.Exists(MoviesClearLogoFolder) || IsDirectoryEmpty(MoviesClearLogoFolder))
@@ -1313,7 +1329,12 @@ namespace FanartHandler
       MusicCDArtDownload = true;
       MoviesClearArtDownload = true;
       MoviesBannerDownload = true;
+      MoviesCDArtDownload = true;
       MoviesClearLogoDownload = true;
+      MoviesFanartNameAsMediaportal = false;
+      FanartTVLanguage = string.Empty ;
+      FanartTVLanguageDef = "en" ;
+      FanartTVLanguageToAny = false ;
       #endregion
       try
       {
@@ -1369,7 +1390,11 @@ namespace FanartHandler
           MusicCDArtDownload = settings.GetValueAsBool("FanartTV", "MusicCDArtDownload", MusicCDArtDownload);
           MoviesClearArtDownload = settings.GetValueAsBool("FanartTV", "MoviesClearArtDownload", MoviesClearArtDownload);
           MoviesBannerDownload = settings.GetValueAsBool("FanartTV", "MoviesBannerDownload", MoviesBannerDownload);
+          MoviesCDArtDownload = settings.GetValueAsBool("FanartTV", "MoviesCDArtDownload", MoviesCDArtDownload);
           MoviesClearLogoDownload = settings.GetValueAsBool("FanartTV", "MoviesClearLogoDownload", MoviesClearLogoDownload);
+          MoviesFanartNameAsMediaportal = settings.GetValueAsBool("FanartTV", "MoviesFanartNameAsMediaportal", MoviesFanartNameAsMediaportal);
+          FanartTVLanguage = settings.GetValueAsString("FanartTV", "FanartTVLanguage", FanartTVLanguage);
+          FanartTVLanguageToAny = settings.GetValueAsBool("FanartTV", "FanartTVLanguageToAny", FanartTVLanguageToAny);
           //
           LoadBadArtists(settings);
         }
@@ -1397,12 +1422,13 @@ namespace FanartHandler
       }
       logger.Debug("Artists pipes: ["+string.Join("][", PipesArray)+"]");
       #endregion
-
-      logger.Debug("Providers: "+(UseFanartTV ? "Fanart.TV " : "")+(UseHtBackdrops ? "HtBackdrops " : "")+(UseLastFM ? "Last.fm " : "")+(UseCoverArtArchive ? "CoverArtArchive" : ""));
+      //
+      logger.Debug("Providers: ["+(UseFanartTV ? "x" : " ")+"] Fanart.TV, ["+(UseHtBackdrops ? "x" : " ")+"] HtBackdrops, ["+(UseLastFM ? "x" : " ")+"] Last.fm, ["+(UseCoverArtArchive ? "x" : " ")+"] CoverArtArchive");
       if (UseFanartTV)
       {
-        logger.Debug("Fanart.TV: Music: ClearArt:"+MusicClearArtDownload+" Banner: "+MusicBannerDownload+" CD: "+MusicCDArtDownload);
-        logger.Debug("Fanart.TV: Movie: ClearArt:"+MoviesClearArtDownload+" Banner: "+MoviesBannerDownload+" ClearLogo: "+MoviesClearLogoDownload);
+        logger.Debug("Fanart.TV: Language: ["+(string.IsNullOrEmpty(FanartTVLanguage) ? "Any]" : FanartTVLanguage+"] If not found, try to use Any language: "+FanartTVLanguageToAny));
+        logger.Debug("Fanart.TV: Music: ["+(MusicClearArtDownload ? "x" : " ")+"] ClearArt, ["+(MusicBannerDownload ? "x" : " ")+"] Banner, ["+(MusicCDArtDownload ? "x" : " ")+"] CD");
+        logger.Debug("Fanart.TV: Movie: ["+(MoviesClearArtDownload ? "x" : " ")+"] ClearArt, ["+(MoviesBannerDownload ? "x" : " ")+"] Banner, ["+(MoviesCDArtDownload ? "x" : " ")+"] CD, ["+(MoviesClearLogoDownload ? "x" : " ")+"] ClearLogo");
       }
     }
 
@@ -1454,7 +1480,11 @@ namespace FanartHandler
           // xmlwriter.SetValueAsBool("FanartTV", "MusicCDArtDownload", MusicCDArtDownload);
           // xmlwriter.SetValueAsBool("FanartTV", "MoviesClearArtDownload", MoviesClearArtDownload);
           // xmlwriter.SetValueAsBool("FanartTV", "MoviesBannerDownload", MoviesBannerDownload);
+          // xmlwriter.SetValueAsBool("FanartTV", "MoviesCDArtDownload", MoviesCDArtDownload);
           // xmlwriter.SetValueAsBool("FanartTV", "MoviesClearLogoDownload", MoviesClearLogoDownload);
+          // xmlwriter.SetValueAsBool("FanartTV", "MoviesFanartNameAsMediaportal", MoviesFanartNameAsMediaportal);
+          // xmlwriter.SetValue("FanartTV", "FanartTVLanguage", FanartTVLanguage);
+          // xmlwriter.SetValueAsBool("FanartTV", "FanartTVLanguageToAny", FanartTVLanguageToAny);
         } 
         #endregion
         logger.Debug("Save settings to: "+ConfigFilename+" complete.");
@@ -1625,7 +1655,8 @@ namespace FanartHandler
       SeriesManual,
       TvManual,
       TvSeriesScraped,
-      ClearArt, 
+      FanartTVArt, 
+      FanartTVCDArt, 
       Dummy,
     }
 

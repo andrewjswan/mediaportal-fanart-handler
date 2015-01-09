@@ -1536,6 +1536,8 @@ namespace FanartHandler
       comboBoxMinResolution.Items.Add("1280x720");
       comboBoxMinResolution.Items.Add("1000x1000");
       comboBoxMinResolution.Items.Add("1920x1080");
+      comboBox2.Enabled = true;
+      comboBox2.Items.Clear();
       comboBox2.Items.Add("Games");
       comboBox2.Items.Add("Movies");
       comboBox2.Items.Add("Music");
@@ -1544,15 +1546,46 @@ namespace FanartHandler
       comboBox2.Items.Add("Scorecenter");
       comboBox2.Items.Add("Tv");
       comboBox2.SelectedItem = "Games";
+      comboBox3.Enabled = true;
+      comboBox3.Items.Clear();
       comboBox3.Items.Add("MovingPictures");
       comboBox3.Items.Add("MyVideos");
       comboBox3.Items.Add("TVSeries");
       comboBox3.SelectedItem = "MovingPictures";
-      #endregion
-      lastID = 0;
-      try
-      {
-        InitLogger();
+      /*
+      comboBoxFanartTVLanguage.Enabled = true;
+      comboBoxFanartTVLanguage.Items.Clear();
+      comboBoxFanartTVLanguage.Items.Add("All                 ");
+      comboBoxFanartTVLanguage.Items.Add("en - English        ");
+      comboBoxFanartTVLanguage.Items.Add("ru - Russian        ");
+      comboBoxFanartTVLanguage.Items.Add("fr - French         ");
+      comboBoxFanartTVLanguage.Items.Add("de - German         ");
+      comboBoxFanartTVLanguage.Items.Add("ja - Japanese       ");
+      comboBoxFanartTVLanguage.Items.Add("zh - Chinese        ");
+      comboBoxFanartTVLanguage.Items.Add("es - Spanish        ");
+      comboBoxFanartTVLanguage.Items.Add("it - Italian        ");
+      comboBoxFanartTVLanguage.Items.Add("pt - Portuguese     ");
+      comboBoxFanartTVLanguage.Items.Add("sv - Swedish        ");
+      comboBoxFanartTVLanguage.Items.Add("nl - Dutch          ");
+      comboBoxFanartTVLanguage.Items.Add("ar - Arabic         ");
+      comboBoxFanartTVLanguage.Items.Add("ko - Korean         ");
+      comboBoxFanartTVLanguage.Items.Add("no - Norwegian      ");
+      comboBoxFanartTVLanguage.Items.Add("hu - Hungarian      ");
+      comboBoxFanartTVLanguage.Items.Add("da - Danish         ");
+      comboBoxFanartTVLanguage.Items.Add("hi - Hindi          ");
+      comboBoxFanartTVLanguage.Items.Add("is - Icelandic      ");
+      comboBoxFanartTVLanguage.Items.Add("pl - Polish         ");
+      comboBoxFanartTVLanguage.Items.Add("he - Hebrew (modern)");
+      comboBoxFanartTVLanguage.Items.Add("bg - Bulgarian      ");
+      comboBoxFanartTVLanguage.Items.Add("fi - Finnish        ");
+      comboBoxFanartTVLanguage.Items.Add("xx - Unknown        ");
+      comboBoxFanartTVLanguage.SelectedItem = "All                 ";
+      */
+      #endregion                          
+      lastID = 0;                         
+      try                                 
+      {                                   
+        InitLogger();                     
         logger.Info("Fanart Handler configuration is starting.");
         logger.Info("Fanart Handler version is " + Utils.GetAllVersionNumber());
       }
@@ -3079,7 +3112,7 @@ namespace FanartHandler
           myScraperWorker.CancelAsync();
           myScraperWorker.Dispose();
         }
-        Thread.Sleep(3000);
+        Thread.Sleep(5000);
         isScraping = false;
         if (Utils.GetDbm() != null)
         {

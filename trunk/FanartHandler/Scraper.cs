@@ -676,6 +676,7 @@ namespace FanartHandler
       if (string.IsNullOrEmpty(id) && string.IsNullOrEmpty(imdbid))
         return res;
 
+      logger.Debug("--- Movie --- " + id + " - " + imdbid + " - " + title + " ---");
       res = FanartTVGetPictures(Utils.Category.MovieScraped, imdbid, id, null, -1, false, false, true, title) ;
       if (res == 0)
         Utils.GetDbm().InsertDummyItem(id, null, imdbid, Utils.Category.MovieScraped);
@@ -1324,7 +1325,7 @@ namespace FanartHandler
 
     #region Fanart.TV
     // Begin: Extract Fanart.TV URL
-    public List<string> ExtractURL (string Sec, string AInputString)
+    public List<string> ExtractURLLang (string Sec, string AInputString, string Lang, bool LangIndep = true)
     {
       const string SECRE = @"\""%1.+?\[([^\]]+?)\]" ;
       // const string URLRE = @"url.\:[^}]*?\""([^}]+?)\""[^}]+?(.lang.\:[^}]?\""(%1)\"")" ; // URL
@@ -1332,9 +1333,13 @@ namespace FanartHandler
                
       var B       = (string) null;
       var URLList = new List<string>() ;  
+      var L       = (string) null;
 
       if (string.IsNullOrEmpty(AInputString) || (AInputString == "null"))
         return URLList ;
+
+      L = (string.IsNullOrEmpty(Lang) ? "Any" : (Utils.FanartTVLanguageDef.Equals(Lang, StringComparison.CurrentCulture) ? Lang : Lang + "/" + Utils.FanartTVLanguageDef)) ;
+      L = (LangIndep ? string.Empty : L) ;
 
       Regex r = new Regex(SECRE.Replace("%1",Sec),RegexOptions.IgnoreCase);
       MatchCollection mc = r.Matches(AInputString);
@@ -1347,15 +1352,32 @@ namespace FanartHandler
       if (B != null)
         if (B.Length > 0)
         {
-          Regex ru = new Regex(URLRE.Replace("%1","[^}]+?")+"?",RegexOptions.IgnoreCase);
+          Regex ru = new Regex(URLRE.Replace("%1",(string.IsNullOrEmpty(Lang) ? "[^}]+?" : Lang)) + (LangIndep ? "?" : string.Empty) ,RegexOptions.IgnoreCase);
           MatchCollection mcu = ru.Matches(B) ;
           foreach(Match mu in mcu)
           {
             URLList.Add(mu.Groups[1]+"|"+mu.Groups[2]);
           }
-          logger.Debug("Extract URL - ["+Sec+"] URLs Found: " + URLList.Count) ;
+          logger.Debug("Extract URL - "+(string.IsNullOrEmpty(L) ? string.Empty : "Lang: ["+L+"] ")+"["+Sec+"] URLs Found: " + URLList.Count) ;
         }
       return URLList;
+    }
+
+    public List<string> ExtractURL (string Sec, string AInputString, bool LangIndep = true)
+    {
+      if (LangIndep || string.IsNullOrEmpty(Utils.FanartTVLanguage))
+        return ExtractURLLang (Sec, AInputString, string.Empty, true) ;                          // Any Language
+      else
+        {
+          var URLList = new List<string>() ;
+
+          URLList = ExtractURLLang (Sec, AInputString, Utils.FanartTVLanguage, LangIndep) ;      // Language from Settings
+          if ((URLList.Count <= 0) && !Utils.FanartTVLanguageDef.Equals(Utils.FanartTVLanguage, StringComparison.CurrentCulture))
+            URLList = ExtractURLLang (Sec, AInputString, Utils.FanartTVLanguageDef, LangIndep) ; // Default Language
+          if ((URLList.Count <= 0) && !Utils.FanartTVLanguageDef.Equals(Utils.FanartTVLanguage, StringComparison.CurrentCulture) && Utils.FanartTVLanguageToAny)
+            URLList = ExtractURLLang (Sec, AInputString, string.Empty, true) ;                   // Any Language
+          return URLList ;
+        }
     }
     // End: Extract Fanart.TV URL
 
@@ -1412,7 +1434,7 @@ namespace FanartHandler
         Section = "albumcover";
       } else if (category == Utils.Category.MovieScraped) {
         if (string.IsNullOrEmpty(artist) && string.IsNullOrEmpty(id)) {
-          logger.Debug("Fanart.TV: GetTumbnails - Movies ID/IMDBID - Empty.");
+          logger.Debug("Fanart.TV: GetBackgrounds - Movies ID/IMDBID - Empty.");
           return -1 ;
         }
         Method = "Movies (Fanart): "+artist+" - "+id+" - "+info ;
@@ -1547,7 +1569,7 @@ namespace FanartHandler
             var path = Utils.MusicClearArtFolder;
             var filename = (string) null;
             var sourceFilename = URLList[0].Substring(checked(URLList[0].IndexOf("|") + 1)) ;
-            if (DownloadImage(ref artist, null, ref sourceFilename, ref path, ref filename, Utils.Category.ClearArt, null))
+            if (DownloadImage(ref artist, null, ref sourceFilename, ref path, ref filename, Utils.Category.FanartTVArt, null))
               logger.Debug("Fanart.TV: Music ClearArt for "+Method+" download complete.");
           }
         }
@@ -1558,12 +1580,12 @@ namespace FanartHandler
           if (html != null) {
             if (html.Length > 0) 
             {
-              URLList = ExtractURL("hdmovieclearart", html);
+              URLList = ExtractURL("hdmovieclearart", html, false);
               if (URLList != null)
                 flag = (URLList.Count > 0);
               if (!flag)
               {
-                URLList = ExtractURL("movieart", html);
+                URLList = ExtractURL("movieart", html, false);
                 if (URLList != null)
                   flag = (URLList.Count > 0);
               }
@@ -1574,7 +1596,7 @@ namespace FanartHandler
             var path = Utils.MoviesClearArtFolder;
             var filename = (string) null;
             var sourceFilename = URLList[0].Substring(checked(URLList[0].IndexOf("|") + 1)) ;
-            if (DownloadImage(ref artist, null, ref sourceFilename, ref path, ref filename, Utils.Category.ClearArt, id))
+            if (DownloadImage(ref artist, null, ref sourceFilename, ref path, ref filename, Utils.Category.FanartTVArt, id))
               logger.Debug("Fanart.TV: Movies ClearArt for "+Method+" download complete.");
           }
         }
@@ -1597,7 +1619,7 @@ namespace FanartHandler
             var path = Utils.MusicBannerFolder;
             var filename = (string) null;
             var sourceFilename = URLList[0].Substring(checked(URLList[0].IndexOf("|") + 1)) ;
-            if (DownloadImage(ref artist, null, ref sourceFilename, ref path, ref filename, Utils.Category.ClearArt, null))
+            if (DownloadImage(ref artist, null, ref sourceFilename, ref path, ref filename, Utils.Category.FanartTVArt, null))
               logger.Debug("Fanart.TV: Music Banner for "+Method+" download complete.");
           }
         }
@@ -1608,7 +1630,7 @@ namespace FanartHandler
           if (html != null) {
             if (html.Length > 0) 
             {
-              URLList = ExtractURL("moviebanner", html);
+              URLList = ExtractURL("moviebanner", html, false);
               if (URLList != null)
                 flag = (URLList.Count > 0);
             }
@@ -1618,7 +1640,7 @@ namespace FanartHandler
             var path = Utils.MoviesBannerFolder;
             var filename = (string) null;
             var sourceFilename = URLList[0].Substring(checked(URLList[0].IndexOf("|") + 1)) ;
-            if (DownloadImage(ref artist, null, ref sourceFilename, ref path, ref filename, Utils.Category.ClearArt, id))
+            if (DownloadImage(ref artist, null, ref sourceFilename, ref path, ref filename, Utils.Category.FanartTVArt, id))
               logger.Debug("Fanart.TV: Movies Banner for "+Method+" download complete.");
           }
         }
@@ -1631,12 +1653,12 @@ namespace FanartHandler
           if (html != null) {
             if (html.Length > 0) 
             {
-              URLList = ExtractURL("hdmovielogo", html);
+              URLList = ExtractURL("hdmovielogo", html, false);
               if (URLList != null)
                 flag = (URLList.Count > 0);
               if (!flag)
               {
-                URLList = ExtractURL("movielogo", html);
+                URLList = ExtractURL("movielogo", html, false);
                 if (URLList != null)
                   flag = (URLList.Count > 0);
               }
@@ -1647,8 +1669,51 @@ namespace FanartHandler
             var path = Utils.MoviesClearLogoFolder;
             var filename = (string) null;
             var sourceFilename = URLList[0].Substring(checked(URLList[0].IndexOf("|") + 1)) ;
-            if (DownloadImage(ref artist, null, ref sourceFilename, ref path, ref filename, Utils.Category.ClearArt, id))
+            if (DownloadImage(ref artist, null, ref sourceFilename, ref path, ref filename, Utils.Category.FanartTVArt, id))
               logger.Debug("Fanart.TV: Movies ClearLogo for "+Method+" download complete.");
+          }
+        }
+        #endregion
+        #region CD
+        if (!string.IsNullOrEmpty(Utils.MusicCDArtFolder) && (category == Utils.Category.MusicAlbumThumbScraped) && !Utils.GetDbm().StopScraper && Utils.MusicCDArtDownload)
+        {
+          flag = false;
+          if (html != null) {
+            if (html.Length > 0) 
+            {
+              URLList = ExtractURL("cdart", html);
+              if (URLList != null)
+                flag = (URLList.Count > 0);
+            }
+          }
+          if (flag)
+          {
+            var path = Utils.MusicCDArtFolder;
+            var filename = (string) null;
+            var sourceFilename = URLList[0].Substring(checked(URLList[0].IndexOf("|") + 1)) ;
+            if (DownloadImage(ref artist, album, ref sourceFilename, ref path, ref filename, Utils.Category.FanartTVCDArt, null))
+              logger.Debug("Fanart.TV: Music CD for "+Method+" download complete.");
+          }
+        }
+        // Movies
+        if (!string.IsNullOrEmpty(Utils.MoviesCDArtFolder) && (category == Utils.Category.MovieScraped) && !Utils.GetDbm().StopScraper && Utils.MoviesCDArtDownload)
+        {
+          flag = false;
+          if (html != null) {
+            if (html.Length > 0) 
+            {
+              URLList = ExtractURL("moviedisc", html);
+              if (URLList != null)
+                flag = (URLList.Count > 0);
+            }
+          }
+          if (flag)
+          {
+            var path = Utils.MoviesCDArtFolder;
+            var filename = (string) null;
+            var sourceFilename = URLList[0].Substring(checked(URLList[0].IndexOf("|") + 1)) ;
+            if (DownloadImage(ref artist, null, ref sourceFilename, ref path, ref filename, Utils.Category.FanartTVArt, id))
+              logger.Debug("Fanart.TV: Movies CD/DVD for "+Method+" download complete.");
           }
         }
         #endregion
@@ -1772,6 +1837,10 @@ namespace FanartHandler
     private static bool GetHtml(string strURL, out string strHtml)
     {
       strHtml = string.Empty;
+
+      if (!MediaPortal.Util.Win32API.IsConnectedToInternet())
+        return false ;
+
       try
       {
         var w = (HttpWebRequest)WebRequest.Create(strURL);
@@ -1835,6 +1904,9 @@ namespace FanartHandler
     // Begin: Download Image
     private bool DownloadImage(ref string sArtist, string sAlbum, ref string sourceFilename, ref string path, ref string filename, Utils.Category category, string id)
     {
+      if (!MediaPortal.Util.Win32API.IsConnectedToInternet())
+        return false ;
+
       var TryCount         = 0;
       var FileLength       = 0L;
       var DownloaderStatus = "Start";
@@ -1874,16 +1946,19 @@ namespace FanartHandler
       else if (category == Utils.Category.MovieScraped)
       {
         path = Utils.FAHSMovies;
-        var i = Utils.GetFilesCountByMask(path, sArtist + "{*}.jpg");
-        if (i <= 10)
-          id = i.ToString() ;
+        if (Utils.MoviesFanartNameAsMediaportal)
+        {
+          var i = Utils.GetFilesCountByMask(path, sArtist + "{*}.jpg");
+          if (i <= 10)
+            id = i.ToString() ;
+        }
         filename = Path.Combine(path, sArtist + "{"+id+"}.jpg");
         if (File.Exists(filename))
           return false;
         Text = sArtist + " ["+id+"]";
         logger.Info("Download: Fanart for Movies " + Text + " (" + filename + ").");
       }
-      else if (category == Utils.Category.ClearArt)
+      else if (category == Utils.Category.FanartTVArt)
       {
         if (string.IsNullOrEmpty(path))
           return false;
@@ -1892,6 +1967,16 @@ namespace FanartHandler
           return false;
         Text = sArtist + (string.IsNullOrEmpty(id) ? string.Empty : " - "  + id) ;
         logger.Info("Download: Fanart.TV image for " + Text + " (" + filename + ").");
+      }
+      else if (category == Utils.Category.FanartTVCDArt)
+      {
+        if (string.IsNullOrEmpty(path))
+          return false;
+        filename = Path.Combine(path, string.Format(Utils.MusicMask, MediaPortal.Util.Utils.MakeFileName(sArtist).Trim(), MediaPortal.Util.Utils.MakeFileName(sAlbum).Trim()) + ".png");
+        if (File.Exists(filename))
+          return false;
+        Text = sArtist + " - " + sAlbum;
+        logger.Info("Download: Fanart.TV CD image for " + Text + " (" + filename + ").");
       }
       else
       {
