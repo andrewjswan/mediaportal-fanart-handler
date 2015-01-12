@@ -764,7 +764,7 @@ namespace FanartHandler
         return string.Empty;
 
       var artists = "'" + inputName.Trim() + "'";
-      var strArray = inputName.ToLower().Replace(";", "|").Replace(" ft ", "|").Replace(" feat ", "|").Replace(" and ", "|").Replace(" & ", "|").Replace(",","|").Trim().Split(new char[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
+      var strArray = inputName.ToLower().Replace(";", "|").Replace(" ft ", "|").Replace(" feat ", "|").Replace(" and ", "|").Replace(" & ", "|").Replace(",", "|").Trim().Split(new char[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
 
       foreach (var artist in strArray)
       {
