@@ -1582,8 +1582,10 @@ namespace FanartHandler
             {
                 logger.Info("NowPlayingScrape is starting for Artist(s): " + artist + (string.IsNullOrEmpty(album) ? string.Empty : " - " + album));
 
+                if (artist.ToLower().Contains(" and "))
+                  artist = artist + "|" + artist.ToLower().Replace(" and ", "|");
+
                 var flag = false;
-                // var chArray = new char[2] { '|', ';' };
                 string[] artists = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
                 CurrArtistsBeingScraped = 0.0;
                 TotArtistsBeingScraped = artists.Length * 1.0;

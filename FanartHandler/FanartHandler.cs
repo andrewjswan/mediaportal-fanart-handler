@@ -49,9 +49,9 @@ namespace FanartHandler
     internal int SyncPointRefresh;
     internal int SyncPointScraper;
     private Hashtable defaultBackdropImages;
-    private string m_CurrentAlbumTag;
     private string m_CurrentTitleTag;
     private string m_CurrentTrackTag;
+    private string m_CurrentAlbumTag;
     private string m_CurrentGenreTag;
     private string m_SelectedItem;
     private TimerCallback myScraperTimer;
@@ -909,6 +909,7 @@ namespace FanartHandler
       SetProperty("#fanarthandler.music.artisthumb.play", string.Empty);
       SetProperty("#fanarthandler.music.artistclearart.play", string.Empty);
       SetProperty("#fanarthandler.music.artistbanner.play", string.Empty);
+      SetProperty("#fanarthandler.music.albumcd.play", string.Empty);
       SetProperty("#fanarthandler.music.backdrop1.play", string.Empty);
       SetProperty("#fanarthandler.music.backdrop2.play", string.Empty);
       SetProperty("#fanarthandler.music.backdrop1.selected", string.Empty);
@@ -1239,6 +1240,7 @@ namespace FanartHandler
               SetProperty("#fanarthandler.music.artisthumb.play", string.Empty);
               SetProperty("#fanarthandler.music.artistclearart.play", string.Empty);
               SetProperty("#fanarthandler.music.artistbanner.play", string.Empty);
+              SetProperty("#fanarthandler.music.albumcd.play", string.Empty);
               SetProperty("#fanarthandler.music.overlay.play", string.Empty);
               SetProperty("#fanarthandler.music.backdrop1.play", string.Empty);
               SetProperty("#fanarthandler.music.backdrop2.play", string.Empty);
@@ -1365,6 +1367,7 @@ namespace FanartHandler
           SetProperty("#fanarthandler.music.artisthumb.play", string.Empty);
           SetProperty("#fanarthandler.music.artistclearart.play", string.Empty);
           SetProperty("#fanarthandler.music.artistbanner.play", string.Empty);
+          SetProperty("#fanarthandler.music.albumcd.play", string.Empty);
           SetProperty("#fanarthandler.music.overlay.play", string.Empty);
           SetProperty("#fanarthandler.music.backdrop1.play", string.Empty);
           SetProperty("#fanarthandler.music.backdrop2.play", string.Empty);
@@ -1501,7 +1504,7 @@ namespace FanartHandler
       {
         if (type == g_Player.MediaType.Music || type == g_Player.MediaType.Radio)
         {
-          FanartHandlerSetup.Fh.FP.AddPlayingArtistPropertys(CurrentTrackTag, FP.DoShowImageOnePlay);
+          FanartHandlerSetup.Fh.FP.AddPlayingArtistPropertys(CurrentTrackTag, CurrentAlbumTag, FP.DoShowImageOnePlay);
         }
       }
       catch (Exception ex)
