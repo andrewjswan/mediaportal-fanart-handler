@@ -1406,6 +1406,7 @@ namespace FanartHandler
           MoviesCDArtDownload = settings.GetValueAsBool("FanartTV", "MoviesCDArtDownload", MoviesCDArtDownload);
           MoviesClearLogoDownload = settings.GetValueAsBool("FanartTV", "MoviesClearLogoDownload", MoviesClearLogoDownload);
           MoviesFanartNameAsMediaportal = settings.GetValueAsBool("FanartTV", "MoviesFanartNameAsMediaportal", MoviesFanartNameAsMediaportal);
+          //
           FanartTVLanguage = settings.GetValueAsString("FanartTV", "FanartTVLanguage", FanartTVLanguage);
           FanartTVLanguageToAny = settings.GetValueAsBool("FanartTV", "FanartTVLanguageToAny", FanartTVLanguageToAny);
           //
@@ -1479,25 +1480,26 @@ namespace FanartHandler
           xmlwriter.SetValueAsBool("FanartHandler", "DeleteMissing", DeleteMissing);
           xmlwriter.SetValueAsBool("FanartHandler", "UseHighDefThumbnails", UseHighDefThumbnails);
           xmlwriter.SetValueAsBool("FanartHandler", "UseMinimumResolutionForDownload", UseMinimumResolutionForDownload);
-          // xmlwriter.SetValueAsBool("FanartHandler", "ShowDummyItems", ShowDummyItems);
+          xmlwriter.SetValueAsBool("FanartHandler", "ShowDummyItems", ShowDummyItems);
           //
-          // xmlwriter.SetValueAsBool("Providers", "UseFanartTV", UseFanartTV);
-          // xmlwriter.SetValueAsBool("Providers", "UseHtBackdrops", UseHtBackdrops);
-          // xmlwriter.SetValueAsBool("Providers", "UseLastFM", UseLastFM);
-          // xmlwriter.SetValueAsBool("Providers", "UseCoverArtArchive", UseCoverArtArchive);
+          xmlwriter.SetValueAsBool("Providers", "UseFanartTV", UseFanartTV);
+          xmlwriter.SetValueAsBool("Providers", "UseHtBackdrops", UseHtBackdrops);
+          xmlwriter.SetValueAsBool("Providers", "UseLastFM", UseLastFM);
+          xmlwriter.SetValueAsBool("Providers", "UseCoverArtArchive", UseCoverArtArchive);
           //
-          // xmlwriter.SetValueAsBool("Scraper", "AndSignAsSeparator", AndSignAsSeparator);
+          xmlwriter.SetValueAsBool("Scraper", "AndSignAsSeparator", AndSignAsSeparator);
           //
-          // xmlwriter.SetValueAsBool("FanartTV", "MusicClearArtDownload", MusicClearArtDownload);
-          // xmlwriter.SetValueAsBool("FanartTV", "MusicBannerDownload", MusicBannerDownload);
-          // xmlwriter.SetValueAsBool("FanartTV", "MusicCDArtDownload", MusicCDArtDownload);
-          // xmlwriter.SetValueAsBool("FanartTV", "MoviesClearArtDownload", MoviesClearArtDownload);
-          // xmlwriter.SetValueAsBool("FanartTV", "MoviesBannerDownload", MoviesBannerDownload);
-          // xmlwriter.SetValueAsBool("FanartTV", "MoviesCDArtDownload", MoviesCDArtDownload);
-          // xmlwriter.SetValueAsBool("FanartTV", "MoviesClearLogoDownload", MoviesClearLogoDownload);
+          xmlwriter.SetValueAsBool("FanartTV", "MusicClearArtDownload", MusicClearArtDownload);
+          xmlwriter.SetValueAsBool("FanartTV", "MusicBannerDownload", MusicBannerDownload);
+          xmlwriter.SetValueAsBool("FanartTV", "MusicCDArtDownload", MusicCDArtDownload);
+          xmlwriter.SetValueAsBool("FanartTV", "MoviesClearArtDownload", MoviesClearArtDownload);
+          xmlwriter.SetValueAsBool("FanartTV", "MoviesBannerDownload", MoviesBannerDownload);
+          xmlwriter.SetValueAsBool("FanartTV", "MoviesCDArtDownload", MoviesCDArtDownload);
+          xmlwriter.SetValueAsBool("FanartTV", "MoviesClearLogoDownload", MoviesClearLogoDownload);
           // xmlwriter.SetValueAsBool("FanartTV", "MoviesFanartNameAsMediaportal", MoviesFanartNameAsMediaportal);
-          // xmlwriter.SetValue("FanartTV", "FanartTVLanguage", FanartTVLanguage);
-          // xmlwriter.SetValueAsBool("FanartTV", "FanartTVLanguageToAny", FanartTVLanguageToAny);
+          //
+          xmlwriter.SetValue("FanartTV", "FanartTVLanguage", FanartTVLanguage);
+          xmlwriter.SetValueAsBool("FanartTV", "FanartTVLanguageToAny", FanartTVLanguageToAny);
         } 
         #endregion
         logger.Debug("Save settings to: "+ConfigFilename+" complete.");
