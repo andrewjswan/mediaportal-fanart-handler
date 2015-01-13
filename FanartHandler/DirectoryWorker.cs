@@ -266,8 +266,8 @@ namespace FanartHandler
         if (!type.Equals("All") && !type.Equals("Fanart") && (!type.Equals("Thumbs") && !type.Equals("External")))
           return;
 
-        FanartHandlerConfig.toolStripStatusLabel1.Text = e.UserState.ToString();
-        FanartHandlerConfig.toolStripProgressBar1.Value = e.ProgressPercentage;
+        FanartHandlerConfig.toolStripStatusLabelToolTip.Text = e.UserState.ToString();
+        FanartHandlerConfig.toolStripProgressBar.Value = e.ProgressPercentage;
       }
       catch (Exception ex)
       {
@@ -291,8 +291,8 @@ namespace FanartHandler
         {
           FanartHandlerConfig.UpdateFanartTableOnStartup(0);
           flag = true;
-          // FanartHandlerConfig.toolStripStatusLabel1.Text = "Done / Idle";
-          // FanartHandlerConfig.toolStripProgressBar1.Value = 0;
+          // FanartHandlerConfig.toolStripStatusLabelToolTip.Text = "Done / Idle";
+          // FanartHandlerConfig.toolStripProgressBar.Value = 0;
         }
         if (type.Equals("All") || type.Equals("Thumbs"))
         {
@@ -302,21 +302,21 @@ namespace FanartHandler
             Utils.Category.MusicArtistThumbScraped
           }, 0);
           flag = true;
-          // FanartHandlerConfig.toolStripStatusLabel1.Text = "Done / Idle";
-          // FanartHandlerConfig.toolStripProgressBar1.Value = 0;
+          // FanartHandlerConfig.toolStripStatusLabelToolTip.Text = "Done / Idle";
+          // FanartHandlerConfig.toolStripProgressBar.Value = 0;
         }
         if (type.Equals("All") || type.Equals("External"))
         {
           FanartHandlerConfig.UpdateFanartExternalTable();
           flag = true;
-          // FanartHandlerConfig.toolStripStatusLabel1.Text = "Done / Idle";
-          // FanartHandlerConfig.toolStripProgressBar1.Value = 0;
+          // FanartHandlerConfig.toolStripStatusLabelToolTip.Text = "Done / Idle";
+          // FanartHandlerConfig.toolStripProgressBar.Value = 0;
         }
 
         if (flag)
         {
-          FanartHandlerConfig.toolStripStatusLabel1.Text = "Done / Idle";
-          FanartHandlerConfig.toolStripProgressBar1.Value = 0;
+          FanartHandlerConfig.toolStripStatusLabelToolTip.Text = "Done / Idle";
+          FanartHandlerConfig.toolStripProgressBar.Value = 0;
         }
 
       }
