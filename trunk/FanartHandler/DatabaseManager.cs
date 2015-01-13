@@ -1402,10 +1402,12 @@ namespace FanartHandler
                 AddScapedFanartToAnyHash();
 
                 #region Statistics
-                logger.Info("InitialScrape statistic for Category:");
+                logger.Debug("InitialScrape statistic for Category:");
                 GetCategoryStatistic (true) ;
-                logger.Info("InitialScrape statistic for Provider:");
+                logger.Debug("InitialScrape statistic for Provider:");
                 GetProviderStatistic (true) ;
+                logger.Debug("InitialScrape statistic for Actual Music Fanart/Thumbs:");
+                GetAccessStatistic(true) ;
                 #endregion
 
                 logger.Info("InitialScrape is done.");
@@ -1641,7 +1643,7 @@ namespace FanartHandler
 
                     var SQL = "SELECT DISTINCT Key1, FullPath"+
                                   "FROM Image "+
-                                  "WHERE Category in ('" + ((object) Utils.Category.MusicFanartScraped).ToString() + "','" + Utils.Category.MusicArtistThumbScraped + "') AND "+
+                                  "WHERE Category in ('"+Utils.Category.MusicFanartScraped+"','"+Utils.Category.MusicArtistThumbScraped+"','"+Utils.Category.MusicAlbumThumbScraped+"') AND "+
                                         "Protected = 'False' AND "+
                                         "DummyItem = 'False' AND "+
                                         "Trim(Key1) <> '' AND "+
@@ -2785,6 +2787,42 @@ namespace FanartHandler
             catch (Exception ex)
             {
                 logger.Error("GetProviderStatistic: " + ex);
+            }
+            return res;
+        }
+
+        public string GetAccessStatistic (bool Log = false)
+        {
+            var res = string.Empty;
+
+            try
+            {
+                var SQL = "SELECT 'Actual' as Title, count(Id) as Count "+
+                            "FROM Image "+
+                            "WHERE Category in ('"+Utils.Category.MusicFanartScraped+"','"+Utils.Category.MusicArtistThumbScraped+"','"+Utils.Category.MusicAlbumThumbScraped+"') AND "+
+                                  "Last_Access > '" + DateTime.Today.AddDays(-100.0).ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "' "+
+                          "UNION ALL "+
+                          "SELECT 'Older 100 days' as Title, count(id) as Count "+
+                            "FROM Image "+
+                            "WHERE Category in ('"+Utils.Category.MusicFanartScraped+"','"+Utils.Category.MusicArtistThumbScraped+"','"+Utils.Category.MusicAlbumThumbScraped+"') AND "+
+                                  "Last_Access <= '" + DateTime.Today.AddDays(-100.0).ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "';";
+                SQLiteResultSet sqLiteResultSet;
+                lock (lockObject)
+                    sqLiteResultSet = dbClient.Execute(SQL);
+
+                var i = 0;
+                while (i < sqLiteResultSet.Rows.Count)
+                {
+                    var line = string.Format("{2,3} {0,-15} {1,5}", sqLiteResultSet.GetField(i, 0), sqLiteResultSet.GetField(i, 1), i) ;
+                    res = res + line + System.Environment.NewLine;
+                    if (Log)
+                      logger.Debug(line) ;
+                    checked { ++i; }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error("GetAccessStatistic: " + ex);
             }
             return res;
         }
