@@ -30,6 +30,7 @@ namespace FanartHandler
     private static bool isStopping;
     private static DatabaseManager dbm;
     private const string ConfigFilename = "FanartHandler.xml";
+    private const string ConfigBadArtistsFilename = "FanartHandler.Artists.xml";
 
     public static DateTime LastRefreshRecording { get; set; }
     public static bool Used4TRTV { get; set; }
@@ -1267,24 +1268,29 @@ namespace FanartHandler
     }
 
     #region Settings
-    public static void LoadBadArtists(Settings xmlreader)
+    public static void LoadBadArtists()
     {
-      BadArtistsList = new List<string>() ;  
       try
       {
-        int MaximumShares = 250;
-        for (int index = 0; index < MaximumShares; index++)
+        BadArtistsList = new List<string>() ;
+        logger.Debug("Load Artists from: "+ConfigBadArtistsFilename);
+        using (var xmlreader = new Settings(Config.GetFile((Config.Dir) 10, ConfigBadArtistsFilename)))
         {
-          string Artist = String.Format("artist{0}", index);
-          string ArtistData = xmlreader.GetValueAsString("Artists", Artist, string.Empty);
-          if (!string.IsNullOrEmpty(ArtistData) && (ArtistData.IndexOf("|") > 0) && (ArtistData.IndexOf("|") < ArtistData.Length))
+          int MaximumShares = 250;
+          for (int index = 0; index < MaximumShares; index++)
           {
-            var Left  = ArtistData.Substring(0, ArtistData.IndexOf("|")).ToLower().Trim();
-            var Right = ArtistData.Substring(checked (ArtistData.IndexOf("|") + 1)).ToLower().Trim();
-            // logger.Debug("*** "+ArtistData+" "+Left+" -> "+Right);
-            BadArtistsList.Add(Left+"|"+Right) ;
+            string Artist = String.Format("artist{0}", index);
+            string ArtistData = xmlreader.GetValueAsString("Artists", Artist, string.Empty);
+            if (!string.IsNullOrEmpty(ArtistData) && (ArtistData.IndexOf("|") > 0) && (ArtistData.IndexOf("|") < ArtistData.Length))
+            {
+              var Left  = ArtistData.Substring(0, ArtistData.IndexOf("|")).ToLower().Trim();
+              var Right = ArtistData.Substring(checked (ArtistData.IndexOf("|") + 1)).ToLower().Trim();
+              // logger.Debug("*** "+ArtistData+" "+Left+" -> "+Right);
+              BadArtistsList.Add(Left+"|"+Right) ;
+            }
           }
         }
+        logger.Debug("Load Artists from: "+ConfigBadArtistsFilename+" complete.");
       }
       catch (Exception ex)
       {
@@ -1410,7 +1416,6 @@ namespace FanartHandler
           FanartTVLanguage = settings.GetValueAsString("FanartTV", "FanartTVLanguage", FanartTVLanguage);
           FanartTVLanguageToAny = settings.GetValueAsBool("FanartTV", "FanartTVLanguageToAny", FanartTVLanguageToAny);
           //
-          LoadBadArtists(settings);
         }
         #endregion
         logger.Debug("Load settings from: "+ConfigFilename+" complete.");
@@ -1419,6 +1424,9 @@ namespace FanartHandler
       {
         logger.Error("LoadSettings: "+ex);
       }
+      //
+      LoadBadArtists();
+      //
       #region Check Settings
       DefaultBackdrop = (string.IsNullOrEmpty(DefaultBackdrop) ? Utils.FAHUDMusic : DefaultBackdrop);
       if ((string.IsNullOrEmpty(MusicFoldersArtistAlbumRegex)) || (MusicFoldersArtistAlbumRegex.IndexOf("?<artist>") < 0) || (MusicFoldersArtistAlbumRegex.IndexOf("?<album>") < 0))
@@ -1639,6 +1647,13 @@ namespace FanartHandler
           xmlwriter.RemoveEntry("FanartHandler", "latestMovingPicturesWatched");
           xmlwriter.RemoveEntry("FanartHandler", "latestTVSeriesWatched");
           xmlwriter.RemoveEntry("FanartHandler", "latestTVRecordingsWatched");
+
+          int MaximumShares = 250;
+          for (int index = 0; index < MaximumShares; index++)
+          {
+            xmlwriter.RemoveEntry("Artists", String.Format("artist{0}", index));
+          }
+          // xmlwriter.RemoveSection("Artists");
         }
         catch
         {   }
