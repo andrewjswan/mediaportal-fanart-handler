@@ -120,9 +120,9 @@ namespace FanartHandler
     private static Button button43;
     private static Button button42;
     private static Button button41;
-    private static ProgressBar progressBar2;
-    public static FileSystemWatcher watcher1;
-    public static FileSystemWatcher watcher2;
+    private static ProgressBar progressBarThumbs;
+    public static FileSystemWatcher watcherAlbum;
+    public static FileSystemWatcher watcherArtists;
     private static ScraperThumbWorker myScraperThumbWorker;
     private static bool isScraping;
     private static bool isStopping;
@@ -165,7 +165,7 @@ namespace FanartHandler
     private CheckBox CheckBoxUseMinimumResolutionForDownload;
     private Label label8;
     private Button button6;
-    private ProgressBar progressBar1;
+    private ProgressBar progressBarScraper;
     private ToolStripStatusLabel toolStripStatusLabel;
     public static ToolStripProgressBar toolStripProgressBar;
     public static ToolStripStatusLabel toolStripStatusLabelToolTip;
@@ -180,11 +180,7 @@ namespace FanartHandler
 
     public FanartHandlerConfig()
     {
-      SplashPane.ShowSplashScreen();
       InitializeComponent();
-      Activate();
-      BringToFront();
-      Focus();
     }
 
     protected override void Dispose(bool disposing)
@@ -193,6 +189,7 @@ namespace FanartHandler
       {
         isStopping = true;
         StopScraper();
+        StopThumbScraper("True");
         Utils.GetDbm().Close();
       }
       catch { }
@@ -203,8 +200,8 @@ namespace FanartHandler
 
     private void InitializeComponent()
     {
-      // var componentResourceManager = new ComponentResourceManager(typeof (FanartHandlerConfig));
       this.components = new System.ComponentModel.Container();
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FanartHandlerConfig));
       this.buttonDeleteUserManaged = new System.Windows.Forms.Button();
       this.buttonDeleteAllUserManaged = new System.Windows.Forms.Button();
       this.button20 = new System.Windows.Forms.Button();
@@ -265,7 +262,7 @@ namespace FanartHandler
       this.label33 = new System.Windows.Forms.Label();
       this.pictureBox9 = new System.Windows.Forms.PictureBox();
       this.label32 = new System.Windows.Forms.Label();
-      progressBar2 = new System.Windows.Forms.ProgressBar();
+      progressBarThumbs = new System.Windows.Forms.ProgressBar();
       dataGridViewThumbs = new System.Windows.Forms.DataGridView();
       this.tabPage1 = new System.Windows.Forms.TabPage();
       this.tabControl2 = new System.Windows.Forms.TabControl();
@@ -314,7 +311,7 @@ namespace FanartHandler
       this.groupBoxProviders = new System.Windows.Forms.GroupBox();
       this.label8 = new System.Windows.Forms.Label();
       this.button6 = new System.Windows.Forms.Button();
-      this.progressBar1 = new System.Windows.Forms.ProgressBar();
+      this.progressBarScraper = new System.Windows.Forms.ProgressBar();
       this.checkBoxCoverArtArchive = new System.Windows.Forms.CheckBox();
       this.checkBoxLastFM = new System.Windows.Forms.CheckBox();
       this.checkBoxHtBackdrops = new System.Windows.Forms.CheckBox();
@@ -1018,7 +1015,7 @@ namespace FanartHandler
       this.tabPage22.Controls.Add(this.label33);
       this.tabPage22.Controls.Add(this.pictureBox9);
       this.tabPage22.Controls.Add(this.label32);
-      this.tabPage22.Controls.Add(progressBar2);
+      this.tabPage22.Controls.Add(progressBarThumbs);
       this.tabPage22.Controls.Add(dataGridViewThumbs);
       this.tabPage22.Location = new System.Drawing.Point(4, 22);
       this.tabPage22.Name = "tabPage22";
@@ -1096,13 +1093,13 @@ namespace FanartHandler
       this.label32.TabIndex = 9;
       this.label32.Text = "Thumb Scraper Progress";
       // 
-      // progressBar2
+      // progressBarThumbs
       // 
-      progressBar2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      progressBar2.Location = new System.Drawing.Point(6, 406);
-      progressBar2.Name = "progressBar2";
-      progressBar2.Size = new System.Drawing.Size(383, 18);
-      progressBar2.TabIndex = 10;
+      progressBarThumbs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      progressBarThumbs.Location = new System.Drawing.Point(6, 406);
+      progressBarThumbs.Name = "progressBarThumbs";
+      progressBarThumbs.Size = new System.Drawing.Size(383, 18);
+      progressBarThumbs.TabIndex = 10;
       // 
       // dataGridViewThumbs
       // 
@@ -1712,7 +1709,7 @@ namespace FanartHandler
       // 
       this.groupBoxProviders.Controls.Add(this.label8);
       this.groupBoxProviders.Controls.Add(this.button6);
-      this.groupBoxProviders.Controls.Add(this.progressBar1);
+      this.groupBoxProviders.Controls.Add(this.progressBarScraper);
       this.groupBoxProviders.Controls.Add(this.checkBoxCoverArtArchive);
       this.groupBoxProviders.Controls.Add(this.checkBoxLastFM);
       this.groupBoxProviders.Controls.Add(this.checkBoxHtBackdrops);
@@ -1747,13 +1744,13 @@ namespace FanartHandler
       this.button6.UseVisualStyleBackColor = true;
       this.button6.Click += new EventHandler(button6_Click);
       // 
-      // progressBar1
+      // progressBarScraper
       // 
-      this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.progressBar1.Location = new System.Drawing.Point(18, 162);
-      this.progressBar1.Name = "progressBar1";
-      this.progressBar1.Size = new System.Drawing.Size(393, 18);
-      this.progressBar1.TabIndex = 17;
+      this.progressBarScraper.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.progressBarScraper.Location = new System.Drawing.Point(18, 162);
+      this.progressBarScraper.Name = "progressBarScraper";
+      this.progressBarScraper.Size = new System.Drawing.Size(393, 18);
+      this.progressBarScraper.TabIndex = 17;
       // 
       // checkBoxCoverArtArchive
       // 
@@ -1916,16 +1913,16 @@ namespace FanartHandler
       // 
       // FanartHandlerConfig
       // 
-      this.ClientSize = new System.Drawing.Size(978, 562);
+      this.ClientSize = new System.Drawing.Size(995, 600);
       this.Controls.Add(this.statusStripFanart);
       this.Controls.Add(this.tabControl1);
       this.DoubleBuffered = true;
+      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.MinimizeBox = false;
-      this.MinimumSize = new System.Drawing.Size(800, 600);
+      this.MinimumSize = new System.Drawing.Size(995, 600);
       this.Name = "FanartHandlerConfig";
       this.StartPosition = System.Windows.Forms.FormStartPosition.WindowsDefaultBounds;
       this.Text = "Fanart Handler";
-      // this.TopMost = true;
       this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FanartHandlerConfig_FormClosing);
       this.Load += new System.EventHandler(this.FanartHandlerConfig_Load);
       this.tabPage13.ResumeLayout(false);
@@ -2097,13 +2094,10 @@ namespace FanartHandler
         return;
 
       var dialogResult = MessageBox.Show("Do you want to save your changes?", "Save Changes?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
+
       StopScraper();
-      // if (MyDirectoryWorker != null)
-      // {
-      //  MyDirectoryWorker.CancelAsync();
-      //  MyDirectoryWorker.Dispose();
-      // }
       StopThumbScraper("True");
+
       if (dialogResult == DialogResult.Yes)
         DoSave();
       logger.Info("Fanart Handler configuration is stopped.");
@@ -2112,6 +2106,7 @@ namespace FanartHandler
 
     private void FanartHandlerConfig_Load(object sender, EventArgs e)
     {
+      SplashPane.ShowSplashScreen();
       Utils.DelayStop = new Hashtable();
       SplashPane.IncrementProgressBar(5);
       SyncPointTableUpdate = 0;
@@ -2407,7 +2402,7 @@ namespace FanartHandler
       //
       try
       {
-        SplashPane.IncrementProgressBar(85);
+        SplashPane.IncrementProgressBar(80);
         logger.Info("Loading external managed fanart tables...");
         myDataTableExternal = new DataTable();
         myDataTableExternal.Columns.Add("Category");
@@ -2436,12 +2431,15 @@ namespace FanartHandler
         dataGridViewExternal.DataSource = myDataTableExternal;
         dataGridViewExternal.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
       }
-      SplashPane.IncrementProgressBar(100);
+      SplashPane.IncrementProgressBar(90);
       Thread.Sleep(200);
+      SplashPane.IncrementProgressBar(100);
       SplashPane.CloseForm();
       logger.Info("Fanart Handler configuration is started.");
       logger.Debug("Current Culture: {0}", CultureInfo.CurrentCulture.Name);
       InitComplete = true ;
+      this.BringToFront();
+      this.Activate();
     }
 
     private static void FilterThumbGrid(int startCount)
@@ -3146,9 +3144,9 @@ namespace FanartHandler
           button5.Enabled = false;
           button9.Enabled = false;
           button10.Enabled = false;
-          progressBar1.Minimum = 0;
-          progressBar1.Maximum = 0;
-          progressBar1.Value = 0;
+          progressBarScraper.Minimum = 0;
+          progressBarScraper.Maximum = 0;
+          progressBarScraper.Value = 0;
           UpdateScraperTimer();
           new Thread(new ThreadStart(AddToDataGridView)).Start();
           dataGridViewFanart.Enabled = true;
@@ -3166,9 +3164,9 @@ namespace FanartHandler
           button9.Enabled = true;
           button10.Enabled = true;
           Utils.GetDbm().StopScraper = false;
-          progressBar1.Minimum = 0;
-          progressBar1.Maximum = 0;
-          progressBar1.Value = 0;
+          progressBarScraper.Minimum = 0;
+          progressBarScraper.Maximum = 0;
+          progressBarScraper.Value = 0;
           dataGridViewFanart.Enabled = true;
         }
       }
@@ -3229,26 +3227,27 @@ namespace FanartHandler
             button44.Text = "Stop Scraper";
             button43.Enabled = false;
           }
+
           button41.Enabled = false;
           button42.Enabled = false;
-          progressBar2.Minimum = 0;
-          progressBar2.Maximum = 0;
-          progressBar2.Value = 0;
+          progressBarThumbs.Minimum = 0;
+          progressBarThumbs.Maximum = 0;
+          progressBarThumbs.Value = 0;
           oMissing = onlyMissing;
-          watcher1 = new FileSystemWatcher();
+          watcherAlbum = new FileSystemWatcher();
           // var str1 = Config.GetFolder((Config.Dir) 6) + "\\Music\\Albums";
-          watcher1.Path = Utils.FAHMusicAlbums;
-          watcher1.Filter = "*L.jpg";
-          watcher1.Created += new FileSystemEventHandler(FileWatcher_Created);
-          watcher1.IncludeSubdirectories = false;
-          watcher1.EnableRaisingEvents = true;
-          watcher2 = new FileSystemWatcher();
+          watcherAlbum.Path = Utils.FAHMusicAlbums;
+          watcherAlbum.Filter = "*L.jpg";
+          watcherAlbum.Created += new FileSystemEventHandler(FileWatcher_Created);
+          watcherAlbum.IncludeSubdirectories = false;
+          watcherAlbum.EnableRaisingEvents = true;
+          watcherArtists = new FileSystemWatcher();
           // var str2 = Config.GetFolder((Config.Dir) 6) + "\\Music\\Artists";
-          watcher2.Path = Utils.FAHMusicArtists;
-          watcher2.Filter = "*L.jpg";
-          watcher2.Created += new FileSystemEventHandler(FileWatcher_Created);
-          watcher2.IncludeSubdirectories = false;
-          watcher2.EnableRaisingEvents = true;
+          watcherArtists.Path = Utils.FAHMusicArtists;
+          watcherArtists.Filter = "*L.jpg";
+          watcherArtists.Created += new FileSystemEventHandler(FileWatcher_Created);
+          watcherArtists.IncludeSubdirectories = false;
+          watcherArtists.EnableRaisingEvents = true;
           UpdateScraperThumbTimer(onlyMissing);
           dataGridViewThumbs.Enabled = true;
         }
@@ -3259,6 +3258,7 @@ namespace FanartHandler
           else
             button44.Text = "Scrape for all Artist/Album Thumbnails";
           dataGridViewThumbs.Enabled = false;
+
           StopThumbScraper(onlyMissing);
           isScraping = false;
           button41.Enabled = true;
@@ -3266,9 +3266,9 @@ namespace FanartHandler
           button43.Enabled = true;
           button44.Enabled = true;
           Utils.GetDbm().StopScraper = false;
-          progressBar2.Minimum = 0;
-          progressBar2.Maximum = 0;
-          progressBar2.Value = 0;
+          progressBarThumbs.Minimum = 0;
+          progressBarThumbs.Maximum = 0;
+          progressBarThumbs.Value = 0;
           dataGridViewThumbs.Enabled = true;
         }
       }
@@ -3277,11 +3277,6 @@ namespace FanartHandler
         logger.Error("StartThumbsScrape: " + ex);
         dataGridViewThumbs.Enabled = true;
       }
-    }
-
-    public static ProgressBar GetProgressBar2()
-    {
-      return progressBar2;
     }
 
     public static void FileWatcher_Created(object source, FileSystemEventArgs e)
@@ -3306,9 +3301,9 @@ namespace FanartHandler
         UpdateFanartTable();
         Thread.Sleep(3000);
       }
-      progressBar1.Minimum = 0;
-      progressBar1.Maximum = 1;
-      progressBar1.Value = 1;
+      progressBarScraper.Minimum = 0;
+      progressBarScraper.Maximum = 1;
+      progressBarScraper.Value = 1;
       Thread.Sleep(1000);
       StopScraper();
       UpdateFanartTableOnStartup(1);
@@ -3343,9 +3338,9 @@ namespace FanartHandler
           /*
           dataGridViewThumbs.Sort(dataGridViewThumbs.Columns["Artist"], ListSortDirection.Ascending);
           */
-          progressBar2.Minimum = 0;
-          progressBar2.Maximum = Convert.ToInt32(Utils.GetDbm().TotArtistsBeingScraped);
-          progressBar2.Value = (Convert.ToInt32(Utils.GetDbm().CurrArtistsBeingScraped) >= progressBar2.Maximum) ? progressBar2.Maximum : Convert.ToInt32(Utils.GetDbm().CurrArtistsBeingScraped) ;
+          progressBarThumbs.Minimum = 0;
+          progressBarThumbs.Maximum = Convert.ToInt32(Utils.GetDbm().TotArtistsBeingScraped);
+          progressBarThumbs.Value = (Convert.ToInt32(Utils.GetDbm().CurrArtistsBeingScraped) >= progressBarThumbs.Maximum) ? progressBarThumbs.Maximum : Convert.ToInt32(Utils.GetDbm().CurrArtistsBeingScraped) ;
         }
       }
       catch (Exception ex)
@@ -3502,10 +3497,10 @@ namespace FanartHandler
           }
           var maxP = Convert.ToInt32(Utils.GetDbm().TotArtistsBeingScraped);
           var curP = Convert.ToInt32(Utils.GetDbm().CurrArtistsBeingScraped);
-          progressBar1.Minimum = 0;
-          progressBar1.Maximum = maxP;
+          progressBarScraper.Minimum = 0;
+          progressBarScraper.Maximum = maxP;
           if (curP > maxP) curP = maxP;
-          progressBar1.Value = curP;
+          progressBarScraper.Value = curP;
         }
       }
       catch (Exception ex)
@@ -3704,6 +3699,13 @@ namespace FanartHandler
     {
       try
       {
+        if (progressBarThumbs != null)
+        {
+          progressBarThumbs.Minimum = 0;
+          progressBarThumbs.Maximum = 1;
+          progressBarThumbs.Value = 1;
+        }
+
         if (onlyMissing.Equals("True"))
         {
           if (button43 != null)
@@ -3711,12 +3713,14 @@ namespace FanartHandler
         }
         else if (button44 != null)
           button44.Enabled = false;
+
         Utils.GetDbm().StopScraper = true;
         if (myScraperThumbWorker != null)
         {
           myScraperThumbWorker.CancelAsync();
           myScraperThumbWorker.Dispose();
         }
+
         Thread.Sleep(3000);
         isScraping = false;
         if (Utils.GetDbm() != null)
@@ -3725,20 +3729,9 @@ namespace FanartHandler
           Utils.GetDbm().CurrArtistsBeingScraped = 0.0;
           Utils.GetDbm().StopScraper = false;
         }
-        if (progressBar2 != null)
-          progressBar2.Value = 0;
-        if (onlyMissing.Equals("True"))
-        {
-          if (button43 != null)
-            button43.Enabled = true;
-        }
-        else if (button44 != null)
-          button44.Enabled = true;
-        button41.Enabled = true;
-        button42.Enabled = true;
-        button43.Enabled = true;
-        button44.Enabled = true;
+
         FilterThumbGrid(0);
+
         if (onlyMissing.Equals("True"))
         {
           if (button43 != null)
@@ -3746,6 +3739,23 @@ namespace FanartHandler
         }
         else if (button44 != null)
           button44.Text = "Scrape for all Artist/Album Thumbnails";
+
+        if (progressBarThumbs != null)
+          progressBarThumbs.Value = 0;
+
+        if (button41 != null)
+          button41.Enabled = true;
+        if (button42 != null)
+          button42.Enabled = true;
+        if (button43 != null)
+          button43.Enabled = true;
+        if (button44 != null)
+          button44.Enabled = true;
+
+        if (watcherAlbum != null)
+          watcherAlbum.Created -= new FileSystemEventHandler(FanartHandlerConfig.FileWatcher_Created);
+        if (watcherArtists != null)
+          watcherArtists.Created -= new FileSystemEventHandler(FanartHandlerConfig.FileWatcher_Created);
       }
       catch (Exception ex)
       {
@@ -3757,15 +3767,18 @@ namespace FanartHandler
     {
       try
       {
+        Utils.GetDbm().StopScraper = true;
+
         if (button6 != null)
           button6.Enabled = false;
-        Utils.GetDbm().StopScraper = true;
+
         if (myScraperWorker != null)
         {
           myScraperWorker.CancelAsync();
           myScraperWorker.Dispose();
         }
-        Thread.Sleep(5000);
+        Thread.Sleep(3000);
+
         isScraping = false;
         if (Utils.GetDbm() != null)
         {
@@ -3773,23 +3786,46 @@ namespace FanartHandler
           Utils.GetDbm().CurrArtistsBeingScraped = 0.0;
           Utils.GetDbm().StopScraper = false;
         }
-        if (progressBar1 != null)
-          progressBar1.Value = 0;
-        if (button6 != null)
-          button6.Enabled = true;
-        UpdateThumbnailTableOnStartup(new Utils.Category[2]
+
+        var category = new Utils.Category[2];
+        if (comboBox1.SelectedItem.ToString().Equals("Artists and Albums"))
         {
-          Utils.Category.MusicAlbumThumbScraped,
-          Utils.Category.MusicArtistThumbScraped
-        }, 0);
+          category[0] = Utils.Category.MusicAlbumThumbScraped;
+          category[1] = Utils.Category.MusicArtistThumbScraped;
+        }
+        else if (comboBox1.SelectedItem.ToString().Equals("Albums"))
+          category = new Utils.Category[1]
+          {
+            Utils.Category.MusicAlbumThumbScraped
+          };
+        else if (comboBox1.SelectedItem.ToString().Equals("Artists"))
+          category = new Utils.Category[1]
+          {
+            Utils.Category.MusicArtistThumbScraped
+          };
+        UpdateFanartTableOnStartup(1);
+        UpdateThumbnailTableOnStartup(category, 0);
+
+        if (progressBarScraper != null)
+          progressBarScraper.Value = 0;
+
+        if (button2 != null)
         button2.Enabled = true;
+        if (button3 != null)
         button3.Enabled = true;
+        if (button4 != null)
         button4.Enabled = true;
+        if (button5 != null)
         button5.Enabled = true;
+        if (button9 != null)
         button9.Enabled = true;
+        if (button10 != null)
         button10.Enabled = true;
         if (button6 != null)
+        {
+          button6.Enabled = true;
           button6.Text = "Start Scraper [S]";
+        }
       }
       catch (Exception ex)
       {
@@ -4296,10 +4332,10 @@ namespace FanartHandler
 
     private void timerProgress_Tick(object sender, EventArgs e)
     {
-        if (progressBar1.Maximum != 0)
+        if (progressBarScraper.Maximum != 0)
         {
-          toolStripProgressBar.Maximum = progressBar1.Maximum;
-          toolStripProgressBar.Value = progressBar1.Value;
+          toolStripProgressBar.Maximum = progressBarScraper.Maximum;
+          toolStripProgressBar.Value = progressBarScraper.Value;
         }
         var i = Convert.ToInt32(toolStripProgressBar.Value/toolStripProgressBar.Maximum*100.0);
         toolStripStatusLabel.Text = (i == 0) ? "-" : i.ToString()+"%";

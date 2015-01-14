@@ -16,10 +16,9 @@ namespace FanartHandler
   {
     private static SplashPane splash;
     private static Thread oThread;
-    // private IContainer components;
-    private Label label1;
+    private Label labelName;
     private ProgressBar progressBar;
-    private Label statusLabel;
+    private Label labelStatus;
 
     static SplashPane()
     {
@@ -50,6 +49,7 @@ namespace FanartHandler
     {
       if (splash != null)
         return;
+
       oThread = new Thread(new ThreadStart(ShowForm));
       oThread.IsBackground = true;
       oThread.Start();
@@ -57,65 +57,72 @@ namespace FanartHandler
 
     public static void IncrementProgressBar(int value)
     {
-      splash.progressBar.Value = value;
-    }
-
-    private void label1_Click(object sender, EventArgs e)
-    {
+        if (splash == null)
+            return; 
+        splash.progressBar.Value = value;
     }
 
     protected override void Dispose(bool disposing)
     {
-      // if (disposing && components != null)
-      //  components.Dispose();
       base.Dispose(disposing);
     }
 
     private void InitializeComponent()
     {
-      label1 = new Label();
-      progressBar = new ProgressBar();
-      statusLabel = new Label();
-      SuspendLayout();
-      label1.AutoSize = true;
-      label1.BackColor = Color.Transparent;
-      label1.Font = new Font("Tahoma", 27.75f, FontStyle.Regular, GraphicsUnit.Point, 0);
-      label1.ForeColor = Color.White;
-      label1.Location = new Point(4, 27);
-      label1.Name = "label1";
-      label1.Size = new Size(260, 45);
-      label1.TabIndex = 4;
-      label1.Text = "Fanart Handler";
-      label1.Click += new EventHandler(label1_Click);
-      progressBar.BackColor = Color.Gainsboro;
-      progressBar.Location = new Point(12, 95);
-      progressBar.Name = "progressBar";
-      progressBar.Size = new Size(256, 10);
-      progressBar.Style = ProgressBarStyle.Continuous;
-      progressBar.TabIndex = 7;
-      statusLabel.AutoSize = true;
-      statusLabel.BackColor = Color.Transparent;
-      statusLabel.Font = new Font("Microsoft Sans Serif", 9.75f, FontStyle.Regular, GraphicsUnit.Point, 0);
-      statusLabel.ForeColor = Color.White;
-      statusLabel.Location = new Point(10, 72);
-      statusLabel.Name = "statusLabel";
-      statusLabel.Size = new Size(74, 16);
-      statusLabel.TabIndex = 8;
-      statusLabel.Text = "Initializing...";
-      AutoScaleDimensions = new SizeF(6f, 13f);
-      AutoScaleMode = AutoScaleMode.Font;
-      BackColor = Color.White;
-      BackgroundImage = Resources.splash_small;
-      ClientSize = new Size(505, 123);
-      Controls.Add(progressBar);
-      Controls.Add(statusLabel);
-      Controls.Add(label1);
-      FormBorderStyle = FormBorderStyle.None;
-      Name = "SplashPane";
-      ShowInTaskbar = false;
-      StartPosition = FormStartPosition.CenterScreen;
-      ResumeLayout(false);
-      PerformLayout();
+        this.labelName = new System.Windows.Forms.Label();
+        this.progressBar = new System.Windows.Forms.ProgressBar();
+        this.labelStatus = new System.Windows.Forms.Label();
+        this.SuspendLayout();
+        // 
+        // labelName
+        // 
+        this.labelName.AutoSize = true;
+        this.labelName.BackColor = System.Drawing.Color.Transparent;
+        this.labelName.Font = new System.Drawing.Font("Tahoma", 27.75F);
+        this.labelName.ForeColor = System.Drawing.Color.White;
+        this.labelName.Location = new System.Drawing.Point(4, 27);
+        this.labelName.Name = "labelName";
+        this.labelName.Size = new System.Drawing.Size(260, 45);
+        this.labelName.TabIndex = 4;
+        this.labelName.Text = "Fanart Handler";
+        // 
+        // progressBar
+        // 
+        this.progressBar.BackColor = System.Drawing.Color.Gainsboro;
+        this.progressBar.Location = new System.Drawing.Point(12, 95);
+        this.progressBar.Name = "progressBar";
+        this.progressBar.Size = new System.Drawing.Size(287, 10);
+        this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+        this.progressBar.TabIndex = 7;
+        // 
+        // labelStatus
+        // 
+        this.labelStatus.AutoSize = true;
+        this.labelStatus.BackColor = System.Drawing.Color.Transparent;
+        this.labelStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F);
+        this.labelStatus.ForeColor = System.Drawing.Color.White;
+        this.labelStatus.Location = new System.Drawing.Point(10, 72);
+        this.labelStatus.Name = "labelStatus";
+        this.labelStatus.Size = new System.Drawing.Size(74, 16);
+        this.labelStatus.TabIndex = 8;
+        this.labelStatus.Text = "Initializing...";
+        // 
+        // SplashPane
+        // 
+        this.BackgroundImage = global::FanartHandler.Properties.Resources.splash_small;
+        this.ClientSize = new System.Drawing.Size(505, 123);
+        this.Controls.Add(this.progressBar);
+        this.Controls.Add(this.labelStatus);
+        this.Controls.Add(this.labelName);
+        this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+        this.MaximizeBox = false;
+        this.MinimizeBox = false;
+        this.Name = "SplashPane";
+        this.ShowIcon = false;
+        this.ShowInTaskbar = false;
+        this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+        this.ResumeLayout(false);
+        this.PerformLayout();
     }
 
     private delegate object PropertySetDelegate(object obj, object[] parameters);

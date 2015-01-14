@@ -71,12 +71,7 @@ namespace FanartHandler
           Utils.GetDbm().TotArtistsBeingScraped = 0.0;
           Utils.GetDbm().CurrArtistsBeingScraped = 0.0;
         }
-        FanartHandlerConfig.GetProgressBar2().Minimum = 0;
-        FanartHandlerConfig.GetProgressBar2().Maximum = 1;
-        FanartHandlerConfig.GetProgressBar2().Value = 1;
         FanartHandlerConfig.StopThumbScraper(FanartHandlerConfig.oMissing);
-        FanartHandlerConfig.watcher1.Created -= new FileSystemEventHandler(FanartHandlerConfig.FileWatcher_Created);
-        FanartHandlerConfig.watcher2.Created -= new FileSystemEventHandler(FanartHandlerConfig.FileWatcher_Created);
       }
       catch (Exception ex)
       {

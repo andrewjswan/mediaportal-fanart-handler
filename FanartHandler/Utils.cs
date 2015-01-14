@@ -1647,7 +1647,11 @@ namespace FanartHandler
           xmlwriter.RemoveEntry("FanartHandler", "latestMovingPicturesWatched");
           xmlwriter.RemoveEntry("FanartHandler", "latestTVSeriesWatched");
           xmlwriter.RemoveEntry("FanartHandler", "latestTVRecordingsWatched");
-
+        }
+        catch
+        {   }
+        try
+        {
           int MaximumShares = 250;
           for (int index = 0; index < MaximumShares; index++)
           {
