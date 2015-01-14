@@ -287,30 +287,26 @@ namespace FanartHandler
         if (type == null)
           return;
 
+        FanartHandlerConfig F = new FanartHandlerConfig();
+
         if (type.Equals("All") || type.Equals("Fanart"))
         {
-          FanartHandlerConfig.UpdateFanartTableOnStartup(0);
+          F.UpdateFanartTableOnStartup(0);
           flag = true;
-          // FanartHandlerConfig.toolStripStatusLabelToolTip.Text = "Done / Idle";
-          // FanartHandlerConfig.toolStripProgressBar.Value = 0;
         }
         if (type.Equals("All") || type.Equals("Thumbs"))
         {
-          FanartHandlerConfig.UpdateThumbnailTableOnStartup(new Utils.Category[2]
+          F.UpdateThumbnailTableOnStartup(new Utils.Category[2]
           {
             Utils.Category.MusicAlbumThumbScraped,
             Utils.Category.MusicArtistThumbScraped
           }, 0);
           flag = true;
-          // FanartHandlerConfig.toolStripStatusLabelToolTip.Text = "Done / Idle";
-          // FanartHandlerConfig.toolStripProgressBar.Value = 0;
         }
         if (type.Equals("All") || type.Equals("External"))
         {
-          FanartHandlerConfig.UpdateFanartExternalTable();
+          F.UpdateFanartExternalTable();
           flag = true;
-          // FanartHandlerConfig.toolStripStatusLabelToolTip.Text = "Done / Idle";
-          // FanartHandlerConfig.toolStripProgressBar.Value = 0;
         }
 
         if (flag)
