@@ -34,7 +34,7 @@ namespace FanartHandler
     private TabPage tabPage13;
     private Button button18;
     private Button button19;
-    private Button button20;
+    private Button buttonRandomSwitch;
     private Button buttonDeleteAllUserManaged;
     private PictureBox pictureBox5;
     private Button buttonDeleteUserManaged;
@@ -112,15 +112,15 @@ namespace FanartHandler
     private Button button9;
     private Button button10;
     private StatusStrip statusStripFanart;
-    private static ComboBox comboBox3;
-    private static ComboBox comboBox1;
-    private static Button button44;
+    private ComboBox comboBox3;
+    private ComboBox comboBox1;
+    private Button button44;
     private Button buttonChMBID;
     private Button buttonChFanartMBID;
-    private static Button button43;
-    private static Button button42;
-    private static Button button41;
-    private static ProgressBar progressBarThumbs;
+    private Button button43;
+    private Button button42;
+    private Button button41;
+    private ProgressBar progressBarThumbs;
     public static FileSystemWatcher watcherAlbum;
     public static FileSystemWatcher watcherArtists;
     private static ScraperThumbWorker myScraperThumbWorker;
@@ -129,13 +129,13 @@ namespace FanartHandler
     public static string oMissing;
     internal static int SyncPointTableUpdate;
     private static int lastID;
-    private static DataGridView dataGridViewFanart;
-    private static DataGridView dataGridViewThumbs;
-    private static DataGridView dataGridViewUserManaged;
-    private static DataGridView dataGridViewExternal;
-    private static DataTable myDataTableFanart;
-    private static DataTable myDataTableThumbs;
-    private static DataTable myDataTableExternal;
+    private DataGridView dataGridViewFanart;
+    private DataGridView dataGridViewThumbs;
+    private DataGridView dataGridViewUserManaged;
+    private DataGridView dataGridViewExternal;
+    private DataTable myDataTableFanart;
+    private DataTable myDataTableThumbs;
+    private DataTable myDataTableExternal;
     private DataTable myDataTableUserManaged;
     private ScraperWorker myScraperWorker;
     private int myDataTableThumbsCount;
@@ -172,6 +172,8 @@ namespace FanartHandler
     private ToolTip toolTip;
     private System.Windows.Forms.Timer timerProgress;
     private int myDataTableFanartCount;
+    private Button button11;
+    private Button button12;
     private static bool InitComplete = false ;
 
     static FanartHandlerConfig()
@@ -204,17 +206,17 @@ namespace FanartHandler
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FanartHandlerConfig));
       this.buttonDeleteUserManaged = new System.Windows.Forms.Button();
       this.buttonDeleteAllUserManaged = new System.Windows.Forms.Button();
-      this.button20 = new System.Windows.Forms.Button();
+      this.buttonRandomSwitch = new System.Windows.Forms.Button();
       this.button19 = new System.Windows.Forms.Button();
       this.button18 = new System.Windows.Forms.Button();
       this.checkBoxEnableVideoFanart = new System.Windows.Forms.CheckBox();
-      button41 = new System.Windows.Forms.Button();
-      button42 = new System.Windows.Forms.Button();
-      button43 = new System.Windows.Forms.Button();
-      button44 = new System.Windows.Forms.Button();
+      this.button41 = new System.Windows.Forms.Button();
+      this.button42 = new System.Windows.Forms.Button();
+      this.button43 = new System.Windows.Forms.Button();
+      this.button44 = new System.Windows.Forms.Button();
       this.buttonChMBID = new System.Windows.Forms.Button();
       this.buttonChFanartMBID = new System.Windows.Forms.Button();
-      comboBox1 = new System.Windows.Forms.ComboBox();
+      this.comboBox1 = new System.Windows.Forms.ComboBox();
       this.button39 = new System.Windows.Forms.Button();
       this.checkBox1 = new System.Windows.Forms.CheckBox();
       this.checkBox8 = new System.Windows.Forms.CheckBox();
@@ -251,19 +253,20 @@ namespace FanartHandler
       this.label2 = new System.Windows.Forms.Label();
       this.comboBox2 = new System.Windows.Forms.ComboBox();
       this.pictureBox5 = new System.Windows.Forms.PictureBox();
-      dataGridViewUserManaged = new System.Windows.Forms.DataGridView();
+      this.dataGridViewUserManaged = new System.Windows.Forms.DataGridView();
       this.tabControl6 = new System.Windows.Forms.TabControl();
       this.tabPage21 = new System.Windows.Forms.TabPage();
       this.groupBox10 = new System.Windows.Forms.GroupBox();
       this.tabPage22 = new System.Windows.Forms.TabPage();
+      this.button11 = new System.Windows.Forms.Button();
       this.button8 = new System.Windows.Forms.Button();
       this.buttonNext = new System.Windows.Forms.Button();
       this.label34 = new System.Windows.Forms.Label();
       this.label33 = new System.Windows.Forms.Label();
       this.pictureBox9 = new System.Windows.Forms.PictureBox();
       this.label32 = new System.Windows.Forms.Label();
-      progressBarThumbs = new System.Windows.Forms.ProgressBar();
-      dataGridViewThumbs = new System.Windows.Forms.DataGridView();
+      this.progressBarThumbs = new System.Windows.Forms.ProgressBar();
+      this.dataGridViewThumbs = new System.Windows.Forms.DataGridView();
       this.tabPage1 = new System.Windows.Forms.TabPage();
       this.tabControl2 = new System.Windows.Forms.TabControl();
       this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -283,13 +286,13 @@ namespace FanartHandler
       this.button10 = new System.Windows.Forms.Button();
       this.label30 = new System.Windows.Forms.Label();
       this.pictureBox1 = new System.Windows.Forms.PictureBox();
-      dataGridViewFanart = new System.Windows.Forms.DataGridView();
+      this.dataGridViewFanart = new System.Windows.Forms.DataGridView();
       this.tabPage3 = new System.Windows.Forms.TabPage();
       this.tabPage4 = new System.Windows.Forms.TabPage();
       this.label4 = new System.Windows.Forms.Label();
-      comboBox3 = new System.Windows.Forms.ComboBox();
+      this.comboBox3 = new System.Windows.Forms.ComboBox();
       this.pictureBox2 = new System.Windows.Forms.PictureBox();
-      dataGridViewExternal = new System.Windows.Forms.DataGridView();
+      this.dataGridViewExternal = new System.Windows.Forms.DataGridView();
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPage8 = new System.Windows.Forms.TabPage();
       this.groupBoxGUI = new System.Windows.Forms.GroupBox();
@@ -328,15 +331,16 @@ namespace FanartHandler
       toolStripStatusLabelToolTip = new System.Windows.Forms.ToolStripStatusLabel();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.timerProgress = new System.Windows.Forms.Timer(this.components);
+      this.button12 = new System.Windows.Forms.Button();
       this.tabPage13.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(dataGridViewUserManaged)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.dataGridViewUserManaged)).BeginInit();
       this.tabControl6.SuspendLayout();
       this.tabPage21.SuspendLayout();
       this.groupBox10.SuspendLayout();
       this.tabPage22.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(dataGridViewThumbs)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.dataGridViewThumbs)).BeginInit();
       this.tabPage1.SuspendLayout();
       this.tabControl2.SuspendLayout();
       this.tabPage2.SuspendLayout();
@@ -347,11 +351,11 @@ namespace FanartHandler
       this.tabPage6.SuspendLayout();
       this.tabPage7.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(dataGridViewFanart)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.dataGridViewFanart)).BeginInit();
       this.tabPage3.SuspendLayout();
       this.tabPage4.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(dataGridViewExternal)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.dataGridViewExternal)).BeginInit();
       this.tabControl1.SuspendLayout();
       this.tabPage8.SuspendLayout();
       this.groupBoxGUI.SuspendLayout();
@@ -366,18 +370,19 @@ namespace FanartHandler
       // buttonDeleteUserManaged
       // 
       this.buttonDeleteUserManaged.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.buttonDeleteUserManaged.Location = new System.Drawing.Point(575, 398);
+      this.buttonDeleteUserManaged.Location = new System.Drawing.Point(576, 391);
       this.buttonDeleteUserManaged.Name = "buttonDeleteUserManaged";
       this.buttonDeleteUserManaged.Size = new System.Drawing.Size(174, 22);
       this.buttonDeleteUserManaged.TabIndex = 5;
       this.buttonDeleteUserManaged.Text = "Delete Selected Fanart";
+      this.toolTip.SetToolTip(this.buttonDeleteUserManaged, resources.GetString("buttonDeleteUserManaged.ToolTip"));
       this.buttonDeleteUserManaged.UseVisualStyleBackColor = true;
       this.buttonDeleteUserManaged.Click += new System.EventHandler(this.buttonDeleteUserManaged_Click);
       // 
       // buttonDeleteAllUserManaged
       // 
       this.buttonDeleteAllUserManaged.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.buttonDeleteAllUserManaged.Location = new System.Drawing.Point(575, 421);
+      this.buttonDeleteAllUserManaged.Location = new System.Drawing.Point(576, 414);
       this.buttonDeleteAllUserManaged.Name = "buttonDeleteAllUserManaged";
       this.buttonDeleteAllUserManaged.Size = new System.Drawing.Size(174, 22);
       this.buttonDeleteAllUserManaged.TabIndex = 6;
@@ -385,32 +390,33 @@ namespace FanartHandler
       this.buttonDeleteAllUserManaged.UseVisualStyleBackColor = true;
       this.buttonDeleteAllUserManaged.Click += new System.EventHandler(this.buttonDeleteAllUserManaged_Click);
       // 
-      // button20
+      // buttonRandomSwitch
       // 
-      this.button20.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.button20.Location = new System.Drawing.Point(575, 375);
-      this.button20.Name = "button20";
-      this.button20.Size = new System.Drawing.Size(174, 22);
-      this.button20.TabIndex = 4;
-      this.button20.Text = "Enable/Disable In Random";
-      this.button20.UseVisualStyleBackColor = true;
-      this.button20.Click += new System.EventHandler(this.button20_Click);
+      this.buttonRandomSwitch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.buttonRandomSwitch.Location = new System.Drawing.Point(576, 368);
+      this.buttonRandomSwitch.Name = "buttonRandomSwitch";
+      this.buttonRandomSwitch.Size = new System.Drawing.Size(174, 22);
+      this.buttonRandomSwitch.TabIndex = 4;
+      this.buttonRandomSwitch.Text = "Enable/Disable In Random";
+      this.toolTip.SetToolTip(this.buttonRandomSwitch, resources.GetString("buttonRandomSwitch.ToolTip"));
+      this.buttonRandomSwitch.UseVisualStyleBackColor = true;
+      this.buttonRandomSwitch.Click += new System.EventHandler(this.button20_Click);
       // 
       // button19
       // 
       this.button19.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.button19.Location = new System.Drawing.Point(575, 444);
+      this.button19.Location = new System.Drawing.Point(576, 437);
       this.button19.Name = "button19";
       this.button19.Size = new System.Drawing.Size(174, 22);
       this.button19.TabIndex = 7;
-      this.button19.Text = "Cleanup Missing Fanart";
+      this.button19.Text = "Cleanup Missing Fanart [C]";
       this.button19.UseVisualStyleBackColor = true;
-      this.button19.Click += new System.EventHandler(this.button19_Click);
+      this.button19.Click += new System.EventHandler(this.CleanupMissing_Click);
       // 
       // button18
       // 
       this.button18.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.button18.Location = new System.Drawing.Point(575, 467);
+      this.button18.Location = new System.Drawing.Point(576, 460);
       this.button18.Name = "button18";
       this.button18.Size = new System.Drawing.Size(174, 22);
       this.button18.TabIndex = 8;
@@ -425,7 +431,7 @@ namespace FanartHandler
       this.checkBoxEnableVideoFanart.Checked = true;
       this.checkBoxEnableVideoFanart.CheckState = System.Windows.Forms.CheckState.Checked;
       this.checkBoxEnableVideoFanart.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.checkBoxEnableVideoFanart.Location = new System.Drawing.Point(6, 377);
+      this.checkBoxEnableVideoFanart.Location = new System.Drawing.Point(6, 370);
       this.checkBoxEnableVideoFanart.Name = "checkBoxEnableVideoFanart";
       this.checkBoxEnableVideoFanart.Size = new System.Drawing.Size(226, 20);
       this.checkBoxEnableVideoFanart.TabIndex = 1;
@@ -434,52 +440,54 @@ namespace FanartHandler
       // 
       // button41
       // 
-      button41.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      button41.Location = new System.Drawing.Point(604, 336);
-      button41.Name = "button41";
-      button41.Size = new System.Drawing.Size(186, 22);
-      button41.TabIndex = 5;
-      button41.Text = "Delete Selected Thumbnail [Del]";
-      button41.UseVisualStyleBackColor = true;
-      button41.Click += new System.EventHandler(this.button41_Click);
+      this.button41.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.button41.Location = new System.Drawing.Point(593, 319);
+      this.button41.Name = "button41";
+      this.button41.Size = new System.Drawing.Size(186, 22);
+      this.button41.TabIndex = 5;
+      this.button41.Text = "Delete Selected Thumbnail [Del]";
+      this.toolTip.SetToolTip(this.button41, resources.GetString("button41.ToolTip"));
+      this.button41.UseVisualStyleBackColor = true;
+      this.button41.Click += new System.EventHandler(this.button41_Click);
       // 
       // button42
       // 
-      button42.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      button42.Location = new System.Drawing.Point(604, 358);
-      button42.Name = "button42";
-      button42.Size = new System.Drawing.Size(186, 22);
-      button42.TabIndex = 6;
-      button42.Text = "Delete All Thumbnails [X]";
-      button42.UseVisualStyleBackColor = true;
-      button42.Click += new System.EventHandler(this.button42_Click);
+      this.button42.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.button42.Location = new System.Drawing.Point(593, 341);
+      this.button42.Name = "button42";
+      this.button42.Size = new System.Drawing.Size(186, 22);
+      this.button42.TabIndex = 6;
+      this.button42.Text = "Delete All Thumbnails [X]";
+      this.toolTip.SetToolTip(this.button42, resources.GetString("button42.ToolTip"));
+      this.button42.UseVisualStyleBackColor = true;
+      this.button42.Click += new System.EventHandler(this.button42_Click);
       // 
       // button43
       // 
-      button43.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      button43.Location = new System.Drawing.Point(604, 381);
-      button43.Name = "button43";
-      button43.Size = new System.Drawing.Size(186, 22);
-      button43.TabIndex = 7;
-      button43.Text = "Scrape for missing Artist/Album Thumbnails";
-      button43.UseVisualStyleBackColor = true;
-      button43.Click += new System.EventHandler(this.button43_Click);
+      this.button43.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.button43.Location = new System.Drawing.Point(363, 297);
+      this.button43.Name = "button43";
+      this.button43.Size = new System.Drawing.Size(224, 22);
+      this.button43.TabIndex = 7;
+      this.button43.Text = "Scrape for missing Artist/Album Thumbnails";
+      this.button43.UseVisualStyleBackColor = true;
+      this.button43.Click += new System.EventHandler(this.button43_Click);
       // 
       // button44
       // 
-      button44.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      button44.Location = new System.Drawing.Point(604, 404);
-      button44.Name = "button44";
-      button44.Size = new System.Drawing.Size(186, 22);
-      button44.TabIndex = 8;
-      button44.Text = "Scrape for all Artist/Album Thumbnails";
-      button44.UseVisualStyleBackColor = true;
-      button44.Click += new System.EventHandler(this.button44_Click);
+      this.button44.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.button44.Location = new System.Drawing.Point(363, 320);
+      this.button44.Name = "button44";
+      this.button44.Size = new System.Drawing.Size(224, 22);
+      this.button44.TabIndex = 8;
+      this.button44.Text = "Scrape for all Artist/Album Thumbnails";
+      this.button44.UseVisualStyleBackColor = true;
+      this.button44.Click += new System.EventHandler(this.button44_Click);
       // 
       // buttonChMBID
       // 
       this.buttonChMBID.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.buttonChMBID.Location = new System.Drawing.Point(404, 404);
+      this.buttonChMBID.Location = new System.Drawing.Point(593, 363);
       this.buttonChMBID.Name = "buttonChMBID";
       this.buttonChMBID.Size = new System.Drawing.Size(186, 22);
       this.buttonChMBID.TabIndex = 3;
@@ -490,9 +498,9 @@ namespace FanartHandler
       // buttonChFanartMBID
       // 
       this.buttonChFanartMBID.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.buttonChFanartMBID.Location = new System.Drawing.Point(361, 384);
+      this.buttonChFanartMBID.Location = new System.Drawing.Point(352, 377);
       this.buttonChFanartMBID.Name = "buttonChFanartMBID";
-      this.buttonChFanartMBID.Size = new System.Drawing.Size(174, 22);
+      this.buttonChFanartMBID.Size = new System.Drawing.Size(184, 22);
       this.buttonChFanartMBID.TabIndex = 4;
       this.buttonChFanartMBID.Text = "Change MusicBrainz ID";
       this.buttonChFanartMBID.UseVisualStyleBackColor = true;
@@ -500,19 +508,19 @@ namespace FanartHandler
       // 
       // comboBox1
       // 
-      comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      comboBox1.FormattingEnabled = true;
-      comboBox1.Location = new System.Drawing.Point(9, 312);
-      comboBox1.Name = "comboBox1";
-      comboBox1.Size = new System.Drawing.Size(219, 21);
-      comboBox1.TabIndex = 2;
-      comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged_1);
+      this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.comboBox1.FormattingEnabled = true;
+      this.comboBox1.Location = new System.Drawing.Point(9, 313);
+      this.comboBox1.Name = "comboBox1";
+      this.comboBox1.Size = new System.Drawing.Size(219, 21);
+      this.comboBox1.TabIndex = 2;
+      this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged_1);
       // 
       // button39
       // 
       this.button39.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.button39.Location = new System.Drawing.Point(604, 314);
+      this.button39.Location = new System.Drawing.Point(593, 297);
       this.button39.Name = "button39";
       this.button39.Size = new System.Drawing.Size(186, 22);
       this.button39.TabIndex = 4;
@@ -575,53 +583,56 @@ namespace FanartHandler
       // button2
       // 
       this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.button2.Location = new System.Drawing.Point(541, 360);
+      this.button2.Location = new System.Drawing.Point(542, 353);
       this.button2.Name = "button2";
       this.button2.Size = new System.Drawing.Size(174, 22);
       this.button2.TabIndex = 7;
       this.button2.Text = "Delete Selected Fanart [Del]";
+      this.toolTip.SetToolTip(this.button2, resources.GetString("button2.ToolTip"));
       this.button2.UseVisualStyleBackColor = true;
       this.button2.Click += new System.EventHandler(this.button2_Click);
       // 
       // button3
       // 
       this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.button3.Location = new System.Drawing.Point(541, 385);
+      this.button3.Location = new System.Drawing.Point(542, 378);
       this.button3.Name = "button3";
       this.button3.Size = new System.Drawing.Size(174, 22);
       this.button3.TabIndex = 8;
       this.button3.Text = "Delete All Fanart [X]";
+      this.toolTip.SetToolTip(this.button3, resources.GetString("button3.ToolTip"));
       this.button3.UseVisualStyleBackColor = true;
       this.button3.Click += new System.EventHandler(this.button3_Click);
       // 
       // button4
       // 
       this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.button4.Location = new System.Drawing.Point(541, 315);
+      this.button4.Location = new System.Drawing.Point(542, 308);
       this.button4.Name = "button4";
       this.button4.Size = new System.Drawing.Size(174, 22);
       this.button4.TabIndex = 5;
       this.button4.Text = "Enable/Disable Selected Fanart";
+      this.toolTip.SetToolTip(this.button4, resources.GetString("button4.ToolTip"));
       this.button4.UseVisualStyleBackColor = true;
       this.button4.Click += new System.EventHandler(this.button4_Click);
       // 
       // button5
       // 
       this.button5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.button5.Location = new System.Drawing.Point(361, 316);
+      this.button5.Location = new System.Drawing.Point(352, 309);
       this.button5.Name = "button5";
-      this.button5.Size = new System.Drawing.Size(174, 22);
+      this.button5.Size = new System.Drawing.Size(184, 22);
       this.button5.TabIndex = 1;
       this.button5.Text = "Cleanup Missing Fanart [C]";
       this.button5.UseVisualStyleBackColor = true;
-      this.button5.Click += new System.EventHandler(this.button5_Click);
+      this.button5.Click += new System.EventHandler(this.CleanupMissing_Click);
       // 
       // button40
       // 
       this.button40.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.button40.Location = new System.Drawing.Point(361, 338);
+      this.button40.Location = new System.Drawing.Point(352, 331);
       this.button40.Name = "button40";
-      this.button40.Size = new System.Drawing.Size(174, 22);
+      this.button40.Size = new System.Drawing.Size(184, 22);
       this.button40.TabIndex = 2;
       this.button40.Text = "Edit Image Path [E]";
       this.button40.UseVisualStyleBackColor = true;
@@ -630,9 +641,9 @@ namespace FanartHandler
       // button45
       // 
       this.button45.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.button45.Location = new System.Drawing.Point(361, 361);
+      this.button45.Location = new System.Drawing.Point(352, 354);
       this.button45.Name = "button45";
-      this.button45.Size = new System.Drawing.Size(174, 22);
+      this.button45.Size = new System.Drawing.Size(184, 22);
       this.button45.TabIndex = 3;
       this.button45.Text = "Add Image To Selected Artist [A]";
       this.button45.UseVisualStyleBackColor = true;
@@ -663,6 +674,7 @@ namespace FanartHandler
       this.checkBoxScraperMusicPlaying.Size = new System.Drawing.Size(467, 20);
       this.checkBoxScraperMusicPlaying.TabIndex = 1;
       this.checkBoxScraperMusicPlaying.Text = "Enable Automatic Download Of Music Fanart For Artists Now Being Played";
+      this.toolTip.SetToolTip(this.checkBoxScraperMusicPlaying, resources.GetString("checkBoxScraperMusicPlaying.ToolTip"));
       this.checkBoxScraperMusicPlaying.UseVisualStyleBackColor = true;
       // 
       // comboBoxMaxImages
@@ -706,6 +718,7 @@ namespace FanartHandler
       this.comboBoxMinResolution.Name = "comboBoxMinResolution";
       this.comboBoxMinResolution.Size = new System.Drawing.Size(209, 26);
       this.comboBoxMinResolution.TabIndex = 0;
+      this.toolTip.SetToolTip(this.comboBoxMinResolution, resources.GetString("comboBoxMinResolution.ToolTip"));
       // 
       // checkBoxAspectRatio
       // 
@@ -718,6 +731,7 @@ namespace FanartHandler
       this.checkBoxAspectRatio.Size = new System.Drawing.Size(311, 20);
       this.checkBoxAspectRatio.TabIndex = 2;
       this.checkBoxAspectRatio.Text = "Display Only Wide Images (Aspect Ratio >= 1.3)";
+      this.toolTip.SetToolTip(this.checkBoxAspectRatio, resources.GetString("checkBoxAspectRatio.ToolTip"));
       this.checkBoxAspectRatio.UseVisualStyleBackColor = true;
       // 
       // comboBoxInterval
@@ -740,6 +754,7 @@ namespace FanartHandler
       this.checkBoxEnableMusicFanart.Size = new System.Drawing.Size(226, 20);
       this.checkBoxEnableMusicFanart.TabIndex = 0;
       this.checkBoxEnableMusicFanart.Text = "Enable Fanart For Selected Items";
+      this.toolTip.SetToolTip(this.checkBoxEnableMusicFanart, resources.GetString("checkBoxEnableMusicFanart.ToolTip"));
       this.checkBoxEnableMusicFanart.UseVisualStyleBackColor = true;
       // 
       // CheckBoxScanMusicFoldersForFanart
@@ -811,6 +826,7 @@ namespace FanartHandler
       this.checkBoxXFactorFanart.Size = new System.Drawing.Size(263, 20);
       this.checkBoxXFactorFanart.TabIndex = 3;
       this.checkBoxXFactorFanart.Text = "Music Fanart Matches (High Resolution)";
+      this.toolTip.SetToolTip(this.checkBoxXFactorFanart, resources.GetString("checkBoxXFactorFanart.ToolTip"));
       this.checkBoxXFactorFanart.UseVisualStyleBackColor = true;
       // 
       // checkBoxThumbsAlbum
@@ -824,6 +840,7 @@ namespace FanartHandler
       this.checkBoxThumbsAlbum.Size = new System.Drawing.Size(140, 20);
       this.checkBoxThumbsAlbum.TabIndex = 2;
       this.checkBoxThumbsAlbum.Text = "MP Album Thumbs";
+      this.toolTip.SetToolTip(this.checkBoxThumbsAlbum, resources.GetString("checkBoxThumbsAlbum.ToolTip"));
       this.checkBoxThumbsAlbum.UseVisualStyleBackColor = true;
       // 
       // checkBoxThumbsArtist
@@ -837,6 +854,7 @@ namespace FanartHandler
       this.checkBoxThumbsArtist.Size = new System.Drawing.Size(131, 20);
       this.checkBoxThumbsArtist.TabIndex = 1;
       this.checkBoxThumbsArtist.Text = "MP Artist Thumbs";
+      this.toolTip.SetToolTip(this.checkBoxThumbsArtist, resources.GetString("checkBoxThumbsArtist.ToolTip"));
       this.checkBoxThumbsArtist.UseVisualStyleBackColor = true;
       // 
       // checkBoxThumbsDisabled
@@ -850,6 +868,7 @@ namespace FanartHandler
       this.checkBoxThumbsDisabled.Size = new System.Drawing.Size(330, 20);
       this.checkBoxThumbsDisabled.TabIndex = 5;
       this.checkBoxThumbsDisabled.Text = "Skip MP Thumbs When Displaying Random Fanart";
+      this.toolTip.SetToolTip(this.checkBoxThumbsDisabled, resources.GetString("checkBoxThumbsDisabled.ToolTip"));
       this.checkBoxThumbsDisabled.UseVisualStyleBackColor = true;
       // 
       // checkBoxSkipMPThumbsIfFanartAvailble
@@ -868,22 +887,24 @@ namespace FanartHandler
       // button1
       // 
       this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.button1.Location = new System.Drawing.Point(541, 338);
+      this.button1.Location = new System.Drawing.Point(542, 331);
       this.button1.Name = "button1";
       this.button1.Size = new System.Drawing.Size(174, 22);
       this.button1.TabIndex = 6;
       this.button1.Text = "Enable/Disable In Random";
+      this.toolTip.SetToolTip(this.button1, resources.GetString("button1.ToolTip"));
       this.button1.UseVisualStyleBackColor = true;
       this.button1.Click += new System.EventHandler(this.button1_Click);
       // 
       // button7
       // 
       this.button7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.button7.Location = new System.Drawing.Point(560, 350);
+      this.button7.Location = new System.Drawing.Point(561, 343);
       this.button7.Name = "button7";
       this.button7.Size = new System.Drawing.Size(174, 22);
       this.button7.TabIndex = 3;
       this.button7.Text = "Enable/Disable In Random";
+      this.toolTip.SetToolTip(this.button7, resources.GetString("button7.ToolTip"));
       this.button7.UseVisualStyleBackColor = true;
       this.button7.Click += new System.EventHandler(this.button7_Click);
       // 
@@ -893,16 +914,16 @@ namespace FanartHandler
       this.tabPage13.Controls.Add(this.comboBox2);
       this.tabPage13.Controls.Add(this.button18);
       this.tabPage13.Controls.Add(this.button19);
-      this.tabPage13.Controls.Add(this.button20);
+      this.tabPage13.Controls.Add(this.buttonRandomSwitch);
       this.tabPage13.Controls.Add(this.buttonDeleteAllUserManaged);
       this.tabPage13.Controls.Add(this.pictureBox5);
       this.tabPage13.Controls.Add(this.buttonDeleteUserManaged);
-      this.tabPage13.Controls.Add(dataGridViewUserManaged);
+      this.tabPage13.Controls.Add(this.dataGridViewUserManaged);
       this.tabPage13.Controls.Add(this.checkBoxEnableVideoFanart);
       this.tabPage13.Location = new System.Drawing.Point(4, 22);
       this.tabPage13.Name = "tabPage13";
       this.tabPage13.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage13.Size = new System.Drawing.Size(946, 499);
+      this.tabPage13.Size = new System.Drawing.Size(947, 492);
       this.tabPage13.TabIndex = 5;
       this.tabPage13.Text = "User Managed Fanart";
       this.tabPage13.UseVisualStyleBackColor = true;
@@ -911,7 +932,7 @@ namespace FanartHandler
       // 
       this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.label2.AutoSize = true;
-      this.label2.Location = new System.Drawing.Point(6, 414);
+      this.label2.Location = new System.Drawing.Point(6, 407);
       this.label2.Name = "label2";
       this.label2.Size = new System.Drawing.Size(80, 13);
       this.label2.TabIndex = 2;
@@ -921,7 +942,7 @@ namespace FanartHandler
       // 
       this.comboBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.comboBox2.FormattingEnabled = true;
-      this.comboBox2.Location = new System.Drawing.Point(6, 433);
+      this.comboBox2.Location = new System.Drawing.Point(6, 426);
       this.comboBox2.Name = "comboBox2";
       this.comboBox2.Size = new System.Drawing.Size(242, 21);
       this.comboBox2.TabIndex = 3;
@@ -931,7 +952,7 @@ namespace FanartHandler
       // 
       this.pictureBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.pictureBox5.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-      this.pictureBox5.Location = new System.Drawing.Point(756, 376);
+      this.pictureBox5.Location = new System.Drawing.Point(757, 369);
       this.pictureBox5.Name = "pictureBox5";
       this.pictureBox5.Size = new System.Drawing.Size(182, 110);
       this.pictureBox5.TabIndex = 26;
@@ -939,28 +960,28 @@ namespace FanartHandler
       // 
       // dataGridViewUserManaged
       // 
-      dataGridViewUserManaged.AllowUserToAddRows = false;
-      dataGridViewUserManaged.AllowUserToResizeColumns = false;
-      dataGridViewUserManaged.AllowUserToResizeRows = false;
-      dataGridViewUserManaged.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+      this.dataGridViewUserManaged.AllowUserToAddRows = false;
+      this.dataGridViewUserManaged.AllowUserToResizeColumns = false;
+      this.dataGridViewUserManaged.AllowUserToResizeRows = false;
+      this.dataGridViewUserManaged.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
       | System.Windows.Forms.AnchorStyles.Left) 
       | System.Windows.Forms.AnchorStyles.Right)));
-      dataGridViewUserManaged.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-      dataGridViewUserManaged.CausesValidation = false;
-      dataGridViewUserManaged.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-      dataGridViewUserManaged.Location = new System.Drawing.Point(6, 6);
-      dataGridViewUserManaged.MultiSelect = false;
-      dataGridViewUserManaged.Name = "dataGridViewUserManaged";
-      dataGridViewUserManaged.ReadOnly = true;
-      dataGridViewUserManaged.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-      dataGridViewUserManaged.ShowCellErrors = false;
-      dataGridViewUserManaged.ShowCellToolTips = false;
-      dataGridViewUserManaged.ShowEditingIcon = false;
-      dataGridViewUserManaged.ShowRowErrors = false;
-      dataGridViewUserManaged.Size = new System.Drawing.Size(934, 361);
-      dataGridViewUserManaged.TabIndex = 0;
-      dataGridViewUserManaged.VirtualMode = true;
-      dataGridViewUserManaged.SelectionChanged += new System.EventHandler(this.dataGridViewUserManaged_SelectionChanged);
+      this.dataGridViewUserManaged.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+      this.dataGridViewUserManaged.CausesValidation = false;
+      this.dataGridViewUserManaged.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+      this.dataGridViewUserManaged.Location = new System.Drawing.Point(6, 6);
+      this.dataGridViewUserManaged.MultiSelect = false;
+      this.dataGridViewUserManaged.Name = "dataGridViewUserManaged";
+      this.dataGridViewUserManaged.ReadOnly = true;
+      this.dataGridViewUserManaged.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+      this.dataGridViewUserManaged.ShowCellErrors = false;
+      this.dataGridViewUserManaged.ShowCellToolTips = false;
+      this.dataGridViewUserManaged.ShowEditingIcon = false;
+      this.dataGridViewUserManaged.ShowRowErrors = false;
+      this.dataGridViewUserManaged.Size = new System.Drawing.Size(935, 354);
+      this.dataGridViewUserManaged.TabIndex = 0;
+      this.dataGridViewUserManaged.VirtualMode = true;
+      this.dataGridViewUserManaged.SelectionChanged += new System.EventHandler(this.dataGridViewUserManaged_SelectionChanged);
       // 
       // tabControl6
       // 
@@ -972,7 +993,7 @@ namespace FanartHandler
       this.tabControl6.Location = new System.Drawing.Point(9, 6);
       this.tabControl6.Name = "tabControl6";
       this.tabControl6.SelectedIndex = 0;
-      this.tabControl6.Size = new System.Drawing.Size(920, 459);
+      this.tabControl6.Size = new System.Drawing.Size(921, 452);
       this.tabControl6.TabIndex = 16;
       // 
       // tabPage21
@@ -981,13 +1002,15 @@ namespace FanartHandler
       this.tabPage21.Location = new System.Drawing.Point(4, 22);
       this.tabPage21.Name = "tabPage21";
       this.tabPage21.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage21.Size = new System.Drawing.Size(912, 433);
+      this.tabPage21.Size = new System.Drawing.Size(913, 426);
       this.tabPage21.TabIndex = 0;
       this.tabPage21.Text = "Thumbnails Settings";
       this.tabPage21.UseVisualStyleBackColor = true;
       // 
       // groupBox10
       // 
+      this.groupBox10.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      | System.Windows.Forms.AnchorStyles.Right)));
       this.groupBox10.Controls.Add(this.checkBox9);
       this.groupBox10.Controls.Add(this.checkBoxUseHighDefThumbnails);
       this.groupBox10.Controls.Add(this.checkBox8);
@@ -1002,34 +1025,46 @@ namespace FanartHandler
       // 
       // tabPage22
       // 
+      this.tabPage22.Controls.Add(this.button11);
       this.tabPage22.Controls.Add(this.button8);
       this.tabPage22.Controls.Add(this.buttonNext);
       this.tabPage22.Controls.Add(this.button39);
-      this.tabPage22.Controls.Add(comboBox1);
+      this.tabPage22.Controls.Add(this.comboBox1);
       this.tabPage22.Controls.Add(this.label34);
-      this.tabPage22.Controls.Add(button44);
+      this.tabPage22.Controls.Add(this.button44);
       this.tabPage22.Controls.Add(this.buttonChMBID);
-      this.tabPage22.Controls.Add(button43);
-      this.tabPage22.Controls.Add(button42);
-      this.tabPage22.Controls.Add(button41);
+      this.tabPage22.Controls.Add(this.button43);
+      this.tabPage22.Controls.Add(this.button42);
+      this.tabPage22.Controls.Add(this.button41);
       this.tabPage22.Controls.Add(this.label33);
       this.tabPage22.Controls.Add(this.pictureBox9);
       this.tabPage22.Controls.Add(this.label32);
-      this.tabPage22.Controls.Add(progressBarThumbs);
-      this.tabPage22.Controls.Add(dataGridViewThumbs);
+      this.tabPage22.Controls.Add(this.progressBarThumbs);
+      this.tabPage22.Controls.Add(this.dataGridViewThumbs);
       this.tabPage22.Location = new System.Drawing.Point(4, 22);
       this.tabPage22.Name = "tabPage22";
       this.tabPage22.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage22.Size = new System.Drawing.Size(912, 433);
+      this.tabPage22.Size = new System.Drawing.Size(913, 426);
       this.tabPage22.TabIndex = 1;
       this.tabPage22.Text = "Manage Thumbnails";
       this.tabPage22.UseVisualStyleBackColor = true;
       this.tabPage22.Click += new System.EventHandler(this.tabPage22_Click);
       // 
+      // button11
+      // 
+      this.button11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.button11.Location = new System.Drawing.Point(363, 363);
+      this.button11.Name = "button11";
+      this.button11.Size = new System.Drawing.Size(224, 22);
+      this.button11.TabIndex = 21;
+      this.button11.Text = "Cleanup Missing Thumbnails [C]";
+      this.button11.UseVisualStyleBackColor = true;
+      this.button11.Click += new System.EventHandler(this.CleanupMissing_Click);
+      // 
       // button8
       // 
-      this.button8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.button8.Location = new System.Drawing.Point(757, 288);
+      this.button8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.button8.Location = new System.Drawing.Point(9, 341);
       this.button8.Name = "button8";
       this.button8.Size = new System.Drawing.Size(81, 23);
       this.button8.TabIndex = 11;
@@ -1040,8 +1075,8 @@ namespace FanartHandler
       // 
       // buttonNext
       // 
-      this.buttonNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.buttonNext.Location = new System.Drawing.Point(844, 287);
+      this.buttonNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.buttonNext.Location = new System.Drawing.Point(167, 341);
       this.buttonNext.Name = "buttonNext";
       this.buttonNext.Size = new System.Drawing.Size(61, 23);
       this.buttonNext.TabIndex = 12;
@@ -1054,7 +1089,7 @@ namespace FanartHandler
       // 
       this.label34.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.label34.AutoSize = true;
-      this.label34.Location = new System.Drawing.Point(6, 296);
+      this.label34.Location = new System.Drawing.Point(6, 297);
       this.label34.Name = "label34";
       this.label34.Size = new System.Drawing.Size(29, 13);
       this.label34.TabIndex = 1;
@@ -1068,7 +1103,8 @@ namespace FanartHandler
       this.label33.BackColor = System.Drawing.Color.Transparent;
       this.label33.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.label33.ForeColor = System.Drawing.Color.Teal;
-      this.label33.Location = new System.Drawing.Point(801, 406);
+      this.label33.Location = new System.Drawing.Point(788, 399);
+      this.label33.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
       this.label33.Name = "label33";
       this.label33.Size = new System.Drawing.Size(0, 13);
       this.label33.TabIndex = 13;
@@ -1077,9 +1113,9 @@ namespace FanartHandler
       // 
       this.pictureBox9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.pictureBox9.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-      this.pictureBox9.Location = new System.Drawing.Point(796, 314);
+      this.pictureBox9.Location = new System.Drawing.Point(785, 296);
       this.pictureBox9.Name = "pictureBox9";
-      this.pictureBox9.Size = new System.Drawing.Size(110, 110);
+      this.pictureBox9.Size = new System.Drawing.Size(120, 120);
       this.pictureBox9.TabIndex = 20;
       this.pictureBox9.TabStop = false;
       // 
@@ -1087,7 +1123,7 @@ namespace FanartHandler
       // 
       this.label32.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.label32.AutoSize = true;
-      this.label32.Location = new System.Drawing.Point(6, 389);
+      this.label32.Location = new System.Drawing.Point(6, 382);
       this.label32.Name = "label32";
       this.label32.Size = new System.Drawing.Size(124, 13);
       this.label32.TabIndex = 9;
@@ -1095,37 +1131,38 @@ namespace FanartHandler
       // 
       // progressBarThumbs
       // 
-      progressBarThumbs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      progressBarThumbs.Location = new System.Drawing.Point(6, 406);
-      progressBarThumbs.Name = "progressBarThumbs";
-      progressBarThumbs.Size = new System.Drawing.Size(383, 18);
-      progressBarThumbs.TabIndex = 10;
+      this.progressBarThumbs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+      | System.Windows.Forms.AnchorStyles.Right)));
+      this.progressBarThumbs.Location = new System.Drawing.Point(6, 399);
+      this.progressBarThumbs.Name = "progressBarThumbs";
+      this.progressBarThumbs.Size = new System.Drawing.Size(773, 18);
+      this.progressBarThumbs.TabIndex = 10;
       // 
       // dataGridViewThumbs
       // 
-      dataGridViewThumbs.AllowUserToAddRows = false;
-      dataGridViewThumbs.AllowUserToResizeColumns = false;
-      dataGridViewThumbs.AllowUserToResizeRows = false;
-      dataGridViewThumbs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+      this.dataGridViewThumbs.AllowUserToAddRows = false;
+      this.dataGridViewThumbs.AllowUserToResizeColumns = false;
+      this.dataGridViewThumbs.AllowUserToResizeRows = false;
+      this.dataGridViewThumbs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
       | System.Windows.Forms.AnchorStyles.Left) 
       | System.Windows.Forms.AnchorStyles.Right)));
-      dataGridViewThumbs.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-      dataGridViewThumbs.CausesValidation = false;
-      dataGridViewThumbs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-      dataGridViewThumbs.Location = new System.Drawing.Point(6, 6);
-      dataGridViewThumbs.MultiSelect = false;
-      dataGridViewThumbs.Name = "dataGridViewThumbs";
-      dataGridViewThumbs.ReadOnly = true;
-      dataGridViewThumbs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-      dataGridViewThumbs.ShowCellErrors = false;
-      dataGridViewThumbs.ShowCellToolTips = false;
-      dataGridViewThumbs.ShowEditingIcon = false;
-      dataGridViewThumbs.ShowRowErrors = false;
-      dataGridViewThumbs.Size = new System.Drawing.Size(900, 281);
-      dataGridViewThumbs.TabIndex = 0;
-      dataGridViewThumbs.VirtualMode = true;
-      dataGridViewThumbs.SelectionChanged += new System.EventHandler(this.dataGridViewThumbs_SelectionChanged);
-      dataGridViewThumbs.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridViewThumbs_KeyDown);
+      this.dataGridViewThumbs.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+      this.dataGridViewThumbs.CausesValidation = false;
+      this.dataGridViewThumbs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+      this.dataGridViewThumbs.Location = new System.Drawing.Point(6, 6);
+      this.dataGridViewThumbs.MultiSelect = false;
+      this.dataGridViewThumbs.Name = "dataGridViewThumbs";
+      this.dataGridViewThumbs.ReadOnly = true;
+      this.dataGridViewThumbs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+      this.dataGridViewThumbs.ShowCellErrors = false;
+      this.dataGridViewThumbs.ShowCellToolTips = false;
+      this.dataGridViewThumbs.ShowEditingIcon = false;
+      this.dataGridViewThumbs.ShowRowErrors = false;
+      this.dataGridViewThumbs.Size = new System.Drawing.Size(901, 284);
+      this.dataGridViewThumbs.TabIndex = 0;
+      this.dataGridViewThumbs.VirtualMode = true;
+      this.dataGridViewThumbs.SelectionChanged += new System.EventHandler(this.dataGridViewThumbs_SelectionChanged);
+      this.dataGridViewThumbs.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridViewThumbs_KeyDown);
       // 
       // tabPage1
       // 
@@ -1133,7 +1170,7 @@ namespace FanartHandler
       this.tabPage1.Location = new System.Drawing.Point(4, 22);
       this.tabPage1.Name = "tabPage1";
       this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage1.Size = new System.Drawing.Size(946, 499);
+      this.tabPage1.Size = new System.Drawing.Size(947, 492);
       this.tabPage1.TabIndex = 1;
       this.tabPage1.Text = "Scraped Fanart";
       this.tabPage1.UseVisualStyleBackColor = true;
@@ -1149,7 +1186,7 @@ namespace FanartHandler
       this.tabControl2.Location = new System.Drawing.Point(6, 6);
       this.tabControl2.Name = "tabControl2";
       this.tabControl2.SelectedIndex = 0;
-      this.tabControl2.Size = new System.Drawing.Size(937, 490);
+      this.tabControl2.Size = new System.Drawing.Size(938, 483);
       this.tabControl2.TabIndex = 15;
       // 
       // tabPage2
@@ -1158,7 +1195,7 @@ namespace FanartHandler
       this.tabPage2.Location = new System.Drawing.Point(4, 22);
       this.tabPage2.Name = "tabPage2";
       this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage2.Size = new System.Drawing.Size(929, 464);
+      this.tabPage2.Size = new System.Drawing.Size(930, 457);
       this.tabPage2.TabIndex = 4;
       this.tabPage2.Text = "Music Fanart";
       this.tabPage2.UseVisualStyleBackColor = true;
@@ -1174,7 +1211,7 @@ namespace FanartHandler
       this.tabControl3.Location = new System.Drawing.Point(6, 6);
       this.tabControl3.Name = "tabControl3";
       this.tabControl3.SelectedIndex = 0;
-      this.tabControl3.Size = new System.Drawing.Size(920, 459);
+      this.tabControl3.Size = new System.Drawing.Size(921, 452);
       this.tabControl3.TabIndex = 0;
       // 
       // tabPage5
@@ -1184,7 +1221,7 @@ namespace FanartHandler
       this.tabPage5.Location = new System.Drawing.Point(4, 22);
       this.tabPage5.Name = "tabPage5";
       this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage5.Size = new System.Drawing.Size(912, 433);
+      this.tabPage5.Size = new System.Drawing.Size(913, 426);
       this.tabPage5.TabIndex = 0;
       this.tabPage5.Text = "Fanart Settings";
       this.tabPage5.UseVisualStyleBackColor = true;
@@ -1217,6 +1254,8 @@ namespace FanartHandler
       // 
       // groupBox3
       // 
+      this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      | System.Windows.Forms.AnchorStyles.Right)));
       this.groupBox3.Controls.Add(this.checkBoxEnableMusicFanart);
       this.groupBox3.Controls.Add(this.CheckBoxUseGenreFanart);
       this.groupBox3.Controls.Add(this.CheckBoxScanMusicFoldersForFanart);
@@ -1245,7 +1284,7 @@ namespace FanartHandler
       this.tabPage6.Location = new System.Drawing.Point(4, 22);
       this.tabPage6.Name = "tabPage6";
       this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage6.Size = new System.Drawing.Size(912, 433);
+      this.tabPage6.Size = new System.Drawing.Size(913, 426);
       this.tabPage6.TabIndex = 1;
       this.tabPage6.Text = "Scraper Settings";
       this.tabPage6.UseVisualStyleBackColor = true;
@@ -1315,19 +1354,19 @@ namespace FanartHandler
       this.tabPage7.Controls.Add(this.button3);
       this.tabPage7.Controls.Add(this.pictureBox1);
       this.tabPage7.Controls.Add(this.button2);
-      this.tabPage7.Controls.Add(dataGridViewFanart);
+      this.tabPage7.Controls.Add(this.dataGridViewFanart);
       this.tabPage7.Location = new System.Drawing.Point(4, 22);
       this.tabPage7.Name = "tabPage7";
       this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage7.Size = new System.Drawing.Size(912, 433);
+      this.tabPage7.Size = new System.Drawing.Size(913, 426);
       this.tabPage7.TabIndex = 2;
       this.tabPage7.Text = "Manage Fanart";
       this.tabPage7.UseVisualStyleBackColor = true;
       // 
       // button9
       // 
-      this.button9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.button9.Location = new System.Drawing.Point(756, 287);
+      this.button9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.button9.Location = new System.Drawing.Point(6, 309);
       this.button9.Name = "button9";
       this.button9.Size = new System.Drawing.Size(81, 23);
       this.button9.TabIndex = 10;
@@ -1338,8 +1377,8 @@ namespace FanartHandler
       // 
       // button10
       // 
-      this.button10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.button10.Location = new System.Drawing.Point(843, 286);
+      this.button10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.button10.Location = new System.Drawing.Point(93, 309);
       this.button10.Name = "button10";
       this.button10.Size = new System.Drawing.Size(61, 23);
       this.button10.TabIndex = 11;
@@ -1355,7 +1394,7 @@ namespace FanartHandler
       this.label30.BackColor = System.Drawing.Color.Transparent;
       this.label30.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.label30.ForeColor = System.Drawing.Color.Teal;
-      this.label30.Location = new System.Drawing.Point(724, 407);
+      this.label30.Location = new System.Drawing.Point(726, 402);
       this.label30.Name = "label30";
       this.label30.Size = new System.Drawing.Size(0, 13);
       this.label30.TabIndex = 12;
@@ -1364,37 +1403,37 @@ namespace FanartHandler
       // 
       this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-      this.pictureBox1.Location = new System.Drawing.Point(722, 315);
+      this.pictureBox1.Location = new System.Drawing.Point(722, 308);
       this.pictureBox1.Name = "pictureBox1";
-      this.pictureBox1.Size = new System.Drawing.Size(182, 110);
+      this.pictureBox1.Size = new System.Drawing.Size(183, 112);
       this.pictureBox1.TabIndex = 2;
       this.pictureBox1.TabStop = false;
       // 
       // dataGridViewFanart
       // 
-      dataGridViewFanart.AllowUserToAddRows = false;
-      dataGridViewFanart.AllowUserToResizeColumns = false;
-      dataGridViewFanart.AllowUserToResizeRows = false;
-      dataGridViewFanart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+      this.dataGridViewFanart.AllowUserToAddRows = false;
+      this.dataGridViewFanart.AllowUserToResizeColumns = false;
+      this.dataGridViewFanart.AllowUserToResizeRows = false;
+      this.dataGridViewFanart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
       | System.Windows.Forms.AnchorStyles.Left) 
       | System.Windows.Forms.AnchorStyles.Right)));
-      dataGridViewFanart.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-      dataGridViewFanart.CausesValidation = false;
-      dataGridViewFanart.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-      dataGridViewFanart.Location = new System.Drawing.Point(6, 9);
-      dataGridViewFanart.MultiSelect = false;
-      dataGridViewFanart.Name = "dataGridViewFanart";
-      dataGridViewFanart.ReadOnly = true;
-      dataGridViewFanart.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-      dataGridViewFanart.ShowCellErrors = false;
-      dataGridViewFanart.ShowCellToolTips = false;
-      dataGridViewFanart.ShowEditingIcon = false;
-      dataGridViewFanart.ShowRowErrors = false;
-      dataGridViewFanart.Size = new System.Drawing.Size(900, 271);
-      dataGridViewFanart.TabIndex = 0;
-      dataGridViewFanart.VirtualMode = true;
-      dataGridViewFanart.SelectionChanged += new System.EventHandler(this.dataGridViewFanart_SelectionChanged);
-      dataGridViewFanart.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridViewFanart_KeyDown);
+      this.dataGridViewFanart.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+      this.dataGridViewFanart.CausesValidation = false;
+      this.dataGridViewFanart.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+      this.dataGridViewFanart.Location = new System.Drawing.Point(6, 9);
+      this.dataGridViewFanart.MultiSelect = false;
+      this.dataGridViewFanart.Name = "dataGridViewFanart";
+      this.dataGridViewFanart.ReadOnly = true;
+      this.dataGridViewFanart.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+      this.dataGridViewFanart.ShowCellErrors = false;
+      this.dataGridViewFanart.ShowCellToolTips = false;
+      this.dataGridViewFanart.ShowEditingIcon = false;
+      this.dataGridViewFanart.ShowRowErrors = false;
+      this.dataGridViewFanart.Size = new System.Drawing.Size(901, 293);
+      this.dataGridViewFanart.TabIndex = 0;
+      this.dataGridViewFanart.VirtualMode = true;
+      this.dataGridViewFanart.SelectionChanged += new System.EventHandler(this.dataGridViewFanart_SelectionChanged);
+      this.dataGridViewFanart.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridViewFanart_KeyDown);
       // 
       // tabPage3
       // 
@@ -1402,22 +1441,23 @@ namespace FanartHandler
       this.tabPage3.Location = new System.Drawing.Point(4, 22);
       this.tabPage3.Name = "tabPage3";
       this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage3.Size = new System.Drawing.Size(929, 464);
+      this.tabPage3.Size = new System.Drawing.Size(930, 457);
       this.tabPage3.TabIndex = 5;
       this.tabPage3.Text = "Music Thumbnails";
       this.tabPage3.UseVisualStyleBackColor = true;
       // 
       // tabPage4
       // 
+      this.tabPage4.Controls.Add(this.button12);
       this.tabPage4.Controls.Add(this.label4);
-      this.tabPage4.Controls.Add(comboBox3);
+      this.tabPage4.Controls.Add(this.comboBox3);
       this.tabPage4.Controls.Add(this.button7);
       this.tabPage4.Controls.Add(this.pictureBox2);
-      this.tabPage4.Controls.Add(dataGridViewExternal);
+      this.tabPage4.Controls.Add(this.dataGridViewExternal);
       this.tabPage4.Location = new System.Drawing.Point(4, 22);
       this.tabPage4.Name = "tabPage4";
       this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage4.Size = new System.Drawing.Size(929, 464);
+      this.tabPage4.Size = new System.Drawing.Size(930, 457);
       this.tabPage4.TabIndex = 6;
       this.tabPage4.Text = "External Handled Fanart";
       this.tabPage4.UseVisualStyleBackColor = true;
@@ -1426,7 +1466,7 @@ namespace FanartHandler
       // 
       this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.label4.AutoSize = true;
-      this.label4.Location = new System.Drawing.Point(6, 350);
+      this.label4.Location = new System.Drawing.Point(6, 343);
       this.label4.Name = "label4";
       this.label4.Size = new System.Drawing.Size(80, 13);
       this.label4.TabIndex = 1;
@@ -1434,19 +1474,19 @@ namespace FanartHandler
       // 
       // comboBox3
       // 
-      comboBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      comboBox3.FormattingEnabled = true;
-      comboBox3.Location = new System.Drawing.Point(6, 369);
-      comboBox3.Name = "comboBox3";
-      comboBox3.Size = new System.Drawing.Size(242, 21);
-      comboBox3.TabIndex = 2;
-      comboBox3.SelectedIndexChanged += new System.EventHandler(this.comboBox3_SelectedIndexChanged);
+      this.comboBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.comboBox3.FormattingEnabled = true;
+      this.comboBox3.Location = new System.Drawing.Point(6, 362);
+      this.comboBox3.Name = "comboBox3";
+      this.comboBox3.Size = new System.Drawing.Size(242, 21);
+      this.comboBox3.TabIndex = 2;
+      this.comboBox3.SelectedIndexChanged += new System.EventHandler(this.comboBox3_SelectedIndexChanged);
       // 
       // pictureBox2
       // 
       this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.pictureBox2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-      this.pictureBox2.Location = new System.Drawing.Point(741, 348);
+      this.pictureBox2.Location = new System.Drawing.Point(742, 341);
       this.pictureBox2.Name = "pictureBox2";
       this.pictureBox2.Size = new System.Drawing.Size(182, 110);
       this.pictureBox2.TabIndex = 26;
@@ -1455,28 +1495,28 @@ namespace FanartHandler
       // 
       // dataGridViewExternal
       // 
-      dataGridViewExternal.AllowUserToAddRows = false;
-      dataGridViewExternal.AllowUserToResizeColumns = false;
-      dataGridViewExternal.AllowUserToResizeRows = false;
-      dataGridViewExternal.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+      this.dataGridViewExternal.AllowUserToAddRows = false;
+      this.dataGridViewExternal.AllowUserToResizeColumns = false;
+      this.dataGridViewExternal.AllowUserToResizeRows = false;
+      this.dataGridViewExternal.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
       | System.Windows.Forms.AnchorStyles.Left) 
       | System.Windows.Forms.AnchorStyles.Right)));
-      dataGridViewExternal.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-      dataGridViewExternal.CausesValidation = false;
-      dataGridViewExternal.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-      dataGridViewExternal.Location = new System.Drawing.Point(3, 6);
-      dataGridViewExternal.MultiSelect = false;
-      dataGridViewExternal.Name = "dataGridViewExternal";
-      dataGridViewExternal.ReadOnly = true;
-      dataGridViewExternal.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-      dataGridViewExternal.ShowCellErrors = false;
-      dataGridViewExternal.ShowCellToolTips = false;
-      dataGridViewExternal.ShowEditingIcon = false;
-      dataGridViewExternal.ShowRowErrors = false;
-      dataGridViewExternal.Size = new System.Drawing.Size(920, 336);
-      dataGridViewExternal.TabIndex = 0;
-      dataGridViewExternal.VirtualMode = true;
-      dataGridViewExternal.SelectionChanged += new System.EventHandler(this.dataGridViewExternal_SelectionChanged);
+      this.dataGridViewExternal.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+      this.dataGridViewExternal.CausesValidation = false;
+      this.dataGridViewExternal.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+      this.dataGridViewExternal.Location = new System.Drawing.Point(3, 6);
+      this.dataGridViewExternal.MultiSelect = false;
+      this.dataGridViewExternal.Name = "dataGridViewExternal";
+      this.dataGridViewExternal.ReadOnly = true;
+      this.dataGridViewExternal.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+      this.dataGridViewExternal.ShowCellErrors = false;
+      this.dataGridViewExternal.ShowCellToolTips = false;
+      this.dataGridViewExternal.ShowEditingIcon = false;
+      this.dataGridViewExternal.ShowRowErrors = false;
+      this.dataGridViewExternal.Size = new System.Drawing.Size(921, 329);
+      this.dataGridViewExternal.TabIndex = 0;
+      this.dataGridViewExternal.VirtualMode = true;
+      this.dataGridViewExternal.SelectionChanged += new System.EventHandler(this.dataGridViewExternal_SelectionChanged);
       // 
       // tabControl1
       // 
@@ -1489,7 +1529,7 @@ namespace FanartHandler
       this.tabControl1.Location = new System.Drawing.Point(12, 12);
       this.tabControl1.Name = "tabControl1";
       this.tabControl1.SelectedIndex = 0;
-      this.tabControl1.Size = new System.Drawing.Size(954, 525);
+      this.tabControl1.Size = new System.Drawing.Size(955, 518);
       this.tabControl1.TabIndex = 1;
       // 
       // tabPage8
@@ -1503,16 +1543,18 @@ namespace FanartHandler
       this.tabPage8.Location = new System.Drawing.Point(4, 22);
       this.tabPage8.Name = "tabPage8";
       this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage8.Size = new System.Drawing.Size(946, 499);
+      this.tabPage8.Size = new System.Drawing.Size(947, 492);
       this.tabPage8.TabIndex = 0;
       this.tabPage8.Text = "General Options";
       this.tabPage8.UseVisualStyleBackColor = true;
       // 
       // groupBoxGUI
       // 
+      this.groupBoxGUI.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      | System.Windows.Forms.AnchorStyles.Right)));
       this.groupBoxGUI.Controls.Add(this.checkBoxShowDummyItems);
       this.groupBoxGUI.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold);
-      this.groupBoxGUI.Location = new System.Drawing.Point(514, 215);
+      this.groupBoxGUI.Location = new System.Drawing.Point(514, 212);
       this.groupBoxGUI.Name = "groupBoxGUI";
       this.groupBoxGUI.Size = new System.Drawing.Size(417, 65);
       this.groupBoxGUI.TabIndex = 4;
@@ -1533,6 +1575,8 @@ namespace FanartHandler
       // 
       // groupBoxFanartTV
       // 
+      this.groupBoxFanartTV.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      | System.Windows.Forms.AnchorStyles.Right)));
       this.groupBoxFanartTV.Controls.Add(this.checkBoxMoviesCDArtDownload);
       this.groupBoxFanartTV.Controls.Add(this.checkBoxMoviesClearLogoDownload);
       this.groupBoxFanartTV.Controls.Add(this.checkBoxMoviesBannerDownload);
@@ -1547,7 +1591,7 @@ namespace FanartHandler
       this.groupBoxFanartTV.Controls.Add(this.edtFanartTVPersonalAPIKey);
       this.groupBoxFanartTV.Controls.Add(this.labelGetFanartTVPersonalAPIKey);
       this.groupBoxFanartTV.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold);
-      this.groupBoxFanartTV.Location = new System.Drawing.Point(17, 286);
+      this.groupBoxFanartTV.Location = new System.Drawing.Point(17, 283);
       this.groupBoxFanartTV.Name = "groupBoxFanartTV";
       this.groupBoxFanartTV.Size = new System.Drawing.Size(914, 197);
       this.groupBoxFanartTV.TabIndex = 5;
@@ -1707,6 +1751,8 @@ namespace FanartHandler
       // 
       // groupBoxProviders
       // 
+      this.groupBoxProviders.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      | System.Windows.Forms.AnchorStyles.Right)));
       this.groupBoxProviders.Controls.Add(this.label8);
       this.groupBoxProviders.Controls.Add(this.button6);
       this.groupBoxProviders.Controls.Add(this.progressBarScraper);
@@ -1715,7 +1761,7 @@ namespace FanartHandler
       this.groupBoxProviders.Controls.Add(this.checkBoxHtBackdrops);
       this.groupBoxProviders.Controls.Add(this.checkBoxFanartTV);
       this.groupBoxProviders.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold);
-      this.groupBoxProviders.Location = new System.Drawing.Point(514, 15);
+      this.groupBoxProviders.Location = new System.Drawing.Point(514, 12);
       this.groupBoxProviders.Name = "groupBoxProviders";
       this.groupBoxProviders.Size = new System.Drawing.Size(417, 194);
       this.groupBoxProviders.TabIndex = 2;
@@ -1742,14 +1788,15 @@ namespace FanartHandler
       this.button6.TabIndex = 15;
       this.button6.Text = "Start Scraper [S]";
       this.button6.UseVisualStyleBackColor = true;
-      this.button6.Click += new EventHandler(button6_Click);
+      this.button6.Click += new System.EventHandler(this.button6_Click);
       // 
       // progressBarScraper
       // 
-      this.progressBarScraper.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.progressBarScraper.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      | System.Windows.Forms.AnchorStyles.Right)));
       this.progressBarScraper.Location = new System.Drawing.Point(18, 162);
       this.progressBarScraper.Name = "progressBarScraper";
-      this.progressBarScraper.Size = new System.Drawing.Size(393, 18);
+      this.progressBarScraper.Size = new System.Drawing.Size(382, 18);
       this.progressBarScraper.TabIndex = 17;
       // 
       // checkBoxCoverArtArchive
@@ -1808,7 +1855,7 @@ namespace FanartHandler
       // 
       this.groupBoxScrape.Controls.Add(this.CheckBoxDeleteMissing);
       this.groupBoxScrape.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold);
-      this.groupBoxScrape.Location = new System.Drawing.Point(17, 215);
+      this.groupBoxScrape.Location = new System.Drawing.Point(17, 212);
       this.groupBoxScrape.Name = "groupBoxScrape";
       this.groupBoxScrape.Size = new System.Drawing.Size(487, 65);
       this.groupBoxScrape.TabIndex = 3;
@@ -1820,7 +1867,7 @@ namespace FanartHandler
       this.groupBoxShow.Controls.Add(this.label3);
       this.groupBoxShow.Controls.Add(this.comboBoxInterval);
       this.groupBoxShow.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold);
-      this.groupBoxShow.Location = new System.Drawing.Point(17, 148);
+      this.groupBoxShow.Location = new System.Drawing.Point(17, 145);
       this.groupBoxShow.Name = "groupBoxShow";
       this.groupBoxShow.Size = new System.Drawing.Size(487, 61);
       this.groupBoxShow.TabIndex = 1;
@@ -1844,7 +1891,7 @@ namespace FanartHandler
       this.groupBoxResolution.Controls.Add(this.label5);
       this.groupBoxResolution.Controls.Add(this.comboBoxMinResolution);
       this.groupBoxResolution.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.groupBoxResolution.Location = new System.Drawing.Point(17, 15);
+      this.groupBoxResolution.Location = new System.Drawing.Point(17, 12);
       this.groupBoxResolution.Name = "groupBoxResolution";
       this.groupBoxResolution.Size = new System.Drawing.Size(487, 125);
       this.groupBoxResolution.TabIndex = 0;
@@ -1878,12 +1925,12 @@ namespace FanartHandler
       // 
       this.statusStripFanart.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
       this.toolStripStatusLabel,
-      toolStripProgressBar,
-      toolStripStatusLabelToolTip});
+           toolStripProgressBar,
+           toolStripStatusLabelToolTip});
       this.statusStripFanart.Location = new System.Drawing.Point(0, 540);
       this.statusStripFanart.Name = "statusStripFanart";
       this.statusStripFanart.ShowItemToolTips = true;
-      this.statusStripFanart.Size = new System.Drawing.Size(978, 22);
+      this.statusStripFanart.Size = new System.Drawing.Size(979, 22);
       this.statusStripFanart.TabIndex = 0;
       // 
       // toolStripStatusLabel
@@ -1901,7 +1948,7 @@ namespace FanartHandler
       // 
       toolStripStatusLabelToolTip.AutoToolTip = true;
       toolStripStatusLabelToolTip.Name = "toolStripStatusLabelToolTip";
-      toolStripStatusLabelToolTip.Size = new System.Drawing.Size(449, 17);
+      toolStripStatusLabelToolTip.Size = new System.Drawing.Size(450, 17);
       toolStripStatusLabelToolTip.Spring = true;
       toolStripStatusLabelToolTip.Text = "-";
       // 
@@ -1911,9 +1958,20 @@ namespace FanartHandler
       this.timerProgress.Interval = 500;
       this.timerProgress.Tick += new System.EventHandler(this.timerProgress_Tick);
       // 
+      // button12
+      // 
+      this.button12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.button12.Location = new System.Drawing.Point(561, 371);
+      this.button12.Name = "button12";
+      this.button12.Size = new System.Drawing.Size(174, 22);
+      this.button12.TabIndex = 27;
+      this.button12.Text = "Cleanup Missing Fanart [C]";
+      this.button12.UseVisualStyleBackColor = true;
+      this.button12.Click += new System.EventHandler(this.CleanupMissing_Click);
+      // 
       // FanartHandlerConfig
       // 
-      this.ClientSize = new System.Drawing.Size(995, 600);
+      this.ClientSize = new System.Drawing.Size(979, 562);
       this.Controls.Add(this.statusStripFanart);
       this.Controls.Add(this.tabControl1);
       this.DoubleBuffered = true;
@@ -1921,14 +1979,14 @@ namespace FanartHandler
       this.MinimizeBox = false;
       this.MinimumSize = new System.Drawing.Size(995, 600);
       this.Name = "FanartHandlerConfig";
-      this.StartPosition = System.Windows.Forms.FormStartPosition.WindowsDefaultBounds;
+      this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
       this.Text = "Fanart Handler";
       this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FanartHandlerConfig_FormClosing);
       this.Load += new System.EventHandler(this.FanartHandlerConfig_Load);
       this.tabPage13.ResumeLayout(false);
       this.tabPage13.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(dataGridViewUserManaged)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.dataGridViewUserManaged)).EndInit();
       this.tabControl6.ResumeLayout(false);
       this.tabPage21.ResumeLayout(false);
       this.groupBox10.ResumeLayout(false);
@@ -1936,7 +1994,7 @@ namespace FanartHandler
       this.tabPage22.ResumeLayout(false);
       this.tabPage22.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(dataGridViewThumbs)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.dataGridViewThumbs)).EndInit();
       this.tabPage1.ResumeLayout(false);
       this.tabControl2.ResumeLayout(false);
       this.tabPage2.ResumeLayout(false);
@@ -1950,13 +2008,13 @@ namespace FanartHandler
       this.tabPage6.PerformLayout();
       this.tabPage7.ResumeLayout(false);
       this.tabPage7.PerformLayout();
-      ((System.ComponentModel.ISupportInitialize)(pictureBox1)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(dataGridViewFanart)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.dataGridViewFanart)).EndInit();
       this.tabPage3.ResumeLayout(false);
       this.tabPage4.ResumeLayout(false);
       this.tabPage4.PerformLayout();
-      ((System.ComponentModel.ISupportInitialize)(pictureBox2)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(dataGridViewExternal)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.dataGridViewExternal)).EndInit();
       this.tabControl1.ResumeLayout(false);
       this.tabPage8.ResumeLayout(false);
       this.groupBoxGUI.ResumeLayout(false);
@@ -2442,21 +2500,16 @@ namespace FanartHandler
       this.Activate();
     }
 
-    private static void FilterThumbGrid(int startCount)
+    private void FilterThumbGrid(int startCount)
     {
+      if (dataGridViewThumbs == null || myDataTableThumbs == null) 
+        return ;
+
       try
       {
         dataGridViewThumbs.ClearSelection();
         myDataTableThumbs.Rows.Clear();
-        /*
-        myDataTableThumbs = new DataTable();
-        myDataTableThumbs.Columns.Add("Artist");
-        myDataTableThumbs.Columns.Add("Type");
-        myDataTableThumbs.Columns.Add("Locked");
-        myDataTableThumbs.Columns.Add("Image");
-        myDataTableThumbs.Columns.Add("Image Path");
-        dataGridViewThumbs.DataSource = myDataTableThumbs;
-        */
+
         if (startCount < 0)
           startCount = 0;
         var category = new Utils.Category[2];
@@ -2476,30 +2529,10 @@ namespace FanartHandler
             Utils.Category.MusicArtistThumbScraped
           };
         UpdateThumbnailTableOnStartup(category, startCount);
-        /*
-        dataGridViewThumbs.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-        dataGridViewThumbs.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-        dataGridViewThumbs.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-        dataGridViewThumbs.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-        dataGridViewThumbs.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-        dataGridViewThumbs.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-        dataGridViewThumbs.Sort(dataGridViewThumbs.Columns["Artist"], ListSortDirection.Ascending);
-        */
       }
       catch (Exception ex)
       {
         logger.Error("FanartHandlerConfig_Load: " + ex);
-        /*
-        myDataTableThumbs = new DataTable();
-        myDataTableThumbs.Columns.Add("Artist");
-        myDataTableThumbs.Columns.Add("Type");
-        myDataTableThumbs.Columns.Add("Locked");
-        myDataTableThumbs.Columns.Add("Image");
-        myDataTableThumbs.Columns.Add("Image Path");
-        dataGridViewThumbs.DataSource = myDataTableThumbs;
-        dataGridViewThumbs.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-        dataGridViewThumbs.Sort(dataGridViewThumbs.Columns["Artist"], ListSortDirection.Ascending);
-        */
       }
     }
 
@@ -2665,6 +2698,11 @@ namespace FanartHandler
       {
         pictureBox5.Image = null;
       }
+    }
+
+    private void CleanupMissing_Click(object sender, EventArgs e)
+    {
+      CleanupMusicFanart();
     }
 
     private void button2_Click(object sender, EventArgs e)
@@ -3096,11 +3134,6 @@ namespace FanartHandler
       }
     }
 
-    private void button5_Click(object sender, EventArgs e)
-    {
-      CleanupMusicFanart();
-    }
-
     private void button6_Click(object sender, EventArgs e)
     {
       if (!isScraping)
@@ -3279,7 +3312,7 @@ namespace FanartHandler
       }
     }
 
-    public static void FileWatcher_Created(object source, FileSystemEventArgs e)
+    public void FileWatcher_Created(object source, FileSystemEventArgs e)
     {
       try
       {
@@ -3306,11 +3339,10 @@ namespace FanartHandler
       progressBarScraper.Value = 1;
       Thread.Sleep(1000);
       StopScraper();
-      UpdateFanartTableOnStartup(1);
     }
 
     #region Update Tables
-    private static void UpdateFanartThumbTable(string path)
+    private void UpdateFanartThumbTable(string path)
     {
       try
       {
@@ -3335,9 +3367,7 @@ namespace FanartHandler
           row["Image"] = fileName;
           row["Image Path"] = path;
           myDataTableThumbs.Rows.Add(row);
-          /*
-          dataGridViewThumbs.Sort(dataGridViewThumbs.Columns["Artist"], ListSortDirection.Ascending);
-          */
+
           progressBarThumbs.Minimum = 0;
           progressBarThumbs.Maximum = Convert.ToInt32(Utils.GetDbm().TotArtistsBeingScraped);
           progressBarThumbs.Value = (Convert.ToInt32(Utils.GetDbm().CurrArtistsBeingScraped) >= progressBarThumbs.Maximum) ? progressBarThumbs.Maximum : Convert.ToInt32(Utils.GetDbm().CurrArtistsBeingScraped) ;
@@ -3346,26 +3376,14 @@ namespace FanartHandler
       catch (Exception ex)
       {
         logger.Error("UpdateFanartThumbTable: " + ex);
-        /*
-        dataGridViewThumbs.DataSource = null;
-        dataGridViewThumbs.DataSource = new DataTable()
-        {
-            Columns = {
-                "Artist",
-                "Type",
-                "Locked",
-                "Image",
-                "Image Path"
-            }
-        };
-        dataGridViewThumbs.AutoResizeColumn(1, DataGridViewAutoSizeColumnMode.AllCells);
-        dataGridViewThumbs.Sort(dataGridViewThumbs.Columns["Artist"], ListSortDirection.Ascending);
-        */
       }
     }
 
-    public static void UpdateFanartExternalTable()
+    public void UpdateFanartExternalTable()
     {
+      if (dataGridViewExternal == null || myDataTableExternal == null)
+        return ;
+
       try
       {
         dataGridViewExternal.ClearSelection();
@@ -3393,18 +3411,7 @@ namespace FanartHandler
         logger.Error("UpdateFanartExternalTable: " + ex);
         dataGridViewExternal.ClearSelection();
         myDataTableExternal.Rows.Clear();
-        /*
-        dataGridViewExternal.DataSource = null;
-        dataGridViewExternal.DataSource = new DataTable()
-        {
-            Columns = {
-                "Category",
-                "AvailableRandom",
-                "Image",
-                "Image Path"
-            }
-        };
-        */
+
         dataGridViewExternal.AutoResizeColumn(1, DataGridViewAutoSizeColumnMode.AllCells);
       }
     }
@@ -3440,18 +3447,7 @@ namespace FanartHandler
         logger.Error("UpdateFanartUserManagedTable: " + ex);
         dataGridViewUserManaged.ClearSelection();
         myDataTableUserManaged.Rows.Clear();
-        /*
-        dataGridViewUserManaged.DataSource = null;
-        dataGridViewUserManaged.DataSource = new DataTable()
-        {
-            Columns = {
-                "Category",
-                "AvailableRandom",
-                "Image",
-                "Image Path"
-            }
-        };
-        */
+
         dataGridViewUserManaged.AutoResizeColumn(1, DataGridViewAutoSizeColumnMode.AllCells);
       }
     }
@@ -3495,36 +3491,24 @@ namespace FanartHandler
               }
             }
           }
-          var maxP = Convert.ToInt32(Utils.GetDbm().TotArtistsBeingScraped);
-          var curP = Convert.ToInt32(Utils.GetDbm().CurrArtistsBeingScraped);
           progressBarScraper.Minimum = 0;
-          progressBarScraper.Maximum = maxP;
-          if (curP > maxP) curP = maxP;
-          progressBarScraper.Value = curP;
+          progressBarScraper.Maximum = Convert.ToInt32(Utils.GetDbm().TotArtistsBeingScraped);
+          progressBarScraper.Value = (Convert.ToInt32(Utils.GetDbm().CurrArtistsBeingScraped) >= progressBarScraper.Maximum) ? progressBarScraper.Maximum : Convert.ToInt32(Utils.GetDbm().CurrArtistsBeingScraped) ;
         }
       }
       catch (Exception ex)
       {
         logger.Error("UpdateFanartTable: " + ex);
-        /*
-        dataGridViewFanart.DataSource = null;
-        dataGridViewFanart.DataSource = new DataTable()
-        {
-            Columns = {
-                "Artist",
-                "Enabled",
-                "AvailableRandom",
-                "Image",
-                "Image Path"
-            }
-        };
-        */
+
         dataGridViewFanart.AutoResizeColumn(1, DataGridViewAutoSizeColumnMode.AllCells);
       }
     }
 
-    public static void UpdateThumbnailTableOnStartup(Utils.Category[] category, int sqlStartVal)
+    public void UpdateThumbnailTableOnStartup(Utils.Category[] category, int sqlStartVal)
     {
+      if (dataGridViewThumbs == null || myDataTableThumbs == null)
+        return ;
+
       try
       {
         dataGridViewThumbs.ClearSelection();
@@ -3571,36 +3555,18 @@ namespace FanartHandler
         SyncPointTableUpdate = 0;
         dataGridViewThumbs.ClearSelection();
         myDataTableThumbs.Rows.Clear();
-        /*
-        dataGridViewThumbs.DataSource = null;
-        dataGridViewThumbs.DataSource = new DataTable()
-        {
-            Columns = {
-                "Artist",
-                "Type",
-                "Locked",
-                "Image",
-                "Image Path"
-            }
-        };
-        */
+
         dataGridViewThumbs.AutoResizeColumn(1, DataGridViewAutoSizeColumnMode.AllCells);
       }
     }
 
-    public static void UpdateFanartTableOnStartup(int sqlStartVal)
+    public void UpdateFanartTableOnStartup(int sqlStartVal)
     {
+      if (dataGridViewFanart == null || myDataTableFanart == null)
+        return ;
+
       try
       {
-        /*
-        myDataTableFanart = new DataTable();
-        myDataTableFanart.Columns.Add("Artist");
-        myDataTableFanart.Columns.Add("Enabled");
-        myDataTableFanart.Columns.Add("AvailableRandom");
-        myDataTableFanart.Columns.Add("Image");
-        myDataTableFanart.Columns.Add("Image Path");
-        dataGridViewFanart.DataSource = myDataTableFanart;
-        */
         dataGridViewFanart.ClearSelection();
         myDataTableFanart.Rows.Clear();
         // Handle Grid exception
@@ -3638,31 +3604,11 @@ namespace FanartHandler
           }
         }
         dataGridViewFanart.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-        /*
-        dataGridViewFanart.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-        dataGridViewFanart.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-        dataGridViewFanart.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-        dataGridViewFanart.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-        dataGridViewFanart.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-        dataGridViewFanart.Sort(dataGridViewFanart.Columns["Artist"], ListSortDirection.Ascending);
-        */
       }
       catch (Exception ex)
       {
         logger.Error("UpdateFanartTableOnStartup: " + ex);
-        /*
-        dataGridViewFanart.DataSource = null;
-        dataGridViewFanart.DataSource = new DataTable()
-        {
-            Columns = {
-                "Artist",
-                "Enabled",
-                "AvailableRandom",
-                "Image",
-                "Image Path"
-            }
-        };
-        */
+
         dataGridViewFanart.AutoResizeColumn(1, DataGridViewAutoSizeColumnMode.AllCells);
       }
     }
@@ -3695,7 +3641,7 @@ namespace FanartHandler
       }
     }
 
-    public static void StopThumbScraper(string onlyMissing)
+    public void StopThumbScraper(string onlyMissing)
     {
       try
       {
@@ -3753,9 +3699,9 @@ namespace FanartHandler
           button44.Enabled = true;
 
         if (watcherAlbum != null)
-          watcherAlbum.Created -= new FileSystemEventHandler(FanartHandlerConfig.FileWatcher_Created);
+          watcherAlbum.Created -= new FileSystemEventHandler(FileWatcher_Created);
         if (watcherArtists != null)
-          watcherArtists.Created -= new FileSystemEventHandler(FanartHandlerConfig.FileWatcher_Created);
+          watcherArtists.Created -= new FileSystemEventHandler(FileWatcher_Created);
       }
       catch (Exception ex)
       {
@@ -3987,11 +3933,6 @@ namespace FanartHandler
       if (s.Equals("MovingPictures"))
         return Utils.Category.MovingPictureManual;
       return s.Equals("MyVideos") ? Utils.Category.MovieScraped : Utils.Category.TvSeriesScraped;
-    }
-
-    private void button19_Click(object sender, EventArgs e)
-    {
-      CleanupMusicFanart();
     }
 
     private void button18_Click(object sender, EventArgs e)
@@ -4350,6 +4291,7 @@ namespace FanartHandler
     public delegate void ScrollDelegate();
     private delegate void UpdateFanartTableDelegate();
     private delegate void UpdateThumbTableDelegate(string path);
+
   }
 
   public static class Prompt

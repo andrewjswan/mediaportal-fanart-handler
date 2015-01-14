@@ -151,9 +151,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UtilsTVSeries.cs" />
-    <Compile Include="JunctionPoint.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="JunctionPoint.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="FanartHandlerConfig.resx">

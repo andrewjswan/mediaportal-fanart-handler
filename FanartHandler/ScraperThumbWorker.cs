@@ -71,7 +71,8 @@ namespace FanartHandler
           Utils.GetDbm().TotArtistsBeingScraped = 0.0;
           Utils.GetDbm().CurrArtistsBeingScraped = 0.0;
         }
-        FanartHandlerConfig.StopThumbScraper(FanartHandlerConfig.oMissing);
+        FanartHandlerConfig F = new FanartHandlerConfig();
+        F.StopThumbScraper(FanartHandlerConfig.oMissing);
       }
       catch (Exception ex)
       {
