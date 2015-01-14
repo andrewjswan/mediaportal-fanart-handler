@@ -11,8 +11,6 @@ namespace FanartHandler
   [PluginIcons("FanartHandler.FanartHandler_Icon.png", "FanartHandler.FanartHandler_Icon_Disabled.png")]
   public class FanartHandlerSetup : IPlugin, ISetupForm
   {
-    // private FanartHandlerConfig xconfig;
-
     internal static FanartHandler Fh { get; set; }
 
     #region FanartHandler ISetupForm Members
@@ -52,8 +50,7 @@ namespace FanartHandler
 
     public void ShowPlugin()
     {
-      // xconfig = new FanartHandlerConfig();
-      // var num = (int) xconfig.ShowDialog();
+      // using (FanartHandlerConfig Config = new FanartHandlerConfig())
       FanartHandlerConfig Config = new FanartHandlerConfig();
       Config.ShowDialog();
     }
