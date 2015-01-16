@@ -35,52 +35,43 @@ namespace FanartHandler
   {
     private readonly Logger logger = LogManager.GetCurrentClassLogger();
     private string fhThreadPriority = "Lowest";
-    private int maxCountImage = 30;
     private const string LogFileName = "FanartHandler.log";
     private const string OldLogFileName = "FanartHandler.bak";
-    internal FanartPlaying FP;
-    internal FanartRandom FR;
-    internal FanartSelected FS;
-    internal ArrayList ListPictureHash;
-    private DirectoryWorker MyDirectoryWorker;
-    private RefreshWorker MyRefreshWorker;
+    private int maxCountImage = 30;
+    private Hashtable defaultBackdropImages;
+
     internal int SyncPointDirectory;
     internal int SyncPointDirectoryUpdate;
     internal int SyncPointRefresh;
     internal int SyncPointScraper;
-    private Hashtable defaultBackdropImages;
+
     private string m_CurrentTitleTag;
     private string m_CurrentTrackTag;
     private string m_CurrentAlbumTag;
     private string m_CurrentGenreTag;
     private string m_SelectedItem;
-    private TimerCallback myScraperTimer;
-    private Timer refreshTimer;
-    private System.Threading.Timer scraperTimer;
+
     internal int syncPointProgressChange;
     internal Hashtable DirectoryTimerQueue;
 
+    private TimerCallback myScraperTimer;
+    private Timer refreshTimer;
+    private System.Threading.Timer scraperTimer;
+
+    internal FanartPlaying FP;
+    internal FanartRandom FR;
+    internal FanartSelected FS;
+    internal ArrayList ListPictureHash;
+
+    private DirectoryWorker MyDirectoryWorker;
+    private RefreshWorker MyRefreshWorker;
+
     internal FileSystemWatcher MyFileWatcher { get; set; }
-
-    internal string PrevPictureImage { get; set; }
-
-    internal string PrevPicture { get; set; }
-
     internal ScraperNowWorker MyScraperNowWorker { get; set; }
-
     internal ScraperWorker MyScraperWorker { get; set; }
 
-    internal string FHThreadPriority
-    {
-      get
-      {
-        return fhThreadPriority;
-      }
-      set
-      {
-        fhThreadPriority = value;
-      }
-    }
+    internal string PrevPictureImage { get; set; }
+    internal string PrevPicture { get; set; }
 
     internal bool IsRandom { get; set; }
     internal bool IsSelectedScoreCenter { get; set; }
@@ -90,90 +81,54 @@ namespace FanartHandler
     internal bool IsPlaying { get; set; }
     internal int IsPlayingCount { get; set; }
 
+    internal MusicDatabase MDB { get; set; }
+
+    internal string FHThreadPriority
+    {
+      get { return fhThreadPriority; }
+      set { fhThreadPriority = value; }
+    }
+
     internal string CurrentTitleTag
     {
-      get
-      {
-        return m_CurrentTitleTag;
-      }
-      set
-      {
-        m_CurrentTitleTag = value;
-      }
+      get { return m_CurrentTitleTag; }
+      set { m_CurrentTitleTag = value; }
     }
 
     internal string CurrentTrackTag
     {
-      get
-      {
-        return m_CurrentTrackTag;
-      }
-      set
-      {
-        m_CurrentTrackTag = value;
-      }
+      get { return m_CurrentTrackTag; }
+      set { m_CurrentTrackTag = value; }
     }
 
     internal string CurrentAlbumTag
     {
-      get
-      {
-        return m_CurrentAlbumTag;
-      }
-      set
-      {
-        m_CurrentAlbumTag = value;
-      }
+      get { return m_CurrentAlbumTag; }
+      set { m_CurrentAlbumTag = value; }
     }
 
     internal string CurrentGenreTag
     {
-      get
-      {
-        return m_CurrentGenreTag;
-      }
-      set
-      {
-        m_CurrentGenreTag = value;
-      }
+      get { return m_CurrentGenreTag; }
+      set { m_CurrentGenreTag = value; }
     }
 
     internal Hashtable DefaultBackdropImages
     {
-      get
-      {
-        return defaultBackdropImages;
-      }
-      set
-      {
-        defaultBackdropImages = value;
-      }
+      get { return defaultBackdropImages; }
+      set { defaultBackdropImages = value; }
     }
-
-    internal MusicDatabase MDB { get; set; }
 
     internal int MaxCountImage
     {
-      get
-      {
-        return maxCountImage;
-      }
-      set
-      {
-        maxCountImage = value;
-      }
+      get { return maxCountImage; }
+      set { maxCountImage = value; }
     }
 
     internal string SelectedItem
     {
-      get
-      {
-        return m_SelectedItem;
-      }
-      set
-      {
-        m_SelectedItem = value;
-      }
+      get { return m_SelectedItem; }
+      set { m_SelectedItem = value; }
     }
 
     internal void HandleOldImages(ref ArrayList al)
