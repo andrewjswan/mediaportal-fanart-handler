@@ -1441,7 +1441,7 @@ namespace FanartHandler
         URL = URL + "movies/" + FanArtAdd + ApiKeyFanartTV ;
         Section = "moviebackground";
         if (iMax < 0)
-          iMax = checked(Convert.ToInt32(Utils.GetScraperMaxImages(),CultureInfo.CurrentCulture));
+          iMax = checked(Convert.ToInt32(Utils.ScraperMaxImages,CultureInfo.CurrentCulture));
         if ((iMax = iMax - Utils.GetDbm().GetNumberOfFanartImages(artist)) <= 0)
           return 8888 ;
       // Fanart.TV wrong Category ...

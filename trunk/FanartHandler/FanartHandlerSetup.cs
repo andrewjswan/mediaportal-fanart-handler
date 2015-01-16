@@ -12,6 +12,7 @@ namespace FanartHandler
   public class FanartHandlerSetup : IPlugin, ISetupForm
   {
     internal static FanartHandler Fh { get; set; }
+    internal static FanartHandlerConfig FhC { get; set; }
 
     #region FanartHandler ISetupForm Members
     public void Start()
@@ -50,9 +51,12 @@ namespace FanartHandler
 
     public void ShowPlugin()
     {
-      // using (FanartHandlerConfig Config = new FanartHandlerConfig())
-      FanartHandlerConfig Config = new FanartHandlerConfig();
-      Config.ShowDialog();
+      if (Fh == null)
+        Fh = new FanartHandler();
+      //
+      if (FhC == null)
+        FhC = new FanartHandlerConfig();
+      FhC.ShowDialog();
     }
 
     public bool CanEnable()

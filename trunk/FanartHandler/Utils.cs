@@ -419,6 +419,14 @@ namespace FanartHandler
       dbm.InitDB(type);
     }
 
+    public static void AllocateDelayStop(string key)
+    {
+      if (DelayStop.Contains(key))
+        DelayStop[key] = "1";
+      else
+        DelayStop.Add(key, "1");
+    }
+
     public static bool GetDelayStop()
     {
       if (DelayStop.Count == 0)
@@ -427,24 +435,10 @@ namespace FanartHandler
       var num = 0;
       foreach (DictionaryEntry dictionaryEntry in DelayStop)
       {
-        logger.Debug(string.Concat(new object[4]
-        {
-          "DelayStop (",
-          num,
-          "):",
-          dictionaryEntry.Key
-        }));
+        logger.Debug(string.Concat(new object[4] { "DelayStop (", num, "):", dictionaryEntry.Key }));
         checked { ++num; }
       }
       return true;
-    }
-
-    public static void AllocateDelayStop(string key)
-    {
-      if (DelayStop.Contains(key))
-        DelayStop[key] = "1";
-      else
-        DelayStop.Add(key, "1");
     }
 
     public static void ReleaseDelayStop(string key)
@@ -454,24 +448,14 @@ namespace FanartHandler
       DelayStop.Remove(key);
     }
 
-    public static bool GetIsStopping()
-    {
-      return isStopping;
-    }
-
     public static void SetIsStopping(bool b)
     {
       isStopping = b;
     }
 
-    public static string GetScraperMaxImages()
+    public static bool GetIsStopping()
     {
-      return ScraperMaxImages;
-    }
-
-    public static void SetScraperMaxImages(string s)
-    {
-      ScraperMaxImages = s;
+      return isStopping;
     }
 
     public static void LogDevMsg(string msg)
@@ -899,6 +883,14 @@ namespace FanartHandler
       return key.Trim();
     }
 
+    public static string GetFilenameOnly(string filename)
+    {
+      if (!string.IsNullOrEmpty(filename))
+        return Path.GetFileName(filename);
+      else
+        return string.Empty;
+    }
+
     public static string GetFilenameNoPath(string key)
     {
       if (string.IsNullOrEmpty(key))
@@ -1267,6 +1259,16 @@ namespace FanartHandler
       return source.IndexOf(toCheck, comp) >= 0;
     }
 
+    public static int Percent(int Value, int Max)
+    {
+      return (Max > 0) ? Convert.ToInt32((Value*100)/Max) : 0 ;
+    }
+
+    public static int Percent(double Value, double Max)
+    {
+      return (Max > 0.0) ? Convert.ToInt32((Value*100.0)/Max) : 0 ;
+    }
+
     #region Settings
     public static void LoadBadArtists()
     {
@@ -1295,6 +1297,33 @@ namespace FanartHandler
       catch (Exception ex)
       {
         logger.Error("LoadBadArtists: "+ex);
+      }
+    }
+
+    public static void CreateDirectoryIfMissing(string directory)
+    {
+      if (!Directory.Exists(directory))
+        Directory.CreateDirectory(directory);
+    }
+
+    public static void SetupDirectories()
+    {
+      try
+      {
+        CreateDirectoryIfMissing(FAHUDGames);
+        CreateDirectoryIfMissing(FAHUDMovies);
+        CreateDirectoryIfMissing(FAHUDMusic);
+        CreateDirectoryIfMissing(FAHUDMusicAlbum);
+        CreateDirectoryIfMissing(FAHUDPictures);
+        CreateDirectoryIfMissing(FAHUDScorecenter);
+        CreateDirectoryIfMissing(FAHUDTV);
+        CreateDirectoryIfMissing(FAHUDPlugins);
+        CreateDirectoryIfMissing(FAHSMovies);
+        CreateDirectoryIfMissing(FAHSMusic);
+      }
+      catch (Exception ex)
+      {
+        logger.Error("SetupDirectories: " + ex);
       }
     }
 
