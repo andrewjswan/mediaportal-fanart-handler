@@ -266,8 +266,10 @@ namespace FanartHandler
         if (!type.Equals("All") && !type.Equals("Fanart") && (!type.Equals("Thumbs") && !type.Equals("External")))
           return;
 
-        FanartHandlerConfig.toolStripStatusLabelToolTip.Text = e.UserState.ToString();
-        FanartHandlerConfig.toolStripProgressBar.Value = e.ProgressPercentage;
+        // FanartHandlerConfig F = new FanartHandlerConfig();
+
+        FanartHandlerSetup.FhC.StripStatusLabelToolTipText = e.UserState.ToString();
+        FanartHandlerSetup.FhC.StripProgressBarValue = e.ProgressPercentage;
       }
       catch (Exception ex)
       {
@@ -287,16 +289,16 @@ namespace FanartHandler
         if (type == null)
           return;
 
-        FanartHandlerConfig F = new FanartHandlerConfig();
+        // FanartHandlerConfig F = new FanartHandlerConfig();
 
         if (type.Equals("All") || type.Equals("Fanart"))
         {
-          F.UpdateFanartTableOnStartup(0);
+          FanartHandlerSetup.FhC.UpdateFanartTableOnStartup(0);
           flag = true;
         }
         if (type.Equals("All") || type.Equals("Thumbs"))
         {
-          F.UpdateThumbnailTableOnStartup(new Utils.Category[2]
+          FanartHandlerSetup.FhC.UpdateThumbnailTableOnStartup(new Utils.Category[2]
           {
             Utils.Category.MusicAlbumThumbScraped,
             Utils.Category.MusicArtistThumbScraped
@@ -305,14 +307,14 @@ namespace FanartHandler
         }
         if (type.Equals("All") || type.Equals("External"))
         {
-          F.UpdateFanartExternalTable();
+          FanartHandlerSetup.FhC.UpdateFanartExternalTable();
           flag = true;
         }
 
         if (flag)
         {
-          FanartHandlerConfig.toolStripStatusLabelToolTip.Text = "Done / Idle";
-          FanartHandlerConfig.toolStripProgressBar.Value = 0;
+          FanartHandlerSetup.FhC.StripStatusLabelToolTipText = "Done / Idle";
+          FanartHandlerSetup.FhC.StripProgressBarValue = 0;
         }
 
       }

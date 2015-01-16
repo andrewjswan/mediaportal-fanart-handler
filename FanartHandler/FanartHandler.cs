@@ -1045,7 +1045,7 @@ namespace FanartHandler
         //
         SetupWindowsUsingFanartHandlerVisibility();
         SetupVariables();
-        SetupDirectories();
+        Utils.SetupDirectories();
         if (Utils.DefaultBackdropIsImage)
         {
           DefaultBackdropImages.Add(0, Utils.DefaultBackdrop);
@@ -1148,15 +1148,15 @@ namespace FanartHandler
         if (e.Mode == PowerModes.Resume)
         {
           logger.Info("Fanart Handler: is resuming from standby/hibernate.");
-          StopTasks(false);
-          Start();
+          // StopTasks(false);
+          // Start();
         }
         else
         {
           if (e.Mode != PowerModes.Suspend)
             return;
           logger.Info("Fanart Handler: is suspending/hibernating...");
-          StopTasks(true);
+          // StopTasks(true);
           logger.Info("Fanart Handler: is suspended/hibernated.");
         }
       }
@@ -1510,34 +1510,6 @@ namespace FanartHandler
       catch (Exception ex)
       {
         logger.Error("OnPlayBackEnded: " + ex.ToString());
-      }
-    }
-
-    private void CreateDirectoryIfMissing(string directory)
-    {
-      if (Directory.Exists(directory))
-        return;
-      Directory.CreateDirectory(directory);
-    }
-
-    internal void SetupDirectories()
-    {
-      try
-      {
-        CreateDirectoryIfMissing(Utils.FAHUDGames);
-        CreateDirectoryIfMissing(Utils.FAHUDMovies);
-        CreateDirectoryIfMissing(Utils.FAHUDMusic);
-        CreateDirectoryIfMissing(Utils.FAHUDMusicAlbum);
-        CreateDirectoryIfMissing(Utils.FAHUDPictures);
-        CreateDirectoryIfMissing(Utils.FAHUDScorecenter);
-        CreateDirectoryIfMissing(Utils.FAHUDTV);
-        CreateDirectoryIfMissing(Utils.FAHUDPlugins);
-        CreateDirectoryIfMissing(Utils.FAHSMovies);
-        CreateDirectoryIfMissing(Utils.FAHSMusic);
-      }
-      catch (Exception ex)
-      {
-        logger.Error("setupDirectories: " + ex);
       }
     }
 
