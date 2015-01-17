@@ -39,18 +39,6 @@ namespace FanartHandler
     public static List<string> BadArtistsList;  
     public static string[] PipesArray ;
 
-    public static int IdleTimeInMillis
-    {
-      get
-      {
-        return idleTimeInMillis;
-      }
-      set
-      {
-        idleTimeInMillis = value;
-      }
-    }
-
     #region Settings
     public static bool UseFanart { get; set; }
     public static bool UseAlbum { get; set; } 
@@ -86,6 +74,7 @@ namespace FanartHandler
     public static bool UseMinimumResolutionForDownload { get; set; }
     public static bool ShowDummyItems { get; set; }
     public static bool AndSignAsSeparator { get; set; }
+    public static bool UseMyPicturesSlideShow { get; set; }
     #endregion
 
     #region Providers
@@ -152,6 +141,12 @@ namespace FanartHandler
     public static string JunctionSource { get; set; }
     public static string JunctionTarget { get; set; }
     #endregion
+
+    public static int IdleTimeInMillis
+    {
+      get { return idleTimeInMillis; }
+      set { idleTimeInMillis = value; }
+    }
 
     static Utils()
     {
@@ -396,8 +391,10 @@ namespace FanartHandler
         for (int index = 0; index < MaximumShares; index++)
         {
           string sharePath = String.Format("sharepath{0}", index);
+          string sharePin = String.Format("pincode{0}", index);
           string sharePathData = xmlreader.GetValueAsString("music", sharePath, string.Empty);
-          if (!MediaPortal.Util.Utils.IsDVD(sharePathData) && sharePathData != string.Empty)
+          string sharePinData = xmlreader.GetValueAsString("music", sharePin, string.Empty);
+          if (!MediaPortal.Util.Utils.IsDVD(sharePathData) && sharePathData != string.Empty && string.IsNullOrEmpty(sharePinData))
           {
             logger.Debug("Mediaportal Music folder: "+sharePathData) ;
             FanartHandlerSetup.Fh.SetupFilenames(sharePathData, "fanart*.jpg", Utils.Category.MusicFanartManual, null, Utils.Provider.MusicFolder, true);
@@ -489,7 +486,7 @@ namespace FanartHandler
       var key = self.ToLowerInvariant().Trim();
       key = Utils.RemoveDiacritics(key).Trim();
       key = Regex.Replace(key, @"[^\w|;&]", " ");
-      key = Regex.Replace(key, @"\b(and|und|en|et|y)\b", " & ");
+      key = Regex.Replace(key, @"\b(and|und|en|et|y|и)\b", " & ");
       key = Regex.Replace(key, @"\si(\b)", " 1$1");
       key = Regex.Replace(key, @"\sii(\b)", " 2$1");
       key = Regex.Replace(key, @"\siii(\b)", " 3$1");
@@ -749,7 +746,16 @@ namespace FanartHandler
         return string.Empty;
 
       var artists = "'" + inputName.Trim() + "'";
-      var strArray = inputName.ToLower().Replace(";", "|").Replace(" ft ", "|").Replace(" feat ", "|").Replace(" and ", "|").Replace(" & ", "|").Replace(",", "|").Trim().Split(new char[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
+      var strArray = inputName.ToLower().
+                       Replace(";", "|").
+                       Replace(" ft ", "|").
+                       Replace(" feat ", "|").
+                       Replace(" and ", "|").
+                       Replace(" & ", "|").
+                       Replace(" и ", "|").
+                       Replace(",", "|").
+                     Trim().
+                     Split(new char[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
 
       foreach (var artist in strArray)
       {
@@ -1269,6 +1275,11 @@ namespace FanartHandler
       return (Max > 0.0) ? Convert.ToInt32((Value*100.0)/Max) : 0 ;
     }
 
+    public static string Check(bool Value, bool Box = true)
+    {
+      return (Box ? "[" : string.Empty) + (Value ? "x" : " ") + (Box ? "]" : string.Empty) ;
+    }
+
     #region Settings
     public static void LoadBadArtists()
     {
@@ -1364,6 +1375,7 @@ namespace FanartHandler
       UseMinimumResolutionForDownload = false;
       ShowDummyItems = false;
       AndSignAsSeparator = false;
+      UseMyPicturesSlideShow = false;
       #endregion
       #region Init Providers
       UseFanartTV = true;
@@ -1425,6 +1437,7 @@ namespace FanartHandler
           UseHighDefThumbnails = settings.GetValueAsBool("FanartHandler", "UseHighDefThumbnails", UseHighDefThumbnails);
           UseMinimumResolutionForDownload = settings.GetValueAsBool("FanartHandler", "UseMinimumResolutionForDownload", UseMinimumResolutionForDownload);
           ShowDummyItems = settings.GetValueAsBool("FanartHandler", "ShowDummyItems", ShowDummyItems);
+          UseMyPicturesSlideShow = settings.GetValueAsBool("FanartHandler", "UseMyPicturesSlideShow", UseMyPicturesSlideShow);
           //
           UseFanartTV = settings.GetValueAsBool("Providers", "UseFanartTV", UseFanartTV);
           UseHtBackdrops = settings.GetValueAsBool("Providers", "UseHtBackdrops", UseHtBackdrops);
@@ -1471,16 +1484,21 @@ namespace FanartHandler
         Array.Resize(ref PipesArray, PipesArray.Length + 1);
         PipesArray[PipesArray.Length - 1] = " & ";
       }
-      logger.Debug("Artists pipes: ["+string.Join("][", PipesArray)+"]");
       #endregion
       //
-      logger.Debug("Providers: ["+(UseFanartTV ? "x" : " ")+"] Fanart.TV, ["+(UseHtBackdrops ? "x" : " ")+"] HtBackdrops, ["+(UseLastFM ? "x" : " ")+"] Last.fm, ["+(UseCoverArtArchive ? "x" : " ")+"] CoverArtArchive");
+      #region Report Settings
+      logger.Info("Fanart Handler is using: " + Check(Utils.UseFanart) + " Fanart, " + Check(Utils.UseAlbum) + " Album Thumbs, " + Check(Utils.UseArtist) + " Artist Thumbs, "+Check(UseGenreFanart)+" Genre Fanart, Min: "+MinResolution+", "+Check(UseAspectRatio)+" Aspect Ratio >= 1.3");
+      logger.Debug("Scan: "+Check(ScanMusicFoldersForFanart)+" Music Folders for Fanart, RegExp: "+MusicFoldersArtistAlbumRegex);
+      logger.Debug("Scraper: [x] Fanart, "+Check(ScraperMPDatabase)+" MP Databases , "+Check(ScrapeThumbnails)+" Artists Thumb , "+Check(ScrapeThumbnailsAlbum)+" Album Thumb, "+Check(UseMinimumResolutionForDownload)+" Delete if less then "+MinResolution+", "+Check(UseHighDefThumbnails)+" High Def Thumbs");
+      logger.Debug("Providers: "+Check(UseFanartTV)+" Fanart.TV, "+Check(UseHtBackdrops)+" HtBackdrops, "+Check(UseLastFM)+" Last.fm, "+Check(UseCoverArtArchive)+" CoverArtArchive");
       if (UseFanartTV)
       {
         logger.Debug("Fanart.TV: Language: ["+(string.IsNullOrEmpty(FanartTVLanguage) ? "Any]" : FanartTVLanguage+"] If not found, try to use Any language: "+FanartTVLanguageToAny));
-        logger.Debug("Fanart.TV: Music: ["+(MusicClearArtDownload ? "x" : " ")+"] ClearArt, ["+(MusicBannerDownload ? "x" : " ")+"] Banner, ["+(MusicCDArtDownload ? "x" : " ")+"] CD");
-        logger.Debug("Fanart.TV: Movie: ["+(MoviesClearArtDownload ? "x" : " ")+"] ClearArt, ["+(MoviesBannerDownload ? "x" : " ")+"] Banner, ["+(MoviesCDArtDownload ? "x" : " ")+"] CD, ["+(MoviesClearLogoDownload ? "x" : " ")+"] ClearLogo");
+        logger.Debug("Fanart.TV: Music: "+Check(MusicClearArtDownload)+" ClearArt, "+Check(MusicBannerDownload)+" Banner, "+Check(MusicCDArtDownload)+" CD");
+        logger.Debug("Fanart.TV: Movie: "+Check(MoviesClearArtDownload)+" ClearArt, "+Check(MoviesBannerDownload)+" Banner, "+Check(MoviesCDArtDownload)+" CD, "+Check(MoviesClearLogoDownload)+" ClearLogo");
       }
+      logger.Debug("Artists pipes: ["+string.Join("][", PipesArray)+"]");
+      #endregion
     }
 
     public static void SaveSettings()
@@ -1518,6 +1536,7 @@ namespace FanartHandler
           xmlwriter.SetValueAsBool("FanartHandler", "UseHighDefThumbnails", UseHighDefThumbnails);
           xmlwriter.SetValueAsBool("FanartHandler", "UseMinimumResolutionForDownload", UseMinimumResolutionForDownload);
           xmlwriter.SetValueAsBool("FanartHandler", "ShowDummyItems", ShowDummyItems);
+          xmlwriter.SetValueAsBool("FanartHandler", "UseMyPicturesSlideShow", UseMyPicturesSlideShow);
           //
           xmlwriter.SetValueAsBool("Providers", "UseFanartTV", UseFanartTV);
           xmlwriter.SetValueAsBool("Providers", "UseHtBackdrops", UseHtBackdrops);

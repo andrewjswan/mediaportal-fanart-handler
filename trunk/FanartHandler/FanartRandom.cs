@@ -72,51 +72,32 @@ namespace FanartHandler
     public Random RandAnyTVUser { get; set; }
     public Random RandAnyPluginsUser { get; set; }
 
+    public bool WindowOpen { get; set; }
+
+    public int CountSetVisibility { get; set; }
+    public int UpdateVisibilityCountRandom { get; set; }
+
+    public Hashtable WindowsUsingFanartRandom { get; set; }
+
     public Hashtable PropertiesRandom { get; set; }
 
     public Hashtable PropertiesRandomPerm
     {
-      get
-      {
-        return propertiesRandomPerm;
-      }
-      set
-      {
-        propertiesRandomPerm = value;
-      }
+      get { return propertiesRandomPerm; }
+      set { propertiesRandomPerm = value; }
     }
-
-    public Hashtable WindowsUsingFanartRandom { get; set; }
 
     public bool DoShowImageOneRandom
     {
-      get
-      {
-        return doShowImageOneRandom;
-      }
-      set
-      {
-        doShowImageOneRandom = value;
-      }
+      get { return doShowImageOneRandom; }
+      set { doShowImageOneRandom = value; }
     }
-
-    public bool WindowOpen { get; set; }
 
     public bool FirstRandom
     {
-      get
-      {
-        return firstRandom;
-      }
-      set
-      {
-        firstRandom = value;
-      }
+      get { return firstRandom; }
+      set { firstRandom = value; }
     }
-
-    public int CountSetVisibility { get; set; }
-
-    public int UpdateVisibilityCountRandom { get; set; }
 
     static FanartRandom()
     {

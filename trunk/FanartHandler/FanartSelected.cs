@@ -48,16 +48,20 @@ namespace FanartHandler
     public Hashtable WindowsUsingFanartSelectedScoreCenter { get; set; }
     public Hashtable WindowsUsingFanartSelectedMovie { get; set; }
 
+    public Hashtable GetCurrentArtistsImageNames()
+    {
+      return CurrentArtistsImageNames;
+    }
+
+    public void SetCurrentArtistsImageNames(Hashtable ht)
+    {
+      CurrentArtistsImageNames = ht;
+    }
+
     public bool DoShowImageOne
     {
-      get
-      {
-        return doShowImageOne;
-      }
-      set
-      {
-        doShowImageOne = value;
-      }
+      get { return doShowImageOne; }
+      set { doShowImageOne = value; }
     }
 
     static FanartSelected()
@@ -67,16 +71,6 @@ namespace FanartHandler
     public FanartSelected()
     {
       CurrentArtistsImageNames = new Hashtable();
-    }
-
-    public Hashtable GetCurrentArtistsImageNames()
-    {
-      return CurrentArtistsImageNames;
-    }
-
-    public void SetCurrentArtistsImageNames(Hashtable ht)
-    {
-      CurrentArtistsImageNames = ht;
     }
 
     #region Generic Selected Properties

@@ -15,44 +15,28 @@ namespace FanartHandler
   internal class FanartPlaying
   {
     private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-    private bool doShowImageOnePlay = true;
-    public string CurrPlayMusic;
     public ArrayList ListPlayMusic;
+
+    public bool FanartAvailablePlay { get; set; }
+    public bool HasUpdatedCurrCountPlay { get; set; }
+
+    public string CurrPlayMusic;
+    public string CurrPlayMusicArtist { get; set; }
+
+    public int UpdateVisibilityCountPlay { get; set; }
+    public int CurrCountPlay { get; set; }
     public int PrevPlayMusic;
 
     public Hashtable CurrentArtistsImageNames { get; set; }
     public Hashtable WindowsUsingFanartPlay { get; set; }
-    public bool HasUpdatedCurrCountPlay { get; set; }
+    public Hashtable PropertiesPlay { get; set; }
+
+    private bool doShowImageOnePlay = true;
 
     public bool DoShowImageOnePlay
     {
-      get
-      {
-        return doShowImageOnePlay;
-      }
-      set
-      {
-        doShowImageOnePlay = value;
-      }
-    }
-
-    public bool FanartAvailablePlay { get; set; }
-
-    public string CurrPlayMusicArtist { get; set; }
-
-    public int UpdateVisibilityCountPlay { get; set; }
-
-    public int CurrCountPlay { get; set; }
-
-    public Hashtable PropertiesPlay { get; set; }
-
-    static FanartPlaying()
-    {
-    }
-
-    public FanartPlaying()
-    {
-      CurrentArtistsImageNames = new Hashtable();
+      get { return doShowImageOnePlay; }
+      set { doShowImageOnePlay = value; }
     }
 
     public Hashtable GetCurrentArtistsImageNames()
@@ -63,6 +47,15 @@ namespace FanartHandler
     public void SetCurrentArtistsImageNames(Hashtable ht)
     {
       CurrentArtistsImageNames = ht;
+    }
+
+    static FanartPlaying()
+    {
+    }
+
+    public FanartPlaying()
+    {
+      CurrentArtistsImageNames = new Hashtable();
     }
 
     private void AddPropertyPlay(string property, string value, ref ArrayList al)
@@ -255,19 +248,31 @@ namespace FanartHandler
             UpdateVisibilityCountPlay = 0;
             SetCurrentArtistsImageNames(null);
           }
-          // Artist
-          var FileName = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.CurrentTrackTag, FanartHandlerSetup.Fh.CurrentAlbumTag, ref CurrPlayMusic, ref PrevPlayMusic, Utils.Category.MusicFanartScraped, "FanartPlaying", NewArtist, true);
+
+          var FileName = string.Empty ;
+          // My Pictures SlideShow
+          if (Utils.UseMyPicturesSlideShow)
+          {
+            FileName = FanartHandlerSetup.Fh.GetRandomSlideShowImages(ref CurrPlayMusic, ref PrevPlayMusic);
+            if (!string.IsNullOrEmpty(FileName))
+              CurrPlayMusic = FileName;
+          }
           if (string.IsNullOrEmpty(FileName))
           {
-            // Genre
-            if (!string.IsNullOrEmpty(FanartHandlerSetup.Fh.CurrentGenreTag) && Utils.UseGenreFanart)
-              FileName = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.CurrentGenreTag, null,  ref CurrPlayMusic, ref PrevPlayMusic, Utils.Category.MusicFanartScraped, "FanartPlaying", NewArtist, true);
+            // Artist
+            FileName = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.CurrentTrackTag, FanartHandlerSetup.Fh.CurrentAlbumTag, ref CurrPlayMusic, ref PrevPlayMusic, Utils.Category.MusicFanartScraped, "FanartPlaying", NewArtist, true);
             if (string.IsNullOrEmpty(FileName))
             {
-              // Random
-              FileName = FanartHandlerSetup.Fh.GetRandomDefaultBackdrop(ref CurrPlayMusic, ref PrevPlayMusic);
-              if (!string.IsNullOrEmpty(FileName))
-                CurrPlayMusic = FileName;
+              // Genre
+              if (!string.IsNullOrEmpty(FanartHandlerSetup.Fh.CurrentGenreTag) && Utils.UseGenreFanart)
+                FileName = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.CurrentGenreTag, null,  ref CurrPlayMusic, ref PrevPlayMusic, Utils.Category.MusicFanartScraped, "FanartPlaying", NewArtist, true);
+              if (string.IsNullOrEmpty(FileName))
+              {
+                // Random
+                FileName = FanartHandlerSetup.Fh.GetRandomDefaultBackdrop(ref CurrPlayMusic, ref PrevPlayMusic);
+                if (!string.IsNullOrEmpty(FileName))
+                  CurrPlayMusic = FileName;
+              }
             }
           }
           FanartAvailablePlay = (!string.IsNullOrEmpty(FileName));
