@@ -15,42 +15,25 @@ namespace FanartHandler
     private static readonly Logger logger = LogManager.GetCurrentClassLogger();
     private string album;
     private string artist;
+
     private bool triggerRefresh;
 
     public string Artist
     {
-      get
-      {
-        return artist;
-      }
-      set
-      {
-        artist = value;
-      }
+      get { return artist; }
+      set { artist = value; }
     }
 
     public string Album
     {
-      get
-      {
-        return album;
-      }
-      set
-      {
-        album = value;
-      }
+      get { return album; }
+      set { album = value; }
     }
 
     public bool TriggerRefresh
     {
-      get
-      {
-        return triggerRefresh;
-      }
-      set
-      {
-        triggerRefresh = value;
-      }
+      get { return triggerRefresh; }
+      set { triggerRefresh = value; }
     }
 
     static ScraperNowWorker()
@@ -69,19 +52,24 @@ namespace FanartHandler
       {
         if (Utils.GetIsStopping() || Interlocked.CompareExchange(ref FanartHandlerSetup.Fh.SyncPointScraper, 1, 0) != 0)
           return;
+
         Thread.CurrentThread.Priority = !FanartHandlerSetup.Fh.FHThreadPriority.Equals("Lowest", StringComparison.CurrentCulture) ? ThreadPriority.BelowNormal : ThreadPriority.Lowest;
         Thread.CurrentThread.Name = "ScraperNowWorker";
+
         var strArray = e.Argument as string[];
         artist = strArray[0];
         album = strArray[1];
         triggerRefresh = false;
+
         Utils.GetDbm().IsScraping = true;
         Utils.AllocateDelayStop("FanartHandlerSetup-StartScraperNowPlaying");
         FanartHandlerSetup.Fh.SetProperty("#fanartHandler.scraper.task", "Now Playing Scrape");
         FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.completed", "0");
         FanartHandlerSetup.Fh.ShowScraperProgressIndicator();
+
         Utils.GetDbm().NowPlayingScrape(artist, album);
         Utils.GetDbm().IsScraping = false;
+
         ReportProgress(100, "Done");
         Utils.ReleaseDelayStop("FanartHandlerSetup-StartScraperNowPlaying");
         FanartHandlerSetup.Fh.SyncPointScraper = 0;
@@ -101,6 +89,7 @@ namespace FanartHandler
       {
         if (Utils.GetIsStopping())
           return;
+
         FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.completed", string.Empty + e.ProgressPercentage);
       }
       catch (Exception ex)
@@ -115,7 +104,8 @@ namespace FanartHandler
       {
         if (Utils.GetIsStopping())
           return;
-        Thread.Sleep(500); // 1000
+
+        // Thread.Sleep(500); // 1000
         FanartHandlerSetup.Fh.HideScraperProgressIndicator();
         FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.completed", string.Empty);
         FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.task", string.Empty);

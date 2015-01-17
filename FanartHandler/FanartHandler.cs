@@ -39,6 +39,7 @@ namespace FanartHandler
     private const string OldLogFileName = "FanartHandler.bak";
     private int maxCountImage = 30;
     private Hashtable defaultBackdropImages;
+    private Hashtable slideshowImages;
 
     internal int SyncPointDirectory;
     internal int SyncPointDirectoryUpdate;
@@ -117,6 +118,12 @@ namespace FanartHandler
     {
       get { return defaultBackdropImages; }
       set { defaultBackdropImages = value; }
+    }
+
+    internal Hashtable SlideShowImages
+    {
+      get { return slideshowImages; }
+      set { slideshowImages = value; }
     }
 
     internal int MaxCountImage
@@ -386,6 +393,65 @@ namespace FanartHandler
       catch (Exception ex)
       {
         logger.Error("SetupDefaultBackdrops: " + ex);
+      }
+    }
+
+    internal void InitSlideShowImages(ref int i)
+    {
+      if (!Utils.UseMyPicturesSlideShow)
+        return;
+
+      logger.Info("Refreshing local MyPictures for Music SlideShow is starting.");
+
+      var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+      int MaximumShares = 250;
+      using (var xmlreader = new Settings(Config.GetFile((Config.Dir) 10, "MediaPortal.xml")))
+      {
+        for (int index = 0; index < MaximumShares; index++)
+        {
+          string sharePath = String.Format("sharepath{0}", index);
+          string sharePin = String.Format("pincode{0}", index);
+          string sharePathData = xmlreader.GetValueAsString("pictures", sharePath, string.Empty);
+          string sharePinData = xmlreader.GetValueAsString("pictures", sharePin, string.Empty);
+          if (!MediaPortal.Util.Utils.IsDVD(sharePathData) && sharePathData != string.Empty && string.IsNullOrEmpty(sharePinData))
+          {
+            logger.Debug("Mediaportal MyPictures folder: "+sharePathData) ;
+            SetupSlideShowImages(sharePathData, ref i) ;
+          }
+        }
+      }
+      stopwatch.Stop();
+      logger.Info("Refreshing local MyPictures for Music SlideShow is done. Time elapsed: {0}.", stopwatch.Elapsed);
+    }
+
+    internal void SetupSlideShowImages(string StartDir, ref int i)
+    {
+      if (!Utils.UseMyPicturesSlideShow)
+        return;
+
+      try
+      {
+        foreach (var file in Directory.GetFiles(StartDir, "*.jpg"))
+        {
+          try
+          {
+            if (CheckImageResolution(file, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio) && 
+                      Utils.IsFileValid(file))
+              SlideShowImages.Add(i, file);
+          }
+          catch (Exception ex)
+          {
+            logger.Error("SetupSlideShowImages: " + ex);
+          }
+          checked { ++i; }
+        }
+        // Include SubFolders
+        foreach (var SubDir in Directory.GetDirectories(StartDir))
+          SetupSlideShowImages(SubDir, ref i);
+      }
+      catch (Exception ex)
+      {
+        logger.Error("SetupSlideShowImages: " + ex);
       }
     }
 
@@ -668,6 +734,75 @@ namespace FanartHandler
       return str;
     }
 
+    internal string GetRandomSlideShowImages(ref string currFile, ref int iFilePrev)
+    {
+      var str = string.Empty;
+      try
+      {
+        if (!Utils.GetIsStopping())
+        {
+          if (Utils.UseMyPicturesSlideShow)
+          {
+            if (SlideShowImages != null)
+            {
+              if (SlideShowImages.Count > 0)
+              {
+                if (iFilePrev == -1)
+                  Utils.Shuffle(ref slideshowImages);
+
+                var values1 = SlideShowImages.Values;
+                var num1 = 0;
+                var num2 = 0;
+                foreach (string filename in values1)
+                {
+                  if ((num1 > iFilePrev || iFilePrev == -1) &&  
+                      CheckImageResolution(filename, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio) && 
+                      Utils.IsFileValid(filename)
+                     )
+                  {
+                    str = filename;
+                    iFilePrev = num1;
+                    currFile = filename;
+                    num2 = 1;
+                    break;
+                  }
+                  else
+                    checked { ++num1; }
+                }
+
+                if (num2 == 0)
+                {
+                  var values2 = SlideShowImages.Values;
+                  iFilePrev = -1;
+                  var num3 = 0;
+                  foreach (string filename in values2)
+                  {
+                    if ((num3 > iFilePrev || iFilePrev == -1) && // WTF? iFilePrev always -1
+                        CheckImageResolution(filename, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio) && 
+                        Utils.IsFileValid(filename)
+                       )
+                    {
+                      str = filename;
+                      iFilePrev = num3;
+                      currFile = filename;
+                      break;
+                    }
+                    else
+                      checked { ++num3; }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      catch (Exception ex)
+      {
+        logger.Error("GetRandomSlideShowImages: " + ex);
+      }
+      return str;
+    }
+
     private void ResetCounters()
     {
       if (FS.CurrCount > MaxCountImage)
@@ -888,6 +1023,7 @@ namespace FanartHandler
       FR.PropertiesRandom = new Hashtable();
       FR.PropertiesRandomPerm = new Hashtable();
       DefaultBackdropImages = new Hashtable();
+      SlideShowImages = new Hashtable();
       FR.ListAnyGamesUser = new ArrayList();
       FR.ListAnyMoviesUser = new ArrayList();
       FR.ListAnyMoviesScraper = new ArrayList();
@@ -1001,18 +1137,26 @@ namespace FanartHandler
         SetupWindowsUsingFanartHandlerVisibility();
         SetupVariables();
         Utils.SetupDirectories();
+        //
+        var i = 0;
         if (Utils.DefaultBackdropIsImage)
         {
           DefaultBackdropImages.Add(0, Utils.DefaultBackdrop);
         }
         else
         {
-          var i = 0;
           SetupDefaultBackdrops(Utils.DefaultBackdrop, ref i);
           Utils.Shuffle(ref defaultBackdropImages);
         }
-        logger.Info("Fanart Handler is using Fanart: " + Utils.UseFanart + ", Album Thumbs: " + Utils.UseAlbum + ", Artist Thumbs: " + Utils.UseArtist + ".");
         logger.Debug("Default backdrops ["+Utils.UseDefaultBackdrop+" - "+Utils.DefaultBackdropMask+"] for Music found: " + defaultBackdropImages.Count);
+        //
+        i = 0;
+        if (Utils.UseMyPicturesSlideShow)
+        {
+          InitSlideShowImages (ref i);
+          Utils.Shuffle(ref slideshowImages);
+        }
+        logger.Debug("MyPictures backdrops "+Utils.Check(Utils.UseMyPicturesSlideShow)+" found: " + slideshowImages.Count);
         //
         Utils.InitiateDbm("mediaportal");
         MDB = MusicDatabase.Instance;
@@ -1105,6 +1249,7 @@ namespace FanartHandler
           logger.Info("Fanart Handler: is resuming from standby/hibernate.");
           // StopTasks(false);
           // Start();
+          UpdateDirectoryTimer("All", false, "Fanart");
         }
         else
         {
@@ -1500,6 +1645,7 @@ namespace FanartHandler
       {
         if (Utils.GetIsStopping())
           return;
+
         Utils.GetDbm().TotArtistsBeingScraped = 0.0;
         Utils.GetDbm().CurrArtistsBeingScraped = 0.0;
         Utils.AllocateDelayStop("FanartHandlerSetup-StartScraperNowPlaying");

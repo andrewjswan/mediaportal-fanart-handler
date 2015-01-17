@@ -1005,7 +1005,24 @@ namespace FanartHandler
                         if (StopScraper)
                             return GetImages;
                     #endregion
-                    #region NowPlaying Album
+                    #region NowPlaying Artist Thumb
+                        if (Utils.ScrapeThumbnails)
+                          if (!Utils.GetDbm().HasArtistThumb(dbartist))
+                          {
+                            scraper = new Scraper();
+                            lock (lockObject)
+                                dbClient.Execute("BEGIN TRANSACTION;");
+                            scraper.GetArtistThumbs(artist, this, true);
+                            lock (lockObject)
+                                dbClient.Execute("COMMIT;");
+                            scraper = null;
+                          } 
+                          else
+                            UpdateTimeStamp(dbartist, null, Utils.Category.MusicArtistThumbScraped) ;
+                        if (StopScraper)
+                            return GetImages;
+                    #endregion
+                    #region NowPlaying Album Thumb
                         if ((album != null && album.Trim().Length > 0) && Utils.ScrapeThumbnailsAlbum)
                           if (!Utils.GetDbm().HasAlbumThumb(dbartist,dbalbum))
                           {
@@ -1019,7 +1036,8 @@ namespace FanartHandler
                           } 
                           else
                             UpdateTimeStamp(dbartist, dbalbum, Utils.Category.MusicAlbumThumbScraped) ;
-
+                        if (StopScraper)
+                            return GetImages;
                     #endregion
                     } // if (artist != null && artist.Trim().Length > 0)
                     return GetImages;
@@ -1078,6 +1096,13 @@ namespace FanartHandler
             CurrArtistsBeingScraped = 0.0;
             TotArtistsBeingScraped = 0.0;
             CurrTextBeingScraped = string.Empty ;
+
+            if (!MediaPortal.Util.Win32API.IsConnectedToInternet())
+            {
+              logger.Debug("No internet connection detected. Cancelling initial scrape.");
+              return ;
+            }
+
             FanartHandlerSetup.Fh.SetProperty("#fanartHandler.scraper.task", "Initial Scrape - Initializing");
 
             if (Utils.DeleteMissing)
@@ -1617,10 +1642,11 @@ namespace FanartHandler
                 if (artist.ToLower().Contains(" and "))
                   artist = artist + "|" + artist.ToLower().Replace(" and ", "|");
 
-                var flag = false;
                 string[] artists = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
                 CurrArtistsBeingScraped = 0.0;
                 TotArtistsBeingScraped = artists.Length * 1.0;
+
+                var flag = false;
                 foreach (string sartist in artists)
                 {
                   logger.Debug("NowPlayingScrape is starting for Artist: " + sartist + (string.IsNullOrEmpty(album) ? string.Empty : " - " + album));
