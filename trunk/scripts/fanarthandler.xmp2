@@ -279,6 +279,13 @@
               <ZipFileName>Installer{CopyFile}\{8782a09f-e793-4a8a-81e3-6ac8f656475c}-default3.jpg</ZipFileName>
               <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\games\default3.jpg</DestinationFilename>
             </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\Skin Fanart\UserDef\movies\default4.jpg</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{9b59d854-007c-4342-9bac-1a4d894e9eb6}-default4.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\movies\default4.jpg</DestinationFilename>
+            </FileItem>
           </Items>
         </Files>
       </GroupItem>
@@ -442,7 +449,7 @@ cul8er</Value>
           <Revision>27644</Revision>
         </MaxVersion>
         <WarnOnly>false</WarnOnly>
-        <Message>This version of FanartHandler requires MediaPortal 1.9.0</Message>
+        <Message>This version of FanartHandler requires MediaPortal 1.10.0</Message>
         <Name>MediaPortal</Name>
       </DependencyItem>
       <DependencyItem>
@@ -517,23 +524,19 @@ cul8er</Value>
     </Version>
     <ExtensionDescription>Fanart Handler is a plugin for MediaPortal (MP). The plugin basically supports;
 
+    * Search and download music artist fanart or artist and album thumbnails (scrape) from the fanart.tv, htbackdrops, last.fm, coverartarchive site.
 
+       * for all artists stored in your MP music database.
 
-    * Search and download music artist fanart or artist and album thumbnails (scrape) from the fanart.tv, htbackdrops, last.fm, coverartarchive site (link).
-
-    * for all artists stored in your MP music database.
-
-    * for any artist currently being played (on the fly).
+       * for any artist currently being played (on the fly).
 
     * Push fanart that you store on your local harddrive to the current used MP skin.
 
-    * push fanart for now played music
+       * push fanart for now played music
 
-    * push fanart for selected music or movie
+       * push fanart for selected music or movie
 
-    * push random images from selected folders
-
- 
+       * push random images from selected folders
 
 </ExtensionDescription>
     <VersionDescription>Compatibility with MediaPortal 1.10</VersionDescription>
@@ -834,6 +837,13 @@ cul8er</Value>
         <LocalFileName>..\Installer\Skin Fanart\UserDef\games\default3.jpg</LocalFileName>
         <ZipFileName>Installer{CopyFile}\{8782a09f-e793-4a8a-81e3-6ac8f656475c}-default3.jpg</ZipFileName>
         <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\games\default3.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\Skin Fanart\UserDef\movies\default4.jpg</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{9b59d854-007c-4342-9bac-1a4d894e9eb6}-default4.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\movies\default4.jpg</DestinationFilename>
       </FileItem>
       <FileItem InstallType="CopyFile" SystemFile="true" Modified="true">
         <Param1 />
