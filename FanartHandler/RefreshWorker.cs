@@ -114,7 +114,18 @@ namespace FanartHandler
         }
         else
         {
-          FanartHandlerSetup.Fh.CurrentTrackTag = GUIPropertyManager.GetProperty("#Play.Current.Artist");
+          var selAlbumArtist = GUIPropertyManager.GetProperty("#Play.Current.AlbumArtist").Trim();
+          var selArtist = GUIPropertyManager.GetProperty("#Play.Current.Artist").Trim();
+
+          if (!string.IsNullOrEmpty(selArtist))
+            if (!string.IsNullOrEmpty(selAlbumArtist))
+              if (selArtist.Equals(selAlbumArtist, StringComparison.InvariantCultureIgnoreCase))
+                FanartHandlerSetup.Fh.CurrentTrackTag = selArtist;
+              else
+                FanartHandlerSetup.Fh.CurrentTrackTag = selArtist + '|' + selAlbumArtist;
+            else
+              FanartHandlerSetup.Fh.CurrentTrackTag = selArtist;
+
           FanartHandlerSetup.Fh.CurrentAlbumTag = GUIPropertyManager.GetProperty("#Play.Current.Album");
           FanartHandlerSetup.Fh.CurrentGenreTag = GUIPropertyManager.GetProperty("#Play.Current.Genre");
         }

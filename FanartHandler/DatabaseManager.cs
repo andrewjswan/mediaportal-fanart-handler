@@ -915,6 +915,12 @@ namespace FanartHandler
         #region Scrape
         public int DoScrape(string artist)
         {
+            if (!MediaPortal.Util.Win32API.IsConnectedToInternet())
+            {
+              logger.Debug("No internet connection detected. Cancelling scrape.");
+              return 0 ;
+            }
+
             if (!StopScraper)
             {
                 try
@@ -965,6 +971,12 @@ namespace FanartHandler
 
         public int DoScrapeNew(string artist, string album, bool externalAccess)
         {
+            if (!MediaPortal.Util.Win32API.IsConnectedToInternet())
+            {
+              logger.Debug("No internet connection detected. Cancelling new scrape.");
+              return 0 ;
+            }
+
             if (!StopScraper)
             {
                 try
@@ -1471,6 +1483,13 @@ namespace FanartHandler
             CurrArtistsBeingScraped = 0.0;
             TotArtistsBeingScraped = 0.0;
             CurrTextBeingScraped = string.Empty;
+
+            if (!MediaPortal.Util.Win32API.IsConnectedToInternet())
+            {
+              logger.Debug("No internet connection detected. Cancelling thumb scrape.");
+              return ;
+            }
+
             try
             {
                 logger.Info("InitialThumbScrape is starting (Only missing = " + onlyMissing.ToString() + ")...");
