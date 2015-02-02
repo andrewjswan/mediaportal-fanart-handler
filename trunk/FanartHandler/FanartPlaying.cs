@@ -239,6 +239,7 @@ namespace FanartHandler
         if (NewArtist || (CurrCountPlay >= FanartHandlerSetup.Fh.MaxCountImage))
         {
           var StoreCurrPlayMusic = CurrPlayMusic;
+          
           AddPlayingArtistPropertys(FanartHandlerSetup.Fh.CurrentTrackTag, FanartHandlerSetup.Fh.CurrentAlbumTag, DoShowImageOnePlay);
 
           if (NewArtist)
@@ -270,20 +271,23 @@ namespace FanartHandler
               {
                 // Random
                 FileName = FanartHandlerSetup.Fh.GetRandomDefaultBackdrop(ref CurrPlayMusic, ref PrevPlayMusic);
-                if (!string.IsNullOrEmpty(FileName))
-                  CurrPlayMusic = FileName;
               }
             }
           }
+          if (!string.IsNullOrEmpty(FileName))
+            CurrPlayMusic = FileName;
           FanartAvailablePlay = (!string.IsNullOrEmpty(FileName));
 
-          if (DoShowImageOnePlay)
-            AddPropertyPlay("#fanarthandler.music.backdrop1.play", FileName, ref ListPlayMusic);
-          else
-            AddPropertyPlay("#fanarthandler.music.backdrop2.play", FileName, ref ListPlayMusic);
+          if (!FileName.Equals(StoreCurrPlayMusic, StringComparison.CurrentCulture))
+          {
+            if (DoShowImageOnePlay)
+              AddPropertyPlay("#fanarthandler.music.backdrop1.play", FileName, ref ListPlayMusic);
+            else
+              AddPropertyPlay("#fanarthandler.music.backdrop2.play", FileName, ref ListPlayMusic);
 
           if (Utils.UseOverlayFanart)
             AddPropertyPlay("#fanarthandler.music.overlay.play", FileName, ref ListPlayMusic);
+          }
 
           if (FileName.Length == 0 || !FileName.Equals(StoreCurrPlayMusic, StringComparison.CurrentCulture))
             ResetCurrCountPlay();
