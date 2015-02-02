@@ -1088,9 +1088,8 @@ namespace FanartHandler
           fileInfo.Delete();
         }
       }
-      catch // (Exception ex)
-      {
-      }
+      catch { }
+
       var fileTarget = new FileTarget();
       fileTarget.FileName = Config.GetFile((Config.Dir) 1, LogFileName);
       fileTarget.Encoding = "utf-8";
