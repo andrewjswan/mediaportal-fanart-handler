@@ -351,7 +351,9 @@ namespace FanartHandler
 
       if (!FileName.Contains(Utils.FAHMusicArtists, StringComparison.OrdinalIgnoreCase) &&
           !FileName.Contains(Utils.FAHMusicAlbums, StringComparison.OrdinalIgnoreCase) &&
-          !FileName.Contains(Utils.FAHFolder, StringComparison.OrdinalIgnoreCase))
+          !FileName.Contains(Utils.FAHFolder, StringComparison.OrdinalIgnoreCase) &&
+          !FileName.Contains(Utils.FAHTVSeries, StringComparison.OrdinalIgnoreCase) &&
+          !FileName.Contains(Utils.FAHMovingPictures, StringComparison.OrdinalIgnoreCase))
         return;
 
       if (FileName.Contains(Utils.FAHSMusic, StringComparison.OrdinalIgnoreCase) || 
@@ -487,7 +489,8 @@ namespace FanartHandler
               !FS.WindowsUsingFanartSelectedMusic.ContainsKey(windowId) && 
               !FS.WindowsUsingFanartSelectedScoreCenter.ContainsKey(windowId) && 
               !FS.WindowsUsingFanartSelectedMovie.ContainsKey(windowId) &&
-              !FP.WindowsUsingFanartPlay.ContainsKey(windowId)
+              !FP.WindowsUsingFanartPlay.ContainsKey(windowId) &&
+              !windowId.Equals("9811", StringComparison.CurrentCulture)
              ) 
           {
             return flag;   
@@ -891,7 +894,7 @@ namespace FanartHandler
         return;
       try
       {
-        if (!FR.WindowsUsingFanartRandom.ContainsKey("35")) // For Basic Home start later ... ???
+        if (!FR.WindowsUsingFanartRandom.ContainsKey("35")) // For Basic Home ... later ... ???
           return;
         IsRandom = true;
         FR.RefreshRandomImageProperties(null);
@@ -963,12 +966,12 @@ namespace FanartHandler
       FS.PrevSelectedScorecenter = -1;
       FS.CurrSelectedMovieTitle = string.Empty;
       FP.CurrPlayMusicArtist = string.Empty;
+      FS.CurrSelectedMusic = string.Empty;
       FS.CurrSelectedMusicArtist = string.Empty;
       FS.CurrSelectedMusicAlbum = string.Empty;
       FS.CurrSelectedScorecenterGenre = string.Empty;
       FS.CurrSelectedMovie = string.Empty;
       FP.CurrPlayMusic = string.Empty;
-      FS.CurrSelectedMusic = string.Empty;
       FS.CurrSelectedScorecenter = string.Empty;
       SyncPointRefresh = 0;
       SyncPointDirectory = 0;

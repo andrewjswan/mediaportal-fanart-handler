@@ -108,6 +108,7 @@ namespace FanartHandler
     public static string FAHUDMovies { get; set; }
     public static string FAHUDMusic { get; set; }
     public static string FAHUDMusicAlbum { get; set; }
+    // public static string FAHUDMusicGenre { get; set; }
     public static string FAHUDPictures { get; set; }
     public static string FAHUDScorecenter { get; set; }
     public static string FAHUDTV { get; set; }
@@ -173,6 +174,7 @@ namespace FanartHandler
       FAHUDMovies = string.Empty;
       FAHUDMusic = string.Empty;
       FAHUDMusicAlbum = string.Empty;
+      // FAHUDMusicGenre = string.Empty;
       FAHUDPictures = string.Empty;
       FAHUDScorecenter = string.Empty;
       FAHUDTV = string.Empty;
@@ -286,6 +288,8 @@ namespace FanartHandler
       logger.Debug("Fanart Handler User Music folder: "+FAHUDMusic);
       FAHUDMusicAlbum = Path.Combine(FAHUDFolder, @"albums\");
       logger.Debug("Fanart Handler User Music Album folder: "+FAHUDMusicAlbum);
+      // FAHUDMusicGenre = Path.Combine(FAHUDFolder, @"Scraper\Genres\");
+      // logger.Debug("Fanart Handler User Music Genre folder: "+FAHUDMusicGenre);
       FAHUDPictures = Path.Combine(FAHUDFolder, @"pictures\");
       logger.Debug("Fanart Handler User Pictures folder: "+FAHUDPictures);
       FAHUDScorecenter = Path.Combine(FAHUDFolder, @"scorecenter\");
@@ -506,15 +510,17 @@ namespace FanartHandler
     {
       if (self == null)
         return string.Empty;
+
       var str = self.Normalize(NormalizationForm.FormD);
       var stringBuilder = new StringBuilder();
       var index = 0;
-      while (index < str.Length)
+      while (index < str.Length )
       {
         if (CharUnicodeInfo.GetUnicodeCategory(str[index]) != UnicodeCategory.NonSpacingMark)
           stringBuilder.Append(str[index]);
         checked { ++index; }
       }
+      // logger.Debug("*** "+self+" - " + stringBuilder.ToString() + " - " + stringBuilder.ToString().Normalize(NormalizationForm.FormC)) ;
       return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
     }
 
@@ -1325,6 +1331,7 @@ namespace FanartHandler
         CreateDirectoryIfMissing(FAHUDMovies);
         CreateDirectoryIfMissing(FAHUDMusic);
         CreateDirectoryIfMissing(FAHUDMusicAlbum);
+        // CreateDirectoryIfMissing(FAHUDMusicGenre);
         CreateDirectoryIfMissing(FAHUDPictures);
         CreateDirectoryIfMissing(FAHUDScorecenter);
         CreateDirectoryIfMissing(FAHUDTV);

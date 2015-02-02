@@ -74,10 +74,11 @@ namespace FanartHandler
             {
               var SeriesName = Utils.GetArtist(mytv[DBSeries.cParsedName], category);
               string seriesId = mytv[DBSeries.cID];
-              // logger.Debug("*** "+seriesId + " - " + SeriesName + " - " + mytv[DBSeries.cParsedName]);
+              // logger.Debug("*** "+seriesId + " - " + SeriesName + " - " + mytv[DBSeries.cParsedName] + " - " + mytv);
               if (!hashtable.Contains(seriesId))
               {
-                hashtable.Add(seriesId, SeriesName);
+                // hashtable.Add(seriesId, SeriesName);
+                hashtable.Add(seriesId, mytv.ToString());
               }
             }
           }

@@ -60,8 +60,7 @@ namespace FanartHandler
               }
             }
 
-            ReportProgress(1, "Importing local fanart for Games...");
-            // var s1 = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\UserDef\\games";
+            ReportProgress(4, "Importing local fanart for Games...");
             if (All || strArray[0].Contains(Utils.FAHUDGames, StringComparison.OrdinalIgnoreCase))
             {
               logger.Info("Refreshing local fanart for Games is starting.");
@@ -72,8 +71,7 @@ namespace FanartHandler
               FanartHandlerSetup.Fh.SyncPointDirectoryUpdate = 0;
               logger.Info("Refreshing local fanart for Games is done.");
             }
-            ReportProgress(9, "Importing loacal fanart for Movies (User)...");
-            // var s2 = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\UserDef\\movies";
+            ReportProgress(10, "Importing loacal fanart for Movies (User)...");
             if (All || strArray[0].Contains(Utils.FAHUDMovies, StringComparison.OrdinalIgnoreCase))
             {
               logger.Info("Refreshing local fanart for Movies (User) is starting.");
@@ -84,8 +82,7 @@ namespace FanartHandler
               FanartHandlerSetup.Fh.SyncPointDirectoryUpdate = 0;
               logger.Info("Refreshing local fanart for Movies (User) is done.");
             }
-            ReportProgress(17, "Importing loacal fanart for Movies (Scraper)...");
-            // var s3 = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\Scraper\\movies";
+            ReportProgress(16, "Importing loacal fanart for Movies (Scraper)...");
             if (All || strArray[0].Contains(Utils.FAHSMovies, StringComparison.OrdinalIgnoreCase))
             {
               logger.Info("Refreshing local fanart for Movies (Scraper) is starting.");
@@ -96,24 +93,21 @@ namespace FanartHandler
               FanartHandlerSetup.Fh.SyncPointDirectoryUpdate = 0;
               logger.Info("Refreshing local fanart for Movies (Scraper) is done.");
             }
-            ReportProgress(25, "Importing local fanart for Music (Albums)...");
-            // var s4 = Config.GetFolder((Config.Dir) 6) + "\\Music\\Albums";
+            ReportProgress(22, "Importing local fanart for Music (Albums)...");
             if (All || strArray[0].Contains(Utils.FAHMusicAlbums, StringComparison.OrdinalIgnoreCase))
             {
               logger.Info("Refreshing local fanart for Music (Albums) is starting.");
               FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHMusicAlbums, "*L.jpg", Utils.Category.MusicAlbumThumbScraped, null, Utils.Provider.Local);
               logger.Info("Refreshing local fanart for Music Albums is done.");
             }
-            ReportProgress(33, "Importing local fanart for Music (Artists)...");
-            // var s5 = Config.GetFolder((Config.Dir) 6) + "\\Music\\Artists";
+            ReportProgress(28, "Importing local fanart for Music (Artists)...");
             if (All || strArray[0].Contains(Utils.FAHMusicArtists, StringComparison.OrdinalIgnoreCase))
             {
               logger.Info("Refreshing local fanart for Music (Artists) is starting.");
               FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHMusicArtists, "*L.jpg", Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.Local);
               logger.Info("Refreshing local fanart for Music Artists is done.");
             }
-            ReportProgress(41, "Importing local fanart for Music (User)...");
-            // var s6 = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\UserDef\\music";
+            ReportProgress(34, "Importing local fanart for Music (User)...");
             if (All || strArray[0].Contains(Utils.FAHUDMusic, StringComparison.OrdinalIgnoreCase))
             {
               logger.Info("Refreshing local fanart for Music (User) is starting.");
@@ -124,19 +118,31 @@ namespace FanartHandler
               FanartHandlerSetup.Fh.SyncPointDirectoryUpdate = 0;
               logger.Info("Refreshing local fanart for Music (User) is done.");
             }
-            ReportProgress(45, "Importing local fanart for Music (User Album)...");
+            ReportProgress(40, "Importing local fanart for Music (User Album)...");
             if (All || strArray[0].Contains(Utils.FAHUDMusicAlbum, StringComparison.OrdinalIgnoreCase))
             {
               logger.Info("Refreshing local fanart for Music (User Album) is starting.");
               FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHUDMusicAlbum, "*.jpg", Utils.Category.MusicFanartAlbum, null, Utils.Provider.Local);
               FanartHandlerSetup.Fh.SyncPointDirectoryUpdate = 1;
-              if (Utils.GetDbm().HtAnyFanart.ContainsKey(Utils.Category.MusicFanartManual))
+              if (Utils.GetDbm().HtAnyFanart.ContainsKey(Utils.Category.MusicFanartAlbum))
                 Utils.GetDbm().HtAnyFanart.Remove(Utils.Category.MusicFanartManual);
               FanartHandlerSetup.Fh.SyncPointDirectoryUpdate = 0;
               logger.Info("Refreshing local fanart for Music (User Album) is done.");
             }
-            ReportProgress(49, "Importing local fanart for Music (Scraper)...");
-            // var s61 = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\Scraper\\music";
+            /*
+            ReportProgress(46, "Importing local fanart for Music (User Genre)...");
+            if (All || strArray[0].Contains(Utils.FAHUDMusicGenre, StringComparison.OrdinalIgnoreCase))
+            {
+              logger.Info("Refreshing local fanart for Music (User Genre) is starting.");
+              FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHUDMusicGenre, "*.jpg", Utils.Category.MusicFanartManual, null, Utils.Provider.Local);
+              FanartHandlerSetup.Fh.SyncPointDirectoryUpdate = 1;
+              if (Utils.GetDbm().HtAnyFanart.ContainsKey(Utils.Category.MusicFanartManual))
+                Utils.GetDbm().HtAnyFanart.Remove(Utils.Category.MusicFanartManual);
+              FanartHandlerSetup.Fh.SyncPointDirectoryUpdate = 0;
+              logger.Info("Refreshing local fanart for Music (User Genre) is done.");
+            }
+            */
+            ReportProgress(52, "Importing local fanart for Music (Scraper)...");
             if (All || strArray[0].Contains(Utils.FAHSMusic, StringComparison.OrdinalIgnoreCase))
             {
               logger.Info("Refreshing local fanart for Music (Scraper) is starting.");
@@ -147,14 +153,12 @@ namespace FanartHandler
               FanartHandlerSetup.Fh.SyncPointDirectoryUpdate = 0;
               logger.Info("Refreshing local fanart for Music (Scraper) is done.");
             }
-            ReportProgress(54, "Importing local fanart for Music (Folder)...");
-            // var s61 = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\Scraper\\music";
+            ReportProgress(58, "Importing local fanart for Music (Folder)...");
             if (All && Utils.ScanMusicFoldersForFanart && !string.IsNullOrEmpty(Utils.MusicFoldersArtistAlbumRegex))
             {
               Utils.ScanMusicFoldersForFanarts();
             }
-            ReportProgress(57, "Importing local fanart for Pictures...");
-            // var s7 = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\UserDef\\pictures";
+            ReportProgress(64, "Importing local fanart for Pictures...");
             if (All || strArray[0].Contains(Utils.FAHUDPictures, StringComparison.OrdinalIgnoreCase))
             {
               logger.Info("Refreshing local fanart for Pictures is starting.");
@@ -165,8 +169,7 @@ namespace FanartHandler
               FanartHandlerSetup.Fh.SyncPointDirectoryUpdate = 0;
               logger.Info("Refreshing local fanart for Pictures is done.");
             }
-            ReportProgress(65, "Importing local fanart for Scorecenter...");
-            // var s8 = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\UserDef\\scorecenter";
+            ReportProgress(70, "Importing local fanart for Scorecenter...");
             if (All || strArray[0].Contains(Utils.FAHUDScorecenter, StringComparison.OrdinalIgnoreCase))
             {
               logger.Info("Refreshing local fanart for ScoreCenter is starting.");
@@ -177,8 +180,7 @@ namespace FanartHandler
               FanartHandlerSetup.Fh.SyncPointDirectoryUpdate = 0;
               logger.Info("Refreshing local fanart for ScoreCenter is done.");
             }
-            ReportProgress(73, "Importing local fanart for TV...");
-            // var s9 = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\UserDef\\tv";
+            ReportProgress(76, "Importing local fanart for TV...");
             if (All || strArray[0].Contains(Utils.FAHUDTV, StringComparison.OrdinalIgnoreCase))
             {
               logger.Info("Refreshing local fanart for TV is starting.");
@@ -189,8 +191,7 @@ namespace FanartHandler
               FanartHandlerSetup.Fh.SyncPointDirectoryUpdate = 0;
               logger.Info("Refreshing local fanart for TV is done.");
             }
-            ReportProgress(81, "Importing local fanart for Plugins...");
-            // var s10 = Config.GetFolder((Config.Dir) 6) + "\\Skin FanArt\\UserDef\\plugins";
+            ReportProgress(82, "Importing local fanart for Plugins...");
             if (All || strArray[0].Contains(Utils.FAHUDPlugins, StringComparison.OrdinalIgnoreCase))
             {
               logger.Info("Refreshing local fanart for Plugins is starting.");
@@ -225,7 +226,7 @@ namespace FanartHandler
               FanartHandlerSetup.Fh.SyncPointDirectoryUpdate = 0;
               logger.Info("Refreshing local fanart for TVSeries is done.");
             }
-            ReportProgress(96, "Importing loacal fanart for MovingPictures...");
+            ReportProgress(94, "Importing loacal fanart for MovingPictures...");
             if (FanartHandlerHelper.IsAssemblyAvailable("MovingPictures", new Version(1, 1, 0, 0), Path.Combine(Path.Combine(Config.GetFolder((Config.Dir) 5), "windows"), "MovingPictures.dll")) &&
                (All || strArray[0].Equals("MovingPictures") || strArray[0].Contains(Utils.FAHMovingPictures, StringComparison.OrdinalIgnoreCase)))
             {
