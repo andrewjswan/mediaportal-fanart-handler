@@ -490,7 +490,7 @@ namespace FanartHandler
               !FS.WindowsUsingFanartSelectedScoreCenter.ContainsKey(windowId) && 
               !FS.WindowsUsingFanartSelectedMovie.ContainsKey(windowId) &&
               !FP.WindowsUsingFanartPlay.ContainsKey(windowId) &&
-              !windowId.Equals("9811", StringComparison.CurrentCulture)
+              !windowId.Equals("9811", StringComparison.CurrentCulture) // TV-Series
              ) 
           {
             return flag;   
