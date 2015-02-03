@@ -1200,23 +1200,25 @@ namespace FanartHandler
                               }
                             }
                             // Pipes Artists
-                            // var chArray = new char[2] { '|', ';' };
-                            string[] artists = artist.Split(Utils.PipesArray /*chArray*/, StringSplitOptions.RemoveEmptyEntries);
+                            string[] artists = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
                             foreach (string sartist in artists)
                             {
-                              dbartist = Utils.GetArtist(sartist.Trim(), Utils.Category.MusicFanartScraped);
-                              htArtist = Scraper.UndoArtistPrefix(dbartist.ToLower()) ;
-                              if (!htFanart.Contains(htArtist))
+                              if (!sartist.Equals(artist, StringComparison.CurrentCulture))
                               {
-                                if (DoScrape(sartist.Trim()) > 0 && flag)
+                                dbartist = Utils.GetArtist(sartist.Trim(), Utils.Category.MusicFanartScraped);
+                                htArtist = Scraper.UndoArtistPrefix(dbartist.ToLower()) ;
+                                if (!htFanart.Contains(htArtist))
                                 {
+                                  if (DoScrape(sartist.Trim()) > 0 && flag)
+                                  {
                                     htFanart.Add(htArtist, 1);
                                     // AddScapedFanartToAnyHash();
                                     if (FanartHandlerSetup.Fh.MyScraperNowWorker != null)
                                     {
-                                        FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh = true;
-                                        flag = false; // ??? I do not understand what for it ... // ajs
+                                      FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh = true;
+                                      flag = false; // ??? I do not understand what for it ... // ajs
                                     }
+                                  }
                                 }
                               }
                             }
