@@ -2269,50 +2269,38 @@ namespace FanartHandler
         {
             var filenames = new Hashtable();
             var flag = false;
-            // logger.Debug("*** Artist: "+artist+" Album: "+album);
+            // logger.Debug("*** Key1: "+artist+" Key2: "+album);
             // logger.Debug("*** For DB Query ["+Utils.HandleMultipleArtistNamesForDBQuery(Utils.PatchSql(artist))+"]");
             try
             {
                 string SQL;
                 SQLiteResultSet sqLiteResultSet;
 
-                if (category == Utils.Category.MusicFanartScraped)
-                  SQL = "SELECT Id, Key1, FullPath, SourcePath, Category, Provider "+
-                          "FROM Image "+
-                          "WHERE Key1 IN (" + Utils.HandleMultipleArtistNamesForDBQuery(Utils.PatchSql(artist)) + ") AND "+
-                                (album == null ? string.Empty : "Key2 = '"+Utils.PatchSql(album)+"' AND ")+
-                                "Enabled = 'True' AND "+
-                                "DummyItem = 'False' AND "+
-                                "Category in (" + Utils.GetMusicFanartCategoriesInStatement(highDef) + ");";
-                else
-                  SQL = "SELECT Id, Key1, FullPath, SourcePath, Category, Provider "+
-                          "FROM Image "+
-                          "WHERE Key1 IN ('" + Utils.PatchSql(artist) + "') AND "+
-                                (album == null ? string.Empty : "Key2 = '"+Utils.PatchSql(album)+"' AND ")+
-                                "DummyItem = 'False' AND "+
-                                "Enabled = 'True';";
+                SQL = "SELECT Id, Key1, FullPath, SourcePath, Category, Provider "+
+                      "FROM Image "+
+                      "WHERE Key1 IN (" + Utils.HandleMultipleArtistNamesForDBQuery(Utils.PatchSql(artist)) + ") AND "+
+                            (album == null ? string.Empty : "Key2 = '"+Utils.PatchSql(album)+"' AND ")+
+                            "Enabled = 'True' AND "+
+                            "DummyItem = 'False'"+ 
+                            (category == Utils.Category.MusicFanartScraped ? " AND Category in (" + Utils.GetMusicFanartCategoriesInStatement(highDef) + ");" : ";") ;
+
                 lock (lockObject)
                     sqLiteResultSet = dbClient.Execute(SQL);
                 
                 if (!string.IsNullOrEmpty(album) && (sqLiteResultSet.Rows.Count <= 0))
                 {
                   flag = true ;
-                  if (category == Utils.Category.MusicFanartScraped)
-                    SQL = "SELECT Id, Key1, FullPath, SourcePath, Category, Provider "+
-                            "FROM Image "+
-                            "WHERE Key1 IN (" + Utils.HandleMultipleArtistNamesForDBQuery(Utils.PatchSql(artist)) + ") AND "+
-                                  "Enabled = 'True' AND "+
-                                  "DummyItem = 'False' AND "+
-                                  "Category in (" + Utils.GetMusicFanartCategoriesInStatement(highDef) + ");";
-                  else
-                    SQL = "SELECT Id, Key1, FullPath, SourcePath, Category, Provider "+
-                            "FROM Image "+
-                            "WHERE Key1 IN ('" + Utils.PatchSql(artist) + "') AND "+
-                                  "DummyItem = 'False' AND "+
-                                  "Enabled = 'True';";
+                  SQL = "SELECT Id, Key1, FullPath, SourcePath, Category, Provider "+
+                        "FROM Image "+
+                        "WHERE Key1 IN (" + Utils.HandleMultipleArtistNamesForDBQuery(Utils.PatchSql(artist)) + ") AND "+
+                              "Enabled = 'True' AND "+
+                              "DummyItem = 'False'"+ 
+                              (category == Utils.Category.MusicFanartScraped ? " AND Category in (" + Utils.GetMusicFanartCategoriesInStatement(highDef) + ");" : ";") ;
+
                   lock (lockObject)
                       sqLiteResultSet = dbClient.Execute(SQL);
                 }
+                // logger.Debug("*** "+SQL) ;
 
                 var index = 0;
                 while (index < sqLiteResultSet.Rows.Count)
