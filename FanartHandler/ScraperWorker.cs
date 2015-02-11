@@ -63,6 +63,7 @@ namespace FanartHandler
       {
         if (Utils.GetIsStopping())
           return;
+
         FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.completed", string.Empty + e.ProgressPercentage);
       }
       catch (Exception ex)

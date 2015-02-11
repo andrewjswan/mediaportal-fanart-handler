@@ -140,7 +140,7 @@ namespace FanartHandler
     private ScraperWorker myScraperWorker;
     private int myDataTableThumbsCount;
     private GroupBox groupBoxScrape;
-    private CheckBox checkBoxAndSignAsSeparator;
+    private CheckBox checkBoxAddAdditionalSeparators;
     private GroupBox groupBoxGUI;
     private CheckBox checkBoxShowDummyItems;
     private GroupBox groupBoxFanartTV;
@@ -354,7 +354,7 @@ namespace FanartHandler
       CheckBoxUseMinimumResolutionForDownload.Checked = Utils.UseMinimumResolutionForDownload;
       //
       checkBoxShowDummyItems.Checked = Utils.ShowDummyItems ;
-      checkBoxAndSignAsSeparator.Checked = Utils.AndSignAsSeparator ;
+      checkBoxAddAdditionalSeparators.Checked = Utils.AddAdditionalSeparators ;
       //
       checkBoxFanartTV.Checked = Utils.UseFanartTV ;
       checkBoxHtBackdrops.Checked = Utils.UseHtBackdrops ;
@@ -407,7 +407,7 @@ namespace FanartHandler
        Utils.UseMinimumResolutionForDownload = CheckBoxUseMinimumResolutionForDownload.Checked;
        //
        Utils.ShowDummyItems = checkBoxShowDummyItems.Checked ;
-       Utils.AndSignAsSeparator = checkBoxAndSignAsSeparator.Checked ;
+       Utils.AddAdditionalSeparators = checkBoxAddAdditionalSeparators.Checked ;
        //
        Utils.UseFanartTV = checkBoxFanartTV.Checked ;
        Utils.UseHtBackdrops = checkBoxHtBackdrops.Checked ;
@@ -2253,7 +2253,7 @@ namespace FanartHandler
       this.label1 = new System.Windows.Forms.Label();
       this.groupBox3 = new System.Windows.Forms.GroupBox();
       this.tabPage6 = new System.Windows.Forms.TabPage();
-      this.checkBoxAndSignAsSeparator = new System.Windows.Forms.CheckBox();
+      this.checkBoxAddAdditionalSeparators = new System.Windows.Forms.CheckBox();
       this.label13 = new System.Windows.Forms.Label();
       this.label12 = new System.Windows.Forms.Label();
       this.label7 = new System.Windows.Forms.Label();
@@ -2757,7 +2757,7 @@ namespace FanartHandler
       this.CheckBoxUseGenreFanart.Name = "CheckBoxUseGenreFanart";
       this.CheckBoxUseGenreFanart.Size = new System.Drawing.Size(400, 20);
       this.CheckBoxUseGenreFanart.TabIndex = 1;
-      this.CheckBoxUseGenreFanart.Text = "Enable Genre Fanart For Played music if not found Artist Fanart.";
+      this.CheckBoxUseGenreFanart.Text = "Enable Genre Fanart if not found main  Fanart.";
       this.CheckBoxUseGenreFanart.UseVisualStyleBackColor = true;
       // 
       // edtMusicFoldersArtistAlbumRegex
@@ -3247,7 +3247,7 @@ namespace FanartHandler
       // 
       // tabPage6
       // 
-      this.tabPage6.Controls.Add(this.checkBoxAndSignAsSeparator);
+      this.tabPage6.Controls.Add(this.checkBoxAddAdditionalSeparators);
       this.tabPage6.Controls.Add(this.label13);
       this.tabPage6.Controls.Add(this.label12);
       this.tabPage6.Controls.Add(this.checkBoxEnableScraperMPDatabase);
@@ -3264,16 +3264,16 @@ namespace FanartHandler
       this.tabPage6.Text = "Scraper Settings";
       this.tabPage6.UseVisualStyleBackColor = true;
       // 
-      // checkBoxAndSignAsSeparator
+      // checkBoxAddAdditionalSeparators
       // 
-      this.checkBoxAndSignAsSeparator.AutoSize = true;
-      this.checkBoxAndSignAsSeparator.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.checkBoxAndSignAsSeparator.Location = new System.Drawing.Point(15, 146);
-      this.checkBoxAndSignAsSeparator.Name = "checkBoxAndSignAsSeparator";
-      this.checkBoxAndSignAsSeparator.Size = new System.Drawing.Size(186, 20);
-      this.checkBoxAndSignAsSeparator.TabIndex = 8;
-      this.checkBoxAndSignAsSeparator.Text = "&& Sign as Artists Separator";
-      this.checkBoxAndSignAsSeparator.UseVisualStyleBackColor = true;
+      this.checkBoxAddAdditionalSeparators.AutoSize = true;
+      this.checkBoxAddAdditionalSeparators.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.checkBoxAddAdditionalSeparators.Location = new System.Drawing.Point(15, 146);
+      this.checkBoxAddAdditionalSeparators.Name = "checkBoxAddAdditionalSeparators";
+      this.checkBoxAddAdditionalSeparators.Size = new System.Drawing.Size(186, 20);
+      this.checkBoxAddAdditionalSeparators.TabIndex = 8;
+      this.checkBoxAddAdditionalSeparators.Text = "Add Additional Separators";
+      this.checkBoxAddAdditionalSeparators.UseVisualStyleBackColor = true;
       // 
       // label13
       // 

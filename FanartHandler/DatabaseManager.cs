@@ -1245,6 +1245,8 @@ namespace FanartHandler
                 {
                   TotArtistsBeingScraped = 0.0;
                   CurrArtistsBeingScraped = 0.0;
+                  if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+                      FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, "Ongoing");
                   FanartHandlerSetup.Fh.SetProperty("#fanartHandler.scraper.task", "Initial Scrape - Albums");
 
                   musicDatabaseAlbums = new List<AlbumInfo>();
@@ -1380,6 +1382,8 @@ namespace FanartHandler
                 {
                   CurrArtistsBeingScraped = 0.0;
                   TotArtistsBeingScraped = 0.0;
+                  if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+                      FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, "Ongoing");
                   FanartHandlerSetup.Fh.SetProperty("#fanartHandler.scraper.task", "Initial Scrape - Videos");
 
                   FanartHandlerSetup.Fh.UpdateDirectoryTimer(Utils.FAHSMovies, false, "InitialScrape");
@@ -1665,7 +1669,7 @@ namespace FanartHandler
 
                 string[] artists = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
                 CurrArtistsBeingScraped = 0.0;
-                TotArtistsBeingScraped = artists.Length * 1.0;
+                TotArtistsBeingScraped = artists.Length * 6.0 + 1.0 ; // 6.0 - Number of Providers
 
                 var flag = false;
                 foreach (string sartist in artists)
