@@ -45,7 +45,7 @@ namespace FanartHandler
       var str = string.Empty;
       try
       {
-        title = Utils.GetArtist(title, Utils.Category.MovieScraped, false);
+        title = Utils.GetArtist(title, Utils.Category.MovieScraped);
         var fanart = Utils.GetDbm().GetFanart(title, null, Utils.Category.MovieScraped, true);
         if (fanart != null)
         {
@@ -78,7 +78,7 @@ namespace FanartHandler
       var hashtable = new Hashtable();
       try
       {
-        tvshow = Utils.GetArtist(tvshow, Utils.Category.TvManual, false);
+        tvshow = Utils.GetArtist(tvshow, Utils.Category.TvManual);
         var values = Utils.GetDbm().GetFanart(tvshow, null, Utils.Category.TvManual, false).Values;
         var num = 0;
         foreach (FanartImage fanartImage in values)
@@ -147,7 +147,7 @@ namespace FanartHandler
       var hashtable1 = new Hashtable();
       try
       {
-        artist = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped, false);
+        artist = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
         if (!string.IsNullOrEmpty(album))
           album = Utils.GetAlbum(album, Utils.Category.MusicFanartScraped);
 

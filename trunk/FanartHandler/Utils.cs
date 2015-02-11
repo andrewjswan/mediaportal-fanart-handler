@@ -73,7 +73,7 @@ namespace FanartHandler
     public static bool UseHighDefThumbnails { get; set; }
     public static bool UseMinimumResolutionForDownload { get; set; }
     public static bool ShowDummyItems { get; set; }
-    public static bool AndSignAsSeparator { get; set; }
+    public static bool AddAdditionalSeparators { get; set; }
     public static bool UseMyPicturesSlideShow { get; set; }
     #endregion
 
@@ -646,7 +646,7 @@ namespace FanartHandler
       return key;
     }
 
-    public static string GetArtist(string key, Category category, bool RemoveFeat = true)
+    public static string GetArtist(string key, Category category)
     {
       if (string.IsNullOrEmpty(key))
         return string.Empty;
@@ -665,12 +665,6 @@ namespace FanartHandler
         key = Utils.Equalize(key);
       key = Utils.MovePrefixToFront(key);
       //
-      if (RemoveFeat)
-      { 
-        var i = key.IndexOf(" feat ");
-        if (i > 0) 
-          key = key.Remove(i).Trim();
-      }
       return key;
     }
 
@@ -753,15 +747,15 @@ namespace FanartHandler
 
       var artists = "'" + inputName.Trim() + "'";
       var strArray = inputName.ToLower().
-                       Replace(";", "|").
-                       Replace(" ft ", "|").
-                       Replace(" feat ", "|").
-                       Replace(" and ", "|").
-                       Replace(" & ", "|").
-                       Replace(" и ", "|").
-                       Replace(",", "|").
+                     //  Replace(";", "|").
+                     //  Replace(" ft ", "|").
+                     //  Replace(" feat ", "|").
+                     //  Replace(" and ", "|").
+                     //  Replace(" & ", "|").
+                     //  Replace(" и ", "|").
+                     //  Replace(",", "|").
                      Trim().
-                     Split(new char[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
+                     Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
 
       foreach (var artist in strArray)
       {
@@ -1317,6 +1311,30 @@ namespace FanartHandler
       }
     }
 
+    public static void LoadSeparators (Settings xmlreader)
+    {
+      try
+      {
+        logger.Debug("Load Separators from: "+ConfigFilename);
+        int MaximumShares = 250;
+        for (int index = 0; index < MaximumShares; index++)
+        {
+          string Separator = String.Format("sep{0}", index);
+          string SeparatorData = xmlreader.GetValueAsString("Separators", Separator, string.Empty);
+          if (!string.IsNullOrEmpty(SeparatorData))
+          {
+            Array.Resize(ref PipesArray, PipesArray.Length + 1);
+            PipesArray[PipesArray.Length - 1] = SeparatorData ;
+          }
+        }
+        logger.Debug("Load Separators from: "+ConfigFilename+" complete.");
+      }
+      catch (Exception ex)
+      {
+        logger.Error("LoadSeparators: "+ex);
+      }
+    }
+
     public static void CreateDirectoryIfMissing(string directory)
     {
       if (!Directory.Exists(directory))
@@ -1381,7 +1399,7 @@ namespace FanartHandler
       UseHighDefThumbnails = false;
       UseMinimumResolutionForDownload = false;
       ShowDummyItems = false;
-      AndSignAsSeparator = false;
+      AddAdditionalSeparators = false;
       UseMyPicturesSlideShow = false;
       #endregion
       #region Init Providers
@@ -1402,6 +1420,8 @@ namespace FanartHandler
       FanartTVLanguage = string.Empty ;
       FanartTVLanguageDef = "en" ;
       FanartTVLanguageToAny = false ;
+      //
+      PipesArray = new string[2] { "|", ";" };
       #endregion
       try
       {
@@ -1451,7 +1471,7 @@ namespace FanartHandler
           UseLastFM = settings.GetValueAsBool("Providers", "UseLastFM", UseLastFM);
           UseCoverArtArchive = settings.GetValueAsBool("Providers", "UseCoverArtArchive", UseCoverArtArchive);
           //
-          AndSignAsSeparator = settings.GetValueAsBool("Scraper", "AndSignAsSeparator", AndSignAsSeparator);
+          AddAdditionalSeparators = settings.GetValueAsBool("Scraper", "AddAdditionalSeparators", AddAdditionalSeparators);
           //
           MusicClearArtDownload = settings.GetValueAsBool("FanartTV", "MusicClearArtDownload", MusicClearArtDownload);
           MusicBannerDownload = settings.GetValueAsBool("FanartTV", "MusicBannerDownload", MusicBannerDownload);
@@ -1465,6 +1485,10 @@ namespace FanartHandler
           FanartTVLanguage = settings.GetValueAsString("FanartTV", "FanartTVLanguage", FanartTVLanguage);
           FanartTVLanguageToAny = settings.GetValueAsBool("FanartTV", "FanartTVLanguageToAny", FanartTVLanguageToAny);
           //
+          if (AddAdditionalSeparators)
+          {
+            LoadSeparators (settings) ;
+          }
         }
         #endregion
         logger.Debug("Load settings from: "+ConfigFilename+" complete.");
@@ -1484,13 +1508,6 @@ namespace FanartHandler
       }
       //
       FanartTVPersonalAPIKey = FanartTVPersonalAPIKey.Trim();
-      //
-      PipesArray = new string[2] { "|", ";" };
-      if (AndSignAsSeparator)
-      {
-        Array.Resize(ref PipesArray, PipesArray.Length + 1);
-        PipesArray[PipesArray.Length - 1] = " & ";
-      }
       #endregion
       //
       #region Report Settings
@@ -1550,7 +1567,7 @@ namespace FanartHandler
           xmlwriter.SetValueAsBool("Providers", "UseLastFM", UseLastFM);
           xmlwriter.SetValueAsBool("Providers", "UseCoverArtArchive", UseCoverArtArchive);
           //
-          xmlwriter.SetValueAsBool("Scraper", "AndSignAsSeparator", AndSignAsSeparator);
+          xmlwriter.SetValueAsBool("Scraper", "AddAdditionalSeparators", AddAdditionalSeparators);
           //
           xmlwriter.SetValueAsBool("FanartTV", "MusicClearArtDownload", MusicClearArtDownload);
           xmlwriter.SetValueAsBool("FanartTV", "MusicBannerDownload", MusicBannerDownload);
@@ -1596,6 +1613,8 @@ namespace FanartHandler
       var u_UseGenreFanart = string.Empty;
       var u_ScanMusicFoldersForFanart = string.Empty;
       var u_UseDefaultBackdrop = string.Empty;
+      var u_AddAdditionalSeparators = string.Empty;
+      var u_Separators = string.Empty ;
 
       #endregion
       try
@@ -1624,6 +1643,9 @@ namespace FanartHandler
           u_UseDefaultBackdrop = xmlwriter.GetValueAsString("FanartHandler", "useDefaultBackdrop", string.Empty);
           u_UseGenreFanart = xmlwriter.GetValueAsString("FanartHandler", "UseGenreFanart", string.Empty);
           u_ScanMusicFoldersForFanart = xmlwriter.GetValueAsString("FanartHandler", "ScanMusicFoldersForFanart", string.Empty);
+          //
+          u_AddAdditionalSeparators = xmlwriter.GetValueAsString("Scraper", "AndSignAsSeparator", string.Empty);
+          u_Separators = xmlwriter.GetValueAsString("Separators", "sep0", string.Empty);
         }
         catch
         {   }
@@ -1669,6 +1691,9 @@ namespace FanartHandler
           xmlwriter.SetValue("FanartHandler", "UseGenreFanart", u_UseGenreFanart.Replace("True","yes").Replace("False","no"));
         if (!string.IsNullOrEmpty(u_ScanMusicFoldersForFanart))
           xmlwriter.SetValue("FanartHandler", "ScanMusicFoldersForFanart", u_ScanMusicFoldersForFanart.Replace("True","yes").Replace("False","no"));
+        //
+        if (!string.IsNullOrEmpty(u_AddAdditionalSeparators))
+          xmlwriter.SetValue("Scraper", "AddAdditionalSeparators", u_AddAdditionalSeparators);
         #endregion
         #region Delete old Entry
         try
@@ -1707,12 +1732,35 @@ namespace FanartHandler
         {   }
         try
         {
+          xmlwriter.RemoveEntry("Scraper", "AndSignAsSeparator");
+        }
+        catch
+        {   }
+        try
+        {
           int MaximumShares = 250;
           for (int index = 0; index < MaximumShares; index++)
           {
             xmlwriter.RemoveEntry("Artists", String.Format("artist{0}", index));
           }
           // xmlwriter.RemoveSection("Artists");
+        }
+        catch
+        {   }
+        try
+        {
+          if (string.IsNullOrEmpty(u_Separators))
+          {
+            xmlwriter.SetValue("Separators", "sep0", " & ");
+            xmlwriter.SetValue("Separators", "sep1", " feat ");
+            xmlwriter.SetValue("Separators", "sep2", " feat. ");
+            xmlwriter.SetValue("Separators", "sep3", " and ");
+            xmlwriter.SetValue("Separators", "sep4", " и ");
+            xmlwriter.SetValue("Separators", "sep5", " und ");
+            xmlwriter.SetValue("Separators", "sep6", " et ");
+            xmlwriter.SetValue("Separators", "sep7", ",");
+            xmlwriter.SetValue("Separators", "sep8", " ft ");
+          }
         }
         catch
         {   }

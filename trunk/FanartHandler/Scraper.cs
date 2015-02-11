@@ -399,9 +399,10 @@ namespace FanartHandler
         else
         {
             ++dbm.CurrArtistsBeingScraped;
-            if (dbm.CurrArtistsBeingScraped > dbm.TotArtistsBeingScraped) dbm.TotArtistsBeingScraped = dbm.CurrArtistsBeingScraped;
+            if (dbm.CurrArtistsBeingScraped > dbm.TotArtistsBeingScraped) 
+              dbm.TotArtistsBeingScraped = dbm.CurrArtistsBeingScraped;
             if (dbm.TotArtistsBeingScraped > 0.0 && FanartHandlerSetup.Fh.MyScraperNowWorker != null)
-              FanartHandlerSetup.Fh.MyScraperNowWorker.ReportProgress(Convert.ToInt32(dbm.CurrArtistsBeingScraped / dbm.TotArtistsBeingScraped * 100.0), "Ongoing");
+              FanartHandlerSetup.Fh.MyScraperNowWorker.ReportProgress(Utils.Percent(dbm.CurrArtistsBeingScraped, dbm.TotArtistsBeingScraped), "Ongoing");
         }
       }
     }
@@ -418,11 +419,11 @@ namespace FanartHandler
       if (!doScrapeFanart)
         return 0;
 
-      artist = RemoveFeat(artist) ;
       logger.Debug("--- Fanart --- " + artist + " ---");
       logger.Debug("Trying to find Fanart for Artist: " + artist);
 
-      ReportProgress (6.0, dbm, reportProgress, externalAccess) ;
+      if (dbm.TotArtistsBeingScraped == 0)
+        ReportProgress (6.0, dbm, reportProgress, externalAccess) ;
 
       // *** MusicBrainzID
       mbid = GetMusicBrainzID(artist, null) ;
@@ -515,7 +516,6 @@ namespace FanartHandler
       if (Utils.GetDbm().HasArtistThumb(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped)) && onlyMissing)
         return 1;
 
-      artist = RemoveFeat(artist) ;
       logger.Debug("--- Thumb --- " + artist + " ---");
       logger.Debug("Trying to find Thumbs for Artist: " + artist);
 
@@ -601,7 +601,6 @@ namespace FanartHandler
       if (Utils.GetDbm().HasAlbumThumb(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped), Utils.GetAlbum(album, Utils.Category.MusicFanartScraped)) && onlyMissing)
         return 1 ;
 
-      artist = RemoveFeat(artist) ;
       logger.Debug("--- Thumb --- " + artist + " - " + album + " ---");
       logger.Debug("Trying to find Thumbs for Artist/Album: " + artist + " - " + album);
 
@@ -645,28 +644,6 @@ namespace FanartHandler
       return res;
     }
     // End: GetArtistAlbumThumbs
-
-    [MethodImpl(MethodImplOptions.Synchronized)]
-    private static string RemoveFeat(string Artist)
-    {
-      var cleanArtist = Artist;
-      var i = 0;
-
-      try
-      {
-        i = cleanArtist.ToLower().IndexOf(" feat.");
-        if (i > 0)
-          cleanArtist = cleanArtist.Remove(i);
-        else
-        {
-          i = cleanArtist.ToLower().IndexOf(" feat ");
-          if (i > 0)
-            cleanArtist = cleanArtist.Remove(i);
-        }
-      }
-      catch {}
-      return cleanArtist;
-    }
     #endregion
 
     #region Movies fanart
@@ -1041,10 +1018,10 @@ namespace FanartHandler
         if (dotIndex > 0) {
           cleanString = cleanString.Remove(dotIndex);
         }
-        dotIndex = cleanString.IndexOf("feat.");
-        if (dotIndex > 0) {
-          cleanString = cleanString.Remove(dotIndex);
-        }
+        // dotIndex = cleanString.IndexOf("feat.");
+        // if (dotIndex > 0) {
+        //   cleanString = cleanString.Remove(dotIndex);
+        // }
 
         // TODO: build REGEX here
         // replace our artist concatenation
