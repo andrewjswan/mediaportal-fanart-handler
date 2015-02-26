@@ -310,6 +310,7 @@ namespace FanartHandler
             FanartHandlerSetup.Fh.FS.PrevSelectedGeneric = -1;
             FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movie.backdrop1.selected", string.Empty);
             FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movie.backdrop2.selected", string.Empty);
+            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movie.studios.selected", string.Empty);
             FanartHandlerSetup.Fh.IsSelectedVideo = false;
             Report(e);
           }

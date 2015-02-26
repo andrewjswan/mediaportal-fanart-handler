@@ -124,6 +124,8 @@ namespace FanartHandler
     public static string FAHTVSeries { get; set; }
     public static string FAHMovingPictures { get; set; }
     public static string FAHWatchFolder { get; set; }
+
+    // public static string StudiosFolder { get; set; }
     #endregion
 
     #region Fanart.TV folders
@@ -191,6 +193,8 @@ namespace FanartHandler
       FAHMovingPictures = string.Empty;
 
       FAHWatchFolder = string.Empty;
+
+      // StudiosFolder = string.Empty;
 
       IsJunction = false;
       JunctionSource = string.Empty;
@@ -380,6 +384,10 @@ namespace FanartHandler
       }
       logger.Debug("Fanart Handler file watcher folder: "+FAHWatchFolder);
       #endregion
+
+      // #region Studios
+      // StudiosFolder = GetThemedSkinDirectory(@"\Media\Logos\Studios") ;
+      // #endregion
 
       logger.Info("Fanart Handler folder initialize done.");
     }

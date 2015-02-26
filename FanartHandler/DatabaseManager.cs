@@ -24,7 +24,6 @@ namespace FanartHandler
         private readonly object lockObject = new object();
         private readonly Random randNumber = new Random();
         private const string dbFilename = "FanartHandler.db3";
-        // private const string dbFilenameOrg = "FanartHandler.org";
         private SQLiteClient dbClient;
         private Hashtable htAnyFanart;
         private MusicDatabase m_db;
@@ -2173,6 +2172,7 @@ namespace FanartHandler
             }
         }
 
+        #region Get ... SQLiteResultSet
         public SQLiteResultSet GetDataForConfigTable(int start)
         {
             var sqLiteResultSet = (SQLiteResultSet) null;
@@ -2268,6 +2268,7 @@ namespace FanartHandler
             }
             return null;
         }
+        #endregion
 
         public Hashtable GetFanart(string artist, string album, Utils.Category category, bool highDef)
         {
