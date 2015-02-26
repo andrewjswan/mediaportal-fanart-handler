@@ -992,6 +992,7 @@ namespace FanartHandler
       SetProperty("#fanarthandler.movie.scraper.backdrop2.any", string.Empty);
       SetProperty("#fanarthandler.movie.backdrop1.selected", string.Empty);
       SetProperty("#fanarthandler.movie.backdrop2.selected", string.Empty);
+      SetProperty("#fanarthandler.movie.studios.selected", string.Empty);
       SetProperty("#fanarthandler.movingpicture.backdrop1.any", string.Empty);
       SetProperty("#fanarthandler.movingpicture.backdrop2.any", string.Empty);
       SetProperty("#fanarthandler.music.userdef.backdrop1.any", string.Empty);
@@ -1507,6 +1508,7 @@ namespace FanartHandler
           FS.FanartIsNotAvailable(GUIWindowManager.ActiveWindow);
           SetProperty("#fanarthandler.movie.backdrop1.selected", string.Empty);
           SetProperty("#fanarthandler.movie.backdrop2.selected", string.Empty);
+          SetProperty("#fanarthandler.movie.studios.selected", string.Empty);
           IsSelectedVideo = false;
         }
         if (IsSelectedScoreCenter)
