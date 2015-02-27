@@ -88,11 +88,10 @@ namespace FanartHandler
         var SelectedGenre = (string) null;
         var SelectedStudios = (string) null;
 
-        // if (isMusic)
-        // {
-        //  AddProperty("#fanarthandler.music.artistclearart.selected", string.Empty, ref listSelectedGeneric);
-        //  AddProperty("#fanarthandler.music.artistbanner.selected", string.Empty, ref listSelectedGeneric);
-        // }
+        if (isMusic)
+          AddSelectedArtistProperty(string.Empty, ref listSelectedGeneric) ;
+        if (isVideo)
+          AddSelectedStudioProperty(string.Empty, ref listSelectedGeneric) ;
 
         #region SelectedItem
         if (GUIWindowManager.ActiveWindow == 6623)       // mVids plugin - Outdated.
@@ -290,7 +289,7 @@ namespace FanartHandler
           PrevSelectedGeneric = -1;
           FanartAvailable = false;
           if (isVideo)
-            AddProperty("#fanarthandler." + property + ".studios.selected", string.Empty, ref listSelectedGeneric);
+            AddSelectedStudioProperty(string.Empty, ref listSelectedGeneric) ;
           if (DoShowImageOne)
             AddProperty("#fanarthandler." + property + ".backdrop1.selected", string.Empty, ref listSelectedGeneric);
           else
@@ -315,9 +314,7 @@ namespace FanartHandler
         if (Utils.GetIsStopping())
           return;
         //
-        // AddProperty("#fanarthandler.music.artistclearart.selected", string.Empty, ref ListSelectedMusic);
-        // AddProperty("#fanarthandler.music.artistbanner.selected", string.Empty, ref ListSelectedMusic);
-        //
+        AddSelectedArtistProperty(string.Empty, ref ListSelectedMusic) ;
         // logger.Debug("Album Artist: "+GUIPropertyManager.GetProperty("#music.albumArtist")+ " Artist: "+GUIPropertyManager.GetProperty("#music.Artist")+ "Album: "+GUIPropertyManager.GetProperty("#music.album"));
         var SaveAlbum = CurrSelectedMusicAlbum;
         FanartHandlerSetup.Fh.SelectedItem = GetMusicArtistFromListControl();
@@ -409,8 +406,7 @@ namespace FanartHandler
           else
             AddProperty("#fanarthandler.music.backdrop2.selected", string.Empty, ref ListSelectedMusic);
           //
-          AddProperty("#fanarthandler.music.artistclearart.selected", string.Empty, ref ListSelectedMusic);
-          AddProperty("#fanarthandler.music.artistbanner.selected", string.Empty, ref ListSelectedMusic);
+          AddSelectedArtistProperty(string.Empty, ref ListSelectedMusic) ;
           //
           ResetCurrCount();
           CurrSelectedMusicArtist = string.Empty;
@@ -758,13 +754,12 @@ namespace FanartHandler
         {
           foreach (string studio in studios)
           {
-            // sFile = string.Empty ;
-            // if (!string.IsNullOrEmpty(Utils.StudiosFolder))
-            // sFile = Path.Combine(Utils.StudiosFolder, MediaPortal.Util.Utils.MakeFileName(studio.Trim())+".png");
             sFile = GUIGraphicsContext.GetThemedSkinFile(@"\Media\Logos\Studios\"+MediaPortal.Util.Utils.MakeFileName(studio.Trim())+".png") ; 
-            logger.Debug("*** Studio: "+studio+" - "+sFile) ;
             if (!string.IsNullOrEmpty(sFile) && File.Exists(sFile))
+            {
               sFileNames.Add(sFile) ;
+              // logger.Debug("*** Studio: "+studio+" - "+sFile) ;
+            }
           }
 
           if (sFileNames.Count == 0)
@@ -832,8 +827,11 @@ namespace FanartHandler
           Properties.Add(property, value);
         if (value == null || value.Length <= 0 || al == null)
           return;
+        if (al == null)
+          return;
         if (al.Contains(value))
           return;
+
         try
         {
           al.Add(value);
