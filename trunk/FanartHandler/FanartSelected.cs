@@ -160,8 +160,16 @@ namespace FanartHandler
           SelectedStudios = GUIPropertyManager.GetProperty("#studios").Trim().Replace(" / ", "|").Replace(", ", "|");
           // logger.Debug("*** "+movieID+" - "+GUIPropertyManager.GetProperty("#selecteditem")+" - "+GUIPropertyManager.GetProperty("#title")+" - "+GUIPropertyManager.GetProperty("#myvideosuserfanart")+" -> "+FanartHandlerSetup.Fh.SelectedItem+" - "+SelectedGenre);
         }
+        else if (GUIWindowManager.ActiveWindow == 96742)     // Moving Pictures
+        {
+          FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#selecteditem");
+          SelectedStudios = GUIPropertyManager.GetProperty("#MovingPictures.SelectedMovie.studios").Trim().Replace(" / ", "|").Replace(", ", "|");
+        }
         else if (GUIWindowManager.ActiveWindow == 9813)      // TVSeries Playlist
+        {
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#TVSeries.Episode.SeriesName");
+          SelectedStudios = GUIPropertyManager.GetProperty("#TVSeries.Series.Network").Trim().Replace(" / ", "|").Replace(", ", "|");
+        }
         else if (GUIWindowManager.ActiveWindow == 112011 ||  // mvCentral
                  GUIWindowManager.ActiveWindow == 112012 ||  // mvCentral Playlist
                  GUIWindowManager.ActiveWindow == 112013 ||  // mvCentral StatsAndInfo
@@ -748,6 +756,7 @@ namespace FanartHandler
       var sFileNames = new List<string>() ;  
       try
       {
+        // logger.Debug("*** Studios: "+Studios) ;
         // Get Studio name
         var studios = Studios.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
         if (studios != null)
