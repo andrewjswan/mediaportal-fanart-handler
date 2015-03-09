@@ -1580,8 +1580,14 @@ namespace FanartHandler
           //
           xmlwriter.SetValue("FanartTV", "FanartTVLanguage", FanartTVLanguage);
           xmlwriter.SetValueAsBool("FanartTV", "FanartTVLanguageToAny", FanartTVLanguageToAny);
+          //
         } 
         #endregion
+        try
+        {
+          xmlwriter.SaveCache();
+        catch
+        {   }
         logger.Debug("Save settings to: "+ConfigFilename+" complete.");
       }
       catch (Exception ex)
@@ -1765,7 +1771,11 @@ namespace FanartHandler
         catch
         {   }
         #endregion
-      
+        try
+        {
+          xmlwriter.SaveCache();
+        catch
+        {   }
         logger.Debug("Upgrade settings file: "+ConfigFilename+" complete.");
       }
       catch (Exception ex)

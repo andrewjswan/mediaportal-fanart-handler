@@ -1250,6 +1250,7 @@ namespace FanartHandler
         if (e.Mode == PowerModes.Resume)
         {
           logger.Info("Fanart Handler: is resuming from standby/hibernate.");
+          Utils.InitiateDbm("mediaportal");
           // StopTasks(false);
           // Start();
           UpdateDirectoryTimer("All", false, "Fanart");
@@ -1259,6 +1260,8 @@ namespace FanartHandler
           if (e.Mode != PowerModes.Suspend)
             return;
           logger.Info("Fanart Handler: is suspending/hibernating...");
+          if (Utils.GetDbm() != null)
+            Utils.GetDbm().Close();
           // StopTasks(true);
           logger.Info("Fanart Handler: is suspended/hibernated.");
         }
