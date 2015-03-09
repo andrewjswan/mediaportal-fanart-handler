@@ -48,6 +48,7 @@ namespace FanartHandler
 
       var ActiveWindow = GUIWindowManager.ActiveWindow;
       var IsIdle = Utils.IsIdle();
+      // logger.Debug("*** AW: "+ActiveWindow);
       try
       {
         #region Pictures
@@ -244,6 +245,8 @@ namespace FanartHandler
         #endregion
         #region TV/Video
         DebugStep = 21;
+        // if ((ActiveWindow == 96742) && FanartHandlerSetup.Fh.FS.WindowsUsingFanartSelectedMovie != null)
+        //   logger.Debug("*** MP: "+FanartHandlerSetup.Fh.FS.WindowsUsingFanartSelectedMovie.ContainsKey(ActiveWindow.ToString(CultureInfo.CurrentCulture))) ;
         if (Utils.UseVideoFanart && IsIdle)
         {
           DebugStep = 22;
