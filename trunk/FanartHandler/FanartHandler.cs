@@ -1283,6 +1283,7 @@ namespace FanartHandler
           checked { ++num; }
         }
         var windowId = string.Empty + activeWindowId;
+        // logger.Debug("*** AW FH: "+windowId);
         if ((FR.WindowsUsingFanartRandom.ContainsKey(windowId) || 
              FS.WindowsUsingFanartSelectedMusic.ContainsKey(windowId) || 
              FS.WindowsUsingFanartSelectedScoreCenter.ContainsKey(windowId) || 

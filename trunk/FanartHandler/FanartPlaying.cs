@@ -8,6 +8,7 @@ using MediaPortal.GUI.Library;
 using NLog;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 
 namespace FanartHandler
@@ -95,14 +96,13 @@ namespace FanartHandler
 
     public void AddPlayingArtistPropertys(string artist, string album, bool DoShowImageOnePlay)
     {
-      var pArtist = artist;
-      AddPlayingArtistThumbProperty(ref pArtist, DoShowImageOnePlay) ;
-      AddPlayingArtistClearArtProperty(pArtist, DoShowImageOnePlay);
-      AddPlayingArtistBannerProperty(pArtist, DoShowImageOnePlay);
-      AddPlayingArtistAlbumCDProperty(pArtist, album, DoShowImageOnePlay);
+      AddPlayingArtistThumbProperty(artist, album, DoShowImageOnePlay) ;
+      AddPlayingArtistClearArtProperty(artist, DoShowImageOnePlay);
+      AddPlayingArtistBannerProperty(artist, DoShowImageOnePlay);
+      AddPlayingArtistAlbumCDProperty(artist, album, DoShowImageOnePlay);
     }
 
-    public void AddPlayingArtistThumbProperty(ref string artist, bool DoShowImageOnePlay)
+    public void AddPlayingArtistThumbProperty(string artist, string album, bool DoShowImageOnePlay)
     {
       if (string.IsNullOrEmpty(artist))
       {
@@ -110,46 +110,83 @@ namespace FanartHandler
         return;
       }
 
+      var PictureList = new List<string>() ;
+      var FileName = (string) null;
       var flag = false;
-      var path = (string) null;
+
       try
       {
-        // Get Album thumb name
-        if (FanartHandlerSetup.Fh.CurrentAlbumTag != null && FanartHandlerSetup.Fh.CurrentAlbumTag.Length > 0)
-        {
-          path = MediaPortal.Util.Utils.GetAlbumThumbName(artist, FanartHandlerSetup.Fh.CurrentAlbumTag.Trim());
-          if (!string.IsNullOrEmpty(path))
-          {
-            path = MediaPortal.Util.Utils.ConvertToLargeCoverArt(path);
-            flag = (File.Exists(path));
-          }
-        }
-        // Get Artist name
         var strArray = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
-        if (strArray != null)
+        
+        // Get Album thumb name for Artists
+        if (!string.IsNullOrEmpty(album))
         {
-          if (strArray.Length == 1)
-            artist = strArray[0].Trim();
-          else if (strArray.Length == 2)
-            artist = strArray[(DoShowImageOnePlay ? 0 : 1)].Trim();
+          FileName = MediaPortal.Util.Utils.GetAlbumThumbName(artist, album);
+          if (!string.IsNullOrEmpty(FileName))
+          {
+            FileName = MediaPortal.Util.Utils.ConvertToLargeCoverArt(FileName);
+            if (File.Exists(FileName))
+              if (!PictureList.Contains(FileName))
+                PictureList.Add(FileName) ;
+          }
+
+          // Get Artist name
+          if (strArray != null)
+            foreach (string sartist in strArray)
+            {
+              // Get Album thumb name
+              FileName = MediaPortal.Util.Utils.GetAlbumThumbName(sartist, album);
+              if (!string.IsNullOrEmpty(FileName))
+              {
+                FileName = MediaPortal.Util.Utils.ConvertToLargeCoverArt(FileName);
+                if (File.Exists(FileName))
+                  if (!PictureList.Contains(FileName))
+                    PictureList.Add(FileName) ;
+              }
+            }
+        }
+
+        if (PictureList != null && (PictureList.Count <= 0))
+        {
+          // Get Artist thumb name
+          FileName = Path.Combine(Utils.FAHMusicArtists, MediaPortal.Util.Utils.MakeFileName(artist) + "L.jpg");
+          if (File.Exists(FileName))
+            if (!PictureList.Contains(FileName))
+              PictureList.Add(FileName) ;
+
+          if (strArray != null)
+            foreach (string sartist in strArray)
+            {
+              // Get Artist thumb name
+              FileName = Path.Combine(Utils.FAHMusicArtists, MediaPortal.Util.Utils.MakeFileName(sartist) + "L.jpg");
+              if (File.Exists(FileName))
+                if (!PictureList.Contains(FileName))
+                  PictureList.Add(FileName) ;
+            }
+        }
+        
+        if (PictureList != null && (PictureList.Count > 0))
+        {
+          if (PictureList.Count == 1)
+            FileName = PictureList[0].Trim();
+          else if (PictureList.Count == 2)
+            FileName = PictureList[(DoShowImageOnePlay ? 0 : 1)].Trim();
           else
           {
             var rand = new Random();
-            artist = strArray[rand.Next(strArray.Length-1)].Trim();
+            FileName = PictureList[rand.Next(PictureList.Count-1)].Trim();
           }
+          flag = true ;
         }
 
-        if (!flag)
-        {
-          // Get Artist thumb name
-          path = Path.Combine(Utils.FAHMusicArtists, MediaPortal.Util.Utils.MakeFileName(artist) + "L.jpg");
-          flag = (File.Exists(path));
-        }
+        if (PictureList != null)
+          PictureList.Clear();
 
         if (flag)
-          AddPropertyPlay("#fanarthandler.music.artisthumb.play", path, ref ListPlayMusic);
+          AddPropertyPlay("#fanarthandler.music.artisthumb.play", FileName, ref ListPlayMusic);
         else
           FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.artisthumb.play", string.Empty);
+        // logger.Debug("AddPlayingArtistThumbProperty: " + artist + " - " + album + " - " + FileName + " " + (File.Exists(FileName) ? "True" : "False"));
       }
       catch (Exception ex)
       {
@@ -167,13 +204,41 @@ namespace FanartHandler
           return;
         }
 
-        var filename = Path.Combine(Utils.MusicClearArtFolder, MediaPortal.Util.Utils.MakeFileName(artist) + ".png");
+        var PictureList = new List<string>() ;
+        var FileName = (string) null;
 
-        if (File.Exists(filename))
-          AddPropertyPlay("#fanarthandler.music.artistclearart.play", filename, ref ListPlayMusic);
+        var strArray = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
+        if (strArray != null)
+          foreach (string sartist in strArray)
+          {
+            FileName = Path.Combine(Utils.MusicClearArtFolder, MediaPortal.Util.Utils.MakeFileName(artist) + ".png");
+            if (File.Exists(FileName))
+              if (!PictureList.Contains(FileName))
+                PictureList.Add(FileName) ;
+          }
+
+        FileName = string.Empty ;
+        if (PictureList != null && (PictureList.Count > 0))
+        {
+          if (PictureList.Count == 1)
+            FileName = PictureList[0].Trim();
+          else if (PictureList.Count == 2)
+            FileName = PictureList[(DoShowImageOnePlay ? 0 : 1)].Trim();
+          else
+          {
+            var rand = new Random();
+            FileName = PictureList[rand.Next(PictureList.Count-1)].Trim();
+          }
+        }
+
+        if (PictureList != null)
+          PictureList.Clear();
+
+        if (File.Exists(FileName))
+          AddPropertyPlay("#fanarthandler.music.artistclearart.play", FileName, ref ListPlayMusic);
         else
           FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.artistclearart.play", string.Empty);
-        // logger.Debug("AddPlayingArtistClearArtProperty: " + filename + " " + (File.Exists(filename) ? "True" : "False"));
+        // logger.Debug("AddPlayingArtistClearArtProperty: " + artist + " - " + FileName + " " + (File.Exists(FileName) ? "True" : "False"));
       }
       catch (Exception ex)
       {
@@ -191,12 +256,41 @@ namespace FanartHandler
           return;
         }
 
-        var filename = Path.Combine(Utils.MusicBannerFolder, MediaPortal.Util.Utils.MakeFileName(artist) + ".png");
+        var PictureList = new List<string>() ;
+        var FileName = (string) null;
 
-        if (File.Exists(filename))
-          AddPropertyPlay("#fanarthandler.music.artistbanner.play", filename, ref ListPlayMusic);
+        var strArray = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
+        if (strArray != null)
+          foreach (string sartist in strArray)
+          {
+            FileName = Path.Combine(Utils.MusicBannerFolder, MediaPortal.Util.Utils.MakeFileName(artist) + ".png");
+            if (File.Exists(FileName))
+              if (!PictureList.Contains(FileName))
+                PictureList.Add(FileName) ;
+          }
+
+        FileName = string.Empty ;
+        if (PictureList != null && (PictureList.Count > 0))
+        {
+          if (PictureList.Count == 1)
+            FileName = PictureList[0].Trim();
+          else if (PictureList.Count == 2)
+            FileName = PictureList[(DoShowImageOnePlay ? 0 : 1)].Trim();
+          else
+          {
+            var rand = new Random();
+            FileName = PictureList[rand.Next(PictureList.Count-1)].Trim();
+          }
+        }
+
+        if (PictureList != null)
+          PictureList.Clear();
+
+        if (File.Exists(FileName))
+          AddPropertyPlay("#fanarthandler.music.artistbanner.play", FileName, ref ListPlayMusic);
         else
           FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.artistbanner.play", string.Empty);
+        // logger.Debug("AddPlayingArtistBannerProperty: " + artist + " - " + FileName + " " + (File.Exists(FileName) ? "True" : "False"));
       }
       catch (Exception ex)
       {
@@ -214,12 +308,41 @@ namespace FanartHandler
           return;
         }
 
-        var filename = Path.Combine(Utils.MusicCDArtFolder, string.Format(Utils.MusicMask, MediaPortal.Util.Utils.MakeFileName(artist).Trim(), MediaPortal.Util.Utils.MakeFileName(album).Trim()) + ".png");
+        var PictureList = new List<string>() ;
+        var FileName = (string) null;
 
-        if (File.Exists(filename))
-          AddPropertyPlay("#fanarthandler.music.albumcd.play", filename, ref ListPlayMusic);
+        var strArray = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
+        if (strArray != null)
+          foreach (string sartist in strArray)
+          {
+            FileName = Path.Combine(Utils.MusicCDArtFolder, string.Format(Utils.MusicMask, MediaPortal.Util.Utils.MakeFileName(artist).Trim(), MediaPortal.Util.Utils.MakeFileName(album).Trim()) + ".png");
+            if (File.Exists(FileName))
+              if (!PictureList.Contains(FileName))
+                PictureList.Add(FileName) ;
+          }
+
+        FileName = string.Empty ;
+        if (PictureList != null && (PictureList.Count > 0))
+        {
+          if (PictureList.Count == 1)
+            FileName = PictureList[0].Trim();
+          else if (PictureList.Count == 2)
+            FileName = PictureList[(DoShowImageOnePlay ? 0 : 1)].Trim();
+          else
+          {
+            var rand = new Random();
+            FileName = PictureList[rand.Next(PictureList.Count-1)].Trim();
+          }
+        }
+
+        if (PictureList != null)
+          PictureList.Clear();
+
+        if (File.Exists(FileName))
+          AddPropertyPlay("#fanarthandler.music.albumcd.play", FileName, ref ListPlayMusic);
         else
           FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.albumcd.play", string.Empty);
+        // logger.Debug("AddPlayingArtistAlbumCDProperty: " + artist + " - " + album + " - " + FileName + " " + (File.Exists(FileName) ? "True" : "False"));
       }
       catch (Exception ex)
       {
@@ -240,7 +363,7 @@ namespace FanartHandler
         {
           var StoreCurrPlayMusic = CurrPlayMusic;
           
-          AddPlayingArtistPropertys(FanartHandlerSetup.Fh.CurrentTrackTag, FanartHandlerSetup.Fh.CurrentAlbumTag, DoShowImageOnePlay);
+          AddPlayingArtistPropertys(FanartHandlerSetup.Fh.CurrentTrackTag.Trim(), FanartHandlerSetup.Fh.CurrentAlbumTag.Trim(), DoShowImageOnePlay);
 
           if (NewArtist)
           {
