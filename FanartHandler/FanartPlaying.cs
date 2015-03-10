@@ -211,11 +211,12 @@ namespace FanartHandler
         if (strArray != null)
           foreach (string sartist in strArray)
           {
-            FileName = Path.Combine(Utils.MusicClearArtFolder, MediaPortal.Util.Utils.MakeFileName(artist) + ".png");
+            FileName = Path.Combine(Utils.MusicClearArtFolder, MediaPortal.Util.Utils.MakeFileName(sartist) + ".png");
             if (File.Exists(FileName))
               if (!PictureList.Contains(FileName))
                 PictureList.Add(FileName) ;
           }
+          
 
         FileName = string.Empty ;
         if (PictureList != null && (PictureList.Count > 0))
@@ -263,7 +264,7 @@ namespace FanartHandler
         if (strArray != null)
           foreach (string sartist in strArray)
           {
-            FileName = Path.Combine(Utils.MusicBannerFolder, MediaPortal.Util.Utils.MakeFileName(artist) + ".png");
+            FileName = Path.Combine(Utils.MusicBannerFolder, MediaPortal.Util.Utils.MakeFileName(sartist) + ".png");
             if (File.Exists(FileName))
               if (!PictureList.Contains(FileName))
                 PictureList.Add(FileName) ;
@@ -315,7 +316,7 @@ namespace FanartHandler
         if (strArray != null)
           foreach (string sartist in strArray)
           {
-            FileName = Path.Combine(Utils.MusicCDArtFolder, string.Format(Utils.MusicMask, MediaPortal.Util.Utils.MakeFileName(artist).Trim(), MediaPortal.Util.Utils.MakeFileName(album).Trim()) + ".png");
+            FileName = Path.Combine(Utils.MusicCDArtFolder, string.Format(Utils.MusicMask, MediaPortal.Util.Utils.MakeFileName(sartist).Trim(), MediaPortal.Util.Utils.MakeFileName(album).Trim()) + ".png");
             if (File.Exists(FileName))
               if (!PictureList.Contains(FileName))
                 PictureList.Add(FileName) ;
