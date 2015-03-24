@@ -398,6 +398,8 @@ namespace FanartHandler
               }
             }
           }
+          // logger.Debug("RefreshMusicPlayingProperties: " + FanartHandlerSetup.Fh.CurrentTrackTag + " - " + FanartHandlerSetup.Fh.CurrentAlbumTag + " - " + FanartHandlerSetup.Fh.CurrentGenreTag + " | " + (File.Exists(FileName) ? "True" : "False") + " > " + FileName);
+
           if (!string.IsNullOrEmpty(FileName))
             CurrPlayMusic = FileName;
           FanartAvailablePlay = (!string.IsNullOrEmpty(FileName));
