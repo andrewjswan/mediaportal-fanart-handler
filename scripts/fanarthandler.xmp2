@@ -482,7 +482,7 @@ cul8er</Value>
         </MinVersion>
         <MaxVersion>
           <Major>1</Major>
-          <Minor>10</Minor>
+          <Minor>999</Minor>
           <Build>999</Build>
           <Revision>999</Revision>
         </MaxVersion>
@@ -513,13 +513,13 @@ cul8er</Value>
     <Name>Fanart Handler</Name>
     <Id>814a6918-0183-4323-a3b4-c00fac11b4f6</Id>
     <Author>cul8er (maintained by yoavain &amp; ajs)</Author>
-    <HomePage>https://code.google.com/p/mediaportal-fanart-handler/</HomePage>
+    <HomePage>https://github.com/yoavain/mediaportal-fanart-handler</HomePage>
     <ForumPage>http://forum.team-mediaportal.com/fanart-handler-535/</ForumPage>
-    <UpdateUrl>https://mediaportal-fanart-handler.googlecode.com/svn/trunk/scripts/fanarthandler.xml</UpdateUrl>
+    <UpdateUrl>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/scripts/fanarthandler.xml</UpdateUrl>
     <Version>
       <Major>4</Major>
       <Minor>0</Minor>
-      <Build>0</Build>
+      <Build>1</Build>
       <Revision>0</Revision>
     </Version>
     <ExtensionDescription>Fanart Handler is a plugin for MediaPortal (MP). The plugin basically supports;
@@ -539,10 +539,11 @@ cul8er</Value>
        * push random images from selected folders
 
 </ExtensionDescription>
-    <VersionDescription>Compatibility with MediaPortal 1.10</VersionDescription>
+    <VersionDescription>Compatibility with MediaPortal 1.11
+Move to GitHub</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
-    <OnlineLocation>https://mediaportal-fanart-handler.googlecode.com/svn/trunk/builds/FanartHandler-{VERSION}.MPE1</OnlineLocation>
-    <ReleaseDate>2014-11-16T15:04:24</ReleaseDate>
+    <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-{VERSION}.MPE1</OnlineLocation>
+    <ReleaseDate>2015-04-01T15:04:24</ReleaseDate>
     <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper</Tags>
     <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
     <Params>
@@ -553,7 +554,7 @@ cul8er</Value>
           <Description>The icon file of the package (jpg,png,bmp)</Description>
         </SectionParam>
         <SectionParam Name="Online Icon">
-          <Value>https://mediaportal-fanart-handler.googlecode.com/svn/trunk/FanartHandler_Icon.png</Value>
+          <Value>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/FanartHandler_Icon.png</Value>
           <ValueType>String</ValueType>
           <Description>The icon file of the package stored online (jpg,png,bmp)</Description>
         </SectionParam>
