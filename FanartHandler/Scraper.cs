@@ -181,13 +181,13 @@ namespace FanartHandler
           templateHeight = templateWidth;
           iText = "highest quality";
           break;
-        /*
+
         case MediaPortal.Util.Thumbs.ThumbQuality.uhd:
           templateWidth = (!bigThumb) ? (int) MediaPortal.Util.Thumbs.ThumbSize.uhd : (int) MediaPortal.Util.Thumbs.LargeThumbSize.uhd;
           templateHeight = templateWidth;
           iText = "UHD quality";
           break;
-        */
+
         default:
           templateWidth = (!bigThumb) ? (int) templateWidth : 500;
           templateHeight = templateWidth;
