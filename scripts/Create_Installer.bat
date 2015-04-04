@@ -40,7 +40,7 @@ REM "D:\MediaPortal\MPEMaker.exe" fanarthandlerTemp.xmp2 /B /V=%version% /Update
 del fanarthandlerTemp.xmp2
 
 :: Sed "FanartHandler-{VERSION}.mpe1" from fanarthandler.xml
-Tools\sed.exe -i "s/FanartHandler-{VERSION}.mpe1/FanartHandler-%version%.mpe1/g" fanarthandler-%version%.xml
+Tools\sed.exe -i "s/FanartHandler-{VERSION}.MPE1/FanartHandler-%version%.mpe1/g" fanarthandler-%version%.xml
 
 :: Parse version (Might be needed in the futute)
 FOR /F "tokens=1-4 delims=." %%i IN ("%version%") DO ( 
