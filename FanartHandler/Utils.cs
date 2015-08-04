@@ -1513,7 +1513,7 @@ namespace FanartHandler
       #region Report Settings
       logger.Info("Fanart Handler is using: " + Check(Utils.UseFanart) + " Fanart, " + Check(Utils.UseAlbum) + " Album Thumbs, " + Check(Utils.UseArtist) + " Artist Thumbs, "+Check(UseGenreFanart)+" Genre Fanart, Min: "+MinResolution+", "+Check(UseAspectRatio)+" Aspect Ratio >= 1.3");
       logger.Debug("Scan: "+Check(ScanMusicFoldersForFanart)+" Music Folders for Fanart, RegExp: "+MusicFoldersArtistAlbumRegex);
-      logger.Debug("Scraper: [x] Fanart, "+Check(ScraperMPDatabase)+" MP Databases , "+Check(ScrapeThumbnails)+" Artists Thumb , "+Check(ScrapeThumbnailsAlbum)+" Album Thumb, "+Check(UseMinimumResolutionForDownload)+" Delete if less then "+MinResolution+", "+Check(UseHighDefThumbnails)+" High Def Thumbs");
+      logger.Debug("Scraper: [x] Fanart, "+Check(ScraperMPDatabase)+" MP Databases , "+Check(ScrapeThumbnails)+" Artists Thumb , "+Check(ScrapeThumbnailsAlbum)+" Album Thumb, "+Check(UseMinimumResolutionForDownload)+" Delete if less then "+MinResolution+", "+Check(UseHighDefThumbnails)+" High Def Thumbs, Max Count ["+ScraperMaxImages+"]");
       logger.Debug("Providers: "+Check(UseFanartTV)+" Fanart.TV, "+Check(UseHtBackdrops)+" HtBackdrops, "+Check(UseLastFM)+" Last.fm, "+Check(UseCoverArtArchive)+" CoverArtArchive");
       if (UseFanartTV)
       {

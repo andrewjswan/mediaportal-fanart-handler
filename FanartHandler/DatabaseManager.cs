@@ -1,4 +1,4 @@
-﻿// Type: FanartHandler.DatabaseManager
+// Type: FanartHandler.DatabaseManager
 // Assembly: FanartHandler, Version=3.1.0.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 // Assembly location: D:\Mes documents\Desktop\FanartHandler.dll
@@ -932,6 +932,8 @@ namespace FanartHandler
                         var numberOfFanartImages = GetNumberOfFanartImages(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped));
                         var doScrapeFanart = (numberOfFanartImages < MaxImages);
 
+                        logger.Debug("Artist: " + artist + " images: " + numberOfFanartImages + " from: " + MaxImages);
+
                         if (!doScrapeFanart)
                           GetImages = 8888 ;
                         else
@@ -989,6 +991,8 @@ namespace FanartHandler
                         var MaxImages = checked(Convert.ToInt32(Utils.ScraperMaxImages,CultureInfo.CurrentCulture));
                         var numberOfFanartImages = GetNumberOfFanartImages(dbartist);
                         var doTriggerRefresh = (numberOfFanartImages == 0 && !externalAccess);
+
+                        logger.Debug("Artist: " + artist + " images: " + numberOfFanartImages + " from: " + MaxImages);
 
                         if (checked (MaxImages - numberOfFanartImages) <= 0)
                           GetImages = 8888 ;
@@ -1150,13 +1154,13 @@ namespace FanartHandler
                     var SQL = "SELECT DISTINCT Key1, sum(Count) as Count FROM ("+
                                 "SELECT Key1, count(Key1) as Count "+
                                   "FROM Image "+
-                                  "WHERE Category in ('" + ((object) Utils.Category.MusicFanartScraped).ToString() + "') AND "+
+                                  "WHERE Category IN ('" + Utils.GetMusicFanartCategoriesInStatement(Utils.UseHighDefThumbnails) + "') AND "+
                                         "Time_Stamp >= '" + DateTime.Today.AddDays(-14.0).ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "' "+
                                   "GROUP BY Key1 "+
                                 "UNION ALL "+
                                 "SELECT Key1, count(Key1) as Count "+
                                   "FROM Image "+
-                                  "WHERE Category in ('" + ((object) Utils.Category.MusicFanartScraped).ToString() + "') AND "+
+                                  "WHERE Category IN ('" + Utils.GetMusicFanartCategoriesInStatement(Utils.UseHighDefThumbnails) + "') AND "+
                                         "Enabled = 'True' AND "+
                                         "DummyItem = 'False' "+
                                   "GROUP BY Key1 "+
@@ -1944,7 +1948,7 @@ namespace FanartHandler
                            "FROM Image "+
                            "WHERE Key1 = '" + Utils.PatchSql(artist) + "' AND "+
                                  "Enabled = 'True' AND "+ 
-                                 "Category = '" + Utils.PatchSql(((object) Utils.Category.MusicFanartScraped).ToString()) + "' AND "+
+                                 "Category IN ('" + Utils.GetMusicFanartCategoriesInStatement(Utils.UseHighDefThumbnails) + "') AND "+
                                  "DummyItem = 'False';";
                 SQLiteResultSet sqLiteResultSet;
                 lock (lockObject)
@@ -2090,7 +2094,7 @@ namespace FanartHandler
                        "FROM Image "+
                        "WHERE Enabled = 'True' AND "+
                              "DummyItem = 'False' AND "+ 
-                             "Category = '" + ((object) Utils.Category.MusicFanartScraped).ToString() + "';";
+                             "Category IN ('" + Utils.GetMusicFanartCategoriesInStatement(Utils.UseHighDefThumbnails) + "');";
             SQLiteResultSet sqLiteResultSet;
             lock (lockObject)
                 sqLiteResultSet = dbClient.Execute(str);

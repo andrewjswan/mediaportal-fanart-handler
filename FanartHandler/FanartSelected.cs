@@ -1,4 +1,4 @@
-﻿// Type: FanartHandler.FanartSelected
+// Type: FanartHandler.FanartSelected
 // Assembly: FanartHandler, Version=3.1.0.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 // Assembly location: D:\Mes documents\Desktop\FanartHandler.dll
@@ -221,7 +221,17 @@ namespace FanartHandler
                (GUIWindowManager.ActiveWindow == 6 || GUIWindowManager.ActiveWindow == 25)                             // My Video || My Video Title 
               ) && FanartHandlerSetup.Fh.SelectedItem.Equals("..", StringComparison.CurrentCulture)                    // ..
              )
+          {
+            if (FanartHandlerSetup.Fh.SelectedItem.Equals("..", StringComparison.CurrentCulture))
+            {
+              if (isMusic)
+                AddSelectedArtistProperty(string.Empty, ref listSelectedGeneric) ;
+
+              if (isVideo)
+                AddSelectedStudioProperty(string.Empty, ref listSelectedGeneric) ;
+            }
             return;
+          }
 
           if ((!currSelectedGenericTitle.Equals(FanartHandlerSetup.Fh.SelectedItem, StringComparison.CurrentCulture)) || (CurrCount >= FanartHandlerSetup.Fh.MaxCountImage))
           {
@@ -272,14 +282,11 @@ namespace FanartHandler
             //
             currSelectedGenericTitle = FanartHandlerSetup.Fh.SelectedItem;
             if (isMusic)
-            {
               AddSelectedArtistProperty(currSelectedGenericTitle, ref listSelectedGeneric) ;
-            }
 
             if (isVideo)
-            {
               AddSelectedStudioProperty(SelectedStudios, ref listSelectedGeneric) ;
-            }
+
           } // if ((!currSelectedGenericTitle.Equals(FanartHandlerSetup.Fh.SelectedItem, StringComparison.CurrentCulture)) || (CurrCount >= FanartHandlerSetup.Fh.MaxCountImage))
           IncreaseCurrCount();
         } // if (FanartHandlerSetup.Fh.SelectedItem != null && FanartHandlerSetup.Fh.SelectedItem.Trim().Length > 0)
@@ -291,7 +298,17 @@ namespace FanartHandler
                 ) && FanartHandlerSetup.Fh.SelectedItem.Equals("..", StringComparison.CurrentCulture)                    // ..
                )
              )
+          {
+            if (FanartHandlerSetup.Fh.SelectedItem.Equals("..", StringComparison.CurrentCulture))
+            {
+              if (isMusic)
+                AddSelectedArtistProperty(string.Empty, ref listSelectedGeneric) ;
+
+              if (isVideo)
+                AddSelectedStudioProperty(string.Empty, ref listSelectedGeneric) ;
+            }
             return;
+          }
 
           currSelectedGeneric = string.Empty;
           PrevSelectedGeneric = -1;
@@ -397,12 +414,13 @@ namespace FanartHandler
           IncreaseCurrCount();
           //
           AddSelectedArtistProperty(CurrSelectedMusicArtist, ref ListSelectedMusic) ;
-          //
         }
         else if (FanartHandlerSetup.Fh.SelectedItem != null && FanartHandlerSetup.Fh.SelectedItem.Equals("..", StringComparison.CurrentCulture))
         {
           CurrSelectedMusic = string.Empty;
           CurrSelectedMusicArtist = string.Empty;
+          //
+          AddSelectedArtistProperty(string.Empty, ref ListSelectedMusic) ;
         }
         else
         {
@@ -544,6 +562,7 @@ namespace FanartHandler
         if (!string.IsNullOrEmpty(selAlbum))
           CurrSelectedMusicAlbum = selAlbum ;
 
+        // logger.Debug("*** GMAFLC: 1 - ["+selArtist+"] ["+selAlbumArtist+"] ["+selAlbum+"] ["+selItem+"]");
         if (!string.IsNullOrEmpty(selArtist))
           if (!string.IsNullOrEmpty(selAlbumArtist))
             if (selArtist.Equals(selAlbumArtist, StringComparison.InvariantCultureIgnoreCase))
@@ -568,6 +587,7 @@ namespace FanartHandler
               {
                 CurrSelectedMusicAlbum = enumerator.Current.m_song.Album.Trim() ;
                 // return Utils.MovePrefixToBack(Utils.RemoveMPArtistPipes(enumerator.Current.m_song.Artist))+"|"+enumerator.Current.m_song.Artist+"|"+enumerator.Current.m_song.AlbumArtist;
+                // logger.Debug("*** GMAFLC: 2 - ["+enumerator.Current.m_song.Artist+"] ["+enumerator.Current.m_song.AlbumArtist+"]");
                 return Utils.RemoveMPArtistPipes(enumerator.Current.m_song.Artist)+"|"+enumerator.Current.m_song.Artist+"|"+enumerator.Current.m_song.AlbumArtist;
               }
             }
@@ -592,6 +612,7 @@ namespace FanartHandler
           if (arrayList != null)
             arrayList.Clear();
           arrayList = null;
+          // logger.Debug("*** GMAFLC: 3 - ["+FoundArtist+"]");
           if (!string.IsNullOrEmpty(FoundArtist))
             return FoundArtist;
           //
@@ -610,6 +631,7 @@ namespace FanartHandler
           if (arrayList != null)
             arrayList.Clear();
           arrayList = null;
+          // logger.Debug("*** GMAFLC: 4 - ["+FoundArtist+"]");
           if (!string.IsNullOrEmpty(FoundArtist))
             return FoundArtist;
           //
@@ -631,6 +653,7 @@ namespace FanartHandler
             arrayList.Clear();
           arrayList = null;
           // return Utils.MovePrefixToBack(Utils.RemoveMPArtistPipes(s));
+          // logger.Debug("*** GMAFLC: 5 - ["+FoundArtist+"]");
           return FoundArtist;
         }
         else
@@ -652,6 +675,7 @@ namespace FanartHandler
             // selAlbumArtist = Utils.MovePrefixToBack(Utils.RemoveMPArtistPipes(musicTag.AlbumArtist)).Trim();
             selAlbumArtist = Utils.RemoveMPArtistPipes(musicTag.AlbumArtist).Trim()+"|"+musicTag.AlbumArtist.Trim();
 
+          // logger.Debug("*** GMAFLC: 6 - ["+selArtist+"] ["+selAlbumArtist+"]");
           if (!string.IsNullOrEmpty(selArtist))
             if (!string.IsNullOrEmpty(selAlbumArtist))
               if (selArtist.Equals(selAlbumArtist, StringComparison.InvariantCultureIgnoreCase))
