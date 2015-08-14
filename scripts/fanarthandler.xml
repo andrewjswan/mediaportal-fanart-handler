@@ -277,7 +277,7 @@
         <VersionDescription>Compatibility with MediaPortal 1.11
 Move to GitHub</VersionDescription>
         <DevelopmentStatus>Stable</DevelopmentStatus>
-        <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-4.0.1.195.mpe1</OnlineLocation>
+        <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-4.0.2.207.mpe1</OnlineLocation>
         <ReleaseDate>2015-04-05T00:40:02.54446+03:00</ReleaseDate>
         <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper</Tags>
         <Location>..\builds\FanartHandler-4.0.1.195.MPE1</Location>
