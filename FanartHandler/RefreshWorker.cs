@@ -314,6 +314,7 @@ namespace FanartHandler
             FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movie.backdrop1.selected", string.Empty);
             FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movie.backdrop2.selected", string.Empty);
             FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movie.studios.selected", string.Empty);
+            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movie.studios.selected.all", string.Empty);
             FanartHandlerSetup.Fh.IsSelectedVideo = false;
             Report(e);
           }

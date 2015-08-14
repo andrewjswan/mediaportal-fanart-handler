@@ -1154,13 +1154,13 @@ namespace FanartHandler
                     var SQL = "SELECT DISTINCT Key1, sum(Count) as Count FROM ("+
                                 "SELECT Key1, count(Key1) as Count "+
                                   "FROM Image "+
-                                  "WHERE Category IN ('" + Utils.GetMusicFanartCategoriesInStatement(Utils.UseHighDefThumbnails) + "') AND "+
+                                  "WHERE Category IN (" + Utils.GetMusicFanartCategoriesInStatement(Utils.UseHighDefThumbnails) + ") AND "+
                                         "Time_Stamp >= '" + DateTime.Today.AddDays(-14.0).ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "' "+
                                   "GROUP BY Key1 "+
                                 "UNION ALL "+
                                 "SELECT Key1, count(Key1) as Count "+
                                   "FROM Image "+
-                                  "WHERE Category IN ('" + Utils.GetMusicFanartCategoriesInStatement(Utils.UseHighDefThumbnails) + "') AND "+
+                                  "WHERE Category IN (" + Utils.GetMusicFanartCategoriesInStatement(Utils.UseHighDefThumbnails) + ") AND "+
                                         "Enabled = 'True' AND "+
                                         "DummyItem = 'False' "+
                                   "GROUP BY Key1 "+
@@ -1948,7 +1948,7 @@ namespace FanartHandler
                            "FROM Image "+
                            "WHERE Key1 = '" + Utils.PatchSql(artist) + "' AND "+
                                  "Enabled = 'True' AND "+ 
-                                 "Category IN ('" + Utils.GetMusicFanartCategoriesInStatement(Utils.UseHighDefThumbnails) + "') AND "+
+                                 "Category IN (" + Utils.GetMusicFanartCategoriesInStatement(Utils.UseHighDefThumbnails) + ") AND "+
                                  "DummyItem = 'False';";
                 SQLiteResultSet sqLiteResultSet;
                 lock (lockObject)
@@ -2094,7 +2094,7 @@ namespace FanartHandler
                        "FROM Image "+
                        "WHERE Enabled = 'True' AND "+
                              "DummyItem = 'False' AND "+ 
-                             "Category IN ('" + Utils.GetMusicFanartCategoriesInStatement(Utils.UseHighDefThumbnails) + "');";
+                             "Category IN (" + Utils.GetMusicFanartCategoriesInStatement(Utils.UseHighDefThumbnails) + ");";
             SQLiteResultSet sqLiteResultSet;
             lock (lockObject)
                 sqLiteResultSet = dbClient.Execute(str);

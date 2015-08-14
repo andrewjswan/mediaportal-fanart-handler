@@ -347,8 +347,10 @@ namespace FanartHandler
         CurrSelectedMusicAlbum = SaveAlbum;
         var genre = string.Empty+GUIPropertyManager.GetProperty("#music.genre");
         //
-        if (FanartHandlerSetup.Fh.SelectedItem == null || FanartHandlerSetup.Fh.SelectedItem.Length <= 0)
-          FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#selecteditem");
+        // logger.Debug("*** GMAFLC: R - ["+FanartHandlerSetup.Fh.SelectedItem+"]");
+        // if (FanartHandlerSetup.Fh.SelectedItem == null || FanartHandlerSetup.Fh.SelectedItem.Length <= 0)
+        //   FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#selecteditem");
+
         if (FanartHandlerSetup.Fh.SelectedItem != null && !FanartHandlerSetup.Fh.SelectedItem.Equals("..", StringComparison.CurrentCulture) && FanartHandlerSetup.Fh.SelectedItem.Trim().Length > 0)
         {
           var oldFanart = CurrSelectedMusic;
@@ -654,7 +656,8 @@ namespace FanartHandler
           arrayList = null;
           // return Utils.MovePrefixToBack(Utils.RemoveMPArtistPipes(s));
           // logger.Debug("*** GMAFLC: 5 - ["+FoundArtist+"]");
-          return FoundArtist;
+          if (!string.IsNullOrEmpty(FoundArtist))
+            return FoundArtist;
         }
         else
         {
@@ -687,9 +690,9 @@ namespace FanartHandler
           else
             if (!string.IsNullOrEmpty(selAlbumArtist))
               return selAlbumArtist;
-            else
-              return null;
         }
+        // logger.Debug("*** GMAFLC: 7 - ["+selItem+"]");
+        return selItem;
       }
       catch (Exception ex)
       {
@@ -773,6 +776,7 @@ namespace FanartHandler
       if (string.IsNullOrEmpty(Studios))
       {
         AddProperty("#fanarthandler.movie.studios.selected", string.Empty, ref al);
+        AddProperty("#fanarthandler.movie.studios.selected.all", string.Empty, ref al);
         return;
       }
 
@@ -785,6 +789,7 @@ namespace FanartHandler
         var studios = Studios.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
         if (studios != null)
         {
+          // logger.Debug("*** Studios: > "+Studios) ;
           foreach (string studio in studios)
           {
             sFile = GUIGraphicsContext.GetThemedSkinFile(@"\Media\Logos\Studios\"+MediaPortal.Util.Utils.MakeFileName(studio.Trim())+".png") ; 
@@ -809,6 +814,7 @@ namespace FanartHandler
         }
 
         AddProperty("#fanarthandler.movie.studios.selected", sFile, ref al);
+        AddProperty("#fanarthandler.movie.studios.selected.all", Logos.BuildConcatImage("Studios", sFileNames), ref al);
       }
       catch (Exception ex)
       {
