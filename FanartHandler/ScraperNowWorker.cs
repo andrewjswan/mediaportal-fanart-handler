@@ -63,7 +63,7 @@ namespace FanartHandler
 
         Utils.GetDbm().IsScraping = true;
         Utils.AllocateDelayStop("FanartHandlerSetup-StartScraperNowPlaying");
-        FanartHandlerSetup.Fh.SetProperty("#fanartHandler.scraper.task", "Now Playing Scrape");
+        FanartHandlerSetup.Fh.SetProperty("#fanartHandler.scraper.task", Translation.ScrapeNowPlaying);
         FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.completed", "0");
         FanartHandlerSetup.Fh.ShowScraperProgressIndicator();
 

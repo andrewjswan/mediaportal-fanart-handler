@@ -153,6 +153,7 @@
     <Compile Include="UtilsTVSeries.cs" />
     <Compile Include="JunctionPoint.cs" />
     <Compile Include="Logos.cs" />
+    <Compile Include="Translation.cs" />
     <Compile Include="ComparingImages.cs" />
   </ItemGroup>
   <ItemGroup>

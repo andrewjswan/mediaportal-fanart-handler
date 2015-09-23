@@ -37,7 +37,7 @@ namespace FanartHandler
         TriggerRefresh = false;
         Utils.GetDbm().IsScraping = true;
         Utils.AllocateDelayStop("FanartHandlerSetup-StartScraper");
-        FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.task", "Initial Scrape");
+        FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.task", Translation.ScrapeInitial);
         FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.completed", "0");
         FanartHandlerSetup.Fh.ShowScraperProgressIndicator();
         Utils.GetDbm().InitialScrape();

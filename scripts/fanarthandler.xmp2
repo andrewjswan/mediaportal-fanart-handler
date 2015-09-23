@@ -108,6 +108,20 @@
               <ZipFileName>Installer{CopyFile}\{074ab376-0b67-4d0d-93bf-caa1037edeba}-FanartHandler.Artists.xml</ZipFileName>
               <DestinationFilename>%Config%\FanartHandler.Artists.xml</DestinationFilename>
             </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\language\en.xml</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{740c3bc4-d5a4-4449-8444-3279b18c73d5}-en.xml</ZipFileName>
+              <DestinationFilename>%Language%\FanartHandler\ru.xml</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\language\ru.xml</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{9c31a83a-205a-45a9-804f-9de3e0bdb025}-ru.xml</ZipFileName>
+              <DestinationFilename>%Language%\FanartHandler\ru.xml</DestinationFilename>
+            </FileItem>
           </Items>
         </Files>
       </GroupItem>
@@ -527,22 +541,20 @@ cul8er</Value>
     * Search and download music artist fanart or artist and album thumbnails (scrape) from the fanart.tv, htbackdrops, last.fm, coverartarchive site.
 
        * for all artists stored in your MP music database.
-
        * for any artist currently being played (on the fly).
 
     * Push fanart that you store on your local harddrive to the current used MP skin.
 
        * push fanart for now played music
-
        * push fanart for selected music or movie
-
        * push random images from selected folders
 
 </ExtensionDescription>
-    <VersionDescription>Compatibility with MediaPortal 1.12</VersionDescription>
+    <VersionDescription>+ Add Localization for Fanart Handler properties
+* Fix compatibility with LatestMediaHandler-2.3.0.40</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-{VERSION}.MPE1</OnlineLocation>
-    <ReleaseDate>2015-07-06T15:04:24</ReleaseDate>
+    <ReleaseDate>2015-09-23T15:04:24</ReleaseDate>
     <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper</Tags>
     <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
     <Params>
@@ -565,7 +577,7 @@ cul8er</Value>
  If have .dll extension used like MP plugin configuration</Description>
         </SectionParam>
         <SectionParam Name="Online Screenshots">
-          <Value>http://x-factor.googlecode.com/svn/wiki/img/xfactorfanarthandler_plugin3.jpg</Value>
+          <Value>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshot1.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshot2.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshot3.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshot4.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshot5.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshot6.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshot7.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshot8.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshot9.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshot10.jpg</Value>
           <ValueType>String</ValueType>
           <Description>Online stored screenshot urls separated by ; </Description>
         </SectionParam>
@@ -676,6 +688,20 @@ cul8er</Value>
         <LocalFileName>..\Installer\config\FanartHandler.Artists.xml</LocalFileName>
         <ZipFileName>Installer{CopyFile}\{074ab376-0b67-4d0d-93bf-caa1037edeba}-FanartHandler.Artists.xml</ZipFileName>
         <DestinationFilename>%Config%\FanartHandler.Artists.xml</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\language\en.xml</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{740c3bc4-d5a4-4449-8444-3279b18c73d5}-en.xml</ZipFileName>
+        <DestinationFilename>%Language%\FanartHandler\ru.xml</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\language\ru.xml</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{9c31a83a-205a-45a9-804f-9de3e0bdb025}-ru.xml</ZipFileName>
+        <DestinationFilename>%Language%\FanartHandler\ru.xml</DestinationFilename>
       </FileItem>
       <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
         <Param1 />

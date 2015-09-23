@@ -4186,6 +4186,7 @@ namespace FanartHandler
       {
         logger.Error("InitFanartHandlerConfig: Logger: " + ex);
       }
+      //
       logger.Info("Fanart Handler configuration is starting.");
       logger.Info("Fanart Handler version is " + Utils.GetAllVersionNumber());
       logger.Debug("Current Culture: {0}", CultureInfo.CurrentCulture.Name);

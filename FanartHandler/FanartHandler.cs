@@ -1127,12 +1127,16 @@ namespace FanartHandler
       {
         Utils.DelayStop = new Hashtable();
         Utils.SetIsStopping(false);
+        //
         InitLogger();
+        //
         logger.Info("Fanart Handler is starting.");
         logger.Info("Fanart Handler version is " + Utils.GetAllVersionNumber());
+        //
         SetupConfigFile();
         Utils.InitFolders();
         Utils.LoadSettings();
+        Translation.Init();
         //
         FP = new FanartPlaying();
         FS = new FanartSelected();

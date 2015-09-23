@@ -142,14 +142,42 @@ namespace FanartHandler
       return flag;
     }
 
-    public static Hashtable GetMusicFanartForLatestMedia(string artist, string album = (string) null)
+    public static Hashtable GetMusicFanartForLatestMedia(string Artist, string AlbumArtist, string Album)
     {
       var hashtable1 = new Hashtable();
       try
       {
-        artist = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
+        string artist      = string.Empty;
+        string albumartist = string.Empty;
+        string album       = string.Empty;
+
+        if (!string.IsNullOrEmpty(Album))
+          album = Album.Trim();
+
+        if (!string.IsNullOrEmpty(Artist))
+          Artist = Utils.RemoveMPArtistPipes(Artist).Trim()+"|"+Artist.Trim();
+        if (!string.IsNullOrEmpty(AlbumArtist))
+          AlbumArtist = Utils.RemoveMPArtistPipes(AlbumArtist).Trim()+"|"+AlbumArtist.Trim();
+
+        if (!string.IsNullOrEmpty(Artist))
+          if (!string.IsNullOrEmpty(AlbumArtist))
+            if (Artist.Equals(AlbumArtist, StringComparison.InvariantCultureIgnoreCase))
+              artist = Artist;
+            else
+              artist = Artist + '|' + AlbumArtist;
+          else
+            artist = Artist;
+        else
+          if (!string.IsNullOrEmpty(albumartist))
+            artist = AlbumArtist;
+
+        if (!string.IsNullOrEmpty(artist))
+          artist = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
         if (!string.IsNullOrEmpty(album))
           album = Utils.GetAlbum(album, Utils.Category.MusicFanartScraped);
+
+        if (string.IsNullOrEmpty(artist))
+          return null;
 
         var fanart1 = Utils.GetDbm().GetFanart(artist, album, Utils.Category.MusicFanartScraped, true);
         if (fanart1 != null && fanart1.Count <= 0 && (Utils.SkipWhenHighResAvailable && (Utils.UseArtist || Utils.UseAlbum)))
@@ -172,6 +200,7 @@ namespace FanartHandler
           else
             fanart1 = Utils.GetDbm().GetFanart(artist, album, Utils.Category.MusicFanartScraped, false);
         }
+
         var num = 0;
         if (fanart1 != null && fanart1.Count > 0)
         {
@@ -189,6 +218,7 @@ namespace FanartHandler
               break;
           }
         }
+
         if (num == 0)
         {
           var currFile = string.Empty;
@@ -202,6 +232,11 @@ namespace FanartHandler
         logger.Error("GetMusicFanartForLatestMedia: " + ex);
       }
       return hashtable1;
+    }
+
+    public static Hashtable GetMusicFanartForLatestMedia(string artist, string album = (string) null)
+    {
+      return GetMusicFanartForLatestMedia (artist, string.Empty, album);
     }
 
     public delegate void ScraperCompletedHandler(string type, string artist);
