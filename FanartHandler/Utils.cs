@@ -13,12 +13,17 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
+
 using MediaPortal.Configuration;
 using MediaPortal.GUI.Library;
 using MediaPortal.Music.Database;
 using MediaPortal.Profile;
+
 using NLog;
+
 using SQLite.NET;
+
 using Monitor.Core.Utilities;
 
 namespace FanartHandler
@@ -38,6 +43,8 @@ namespace FanartHandler
 
     public static List<string> BadArtistsList;  
     public static string[] PipesArray ;
+
+    public const int ThreadSleep = 0;
 
     #region Settings
     public static bool UseFanart { get; set; }
@@ -420,12 +427,20 @@ namespace FanartHandler
       dbm.InitDB(type);
     }
 
+    public static void ThreadToSleep()
+    {
+      Thread.Sleep(Utils.ThreadSleep); 
+      // Application.DoEvents();
+    }
+
     public static void AllocateDelayStop(string key)
     {
       if (DelayStop.Contains(key))
-        DelayStop[key] = "1";
+      {
+        DelayStop[key] = (int)DelayStop[key] + 1;
+      }
       else
-        DelayStop.Add(key, "1");
+        DelayStop.Add(key, 1);
     }
 
     public static bool GetDelayStop()
@@ -433,20 +448,23 @@ namespace FanartHandler
       if (DelayStop.Count == 0)
         return false;
 
-      var num = 0;
-      foreach (DictionaryEntry dictionaryEntry in DelayStop)
+      int i = 0;
+      foreach (DictionaryEntry de in DelayStop)
       {
-        logger.Debug(string.Concat(new object[4] { "DelayStop (", num, "):", dictionaryEntry.Key }));
-        checked { ++num; }
+        i++;
+        logger.Debug("DelayStop (" + i + "):" + de.Key.ToString() + " [" + de.Value.ToString() + "]");
       }
       return true;
     }
 
     public static void ReleaseDelayStop(string key)
     {
-      if (!DelayStop.Contains(key))
-        return;
-      DelayStop.Remove(key);
+      if (DelayStop.Contains(key))
+      {
+        DelayStop[key] = (int)DelayStop[key] - 1;
+        if ((int)DelayStop[key] <= 0)
+          DelayStop.Remove(key);
+      }
     }
 
     public static void SetIsStopping(bool b)

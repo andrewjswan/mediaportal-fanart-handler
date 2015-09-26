@@ -183,6 +183,8 @@ namespace FanartHandler
       {
         if (property == null)
           return;
+
+        //logger.Debug("SetProperty: "+property+" -> "+value) ;
         GUIPropertyManager.SetProperty(property, value);
       }
       catch (Exception ex)
@@ -982,8 +984,9 @@ namespace FanartHandler
       m_CurrentTitleTag = null;
       m_CurrentGenreTag = null;
       m_SelectedItem = null;
-      SetProperty("#fanarthandler.scraper.percent.completed", string.Empty);
       SetProperty("#fanarthandler.scraper.task", string.Empty);
+      SetProperty("#fanarthandler.scraper.percent.completed", string.Empty);
+      SetProperty("#fanarthandler.scraper.percent.sign", string.Empty);
       SetProperty("#fanarthandler.games.userdef.backdrop1.any", string.Empty);
       SetProperty("#fanarthandler.games.userdef.backdrop2.any", string.Empty);
       SetProperty("#fanarthandler.movie.userdef.backdrop1.any", string.Empty);
@@ -1133,10 +1136,10 @@ namespace FanartHandler
         logger.Info("Fanart Handler is starting.");
         logger.Info("Fanart Handler version is " + Utils.GetAllVersionNumber());
         //
+        Translation.Init();
         SetupConfigFile();
         Utils.InitFolders();
         Utils.LoadSettings();
-        Translation.Init();
         //
         FP = new FanartPlaying();
         FS = new FanartSelected();
@@ -1299,13 +1302,14 @@ namespace FanartHandler
         {
           if (Utils.GetDbm().GetIsScraping())
           {
-            GUIControl.ShowControl(GUIWindowManager.ActiveWindow, 91919280);
+            ShowScraperProgressIndicator(); 
           }
           else
           {
-            GUIPropertyManager.SetProperty("#fanarthandler.scraper.percent.completed", string.Empty);
             SetProperty("#fanarthandler.scraper.task", string.Empty);
-            GUIControl.HideControl(GUIWindowManager.ActiveWindow, 91919280);
+            SetProperty("#fanarthandler.scraper.percent.completed", string.Empty);
+            SetProperty("#fanarthandler.scraper.percent.sign", string.Empty);
+            HideScraperProgressIndicator();
             Utils.GetDbm().TotArtistsBeingScraped = 0.0;
             Utils.GetDbm().CurrArtistsBeingScraped = 0.0;
           }
@@ -1635,7 +1639,6 @@ namespace FanartHandler
           return;
         Utils.GetDbm().TotArtistsBeingScraped = 0.0;
         Utils.GetDbm().CurrArtistsBeingScraped = 0.0;
-        Utils.AllocateDelayStop("FanartHandlerSetup-StartScraper");
         if (MyScraperWorker == null)
         {
           MyScraperWorker = new ScraperWorker();
@@ -1644,11 +1647,11 @@ namespace FanartHandler
         }
         if (MyScraperWorker.IsBusy)
           return;
+
         MyScraperWorker.RunWorkerAsync();
       }
       catch (Exception ex)
       {
-        Utils.ReleaseDelayStop("FanartHandlerSetup-StartScraper");
         logger.Error("startScraper: " + ex);
       }
     }
@@ -1660,9 +1663,6 @@ namespace FanartHandler
         if (Utils.GetIsStopping())
           return;
 
-        Utils.GetDbm().TotArtistsBeingScraped = 0.0;
-        Utils.GetDbm().CurrArtistsBeingScraped = 0.0;
-        Utils.AllocateDelayStop("FanartHandlerSetup-StartScraperNowPlaying");
         if (MyScraperNowWorker == null)
         {
           MyScraperNowWorker = new ScraperNowWorker();
@@ -1672,6 +1672,9 @@ namespace FanartHandler
         if (MyScraperNowWorker.IsBusy)
           return;
 
+        Utils.GetDbm().TotArtistsBeingScraped = 0.0;
+        Utils.GetDbm().CurrArtistsBeingScraped = 0.0;
+
         MyScraperNowWorker.RunWorkerAsync(new string[2]
         {
             artist,
@@ -1680,7 +1683,6 @@ namespace FanartHandler
       }
       catch (Exception ex)
       {
-        Utils.ReleaseDelayStop("FanartHandlerSetup-StartScraperNowPlaying");
         logger.Error("StartScraperNowPlaying: " + ex);
       }
     }
@@ -1691,6 +1693,7 @@ namespace FanartHandler
       {
         if (MyScraperNowWorker == null)
           return;
+
         Utils.ReleaseDelayStop("FanartHandlerSetup-StartScraperNowPlaying");
         MyScraperNowWorker.CancelAsync();
         MyScraperNowWorker.Dispose();
@@ -1716,14 +1719,14 @@ namespace FanartHandler
       }
     }
 
-    internal void HideScraperProgressIndicator()
-    {
-      GUIControl.HideControl(GUIWindowManager.ActiveWindow, 91919280);
-    }
-
     internal void ShowScraperProgressIndicator()
     {
       GUIControl.ShowControl(GUIWindowManager.ActiveWindow, 91919280);
+    }
+
+    internal void HideScraperProgressIndicator()
+    {
+      GUIControl.HideControl(GUIWindowManager.ActiveWindow, 91919280);
     }
 
     private void SetupConfigFile()

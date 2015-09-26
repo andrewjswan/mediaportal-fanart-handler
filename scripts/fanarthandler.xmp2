@@ -108,20 +108,6 @@
               <ZipFileName>Installer{CopyFile}\{074ab376-0b67-4d0d-93bf-caa1037edeba}-FanartHandler.Artists.xml</ZipFileName>
               <DestinationFilename>%Config%\FanartHandler.Artists.xml</DestinationFilename>
             </FileItem>
-            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-              <Param1 />
-              <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\Installer\language\en.xml</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{740c3bc4-d5a4-4449-8444-3279b18c73d5}-en.xml</ZipFileName>
-              <DestinationFilename>%Language%\FanartHandler\ru.xml</DestinationFilename>
-            </FileItem>
-            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-              <Param1 />
-              <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\Installer\language\ru.xml</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{9c31a83a-205a-45a9-804f-9de3e0bdb025}-ru.xml</ZipFileName>
-              <DestinationFilename>%Language%\FanartHandler\ru.xml</DestinationFilename>
-            </FileItem>
           </Items>
         </Files>
       </GroupItem>
@@ -299,6 +285,29 @@
               <LocalFileName>..\Installer\Skin Fanart\UserDef\movies\default4.jpg</LocalFileName>
               <ZipFileName>Installer{CopyFile}\{9b59d854-007c-4342-9bac-1a4d894e9eb6}-default4.jpg</ZipFileName>
               <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\movies\default4.jpg</DestinationFilename>
+            </FileItem>
+          </Items>
+        </Files>
+      </GroupItem>
+      <GroupItem Name="Language">
+        <DisplayName>Language</DisplayName>
+        <DefaulChecked>true</DefaulChecked>
+        <Description>Language</Description>
+        <Files>
+          <Items>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\language\en.xml</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{740c3bc4-d5a4-4449-8444-3279b18c73d5}-en.xml</ZipFileName>
+              <DestinationFilename>%Language%\FanartHandler\ru.xml</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\language\ru.xml</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{9c31a83a-205a-45a9-804f-9de3e0bdb025}-ru.xml</ZipFileName>
+              <DestinationFilename>%Language%\FanartHandler\ru.xml</DestinationFilename>
             </FileItem>
           </Items>
         </Files>
@@ -550,11 +559,12 @@ cul8er</Value>
        * push random images from selected folders
 
 </ExtensionDescription>
-    <VersionDescription>+ Add Localization for Fanart Handler properties
-* Fix compatibility with LatestMediaHandler-2.3.0.40</VersionDescription>
+    <VersionDescription>+ Change localization
++ Add property
+#fanarthandler.scraper.percent.sign</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-{VERSION}.MPE1</OnlineLocation>
-    <ReleaseDate>2015-09-23T15:04:24</ReleaseDate>
+    <ReleaseDate>2015-09-26T15:04:24</ReleaseDate>
     <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper</Tags>
     <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
     <Params>
@@ -688,20 +698,6 @@ cul8er</Value>
         <LocalFileName>..\Installer\config\FanartHandler.Artists.xml</LocalFileName>
         <ZipFileName>Installer{CopyFile}\{074ab376-0b67-4d0d-93bf-caa1037edeba}-FanartHandler.Artists.xml</ZipFileName>
         <DestinationFilename>%Config%\FanartHandler.Artists.xml</DestinationFilename>
-      </FileItem>
-      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-        <Param1 />
-        <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\Installer\language\en.xml</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{740c3bc4-d5a4-4449-8444-3279b18c73d5}-en.xml</ZipFileName>
-        <DestinationFilename>%Language%\FanartHandler\ru.xml</DestinationFilename>
-      </FileItem>
-      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-        <Param1 />
-        <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\Installer\language\ru.xml</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{9c31a83a-205a-45a9-804f-9de3e0bdb025}-ru.xml</ZipFileName>
-        <DestinationFilename>%Language%\FanartHandler\ru.xml</DestinationFilename>
       </FileItem>
       <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
         <Param1 />
@@ -870,6 +866,20 @@ cul8er</Value>
         <LocalFileName>..\Installer\Skin Fanart\UserDef\movies\default4.jpg</LocalFileName>
         <ZipFileName>Installer{CopyFile}\{9b59d854-007c-4342-9bac-1a4d894e9eb6}-default4.jpg</ZipFileName>
         <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\movies\default4.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\language\en.xml</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{740c3bc4-d5a4-4449-8444-3279b18c73d5}-en.xml</ZipFileName>
+        <DestinationFilename>%Language%\FanartHandler\ru.xml</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\language\ru.xml</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{9c31a83a-205a-45a9-804f-9de3e0bdb025}-ru.xml</ZipFileName>
+        <DestinationFilename>%Language%\FanartHandler\ru.xml</DestinationFilename>
       </FileItem>
       <FileItem InstallType="CopyFile" SystemFile="true" Modified="true">
         <Param1 />

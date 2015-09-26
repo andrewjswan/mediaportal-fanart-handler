@@ -120,17 +120,17 @@ namespace FanartHandler
       {
         if (!Utils.GetDbm().GetIsScraping())
         {
-          Utils.AllocateDelayStop("FanartHandlerSetup-StartScraperExternal");
           if (!Utils.GetIsStopping() && Interlocked.CompareExchange(ref FanartHandlerSetup.Fh.SyncPointScraper, 1, 0) == 0)
           {
+            Utils.AllocateDelayStop("FanartHandlerSetup-StartScraperExternal");
             Utils.GetDbm().IsScraping = true;
             Utils.GetDbm().ArtistAlbumScrape(artist, album);
             Utils.GetDbm().IsScraping = false;
             FanartHandlerSetup.Fh.SyncPointScraper = 0;
+            Utils.ReleaseDelayStop("FanartHandlerSetup-StartScraperExternal");
           }
           else
             flag = false;
-          Utils.ReleaseDelayStop("FanartHandlerSetup-StartScraperExternal");
         }
       }
       catch (Exception ex)

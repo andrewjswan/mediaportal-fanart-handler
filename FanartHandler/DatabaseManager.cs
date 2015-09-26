@@ -1119,9 +1119,14 @@ namespace FanartHandler
             }
 
             FanartHandlerSetup.Fh.SetProperty("#fanartHandler.scraper.task", Translation.ScrapeInitial + " - " + Translation.ScrapeInitializing);
+            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.sign", "...");
 
             if (Utils.DeleteMissing)
+            { 
+              FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.completed", Translation.DeleteMissing);
               logger.Info("Synchronised fanart database: Removed " + Utils.GetDbm().DeleteRecordsWhereFileIsMissing() + " entries.");
+              FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.completed", "0");
+            }
 
             try
             {
@@ -1131,6 +1136,7 @@ namespace FanartHandler
                 if (FanartHandlerSetup.Fh.MyScraperWorker != null)
                     FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, "Start");
                 FanartHandlerSetup.Fh.SetProperty("#fanartHandler.scraper.task", Translation.ScrapeInitial + " - " + Translation.FHArtists);
+                FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.sign", Translation.StatusPercent);
 
                 #region Artists
                 musicDatabaseArtists = new ArrayList();
@@ -1251,6 +1257,7 @@ namespace FanartHandler
                   if (FanartHandlerSetup.Fh.MyScraperWorker != null)
                       FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, "Ongoing");
                   FanartHandlerSetup.Fh.SetProperty("#fanartHandler.scraper.task", Translation.ScrapeInitial + " - " + Translation.FHAlbums);
+                  FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.sign", Translation.StatusPercent);
 
                   musicDatabaseAlbums = new List<AlbumInfo>();
                   m_db.GetAllAlbums(ref musicDatabaseAlbums);
@@ -1388,6 +1395,7 @@ namespace FanartHandler
                   if (FanartHandlerSetup.Fh.MyScraperWorker != null)
                       FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, "Ongoing");
                   FanartHandlerSetup.Fh.SetProperty("#fanartHandler.scraper.task", Translation.ScrapeInitial + " - " + Translation.FHVideos);
+                  FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.sign", Translation.StatusPercent);
 
                   FanartHandlerSetup.Fh.UpdateDirectoryTimer(Utils.FAHSMovies, false, "InitialScrape");
 
@@ -1721,6 +1729,8 @@ namespace FanartHandler
                 if (musicDatabaseArtists != null && musicDatabaseArtists.Count > 0)
                 {
                     FanartHandlerSetup.Fh.SetProperty("#fanartHandler.scraper.task", Translation.CleanupImages + " - " + Translation.FHArtists);
+                    FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.sign", Translation.StatusPercent);
+
                     TotArtistsBeingScraped = checked (musicDatabaseArtists.Count);
                     logger.Debug("Cleanup images initiating for Artists...");
                     var htFanart = new Hashtable();
@@ -1817,6 +1827,8 @@ namespace FanartHandler
                 if (musicDatabaseAlbums != null && musicDatabaseAlbums.Count > 0)
                 {
                     FanartHandlerSetup.Fh.SetProperty("#fanartHandler.scraper.task", Translation.CleanupImages + " - " + Translation.FHAlbums);
+                    FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.sign", Translation.StatusPercent);
+
                     CurrArtistsBeingScraped = 0.0;
                     TotArtistsBeingScraped = checked (musicDatabaseAlbums.Count);
                     logger.Debug("Cleanup images initiating for Artists - Albums...");

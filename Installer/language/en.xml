@@ -12,6 +12,14 @@
  <!-- CleanUp -->
   <string Field="CleanupImages">Cleanup images</string>
 
+
+ <!-- Delete -->
+  <string Field="DeleteMissing">Delete missing enries</string>
+
+ <!-- Status -->
+  <string Field="StatusPercent">%</string>
+  <string Field="StatusWait">...</string>
+
  <!-- All -->
   <string Field="FHArtists">Artists</string>
   <string Field="FHAlbums">Albums</string>

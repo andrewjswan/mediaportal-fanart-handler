@@ -12,6 +12,13 @@
  <!-- CleanUp -->
   <string Field="CleanupImages">Очистка изображений</string>
 
+ <!-- Delete -->
+  <string Field="DeleteMissing">Удаляем лишнее</string>
+
+ <!-- Status -->
+  <string Field="StatusPercent">%</string>
+  <string Field="StatusWait">...</string>
+
  <!-- All -->
   <string Field="FHArtists">Исполнители</string>
   <string Field="FHAlbums">Альбомы</string>

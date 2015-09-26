@@ -271,6 +271,8 @@ namespace FanartHandler
 
         FanartHandlerSetup.FhC.StripStatusLabelToolTipText = e.UserState.ToString();
         FanartHandlerSetup.FhC.StripProgressBarValue = e.ProgressPercentage;
+
+        Utils.ThreadToSleep();
       }
       catch (Exception ex)
       {

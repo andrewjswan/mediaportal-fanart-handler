@@ -220,6 +220,13 @@ namespace FanartHandler
     // CleanUp
     public static string CleanupImages = "Cleanup images";
 
+    // Delete 
+    public static string DeleteMissing = "Delete missing enries";
+
+    // Status
+    public static string StatusPercent = "%";
+    public static string StatusWait = "...";
+
     // All
     public static string FHArtists = "Artists";
     public static string FHAlbums = "Albums";

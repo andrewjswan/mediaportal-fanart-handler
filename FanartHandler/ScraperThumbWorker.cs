@@ -34,24 +34,26 @@ namespace FanartHandler
         Thread.CurrentThread.Priority = !FanartHandlerSetup.Fh.FHThreadPriority.Equals("Lowest", StringComparison.CurrentCulture) ? ThreadPriority.BelowNormal : ThreadPriority.Lowest;
         Thread.CurrentThread.Name = "ScraperWorker";
         Utils.GetDbm().IsScraping = true;
-        Utils.AllocateDelayStop("FanartHandlerSetup-StartScraper");
+        Utils.AllocateDelayStop("FanartHandlerSetup-ThumbScraper");
+
         var strArray = e.Argument as string[];
         var onlyMissing = false;
         if (strArray != null && strArray[0].Equals("True"))
           onlyMissing = true;
+
         Utils.GetDbm().InitialThumbScrape(onlyMissing);
         Thread.Sleep(2000);
+
         Utils.GetDbm().StopScraper = true;
         Utils.GetDbm().StopScraper = false;
         Utils.GetDbm().IsScraping = false;
+
         ReportProgress(100, "Done");
-        Utils.ReleaseDelayStop("FanartHandlerSetup-StartScraper");
-        FanartHandlerSetup.Fh.SyncPointScraper = 0;
         e.Result = 0;
       }
       catch (Exception ex)
       {
-        Utils.ReleaseDelayStop("FanartHandlerSetup-StartScraper");
+        Utils.ReleaseDelayStop("FanartHandlerSetup-ThumbScraper");
         FanartHandlerSetup.Fh.SyncPointScraper = 0;
         logger.Error("OnDoWork: " + ex);
       }
@@ -59,12 +61,16 @@ namespace FanartHandler
 
     internal void OnProgressChanged(object sender, ProgressChangedEventArgs e)
     {
+      Utils.ThreadToSleep();
     }
 
     internal void OnRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
     {
       try
       {
+        Utils.ReleaseDelayStop("FanartHandlerSetup-ThumbScraper");
+        FanartHandlerSetup.Fh.SyncPointScraper = 0;
+
         if (!Utils.GetIsStopping())
         {
           Thread.Sleep(500); // 1000
