@@ -14,11 +14,20 @@ namespace FanartHandler
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        static string PathfortmpFile = Utils.MPThumbsFolder;
+        // static string PathfortmpFile = Utils.MPThumbsFolder;
+        static List<String> DynLogos = new List<string>();
 
         static Logos() { }
 
         private Logos() { }
+
+        public static void ClearDynLogos()
+        {
+          if (DynLogos != null)
+            DynLogos.Clear();
+          DynLogos = null ;
+          DynLogos = new List<string>();
+        }
 
         public static string BuildConcatImage(string Cat, List<string> logosForBuilding)
         {
@@ -124,6 +133,9 @@ namespace FanartHandler
                 // we don't have to try first, if name already exists mp will not do anything with the image
                 GUITextureManager.LoadFromMemory(b, name, 0, imgWidth, imgHeight);
                 // logger.Debug("*** Logos ["+name+"] to MP's Graphics memory added.");
+
+                if (!string.IsNullOrEmpty(name) && !DynLogos.Contains(name))
+                  DynLogos.Add(name);
             }
             catch (Exception)
             {
@@ -132,6 +144,5 @@ namespace FanartHandler
             }
             return name;
         }
-
     }
 }

@@ -1261,7 +1261,7 @@ namespace FanartHandler
           Utils.InitiateDbm("mediaportal");
           // StopTasks(false);
           // Start();
-          UpdateDirectoryTimer("All", false, "Fanart");
+          UpdateDirectoryTimer("All", false, "Resume");
         }
         else
         {
@@ -1864,7 +1864,9 @@ namespace FanartHandler
           EmptyAllImages(ref FR.ListAnyPluginsUser);
         if (FR != null)
           FR.ClearPropertiesRandomPerm();
-
+        //
+        Logos.ClearDynLogos();
+        //
         if (!suspending)
           SystemEvents.PowerModeChanged -= new PowerModeChangedEventHandler(OnSystemPowerModeChanged);
 

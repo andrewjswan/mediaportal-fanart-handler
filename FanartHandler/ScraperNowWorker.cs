@@ -115,6 +115,7 @@ namespace FanartHandler
         FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.task", string.Empty);
         FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.completed", string.Empty);
         FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.sign", string.Empty);
+
         Utils.GetDbm().TotArtistsBeingScraped = 0.0;
         Utils.GetDbm().CurrArtistsBeingScraped = 0.0;
       }
