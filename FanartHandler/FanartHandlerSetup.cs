@@ -46,7 +46,7 @@ namespace FanartHandler
 
     public string Author()
     {
-      return "cul8er, yoavain, ajs";
+      return "ajs (maintained by yoavain, original by cul8er)";
     }
 
     public void ShowPlugin()

@@ -535,7 +535,7 @@ cul8er</Value>
   <GeneralInfo>
     <Name>Fanart Handler</Name>
     <Id>814a6918-0183-4323-a3b4-c00fac11b4f6</Id>
-    <Author>cul8er (maintained by yoavain &amp; ajs)</Author>
+    <Author>ajs (maintained by yoavain, original by cul8er)</Author>
     <HomePage>https://github.com/yoavain/mediaportal-fanart-handler</HomePage>
     <ForumPage>http://forum.team-mediaportal.com/fanart-handler-535/</ForumPage>
     <UpdateUrl>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/scripts/fanarthandler.xml</UpdateUrl>
@@ -560,7 +560,7 @@ cul8er</Value>
     <VersionDescription>* small internal fixes</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-{VERSION}.MPE1</OnlineLocation>
-    <ReleaseDate>2015-09-01T15:04:24</ReleaseDate>
+    <ReleaseDate>2015-10-05T15:04:24</ReleaseDate>
     <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper</Tags>
     <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
     <Params>
