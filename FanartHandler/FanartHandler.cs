@@ -45,6 +45,7 @@ namespace FanartHandler
     internal int SyncPointDirectoryUpdate;
     internal int SyncPointRefresh;
     internal int SyncPointScraper;
+    internal int SyncPointPictures;
 
     private string m_CurrentTitleTag;
     private string m_CurrentTrackTag;
@@ -66,6 +67,7 @@ namespace FanartHandler
 
     private DirectoryWorker MyDirectoryWorker;
     private RefreshWorker MyRefreshWorker;
+    private PicturesWorker MyPicturesWorker;
 
     internal FileSystemWatcher MyFileWatcher { get; set; }
     internal ScraperNowWorker MyScraperNowWorker { get; set; }
@@ -191,33 +193,6 @@ namespace FanartHandler
       {
         logger.Error("SetProperty: " + ex);
       }
-    }
-
-    internal bool CheckImageResolution(string filename, Utils.Category category, bool UseAspectRatio)
-    {
-      try
-      {
-        if (!File.Exists(filename))
-        {
-          Utils.GetDbm().DeleteImage(filename);
-          return false;
-        }
-        else
-        {
-          var image = Image.FromFile(filename);
-          var num1 = (double) Convert.ToInt32(Utils.MinResolution.Substring(0, Utils.MinResolution.IndexOf("x", StringComparison.CurrentCulture)), CultureInfo.CurrentCulture);
-          var num2 = (double) Convert.ToInt32(Utils.MinResolution.Substring(checked (Utils.MinResolution.IndexOf("x", StringComparison.CurrentCulture) + 1)), CultureInfo.CurrentCulture);
-          var num3 = (double) image.Width;
-          var num4 = (double) image.Height;
-          image.Dispose();
-          return num3 >= num1 && num4 >= num2 && (!UseAspectRatio || num4 > 0.0 && num3 / num4 >= 1.3);
-        }
-      }
-      catch (Exception ex)
-      {
-        logger.Error("CheckImageResolution: " + ex);
-      }
-      return false;
     }
 
     /// <summary>
@@ -400,65 +375,6 @@ namespace FanartHandler
       }
     }
 
-    internal void InitSlideShowImages(ref int i)
-    {
-      if (!Utils.UseMyPicturesSlideShow)
-        return;
-
-      logger.Info("Refreshing local MyPictures for Music SlideShow is starting.");
-
-      var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-      int MaximumShares = 250;
-      using (var xmlreader = new Settings(Config.GetFile((Config.Dir) 10, "MediaPortal.xml")))
-      {
-        for (int index = 0; index < MaximumShares; index++)
-        {
-          string sharePath = String.Format("sharepath{0}", index);
-          string sharePin = String.Format("pincode{0}", index);
-          string sharePathData = xmlreader.GetValueAsString("pictures", sharePath, string.Empty);
-          string sharePinData = xmlreader.GetValueAsString("pictures", sharePin, string.Empty);
-          if (!MediaPortal.Util.Utils.IsDVD(sharePathData) && sharePathData != string.Empty && string.IsNullOrEmpty(sharePinData))
-          {
-            logger.Debug("Mediaportal MyPictures folder: "+sharePathData) ;
-            SetupSlideShowImages(sharePathData, ref i) ;
-          }
-        }
-      }
-      stopwatch.Stop();
-      logger.Info("Refreshing local MyPictures for Music SlideShow is done. Time elapsed: {0}.", stopwatch.Elapsed);
-    }
-
-    internal void SetupSlideShowImages(string StartDir, ref int i)
-    {
-      if (!Utils.UseMyPicturesSlideShow)
-        return;
-
-      try
-      {
-        foreach (var file in Directory.GetFiles(StartDir, "*.jpg"))
-        {
-          try
-          {
-            if (CheckImageResolution(file, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio) && 
-                      Utils.IsFileValid(file))
-              SlideShowImages.Add(i, file);
-          }
-          catch (Exception ex)
-          {
-            logger.Error("SetupSlideShowImages: " + ex);
-          }
-          checked { ++i; }
-        }
-        // Include SubFolders
-        foreach (var SubDir in Directory.GetDirectories(StartDir))
-          SetupSlideShowImages(SubDir, ref i);
-      }
-      catch (Exception ex)
-      {
-        logger.Error("SetupSlideShowImages: " + ex);
-      }
-    }
-
     internal void AddToDirectoryTimerQueue(string param)
     {
       try
@@ -620,7 +536,7 @@ namespace FanartHandler
               foreach (FanartImage fanartImage in values1)
               {
                 if ((num1 > iFilePrev || iFilePrev == -1) && 
-                    CheckImageResolution(fanartImage.DiskImage, category, Utils.UseAspectRatio) && 
+                    Utils.CheckImageResolution(fanartImage.DiskImage, category, Utils.UseAspectRatio) && 
                     Utils.IsFileValid(fanartImage.DiskImage)
                    )
                 {
@@ -642,7 +558,7 @@ namespace FanartHandler
                 foreach (FanartImage fanartImage in values2)
                 {
                   if ((num3 > iFilePrev || iFilePrev == -1) && 
-                      CheckImageResolution(fanartImage.DiskImage, category, Utils.UseAspectRatio) && 
+                      Utils.CheckImageResolution(fanartImage.DiskImage, category, Utils.UseAspectRatio) && 
                       Utils.IsFileValid(fanartImage.DiskImage)
                      )
                   {
@@ -692,7 +608,7 @@ namespace FanartHandler
                 foreach (string filename in values1)
                 {
                   if ((num1 > iFilePrev || iFilePrev == -1) &&  
-                      CheckImageResolution(filename, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio) && 
+                      Utils.CheckImageResolution(filename, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio) && 
                       Utils.IsFileValid(filename)
                      )
                   {
@@ -714,7 +630,7 @@ namespace FanartHandler
                   foreach (string filename in values2)
                   {
                     if ((num3 > iFilePrev || iFilePrev == -1) && // WTF? iFilePrev always -1
-                        CheckImageResolution(filename, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio) && 
+                        Utils.CheckImageResolution(filename, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio) && 
                         Utils.IsFileValid(filename)
                        )
                     {
@@ -761,7 +677,7 @@ namespace FanartHandler
                 foreach (string filename in values1)
                 {
                   if ((num1 > iFilePrev || iFilePrev == -1) &&  
-                      CheckImageResolution(filename, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio) && 
+                      Utils.CheckImageResolution(filename, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio) && 
                       Utils.IsFileValid(filename)
                      )
                   {
@@ -783,7 +699,7 @@ namespace FanartHandler
                   foreach (string filename in values2)
                   {
                     if ((num3 > iFilePrev || iFilePrev == -1) && // WTF? iFilePrev always -1
-                        CheckImageResolution(filename, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio) && 
+                        Utils.CheckImageResolution(filename, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio) && 
                         Utils.IsFileValid(filename)
                        )
                     {
@@ -968,6 +884,7 @@ namespace FanartHandler
       FS.PrevSelectedScorecenter = -1;
       FS.CurrSelectedMovieTitle = string.Empty;
       FP.CurrPlayMusicArtist = string.Empty;
+      FP.CurrPlayMusicAlbum = string.Empty;
       FS.CurrSelectedMusic = string.Empty;
       FS.CurrSelectedMusicArtist = string.Empty;
       FS.CurrSelectedMusicAlbum = string.Empty;
@@ -979,6 +896,7 @@ namespace FanartHandler
       SyncPointDirectory = 0;
       SyncPointDirectoryUpdate = 0;
       SyncPointScraper = 0;
+      SyncPointPictures = 0;
       m_CurrentTrackTag = null;
       m_CurrentAlbumTag = null;
       m_CurrentTitleTag = null;
@@ -1026,6 +944,8 @@ namespace FanartHandler
       SetProperty("#fanarthandler.tv.userdef.backdrop2.any", string.Empty);
       SetProperty("#fanarthandler.plugins.userdef.backdrop1.any", string.Empty);
       SetProperty("#fanarthandler.plugins.userdef.backdrop2.any", string.Empty);
+      SetProperty("#fanarthandler.pictures.slideshow.translation", Translation.FHSlideshow);
+      SetProperty("#fanarthandler.pictures.slideshow.enabled", (Utils.UseMyPicturesSlideShow ? "true" : "false"));
       FS.Properties = new Hashtable();
       FP.PropertiesPlay = new Hashtable();
       FR.PropertiesRandom = new Hashtable();
@@ -1063,7 +983,9 @@ namespace FanartHandler
 
     internal void AddPictureToCache(string property, string value, ref ArrayList al)
     {
-      if (string.IsNullOrEmpty(value) || al == null)
+      if (string.IsNullOrEmpty(value))
+        return;
+      if (al == null)
         return;
       if (al.Contains(value))
         return;
@@ -1074,7 +996,7 @@ namespace FanartHandler
       }
       catch (Exception ex)
       {
-        logger.Error("AddProperty: " + ex);
+        logger.Error("AddPictureToCache: " + ex);
       }
       Utils.LoadImage(value);
     }
@@ -1160,17 +1082,21 @@ namespace FanartHandler
           Utils.Shuffle(ref defaultBackdropImages);
         }
         logger.Debug("Default backdrops ["+Utils.UseDefaultBackdrop+" - "+Utils.DefaultBackdropMask+"] for Music found: " + defaultBackdropImages.Count);
-        //
-        i = 0;
+        logger.Debug("MyPictures backdrops "+Utils.Check(Utils.UseMyPicturesSlideShow));
         if (Utils.UseMyPicturesSlideShow)
         {
-          InitSlideShowImages (ref i);
-          Utils.Shuffle(ref slideshowImages);
+          if (!Utils.GetIsStopping() && SyncPointPictures == 0)
+          {
+            MyPicturesWorker = new PicturesWorker();
+            MyPicturesWorker.ProgressChanged += new ProgressChangedEventHandler(MyPicturesWorker.OnProgressChanged);
+            MyPicturesWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(MyPicturesWorker.OnRunWorkerCompleted);
+            MyPicturesWorker.RunWorkerAsync();
+          }
         }
-        logger.Debug("MyPictures backdrops "+Utils.Check(Utils.UseMyPicturesSlideShow)+" found: " + slideshowImages.Count);
         //
         Utils.InitiateDbm("mediaportal");
         MDB = MusicDatabase.Instance;
+        Utils.GetDbm().StopScraper = false;
         //
         AddToDirectoryTimerQueue("All");
         InitRandomProperties();
@@ -1350,6 +1276,7 @@ namespace FanartHandler
               FP.SetCurrentArtistsImageNames(null);
               FP.CurrPlayMusic = string.Empty;
               FP.CurrPlayMusicArtist = string.Empty;
+              FP.CurrPlayMusicAlbum = string.Empty;
               FP.FanartAvailablePlay = false;
               FP.FanartIsNotAvailablePlay(activeWindowId);
               FP.PrevPlayMusic = -1;
@@ -1477,6 +1404,7 @@ namespace FanartHandler
           FP.SetCurrentArtistsImageNames(null);
           FP.CurrPlayMusic = string.Empty;
           FP.CurrPlayMusicArtist = string.Empty;
+          FP.CurrPlayMusicAlbum = string.Empty;
           FP.FanartAvailablePlay = false;
           FP.FanartIsNotAvailablePlay(GUIWindowManager.ActiveWindow);
           FP.PrevPlayMusic = -1;
@@ -1597,6 +1525,7 @@ namespace FanartHandler
     {
       try
       {
+        FanartHandlerSetup.Fh.FP.AddPlayingArtistPropertys(string.Empty, string.Empty, true);
         var windowId = GUIWindowManager.ActiveWindow.ToString(CultureInfo.CurrentCulture);
         IsPlaying = true;
         if ((FP.WindowsUsingFanartPlay.ContainsKey(windowId) || Utils.UseOverlayFanart) && AllowFanartInThisWindow(windowId))
@@ -1620,6 +1549,7 @@ namespace FanartHandler
     {
       try
       {
+        FanartHandlerSetup.Fh.FP.AddPlayingArtistPropertys(string.Empty, string.Empty, true);
         if (type == g_Player.MediaType.Music || type == g_Player.MediaType.Radio)
         {
           FanartHandlerSetup.Fh.FP.AddPlayingArtistPropertys(CurrentTrackTag, CurrentAlbumTag, FP.DoShowImageOnePlay);
@@ -1637,6 +1567,7 @@ namespace FanartHandler
       {
         if (Utils.GetIsStopping())
           return;
+
         Utils.GetDbm().TotArtistsBeingScraped = 0.0;
         Utils.GetDbm().CurrArtistsBeingScraped = 0.0;
         if (MyScraperWorker == null)
@@ -1694,9 +1625,9 @@ namespace FanartHandler
         if (MyScraperNowWorker == null)
           return;
 
-        Utils.ReleaseDelayStop("FanartHandlerSetup-StartScraperNowPlaying");
         MyScraperNowWorker.CancelAsync();
         MyScraperNowWorker.Dispose();
+        Utils.ReleaseDelayStop("FanartHandlerSetup-ScraperNowPlaying");
       }
       catch (Exception ex)
       {
@@ -1827,6 +1758,11 @@ namespace FanartHandler
         {
           MyRefreshWorker.CancelAsync();
           MyRefreshWorker.Dispose();
+        }
+        if (MyPicturesWorker != null)
+        {
+          MyPicturesWorker.CancelAsync();
+          MyPicturesWorker.Dispose();
         }
         if (Utils.GetDbm() != null)
           Utils.GetDbm().Close();

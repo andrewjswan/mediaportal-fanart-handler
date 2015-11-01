@@ -44,8 +44,6 @@ namespace FanartHandler
         Utils.GetDbm().InitialThumbScrape(onlyMissing);
         Thread.Sleep(2000);
 
-        Utils.GetDbm().StopScraper = true;
-        Utils.GetDbm().StopScraper = false;
         Utils.GetDbm().IsScraping = false;
 
         ReportProgress(100, "Done");
@@ -53,8 +51,6 @@ namespace FanartHandler
       }
       catch (Exception ex)
       {
-        Utils.ReleaseDelayStop("FanartHandlerSetup-ThumbScraper");
-        FanartHandlerSetup.Fh.SyncPointScraper = 0;
         logger.Error("OnDoWork: " + ex);
       }
     }

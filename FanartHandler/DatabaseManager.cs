@@ -925,7 +925,7 @@ namespace FanartHandler
                 try
                 {
                     var GetImages = 0;
-                    if (artist != null && artist.Trim().Length > 0)
+                    if (!string.IsNullOrEmpty(artist))
                     {
                         var dbartist = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
                         var MaxImages = checked(Convert.ToInt32(Utils.ScraperMaxImages,CultureInfo.CurrentCulture));
@@ -977,13 +977,14 @@ namespace FanartHandler
               logger.Debug("No internet connection detected. Cancelling new scrape.");
               return 0 ;
             }
-
+            // logger.Debug("=== DoScrapeNew: "+StopScraper) ;
             if (!StopScraper)
             {
                 try
                 {
                     var GetImages = 0;
-                    if (artist != null && artist.Trim().Length > 0)
+                    // logger.Debug("=== DoScrapeNew: "+artist) ;
+                    if (!string.IsNullOrEmpty(artist))
                     {
                     #region NowPlaying Artist
                         var dbartist = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
@@ -997,7 +998,7 @@ namespace FanartHandler
                         if (checked (MaxImages - numberOfFanartImages) <= 0)
                           GetImages = 8888 ;
                         else
-                          {
+                        {
                             scraper = new Scraper();
                             lock (lockObject)
                                 dbClient.Execute("BEGIN TRANSACTION;");
@@ -1005,7 +1006,7 @@ namespace FanartHandler
                             lock (lockObject)
                                 dbClient.Execute("COMMIT;");
                             scraper = null;
-                          }
+                        }
                         switch (GetImages)
                         {
                             case 0:
@@ -1051,6 +1052,33 @@ namespace FanartHandler
                           } 
                           else
                             UpdateTimeStamp(dbartist, dbalbum, Utils.Category.MusicAlbumThumbScraped) ;
+                        if (StopScraper)
+                            return GetImages;
+                    #endregion
+                    #region ClearArt Banner CDArt etc
+                        if (checked (MaxImages - numberOfFanartImages) <= 0)
+                        {
+                          if (Utils.MusicClearArtDownload || Utils.MusicBannerDownload)
+                          {
+                            scraper = new Scraper();
+                            lock (lockObject)
+                                dbClient.Execute("BEGIN TRANSACTION;");
+                            scraper.GetArtistFanart(artist, MaxImages, this, false, doTriggerRefresh, externalAccess, true, true);
+                            lock (lockObject)
+                                dbClient.Execute("COMMIT;");
+                            scraper = null;
+                          }
+                          if (Utils.MusicCDArtDownload)
+                          {
+                            scraper = new Scraper();
+                            lock (lockObject)
+                                dbClient.Execute("BEGIN TRANSACTION;");
+                            scraper.GetArtistAlbumThumbs(artist, album, false, externalAccess, true);
+                            lock (lockObject)
+                                dbClient.Execute("COMMIT;");
+                            scraper = null;
+                          }
+                        }
                         if (StopScraper)
                             return GetImages;
                     #endregion
@@ -1123,7 +1151,8 @@ namespace FanartHandler
 
             if (Utils.DeleteMissing)
             { 
-              FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.completed", Translation.DeleteMissing);
+              FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.task", Translation.DeleteMissing);
+              FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.completed", string.Empty);
               logger.Info("Synchronised fanart database: Removed " + Utils.GetDbm().DeleteRecordsWhereFileIsMissing() + " entries.");
               FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.completed", "0");
             }
@@ -1671,6 +1700,7 @@ namespace FanartHandler
 
         public bool NowPlayingScrape(string artist, string album)
         {
+            logger.Debug("--- Now Playing ---------------------");
             try
             {
                 logger.Info("NowPlayingScrape is starting for Artist(s): " + artist + (string.IsNullOrEmpty(album) ? string.Empty : " - " + album));
@@ -1687,11 +1717,14 @@ namespace FanartHandler
                 {
                   logger.Debug("NowPlayingScrape is starting for Artist: " + sartist + (string.IsNullOrEmpty(album) ? string.Empty : " - " + album));
                   if (!StopScraper) 
-                    flag = (flag || (DoScrapeNew(sartist.Trim(), album, false) > 0));
+                  {
+                    var result = (DoScrapeNew(sartist.Trim(), album, false) > 0);
+                    flag = (flag || result);
+                  }
                   else
                     break;
                 }
-                logger.Info("NowPlayingScrape is done.");
+                logger.Info("--- NowPlaying --- Scrape is done.");
                 return flag;
             }
             catch (Exception ex)

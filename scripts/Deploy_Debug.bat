@@ -8,7 +8,7 @@ if "%programfiles(x86)%XXX"=="XXX" goto 32BIT
 	set PROGS=%programfiles(x86)%
 	goto CONT
 :32BIT
-	set PROGS=%ProgramFiles%	
+	set PROGS=%ProgramFiles%
 :CONT
 
 copy /y "FanartHandler\bin\Debug\FanartHandler.dll" "%PROGS%\Team MediaPortal\MediaPortal\plugins\process\"

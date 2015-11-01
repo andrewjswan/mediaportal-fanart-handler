@@ -1014,45 +1014,6 @@ namespace FanartHandler
       return "False";
     }
 
-    private void AddPropertyRandom(string property, string value, ref ArrayList al, bool doPerm)
-    {
-      try
-      {
-        if (string.IsNullOrEmpty(value))
-          value = string.Empty;
-
-        if (PropertiesRandom.Contains(property))
-          PropertiesRandom[property] = value;
-        else
-          PropertiesRandom.Add(property, value);
-        if (doPerm)
-        {
-          var str = property.Substring(0, checked (property.IndexOf(".any") - 1));
-          if (propertiesRandomPerm.Contains(str))
-            propertiesRandomPerm[str] = value;
-          else
-            propertiesRandomPerm.Add(str, value);
-        }
-        if (value == null || value.Length <= 0 || al == null)
-          return;
-        if (al.Contains(value))
-          return;
-        try
-        {
-          al.Add(value);
-        }
-        catch (Exception ex)
-        {
-          logger.Error("AddPropertyRandom: " + ex);
-        }
-        Utils.LoadImage(value);
-      }
-      catch (Exception ex)
-      {
-        logger.Error("AddPropertyRandom: " + ex);
-      }
-    }
-
     public bool IsPropertyRandomPerm(string value)
     {
       try
@@ -1091,7 +1052,7 @@ namespace FanartHandler
               foreach (FanartImage fanartImage in values1)
               {
                 if ((num1 > iFilePrev || iFilePrev == -1) && 
-                    (num2 == 0 && FanartHandlerSetup.Fh.CheckImageResolution(fanartImage.DiskImage, category, Utils.UseAspectRatio)) && 
+                    (num2 == 0 && Utils.CheckImageResolution(fanartImage.DiskImage, category, Utils.UseAspectRatio)) && 
                     Utils.IsFileValid(fanartImage.DiskImage))
                 {
                   str = fanartImage.DiskImage;
@@ -1119,7 +1080,7 @@ namespace FanartHandler
                 foreach (FanartImage fanartImage in values2)
                 {
                   if ((num3 > iFilePrev || iFilePrev == -1) && 
-                      (num4 == 0 && FanartHandlerSetup.Fh.CheckImageResolution(fanartImage.DiskImage, category, Utils.UseAspectRatio)) && 
+                      (num4 == 0 && Utils.CheckImageResolution(fanartImage.DiskImage, category, Utils.UseAspectRatio)) && 
                       Utils.IsFileValid(fanartImage.DiskImage))
                   {
                     str = fanartImage.DiskImage;
@@ -1179,6 +1140,53 @@ namespace FanartHandler
       if (PropertiesRandomPerm == null)
         return;
       PropertiesRandomPerm.Clear();
+    }
+
+    private void AddPropertyRandom(string property, string value, ref ArrayList al, bool doPerm)
+    {
+      try
+      {
+        if (string.IsNullOrEmpty(value))
+          value = string.Empty;
+
+        if (PropertiesRandom.Contains(property))
+          PropertiesRandom[property] = value;
+        else
+          PropertiesRandom.Add(property, value);
+
+        if (doPerm)
+        {
+          var str = property.Substring(0, checked (property.IndexOf(".any") - 1));
+          if (propertiesRandomPerm.Contains(str))
+            propertiesRandomPerm[str] = value;
+          else
+            propertiesRandomPerm.Add(str, value);
+        }
+
+        FanartHandlerSetup.Fh.AddPictureToCache(property, value, ref al);
+        /*
+        if (value == null || value.Length <= 0 || al == null)
+          return;
+
+        if (al.Contains(value))
+          return;
+
+        try
+        {
+          al.Add(value);
+        }
+        catch (Exception ex)
+        {
+          logger.Error("AddPropertyRandom: " + ex);
+        }
+
+        Utils.LoadImage(value);
+        */
+      }
+      catch (Exception ex)
+      {
+        logger.Error("AddPropertyRandom: " + ex);
+      }
     }
 
     public void UpdatePropertiesRandom()

@@ -25,4 +25,6 @@
   <string Field="FHAlbums">Albums</string>
   <string Field="FHVideos">Videos</string>
 
+  <string Field="FHSlideshow">Fanart Handler Slideshow</string>
+
 </strings>

@@ -83,15 +83,16 @@ namespace FanartHandler
 
         var isMusic = (property.Equals("music", StringComparison.CurrentCulture));
         var isVideo = (property.Equals("movie", StringComparison.CurrentCulture));
+        var isMusicVideo = false;
 
         var SelectedAlbum = (string) null;
         var SelectedGenre = (string) null;
         var SelectedStudios = (string) null;
 
-        if (isMusic)
-          AddSelectedArtistProperty(string.Empty, ref listSelectedGeneric) ;
-        if (isVideo)
-          AddSelectedStudioProperty(string.Empty, ref listSelectedGeneric) ;
+        // if (isMusic)
+        //  AddSelectedArtistProperty(string.Empty, ref listSelectedGeneric) ;
+        // if (isVideo)
+        //  AddSelectedStudioProperty(string.Empty, ref listSelectedGeneric) ;
 
         #region SelectedItem
         if (GUIWindowManager.ActiveWindow == 6623)       // mVids plugin - Outdated.
@@ -117,8 +118,59 @@ namespace FanartHandler
                  GUIWindowManager.ActiveWindow == 25652 || // Radio Time - Why is it here? 
                  GUIWindowManager.ActiveWindow == 35)      // Basic Home - Why is it here? And where there may appear tag: #Play.Current.Title
         {
-          var selAlbumArtist = GUIPropertyManager.GetProperty("#Play.Current.AlbumArtist").Trim();
-          var selArtist = GUIPropertyManager.GetProperty("#Play.Current.Artist").Trim();
+          FanartHandlerSetup.Fh.SelectedItem = string.Empty;
+
+          var selAlbumArtist = string.Empty;
+          var selArtist = string.Empty;
+          var selTitle = string.Empty;
+
+          // Radio Time
+          /*
+          var tuneArtist = GUIPropertyManager.GetProperty("#RadioTime.Play.Artist");
+          var tuneAlbum = GUIPropertyManager.GetProperty("#RadioTime.Play.Album");
+          var tuneTrack = GUIPropertyManager.GetProperty("#RadioTime.Play.Song");
+          */
+          // mvCentral
+          var mvcArtist = GUIPropertyManager.GetProperty("#Play.Current.mvArtist");
+          var mvcAlbum = GUIPropertyManager.GetProperty("#Play.Current.mvAlbum");
+          var mvcPlay = GUIPropertyManager.GetProperty("#mvCentral.isPlaying");
+          /*
+          if (!string.IsNullOrEmpty(tuneArtist) && (tuneArtist.IndexOf("#RadioTime") > 0))
+            tuneArtist = string.Empty;
+          if (!string.IsNullOrEmpty(tuneAlbum) && (tuneAlbum.IndexOf("#RadioTime") > 0))
+            tuneAlbum = string.Empty;
+          if (!string.IsNullOrEmpty(tuneTrack) && (tuneTrack.IndexOf("#RadioTime") > 0))
+            tuneTrack = string.Empty;
+          */
+          if (!string.IsNullOrEmpty(mvcArtist) && (mvcArtist.IndexOf("#Play") > 0))
+            mvcArtist = string.Empty;
+          if (!string.IsNullOrEmpty(mvcAlbum) && (mvcAlbum.IndexOf("#Play") > 0))
+            mvcAlbum = string.Empty;
+
+          try
+          {
+            selAlbumArtist = GUIPropertyManager.GetProperty("#Play.Current.AlbumArtist").Trim();
+          }
+          catch
+          {
+            selAlbumArtist = string.Empty;
+          }
+          try
+          {
+            selArtist = GUIPropertyManager.GetProperty("#Play.Current.Artist").Trim();
+          }
+          catch
+          {
+            selArtist = string.Empty;
+          }
+          try
+          {
+            selTitle = GUIPropertyManager.GetProperty("#Play.Current.Title").Trim();
+          }
+          catch
+          {
+            selTitle = string.Empty;
+          }
 
           if (!string.IsNullOrEmpty(selArtist))
             if (!string.IsNullOrEmpty(selAlbumArtist))
@@ -128,12 +180,44 @@ namespace FanartHandler
                 FanartHandlerSetup.Fh.SelectedItem = selArtist + '|' + selAlbumArtist;
             else
               FanartHandlerSetup.Fh.SelectedItem = selArtist;
-
-          if (string.IsNullOrEmpty(selArtist) && string.IsNullOrEmpty(selAlbumArtist))
-            FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#Play.Current.Title");
-
+          /*
+          if (!string.IsNullOrEmpty(tuneArtist))
+            FanartHandlerSetup.Fh.SelectedItem = FanartHandlerSetup.Fh.SelectedItem + (string.IsNullOrEmpty(FanartHandlerSetup.Fh.SelectedItem) ? "" : "|") + tuneArtist; 
+          */
           SelectedAlbum = GUIPropertyManager.GetProperty("#Play.Current.Album");
           SelectedGenre = GUIPropertyManager.GetProperty("#Play.Current.Genre");
+
+          if (!string.IsNullOrEmpty(selArtist) && !string.IsNullOrEmpty(selTitle) && string.IsNullOrEmpty(SelectedAlbum))
+          {
+            Scraper scraper = new Scraper();
+            SelectedAlbum = scraper.LastFMGetAlbum (selArtist, selTitle);
+            scraper = null;
+          }
+          if (!string.IsNullOrEmpty(selAlbumArtist) && !string.IsNullOrEmpty(selTitle) && string.IsNullOrEmpty(SelectedAlbum))
+          {
+            Scraper scraper = new Scraper();
+            SelectedAlbum = scraper.LastFMGetAlbum (selAlbumArtist, selTitle);
+            scraper = null;
+          }
+          /*
+          if (!string.IsNullOrEmpty(tuneArtist) && !string.IsNullOrEmpty(tuneTrack) && string.IsNullOrEmpty(tuneAlbum) && string.IsNullOrEmpty(SelectedAlbum))
+          {
+            Scraper scraper = new Scraper();
+            SelectedAlbum = scraper.LastFMGetAlbum (tuneArtist, tuneTrack);
+            scraper = null;
+          }
+          */
+          if (!string.IsNullOrEmpty(mvcPlay) && mvcPlay.Equals("true",StringComparison.CurrentCulture))
+          {
+            isMusicVideo = true;
+            if (!string.IsNullOrEmpty(mvcArtist))
+              FanartHandlerSetup.Fh.SelectedItem = FanartHandlerSetup.Fh.SelectedItem + (string.IsNullOrEmpty(FanartHandlerSetup.Fh.SelectedItem) ? "" : "|") + mvcArtist; 
+            if (string.IsNullOrEmpty(SelectedAlbum))
+              SelectedAlbum = string.Empty + mvcAlbum;
+          }
+
+          if (string.IsNullOrEmpty(FanartHandlerSetup.Fh.SelectedItem) && string.IsNullOrEmpty(selArtist) && string.IsNullOrEmpty(selAlbumArtist))
+            FanartHandlerSetup.Fh.SelectedItem = selTitle;
         }
         else if (GUIWindowManager.ActiveWindow == 6622)    // Music Trivia 
         {
@@ -156,19 +240,47 @@ namespace FanartHandler
                                                     GUIPropertyManager.GetProperty("#selecteditem") : 
                                                     GUIPropertyManager.GetProperty("#title")) : 
                                                  movieID;
-          SelectedGenre = GUIPropertyManager.GetProperty("#genre").Trim().Replace(" / ", "|").Replace(", ", "|");
-          SelectedStudios = GUIPropertyManager.GetProperty("#studios").Trim().Replace(" / ", "|").Replace(", ", "|");
+          try
+          {
+            SelectedGenre = GUIPropertyManager.GetProperty("#genre").Trim().Replace(" / ", "|").Replace(", ", "|");
+          }
+          catch
+          {
+            SelectedGenre = string.Empty;
+          }
+          try
+          {
+            SelectedStudios = GUIPropertyManager.GetProperty("#studios").Trim().Replace(" / ", "|").Replace(", ", "|");
+          }
+          catch
+          {
+            SelectedStudios = string.Empty;
+          }
           // logger.Debug("*** "+movieID+" - "+GUIPropertyManager.GetProperty("#selecteditem")+" - "+GUIPropertyManager.GetProperty("#title")+" - "+GUIPropertyManager.GetProperty("#myvideosuserfanart")+" -> "+FanartHandlerSetup.Fh.SelectedItem+" - "+SelectedGenre);
         }
         else if (GUIWindowManager.ActiveWindow == 96742)     // Moving Pictures
         {
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#selecteditem");
-          SelectedStudios = GUIPropertyManager.GetProperty("#MovingPictures.SelectedMovie.studios").Trim().Replace(" / ", "|").Replace(", ", "|");
+          try
+          {
+            SelectedStudios = GUIPropertyManager.GetProperty("#MovingPictures.SelectedMovie.studios").Trim().Replace(" / ", "|").Replace(", ", "|");
+          }
+          catch
+          {
+            SelectedStudios = string.Empty;
+          }
         }
         else if (GUIWindowManager.ActiveWindow == 9813)      // TVSeries Playlist
         {
           FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#TVSeries.Episode.SeriesName");
-          SelectedStudios = GUIPropertyManager.GetProperty("#TVSeries.Series.Network").Trim().Replace(" / ", "|").Replace(", ", "|");
+          try
+          {
+            SelectedStudios = GUIPropertyManager.GetProperty("#TVSeries.Series.Network").Trim().Replace(" / ", "|").Replace(", ", "|");
+          }
+          catch
+          {
+            SelectedStudios = string.Empty;
+          }
         }
         else if (GUIWindowManager.ActiveWindow == 112011 ||  // mvCentral
                  GUIWindowManager.ActiveWindow == 112012 ||  // mvCentral Playlist
@@ -179,10 +291,16 @@ namespace FanartHandler
 
           SelectedAlbum = GUIPropertyManager.GetProperty("#mvCentral.Album");
           SelectedGenre = GUIPropertyManager.GetProperty("#mvCentral.Genre");
+
+          var mvcIsPlaying = GUIPropertyManager.GetProperty("#mvCentral.isPlaying");
+          if (!string.IsNullOrEmpty(mvcIsPlaying) && mvcIsPlaying.Equals("true",StringComparison.CurrentCulture))
+          {
+            isMusicVideo = true;
+          }
         }
         else if (GUIWindowManager.ActiveWindow == 25650)     // Radio Time
         {
-          FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#RadioTime.Selected.Subtext"); // Artist - Track :(
+          FanartHandlerSetup.Fh.SelectedItem = GUIPropertyManager.GetProperty("#RadioTime.Selected.Subtext"); // Artist - Track || TODO for: Artist - Album - Track
           FanartHandlerSetup.Fh.SelectedItem = Utils.GetArtistLeftOfMinusSign(FanartHandlerSetup.Fh.SelectedItem, true);
         }
         else if (GUIWindowManager.ActiveWindow == 29050 || // youtube.fm videosbase
@@ -213,18 +331,21 @@ namespace FanartHandler
         SelectedAlbum   = (string.IsNullOrEmpty(SelectedAlbum) ? null : SelectedAlbum); 
         SelectedGenre   = (string.IsNullOrEmpty(SelectedGenre) ? null : SelectedGenre); 
         SelectedStudios = (string.IsNullOrEmpty(SelectedStudios) ? null : SelectedStudios); 
+
+        // if (isMusicVideo)
+        //   AddSelectedArtistProperty(string.Empty, ref listSelectedGeneric) ;
         #endregion
 
         if (FanartHandlerSetup.Fh.SelectedItem != null && FanartHandlerSetup.Fh.SelectedItem.Trim().Length > 0)
         {
           if (((GUIWindowManager.ActiveWindow == 4755 && GUIWindowManager.GetWindow(4755).GetControl(51).IsVisible) || // My Online Videos && My Online Videos Movie List
-               (GUIWindowManager.ActiveWindow == 6 || GUIWindowManager.ActiveWindow == 25)                             // My Video || My Video Title 
+               (GUIWindowManager.ActiveWindow == 6) || (GUIWindowManager.ActiveWindow == 25)                           // My Video || My Video Title 
               ) && FanartHandlerSetup.Fh.SelectedItem.Equals("..", StringComparison.CurrentCulture)                    // ..
              )
           {
             if (FanartHandlerSetup.Fh.SelectedItem.Equals("..", StringComparison.CurrentCulture))
             {
-              if (isMusic)
+              if (isMusic || isMusicVideo)
                 AddSelectedArtistProperty(string.Empty, ref listSelectedGeneric) ;
 
               if (isVideo)
@@ -281,7 +402,7 @@ namespace FanartHandler
               ResetCurrCount();
             //
             currSelectedGenericTitle = FanartHandlerSetup.Fh.SelectedItem;
-            if (isMusic)
+            if (isMusic || isMusicVideo)
               AddSelectedArtistProperty(currSelectedGenericTitle, ref listSelectedGeneric) ;
 
             if (isVideo)
@@ -294,7 +415,7 @@ namespace FanartHandler
         {
           if ((FanartHandlerSetup.Fh.SelectedItem != null) &&
                (((GUIWindowManager.ActiveWindow == 4755 && GUIWindowManager.GetWindow(4755).GetControl(51).IsVisible) || // My Online Videos && My Online Videos Movie List
-                 (GUIWindowManager.ActiveWindow == 6 || GUIWindowManager.ActiveWindow == 25)                             // My Video || My Video Title 
+                 (GUIWindowManager.ActiveWindow == 6) || (GUIWindowManager.ActiveWindow == 25)                           // My Video || My Video Title 
                 ) && FanartHandlerSetup.Fh.SelectedItem.Equals("..", StringComparison.CurrentCulture)                    // ..
                )
              )
@@ -339,7 +460,7 @@ namespace FanartHandler
         if (Utils.GetIsStopping())
           return;
         //
-        AddSelectedArtistProperty(string.Empty, ref ListSelectedMusic) ;
+        // AddSelectedArtistProperty(string.Empty, ref ListSelectedMusic) ;
         // logger.Debug("Album Artist: "+GUIPropertyManager.GetProperty("#music.albumArtist")+ " Artist: "+GUIPropertyManager.GetProperty("#music.Artist")+ "Album: "+GUIPropertyManager.GetProperty("#music.album"));
         var SaveAlbum = CurrSelectedMusicAlbum;
         FanartHandlerSetup.Fh.SelectedItem = GetMusicArtistFromListControl();
@@ -406,7 +527,6 @@ namespace FanartHandler
               else
                 AddProperty("#fanarthandler.music.backdrop2.selected", newFanart, ref ListSelectedMusic);
             }
-
             CurrSelectedMusicArtist = FanartHandlerSetup.Fh.SelectedItem;
             CurrSelectedMusicAlbum = album;
 
@@ -705,8 +825,8 @@ namespace FanartHandler
     {
       if (string.IsNullOrEmpty(artist))
       {
-        AddProperty("#fanarthandler.music.artistclearart.selected", string.Empty, ref al);
-        AddProperty("#fanarthandler.music.artistbanner.selected", string.Empty, ref al);
+        AddProperty("#fanarthandler.music.artistclearart.selected", string.Empty, ref al, true, false);
+        AddProperty("#fanarthandler.music.artistbanner.selected", string.Empty, ref al, true, false);
         return;
       }
 
@@ -760,9 +880,9 @@ namespace FanartHandler
           }
         }
 
-        AddProperty("#fanarthandler.music.artistclearart.selected", caFile, ref al);
+        AddProperty("#fanarthandler.music.artistclearart.selected", caFile, ref al, true, false);
         // logger.Debug("*** "+artist+" - "+caFile) ;
-        AddProperty("#fanarthandler.music.artistbanner.selected", bnFile, ref al);
+        AddProperty("#fanarthandler.music.artistbanner.selected", bnFile, ref al, true, false);
         // logger.Debug("*** "+artist+" - "+bnFile) ;
       }
       catch (Exception ex)
@@ -775,8 +895,8 @@ namespace FanartHandler
     {
       if (string.IsNullOrEmpty(Studios))
       {
-        AddProperty("#fanarthandler.movie.studios.selected", string.Empty, ref al);
-        AddProperty("#fanarthandler.movie.studios.selected.all", string.Empty, ref al);
+        AddProperty("#fanarthandler.movie.studios.selected", string.Empty, ref al, true, false);
+        AddProperty("#fanarthandler.movie.studios.selected.all", string.Empty, ref al, true, false);
         return;
       }
 
@@ -813,8 +933,8 @@ namespace FanartHandler
           }
         }
 
-        AddProperty("#fanarthandler.movie.studios.selected", sFile, ref al);
-        AddProperty("#fanarthandler.movie.studios.selected.all", Logos.BuildConcatImage("Studios", sFileNames), ref al);
+        AddProperty("#fanarthandler.movie.studios.selected", sFile, ref al, true, false);
+        AddProperty("#fanarthandler.movie.studios.selected.all", Logos.BuildConcatImage("Studios", sFileNames), ref al, true, false);
       }
       catch (Exception ex)
       {
@@ -837,34 +957,30 @@ namespace FanartHandler
       HasUpdatedCurrCount = true;
     }
 
-    public void UpdateProperties()
-    {
-      try
-      {
-        foreach (DictionaryEntry dictionaryEntry in Properties)
-          FanartHandlerSetup.Fh.SetProperty(dictionaryEntry.Key.ToString(), dictionaryEntry.Value.ToString());
-        if (Properties == null)
-          return;
-        Properties.Clear();
-      }
-      catch (Exception ex)
-      {
-        logger.Error("UpdateProperties: " + ex);
-      }
-    }
-
-    private void AddProperty(string property, string value, ref ArrayList al)
+    private void AddProperty(string property, string value, ref ArrayList al, bool Now = false, bool AddToCache = true)
     {
       try
       {
         if (string.IsNullOrEmpty(value))
           value = string.Empty;
+        
+        if (Now)
+          FanartHandlerSetup.Fh.SetProperty(property, value);
+
+        if (!AddToCache)
+          return;
 
         if (Properties.Contains(property))
           Properties[property] = value;
         else
           Properties.Add(property, value);
-        if (value == null || value.Length <= 0 || al == null)
+
+        if (!AddToCache)
+          return;
+        FanartHandlerSetup.Fh.AddPictureToCache(property, value, ref al);
+
+        /*
+        if (string.IsNullOrEmpty(value) || al == null)
           return;
         if (al == null)
           return;
@@ -880,10 +996,28 @@ namespace FanartHandler
           logger.Error("AddProperty: " + ex);
         }
         Utils.LoadImage(value);
+        */
       }
       catch (Exception ex)
       {
         logger.Error("AddProperty: " + ex);
+      }
+    }
+
+    public void UpdateProperties()
+    {
+      try
+      {
+        foreach (DictionaryEntry dictionaryEntry in Properties)
+          FanartHandlerSetup.Fh.SetProperty(dictionaryEntry.Key.ToString(), dictionaryEntry.Value.ToString());
+
+        if (Properties == null)
+          return;
+        Properties.Clear();
+      }
+      catch (Exception ex)
+      {
+        logger.Error("UpdateProperties: " + ex);
       }
     }
 

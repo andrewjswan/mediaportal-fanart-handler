@@ -36,6 +36,7 @@ namespace FanartHandler
         Thread.CurrentThread.Name = "ScraperWorker";
         TriggerRefresh = false;
         Utils.GetDbm().IsScraping = true;
+
         Utils.AllocateDelayStop("FanartHandlerSetup-StartScraper");
         FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.task", Translation.ScrapeInitial);
         FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.completed", string.Empty);
@@ -44,8 +45,6 @@ namespace FanartHandler
 
         Utils.GetDbm().InitialScrape();
 
-        Utils.GetDbm().StopScraper = true;
-        Utils.GetDbm().StopScraper = false;
         Utils.GetDbm().IsScraping = false;
 
         ReportProgress(100, "Done");
@@ -53,8 +52,6 @@ namespace FanartHandler
       }
       catch (Exception ex)
       {
-        Utils.ReleaseDelayStop("FanartHandlerSetup-StartScraper");
-        FanartHandlerSetup.Fh.SyncPointScraper = 0;
         logger.Error("OnDoWork: " + ex);
       }
     }

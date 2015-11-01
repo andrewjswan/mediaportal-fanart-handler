@@ -42,6 +42,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>pdbonly</DebugType>
@@ -52,6 +53,7 @@
     <WarningLevel>4</WarningLevel>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Common.Utils">
@@ -93,6 +95,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="Utils">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>External\Utils.dll</HintPath>
@@ -137,6 +140,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ScraperWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PicturesWorker.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SearchResults.cs" />

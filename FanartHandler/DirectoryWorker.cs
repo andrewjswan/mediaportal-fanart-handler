@@ -246,8 +246,6 @@ namespace FanartHandler
         }
         catch (Exception ex)
         {
-          Utils.ReleaseDelayStop("DirectoryWorker-OnDoWork");
-          FanartHandlerSetup.Fh.SyncPointDirectory = 0;
           logger.Error("OnDoWork: " + ex);
         }
       }

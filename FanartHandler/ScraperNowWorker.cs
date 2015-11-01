@@ -62,7 +62,7 @@ namespace FanartHandler
         triggerRefresh = false;
 
         Utils.GetDbm().IsScraping = true;
-        Utils.AllocateDelayStop("FanartHandlerSetup-StartScraperNowPlaying");
+        Utils.AllocateDelayStop("FanartHandlerSetup-ScraperNowPlaying");
         FanartHandlerSetup.Fh.SetProperty("#fanartHandler.scraper.task", Translation.ScrapeNowPlaying);
         FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.completed", "0");
         FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.sign", Translation.StatusPercent);
@@ -76,8 +76,6 @@ namespace FanartHandler
       }
       catch (Exception ex)
       {
-        Utils.ReleaseDelayStop("FanartHandlerSetup-StartScraperNowPlaying");
-        FanartHandlerSetup.Fh.SyncPointScraper = 0;
         logger.Error("OnDoWork: " + ex);
       }
     }
@@ -86,9 +84,6 @@ namespace FanartHandler
     {
       try
       {
-        Utils.ReleaseDelayStop("FanartHandlerSetup-StartScraperNowPlaying");
-        FanartHandlerSetup.Fh.SyncPointScraper = 0;
-
         if (Utils.GetIsStopping())
           return;
 
@@ -105,7 +100,10 @@ namespace FanartHandler
     {
       try
       {
-        Utils.ReleaseDelayStop("FanartHandlerSetup-StartScraperNowPlaying");
+        Utils.ReleaseDelayStop("FanartHandlerSetup-ScraperNowPlaying");
+        FanartHandlerSetup.Fh.SyncPointScraper = 0;
+
+        FanartHandlerSetup.Fh.FP.AddPlayingArtistPropertys(string.Empty, string.Empty, true);
 
         if (Utils.GetIsStopping())
           return;
@@ -118,6 +116,9 @@ namespace FanartHandler
 
         Utils.GetDbm().TotArtistsBeingScraped = 0.0;
         Utils.GetDbm().CurrArtistsBeingScraped = 0.0;
+
+        // FanartHandlerSetup.Fh.FP.RefreshMusicPlayingProperties();
+        FanartHandlerSetup.Fh.FP.AddPlayingArtistPropertys(artist, album, true);
       }
       catch (Exception ex)
       {

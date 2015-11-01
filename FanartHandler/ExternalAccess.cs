@@ -126,8 +126,6 @@ namespace FanartHandler
             Utils.GetDbm().IsScraping = true;
             Utils.GetDbm().ArtistAlbumScrape(artist, album);
             Utils.GetDbm().IsScraping = false;
-            FanartHandlerSetup.Fh.SyncPointScraper = 0;
-            Utils.ReleaseDelayStop("FanartHandlerSetup-StartScraperExternal");
           }
           else
             flag = false;
@@ -136,9 +134,9 @@ namespace FanartHandler
       catch (Exception ex)
       {
         logger.Error("ScrapeFanart: " + ex);
-        FanartHandlerSetup.Fh.SyncPointScraper = 0;
-        Utils.ReleaseDelayStop("FanartHandlerSetup-StartScraperExternal");
       }
+      FanartHandlerSetup.Fh.SyncPointScraper = 0;
+      Utils.ReleaseDelayStop("FanartHandlerSetup-StartScraperExternal");
       return flag;
     }
 
@@ -148,7 +146,6 @@ namespace FanartHandler
       try
       {
         string artist      = string.Empty;
-        string albumartist = string.Empty;
         string album       = string.Empty;
 
         if (!string.IsNullOrEmpty(Album))
@@ -168,7 +165,7 @@ namespace FanartHandler
           else
             artist = Artist;
         else
-          if (!string.IsNullOrEmpty(albumartist))
+          if (!string.IsNullOrEmpty(AlbumArtist))
             artist = AlbumArtist;
 
         if (!string.IsNullOrEmpty(artist))
@@ -179,6 +176,7 @@ namespace FanartHandler
         if (string.IsNullOrEmpty(artist))
           return null;
 
+        // logger.Debug("*** Artist: "+artist+" Album: "+album) ;
         var fanart1 = Utils.GetDbm().GetFanart(artist, album, Utils.Category.MusicFanartScraped, true);
         if (fanart1 != null && fanart1.Count <= 0 && (Utils.SkipWhenHighResAvailable && (Utils.UseArtist || Utils.UseAlbum)))
           fanart1 = Utils.GetDbm().GetFanart(artist, album, Utils.Category.MusicFanartScraped, false);
@@ -208,7 +206,7 @@ namespace FanartHandler
           {
             if (num < 2)
             {
-              if (FanartHandlerSetup.Fh.CheckImageResolution(fanartImage.DiskImage, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio) && Utils.IsFileValid(fanartImage.DiskImage))
+              if (Utils.CheckImageResolution(fanartImage.DiskImage, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio) && Utils.IsFileValid(fanartImage.DiskImage))
               {
                 hashtable1.Add(num, fanartImage.DiskImage);
                 checked { ++num; }
@@ -237,6 +235,14 @@ namespace FanartHandler
     public static Hashtable GetMusicFanartForLatestMedia(string artist, string album = (string) null)
     {
       return GetMusicFanartForLatestMedia (artist, string.Empty, album);
+    }
+
+    public static string GetAlbumForArtistTrack(string artist, string track)
+    {
+      Scraper scraper = new Scraper();
+      string result = scraper.LastFMGetAlbum (artist, track);
+      scraper = null;
+      return result;
     }
 
     public delegate void ScraperCompletedHandler(string type, string artist);

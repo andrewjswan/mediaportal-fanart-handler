@@ -24,4 +24,5 @@
   <string Field="FHAlbums">Альбомы</string>
   <string Field="FHVideos">Видео</string>
 
+  <string Field="FHSlideshow">Слайдшоу при проигрывании</string>
 </strings>

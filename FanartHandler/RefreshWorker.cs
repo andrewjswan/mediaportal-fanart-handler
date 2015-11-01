@@ -115,8 +115,58 @@ namespace FanartHandler
         }
         else
         {
-          var selAlbumArtist = GUIPropertyManager.GetProperty("#Play.Current.AlbumArtist").Trim();
-          var selArtist = GUIPropertyManager.GetProperty("#Play.Current.Artist").Trim();
+          FanartHandlerSetup.Fh.CurrentTrackTag = string.Empty;
+
+          // Common play
+          var selAlbumArtist = string.Empty;
+          var selArtist = string.Empty;
+          var selTitle = string.Empty;
+          try
+          {
+            selAlbumArtist = GUIPropertyManager.GetProperty("#Play.Current.AlbumArtist").Trim();
+          }
+          catch
+          {
+            selAlbumArtist = string.Empty;
+          }
+          try
+          {
+            selArtist = GUIPropertyManager.GetProperty("#Play.Current.Artist").Trim();
+          }
+          catch
+          {
+            selArtist = string.Empty;
+          }
+          try
+          {
+            selTitle = GUIPropertyManager.GetProperty("#Play.Current.Title").Trim();
+          }
+          catch
+          {
+            selTitle = string.Empty;
+          }
+          // Radio Time
+          /*
+          var tuneArtist = GUIPropertyManager.GetProperty("#RadioTime.Play.Artist");
+          var tuneAlbum = GUIPropertyManager.GetProperty("#RadioTime.Play.Album");
+          var tuneTrack = GUIPropertyManager.GetProperty("#RadioTime.Play.Song");
+          */
+          // mvCentral
+          var mvcArtist = GUIPropertyManager.GetProperty("#Play.Current.mvArtist");
+          var mvcAlbum = GUIPropertyManager.GetProperty("#Play.Current.mvAlbum");
+          var mvcPlay = GUIPropertyManager.GetProperty("#mvCentral.isPlaying");
+          /*
+          if (!string.IsNullOrEmpty(tuneArtist) && (tuneArtist.IndexOf("#RadioTime") > 0))
+            tuneArtist = string.Empty;
+          if (!string.IsNullOrEmpty(tuneAlbum) && (tuneAlbum.IndexOf("#RadioTime") > 0))
+            tuneAlbum = string.Empty;
+          if (!string.IsNullOrEmpty(tuneTrack) && (tuneTrack.IndexOf("#RadioTime") > 0))
+            tuneTrack = string.Empty;
+          */
+          if (!string.IsNullOrEmpty(mvcArtist) && (mvcArtist.IndexOf("#Play") > 0))
+            mvcArtist = string.Empty;
+          if (!string.IsNullOrEmpty(mvcAlbum) && (mvcAlbum.IndexOf("#Play") > 0))
+            mvcAlbum = string.Empty;
 
           if (!string.IsNullOrEmpty(selArtist))
             if (!string.IsNullOrEmpty(selAlbumArtist))
@@ -126,9 +176,48 @@ namespace FanartHandler
                 FanartHandlerSetup.Fh.CurrentTrackTag = selArtist + '|' + selAlbumArtist;
             else
               FanartHandlerSetup.Fh.CurrentTrackTag = selArtist;
-
+          /*
+          if (!string.IsNullOrEmpty(tuneArtist))
+            FanartHandlerSetup.Fh.CurrentTrackTag = FanartHandlerSetup.Fh.CurrentTrackTag + (string.IsNullOrEmpty(FanartHandlerSetup.Fh.CurrentTrackTag) ? "" : "|") + tuneArtist; 
+          */
           FanartHandlerSetup.Fh.CurrentAlbumTag = GUIPropertyManager.GetProperty("#Play.Current.Album");
           FanartHandlerSetup.Fh.CurrentGenreTag = GUIPropertyManager.GetProperty("#Play.Current.Genre");
+
+          if (!string.IsNullOrEmpty(selArtist) && !string.IsNullOrEmpty(selTitle) && string.IsNullOrEmpty(FanartHandlerSetup.Fh.CurrentAlbumTag))
+          {
+            if (!Utils.LastArtistTrack.Equals(selArtist+"#"+selTitle, StringComparison.CurrentCulture))
+            {
+              Scraper scraper = new Scraper();
+              FanartHandlerSetup.Fh.CurrentAlbumTag = scraper.LastFMGetAlbum (selArtist, selTitle);
+              scraper = null;
+              Utils.LastArtistTrack = selArtist+"#"+selTitle;
+            }
+          }
+          if (!string.IsNullOrEmpty(selAlbumArtist) && !string.IsNullOrEmpty(selTitle) && string.IsNullOrEmpty(FanartHandlerSetup.Fh.CurrentAlbumTag))
+          {
+            if (!Utils.LastAlbumArtistTrack.Equals(selAlbumArtist+"#"+selTitle, StringComparison.CurrentCulture))
+            {
+              Scraper scraper = new Scraper();
+              FanartHandlerSetup.Fh.CurrentAlbumTag = scraper.LastFMGetAlbum (selAlbumArtist, selTitle);
+              scraper = null;
+              Utils.LastAlbumArtistTrack = selAlbumArtist+"#"+selTitle;
+            }
+          }
+          /*
+          if (!string.IsNullOrEmpty(tuneArtist) && !string.IsNullOrEmpty(tuneTrack) && string.IsNullOrEmpty(tuneAlbum) && string.IsNullOrEmpty(FanartHandlerSetup.Fh.CurrentAlbumTag))
+          {
+            Scraper scraper = new Scraper();
+            FanartHandlerSetup.Fh.CurrentAlbumTag = scraper.LastFMGetAlbum (tuneArtist, tuneTrack);
+            scraper = null;
+          }
+          */
+          if (!string.IsNullOrEmpty(mvcPlay) && mvcPlay.Equals("true",StringComparison.CurrentCulture))
+          {
+            if (!string.IsNullOrEmpty(mvcArtist))
+              FanartHandlerSetup.Fh.CurrentTrackTag = FanartHandlerSetup.Fh.CurrentTrackTag + (string.IsNullOrEmpty(FanartHandlerSetup.Fh.CurrentTrackTag) ? "" : "|") + mvcArtist; 
+            if (string.IsNullOrEmpty(FanartHandlerSetup.Fh.CurrentAlbumTag))
+              FanartHandlerSetup.Fh.CurrentAlbumTag = string.Empty + mvcAlbum;
+          }
         }
 
         if (Utils.ScraperMPDatabase && (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.TriggerRefresh))
@@ -137,9 +226,8 @@ namespace FanartHandler
           FanartHandlerSetup.Fh.FS.SetCurrentArtistsImageNames(null);
           FanartHandlerSetup.Fh.MyScraperWorker.TriggerRefresh = false;
         }
-
         DebugStep = 10;
-        if (FanartHandlerSetup.Fh.CurrentTrackTag != null && FanartHandlerSetup.Fh.CurrentTrackTag.Trim().Length > 0 && (g_Player.Playing || g_Player.Paused))
+        if (!string.IsNullOrEmpty(FanartHandlerSetup.Fh.CurrentTrackTag) && (g_Player.Playing || g_Player.Paused))
         {
           DebugStep = 11;
           if (Utils.ScraperMusicPlaying && (FanartHandlerSetup.Fh.MyScraperNowWorker != null && FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh))
@@ -150,15 +238,35 @@ namespace FanartHandler
             FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh = false;
             DebugStep = 13;
           }
-          if (!FanartHandlerSetup.Fh.FP.CurrPlayMusicArtist.Equals(FanartHandlerSetup.Fh.CurrentTrackTag, StringComparison.CurrentCulture))
+          if (!FanartHandlerSetup.Fh.FP.CurrPlayMusicArtist.Equals(FanartHandlerSetup.Fh.CurrentTrackTag, StringComparison.CurrentCulture) || 
+              !FanartHandlerSetup.Fh.FP.CurrPlayMusicAlbum.Equals(FanartHandlerSetup.Fh.CurrentAlbumTag, StringComparison.CurrentCulture))
           {
             DebugStep = 14;
-            if (Utils.ScraperMusicPlaying && !Utils.GetDbm().GetIsScraping() && 
-                ((FanartHandlerSetup.Fh.MyScraperNowWorker != null && !FanartHandlerSetup.Fh.MyScraperNowWorker.IsBusy) || FanartHandlerSetup.Fh.MyScraperNowWorker == null)
-               )
+            // if (Utils.ScraperMusicPlaying && !Utils.GetDbm().GetIsScraping() && 
+            //     ((FanartHandlerSetup.Fh.MyScraperNowWorker != null && !FanartHandlerSetup.Fh.MyScraperNowWorker.IsBusy) || FanartHandlerSetup.Fh.MyScraperNowWorker == null)
+            //    )
+            if (Utils.ScraperMusicPlaying)
             {
               DebugStep = 15;
-              FanartHandlerSetup.Fh.StartScraperNowPlaying(FanartHandlerSetup.Fh.CurrentTrackTag, FanartHandlerSetup.Fh.CurrentAlbumTag);
+              if (FanartHandlerSetup.Fh.MyScraperNowWorker != null)
+              {
+                DebugStep = 50;
+                while (Utils.GetDbm().GetIsScraping() && FanartHandlerSetup.Fh.MyScraperNowWorker.IsBusy && !Utils.GetDbm().StopScraper)
+                {
+                  DebugStep = 51;
+                  // logger.Debug ("*** Wait: "+FanartHandlerSetup.Fh.CurrentTrackTag+" - "+FanartHandlerSetup.Fh.CurrentAlbumTag);
+                  Thread.Sleep(500);
+                }
+              }
+              //
+              DebugStep = 52;
+              if (!Utils.GetDbm().GetIsScraping() && 
+                  ((FanartHandlerSetup.Fh.MyScraperNowWorker != null && !FanartHandlerSetup.Fh.MyScraperNowWorker.IsBusy) || 
+                  FanartHandlerSetup.Fh.MyScraperNowWorker == null))
+              {
+                // logger.Debug ("*** NP: "+FanartHandlerSetup.Fh.CurrentTrackTag+" - "+FanartHandlerSetup.Fh.CurrentAlbumTag);
+                FanartHandlerSetup.Fh.StartScraperNowPlaying(FanartHandlerSetup.Fh.CurrentTrackTag, FanartHandlerSetup.Fh.CurrentAlbumTag);
+              }
             }
           }
           DebugStep = 16;
@@ -175,6 +283,7 @@ namespace FanartHandler
           FanartHandlerSetup.Fh.FP.SetCurrentArtistsImageNames(null);
           FanartHandlerSetup.Fh.FP.CurrPlayMusic = string.Empty;
           FanartHandlerSetup.Fh.FP.CurrPlayMusicArtist = string.Empty;
+          FanartHandlerSetup.Fh.FP.CurrPlayMusicAlbum = string.Empty;
           FanartHandlerSetup.Fh.FP.FanartAvailablePlay = false;
           FanartHandlerSetup.Fh.FP.FanartIsNotAvailablePlay(ActiveWindow);
           FanartHandlerSetup.Fh.FP.PrevPlayMusic = -1;
@@ -189,10 +298,21 @@ namespace FanartHandler
           FanartHandlerSetup.Fh.FP.UpdateVisibilityCountPlay = 0;
           FanartHandlerSetup.Fh.IsPlaying = false;
           FanartHandlerSetup.Fh.IsPlayingCount = 0;
+          Utils.LastArtistTrack = string.Empty;
+          Utils.LastAlbumArtistTrack = string.Empty;
           Report(e);
         }
         else if (FanartHandlerSetup.Fh.IsPlaying)
           checked { ++FanartHandlerSetup.Fh.IsPlayingCount; }
+
+        if (string.IsNullOrEmpty(FanartHandlerSetup.Fh.CurrentTrackTag) && (g_Player.Playing || g_Player.Paused))
+        {
+          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.artisthumb.play", string.Empty);
+          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.artistclearart.play", string.Empty);
+          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.artistbanner.play", string.Empty);
+          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.albumcd.play", string.Empty);
+          Report(e);
+        }
         #endregion
 
         var FanartNotFound = true;
@@ -419,8 +539,6 @@ namespace FanartHandler
       }
       catch (Exception ex)
       {
-        Utils.ReleaseDelayStop("RefreshWorker-OnDoWork");
-        FanartHandlerSetup.Fh.SyncPointRefresh = 0;
         logger.Error(string.Concat(new object[4]
         {
           "OnDoWork (",

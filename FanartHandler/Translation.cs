@@ -232,6 +232,8 @@ namespace FanartHandler
     public static string FHAlbums = "Albums";
     public static string FHVideos = "Videos";
 
+    public static string FHSlideshow = "Fanart Handler Slideshow";
+
     // Settings
     // public static string PrefsDymmy = "Dymmy";
     #endregion

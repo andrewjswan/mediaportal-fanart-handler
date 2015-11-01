@@ -36,12 +36,14 @@ namespace FanartHandler
     private static DatabaseManager dbm;
     private const string ConfigFilename = "FanartHandler.xml";
     private const string ConfigBadArtistsFilename = "FanartHandler.Artists.xml";
+    private const string ConfigBadMyPicturesSlideShowFilename = "FanartHandler.SlideShowFolders.xml";
 
     public static DateTime LastRefreshRecording { get; set; }
     public static bool Used4TRTV { get; set; }
     public static Hashtable DelayStop { get; set; }
 
     public static List<string> BadArtistsList;  
+    public static List<string> MyPicturesSlideShowFolders;  
     public static string[] PipesArray ;
 
     public const int ThreadSleep = 0;
@@ -131,6 +133,9 @@ namespace FanartHandler
     public static string FAHTVSeries { get; set; }
     public static string FAHMovingPictures { get; set; }
     public static string FAHWatchFolder { get; set; }
+
+    public static string FAHMVCArtists { get; set; }
+    public static string FAHMVCAlbums { get; set; }
     #endregion
 
     #region Fanart.TV folders
@@ -148,6 +153,11 @@ namespace FanartHandler
     public static bool IsJunction { get; set; }
     public static string JunctionSource { get; set; }
     public static string JunctionTarget { get; set; }
+    #endregion
+
+    #region Other
+    public static string LastArtistTrack { get; set; }
+    public static string LastAlbumArtistTrack { get; set; }
     #endregion
 
     public static int IdleTimeInMillis
@@ -202,6 +212,9 @@ namespace FanartHandler
       IsJunction = false;
       JunctionSource = string.Empty;
       JunctionTarget = string.Empty;
+
+      LastArtistTrack = string.Empty;
+      LastAlbumArtistTrack = string.Empty;
       #endregion
 
       MPThumbsFolder = Config.GetFolder((Config.Dir) 6) ;
@@ -276,7 +289,7 @@ namespace FanartHandler
       {
         MoviesClearLogoFolder = Path.Combine(MPThumbsFolder, @"Movies\ClearLogo\FullSize\"); // DVDArt
         if (!Directory.Exists(MoviesClearLogoFolder) || IsDirectoryEmpty(MoviesClearLogoFolder))
-          MoviesBannerFolder = string.Empty;
+          MoviesClearLogoFolder = string.Empty;
       }
       logger.Debug("Fanart Handler Movies ClearLogo folder: "+MoviesClearLogoFolder);
       #endregion
@@ -322,6 +335,11 @@ namespace FanartHandler
       logger.Debug("TV-Series Fanart folder: "+FAHTVSeries);
       FAHMovingPictures = Path.Combine(MPThumbsFolder, @"MovingPictures\Backdrops\FullSize\");
       logger.Debug("MovingPictures Fanart folder: "+FAHMovingPictures);
+
+      FAHMVCArtists = Path.Combine(MPThumbsFolder, @"mvCentral\Artists\FullSize\");
+      logger.Debug("mvCentral Artists folder: "+FAHTVSeries);
+      FAHMVCAlbums = Path.Combine(MPThumbsFolder, @"mvCentral\Albums\FullSize\");
+      logger.Debug("mvCentral Albums folder: "+FAHTVSeries);
       #endregion
 
       WatchFullThumbFolder = true ;
@@ -435,17 +453,26 @@ namespace FanartHandler
 
     public static void AllocateDelayStop(string key)
     {
+      if (string.IsNullOrEmpty(key))
+        return ;
+
+      if (DelayStop == null)
+      {
+        DelayStop = new Hashtable();
+      }
       if (DelayStop.Contains(key))
       {
         DelayStop[key] = (int)DelayStop[key] + 1;
       }
       else
+      {
         DelayStop.Add(key, 1);
+      }
     }
 
     public static bool GetDelayStop()
     {
-      if (DelayStop.Count == 0)
+      if ((DelayStop == null) || (DelayStop.Count <= 0))
         return false;
 
       int i = 0;
@@ -459,11 +486,16 @@ namespace FanartHandler
 
     public static void ReleaseDelayStop(string key)
     {
+      if ((DelayStop == null) || (DelayStop.Count <= 0) || string.IsNullOrEmpty(key))
+        return;
+
       if (DelayStop.Contains(key))
       {
         DelayStop[key] = (int)DelayStop[key] - 1;
         if ((int)DelayStop[key] <= 0)
+        {
           DelayStop.Remove(key);
+        }
       }
     }
 
@@ -1183,10 +1215,11 @@ namespace FanartHandler
       if (isStopping)
         return;
 
+      if (string.IsNullOrEmpty(filename))
+        return;
+
       try
       {
-        if (string.IsNullOrEmpty(filename))
-          return;
         GUITextureManager.Load(filename, 0L, 0, 0, true);
       }
       catch (Exception ex)
@@ -1258,6 +1291,33 @@ namespace FanartHandler
       return flag;
     }
 
+    public static bool CheckImageResolution(string filename, Utils.Category category, bool UseAspectRatio)
+    {
+      try
+      {
+        if (!File.Exists(filename))
+        {
+          Utils.GetDbm().DeleteImage(filename);
+          return false;
+        }
+        else
+        {
+          var image = Image.FromFile(filename);
+          var num1 = (double) Convert.ToInt32(Utils.MinResolution.Substring(0, Utils.MinResolution.IndexOf("x", StringComparison.CurrentCulture)), CultureInfo.CurrentCulture);
+          var num2 = (double) Convert.ToInt32(Utils.MinResolution.Substring(checked (Utils.MinResolution.IndexOf("x", StringComparison.CurrentCulture) + 1)), CultureInfo.CurrentCulture);
+          var num3 = (double) image.Width;
+          var num4 = (double) image.Height;
+          image.Dispose();
+          return num3 >= num1 && num4 >= num2 && (!UseAspectRatio || num4 > 0.0 && num3 / num4 >= 1.3);
+        }
+      }
+      catch (Exception ex)
+      {
+        logger.Error("CheckImageResolution: " + ex);
+      }
+      return false;
+    }
+
     public static bool IsDirectoryEmpty (string path) 
     { 
       // string[] dirs = System.IO.Directory.GetDirectories( path ); 
@@ -1303,9 +1363,15 @@ namespace FanartHandler
     {
       try
       {
-        BadArtistsList = new List<string>() ;
-        logger.Debug("Load Artists from: "+ConfigBadArtistsFilename);
-        using (var xmlreader = new Settings(Config.GetFile((Config.Dir) 10, ConfigBadArtistsFilename)))
+        BadArtistsList = new List<string>();
+        logger.Debug("Load Artists from: " + ConfigBadArtistsFilename);
+        string FullFileName = Config.GetFile((Config.Dir) 10, ConfigBadArtistsFilename);
+        if (!File.Exists(FullFileName))
+        {
+          logger.Debug("Load Artists from: " + ConfigBadArtistsFilename + " failed, file not found.");
+          return;
+        }
+        using (var xmlreader = new Settings(FullFileName))
         {
           int MaximumShares = 250;
           for (int index = 0; index < MaximumShares; index++)
@@ -1326,6 +1392,82 @@ namespace FanartHandler
       catch (Exception ex)
       {
         logger.Error("LoadBadArtists: "+ex);
+      }
+    }
+
+    public static void LoadMyPicturesSlideShowFolders()
+    {
+      if (!UseMyPicturesSlideShow)
+        return;  
+
+      try
+      {
+        MyPicturesSlideShowFolders = new List<string>();
+        logger.Debug("Load MyPictures Slide Show Folders from: " + ConfigBadMyPicturesSlideShowFilename);
+        string FullFileName = Config.GetFile((Config.Dir) 10, ConfigBadMyPicturesSlideShowFilename);
+        if (!File.Exists(FullFileName))
+        {
+          logger.Debug("Load MyPictures Slide Show Folders from: " + ConfigBadMyPicturesSlideShowFilename + " failed, file not found.");
+          return;
+        }
+        using (var xmlreader = new Settings(FullFileName))
+        {
+          int MaximumShares = 250;
+          for (int index = 0; index < MaximumShares; index++)
+          {
+            string MyPicturesSlideShowFolder = String.Format("folder{0}", index);
+            string MyPicturesSlideShowData = xmlreader.GetValueAsString("MyPicturesSlideShowFolders", MyPicturesSlideShowFolder, string.Empty);
+            if (!string.IsNullOrEmpty(MyPicturesSlideShowData))
+            {
+              MyPicturesSlideShowFolders.Add(MyPicturesSlideShowData) ;
+            }
+          }
+        }
+        logger.Debug("Load MyPictures Slide Show Folders from: "+ConfigBadMyPicturesSlideShowFilename+" complete.");
+      }
+      catch (Exception ex)
+      {
+        logger.Error("LoadMyPicturesSlideShowFolders: "+ex);
+      }
+    }
+
+    public static void SaveMyPicturesSlideShowFolders()
+    {
+      if (!UseMyPicturesSlideShow)
+        return;  
+
+      try
+      {
+        logger.Debug("Save MyPictures Slide Show Folders to: " + ConfigBadMyPicturesSlideShowFilename);
+        string FullFileName = Config.GetFile((Config.Dir) 10, ConfigBadMyPicturesSlideShowFilename);
+        using (var xmlwriter = new Settings(FullFileName))
+        {
+          int MaximumShares = 250;
+          for (int index = 0; index < MaximumShares; index++)
+          {
+            string MyPicturesSlideShowFolder = String.Format("folder{0}", index);
+            string MyPicturesSlideShowData = xmlwriter.GetValueAsString("MyPicturesSlideShowFolders", MyPicturesSlideShowFolder, string.Empty);
+            if (!string.IsNullOrEmpty(MyPicturesSlideShowData))
+            {
+              xmlwriter.SetValue("MyPicturesSlideShowFolders", MyPicturesSlideShowFolder, string.Empty);
+            }
+          }
+          int i = 0;
+          foreach (var folder in MyPicturesSlideShowFolders)
+          {
+            string MyPicturesSlideShowFolder = String.Format("folder{0}", i);
+            if (!string.IsNullOrEmpty(folder))
+            {
+              xmlwriter.SetValue("MyPicturesSlideShowFolders", MyPicturesSlideShowFolder, folder);
+              i++;
+            }
+          }
+        }
+        logger.Debug("Save MyPictures Slide Show Folders to: "+ConfigBadMyPicturesSlideShowFilename+" complete.");
+      }
+      catch (Exception ex)
+      {
+        logger.Error("SaveMyPicturesSlideShowFolders: "+ex);
       }
     }
 
@@ -1517,6 +1659,7 @@ namespace FanartHandler
       }
       //
       LoadBadArtists();
+      LoadMyPicturesSlideShowFolders();
       //
       #region Check Settings
       DefaultBackdrop = (string.IsNullOrEmpty(DefaultBackdrop) ? Utils.FAHUDMusic : DefaultBackdrop);
@@ -1545,6 +1688,8 @@ namespace FanartHandler
 
     public static void SaveSettings()
     {
+      SaveMyPicturesSlideShowFolders();
+      //
       try
       {
         logger.Debug("Save settings to: "+ConfigFilename);

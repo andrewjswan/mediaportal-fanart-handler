@@ -10,7 +10,7 @@ if "%programfiles(x86)%XXX"=="XXX" goto 32BIT
 	set PROGS=%programfiles(x86)%
 	goto CONT
 :32BIT
-	set PROGS=%ProgramFiles%	
+	set PROGS=%ProgramFiles%
 :CONT
 
 : Prepare version
