@@ -63,9 +63,9 @@ namespace FanartHandler
 
         Utils.GetDbm().IsScraping = true;
         Utils.AllocateDelayStop("FanartHandlerSetup-ScraperNowPlaying");
-        FanartHandlerSetup.Fh.SetProperty("#fanartHandler.scraper.task", Translation.ScrapeNowPlaying);
-        FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.completed", "0");
-        FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.sign", Translation.StatusPercent);
+        Utils.SetProperty("#fanartHandler.scraper.task", Translation.ScrapeNowPlaying);
+        Utils.SetProperty("#fanarthandler.scraper.percent.completed", "0");
+        Utils.SetProperty("#fanarthandler.scraper.percent.sign", Translation.StatusPercent);
         FanartHandlerSetup.Fh.ShowScraperProgressIndicator();
 
         Utils.GetDbm().NowPlayingScrape(artist, album);
@@ -87,7 +87,7 @@ namespace FanartHandler
         if (Utils.GetIsStopping())
           return;
 
-        FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.completed", string.Empty + e.ProgressPercentage);
+        Utils.SetProperty("#fanarthandler.scraper.percent.completed", string.Empty + e.ProgressPercentage);
         Utils.ThreadToSleep();
       }
       catch (Exception ex)
@@ -110,9 +110,9 @@ namespace FanartHandler
 
         // Thread.Sleep(500); // 1000
         FanartHandlerSetup.Fh.HideScraperProgressIndicator();
-        FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.task", string.Empty);
-        FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.completed", string.Empty);
-        FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.sign", string.Empty);
+        Utils.SetProperty("#fanarthandler.scraper.task", string.Empty);
+        Utils.SetProperty("#fanarthandler.scraper.percent.completed", string.Empty);
+        Utils.SetProperty("#fanarthandler.scraper.percent.sign", string.Empty);
 
         Utils.GetDbm().TotArtistsBeingScraped = 0.0;
         Utils.GetDbm().CurrArtistsBeingScraped = 0.0;

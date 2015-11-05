@@ -72,7 +72,7 @@ namespace FanartHandler
     {
       if (string.IsNullOrEmpty(artist))
       {
-        FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.artisthumb.play", string.Empty);
+        Utils.SetProperty("#fanarthandler.music.artisthumb.play", string.Empty);
         return;
       }
 
@@ -153,7 +153,7 @@ namespace FanartHandler
           AddPropertyPlay("#fanarthandler.music.artisthumb.play", FileName, ref ListPlayMusic, true);
         }
         else
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.artisthumb.play", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.artisthumb.play", string.Empty);
         // logger.Debug("AddPlayingArtistThumbProperty: " + artist + " - " + album + " - " + FileName + "|" + (File.Exists(FileName) ? "True" : "False"));
       }
       catch (Exception ex)
@@ -168,7 +168,7 @@ namespace FanartHandler
       {
         if ((string.IsNullOrEmpty(artist)) || (string.IsNullOrEmpty(Utils.MusicClearArtFolder)))
         {
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.artistclearart.play", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.artistclearart.play", string.Empty);
           return;
         }
 
@@ -207,7 +207,7 @@ namespace FanartHandler
           AddPropertyPlay("#fanarthandler.music.artistclearart.play", FileName, ref ListPlayMusic, true);
         }
         else
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.artistclearart.play", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.artistclearart.play", string.Empty);
         // logger.Debug("AddPlayingArtistClearArtProperty: " + artist + " - " + FileName + "|" + (File.Exists(FileName) ? "True" : "False"));
       }
       catch (Exception ex)
@@ -222,7 +222,7 @@ namespace FanartHandler
       {
         if ((string.IsNullOrEmpty(artist)) || (string.IsNullOrEmpty(Utils.MusicBannerFolder)))
         {
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.artistbanner.play", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.artistbanner.play", string.Empty);
           return;
         }
 
@@ -261,7 +261,7 @@ namespace FanartHandler
           AddPropertyPlay("#fanarthandler.music.artistbanner.play", FileName, ref ListPlayMusic, true);
         }
         else
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.artistbanner.play", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.artistbanner.play", string.Empty);
         // logger.Debug("AddPlayingArtistBannerProperty: " + artist + " - " + FileName + "|" + (File.Exists(FileName) ? "True" : "False"));
       }
       catch (Exception ex)
@@ -276,7 +276,7 @@ namespace FanartHandler
       {
         if ((string.IsNullOrEmpty(artist)) || (string.IsNullOrEmpty(album)) || (string.IsNullOrEmpty(Utils.MusicCDArtFolder)))
         {
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.albumcd.play", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.albumcd.play", string.Empty);
           return;
         }
 
@@ -315,7 +315,7 @@ namespace FanartHandler
           AddPropertyPlay("#fanarthandler.music.albumcd.play", FileName, ref ListPlayMusic, true);
         }
         else
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.albumcd.play", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.albumcd.play", string.Empty);
         // logger.Debug("AddPlayingArtistAlbumCDProperty: " + artist + " - " + album + " - " + FileName + "|" + (File.Exists(FileName) ? "True" : "False"));
       }
       catch (Exception ex)
@@ -355,15 +355,7 @@ namespace FanartHandler
           // My Pictures SlideShow
           if (Utils.UseMyPicturesSlideShow)
           {
-            bool MyPicturesSlideShowEnabled = false;
-            try
-            {
-              MyPicturesSlideShowEnabled = GUIPropertyManager.GetProperty("#skin.fanarthandler.pictures.slideshow.enabled").Equals("true", StringComparison.CurrentCulture);
-            }
-            catch
-            {
-              MyPicturesSlideShowEnabled = false;
-            }
+            bool MyPicturesSlideShowEnabled = Utils.GetProperty("#skin.fanarthandler.pictures.slideshow.enabled").Equals("true", StringComparison.CurrentCultureIgnoreCase);
             if (MyPicturesSlideShowEnabled)
             {
               FileName = FanartHandlerSetup.Fh.GetRandomSlideShowImages(ref CurrPlayMusic, ref PrevPlayMusic);
@@ -438,7 +430,7 @@ namespace FanartHandler
           value = string.Empty;
 
         if (Now)
-          FanartHandlerSetup.Fh.SetProperty(property, value);
+          Utils.SetProperty(property, value);
           
         if (PropertiesPlay.Contains(property))
           PropertiesPlay[property] = value;
@@ -476,7 +468,7 @@ namespace FanartHandler
       try
       {
         foreach (DictionaryEntry dictionaryEntry in PropertiesPlay)
-          FanartHandlerSetup.Fh.SetProperty(dictionaryEntry.Key.ToString(), dictionaryEntry.Value.ToString());
+          Utils.SetProperty(dictionaryEntry.Key.ToString(), dictionaryEntry.Value.ToString());
 
         PropertiesPlay.Clear();
       }

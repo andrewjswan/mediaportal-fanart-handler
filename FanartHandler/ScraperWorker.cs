@@ -38,9 +38,9 @@ namespace FanartHandler
         Utils.GetDbm().IsScraping = true;
 
         Utils.AllocateDelayStop("FanartHandlerSetup-StartScraper");
-        FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.task", Translation.ScrapeInitial);
-        FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.completed", string.Empty);
-        FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.sign", "...");
+        Utils.SetProperty("#fanarthandler.scraper.task", Translation.ScrapeInitial);
+        Utils.SetProperty("#fanarthandler.scraper.percent.completed", string.Empty);
+        Utils.SetProperty("#fanarthandler.scraper.percent.sign", "...");
         FanartHandlerSetup.Fh.ShowScraperProgressIndicator();
 
         Utils.GetDbm().InitialScrape();
@@ -63,8 +63,8 @@ namespace FanartHandler
         if (Utils.GetIsStopping())
           return;
 
-        FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.completed", string.Empty + e.ProgressPercentage);
-        FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.sign", Translation.StatusPercent);
+        Utils.SetProperty("#fanarthandler.scraper.percent.completed", string.Empty + e.ProgressPercentage);
+        Utils.SetProperty("#fanarthandler.scraper.percent.sign", Translation.StatusPercent);
         Utils.ThreadToSleep();
       }
       catch (Exception ex)
@@ -85,9 +85,9 @@ namespace FanartHandler
         Thread.Sleep(500); // 1000
 
         FanartHandlerSetup.Fh.HideScraperProgressIndicator();
-        FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.task", string.Empty);
-        FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.completed", string.Empty);
-        FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.percent.sign", string.Empty);
+        Utils.SetProperty("#fanarthandler.scraper.task", string.Empty);
+        Utils.SetProperty("#fanarthandler.scraper.percent.completed", string.Empty);
+        Utils.SetProperty("#fanarthandler.scraper.percent.sign", string.Empty);
 
         Utils.GetDbm().TotArtistsBeingScraped = 0.0;
         Utils.GetDbm().CurrArtistsBeingScraped = 0.0;

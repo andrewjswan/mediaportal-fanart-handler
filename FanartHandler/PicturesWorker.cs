@@ -46,7 +46,7 @@ namespace FanartHandler
         Thread.CurrentThread.Name = "PicturesWorker";
 
         Utils.AllocateDelayStop("FanartHandler-PicturesScan");
-        FanartHandlerSetup.Fh.SetProperty("#fanarthandler.pictures.scan", "true");
+        Utils.SetProperty("#fanarthandler.pictures.scan", "true");
 
         // slideShowImages = new Hashtable();
         InitSlideShowImages();
@@ -84,7 +84,7 @@ namespace FanartHandler
         if (Utils.GetIsStopping())
           return;
 
-        FanartHandlerSetup.Fh.SetProperty("#fanarthandler.pictures.scan", "false");
+        Utils.SetProperty("#fanarthandler.pictures.scan", "false");
 
         /*
         Utils.Shuffle(ref slideShowImages);

@@ -179,22 +179,6 @@ namespace FanartHandler
       }
     }
 
-    internal void SetProperty(string property, string value)
-    {
-      try
-      {
-        if (property == null)
-          return;
-
-        //logger.Debug("SetProperty: "+property+" -> "+value) ;
-        GUIPropertyManager.SetProperty(property, value);
-      }
-      catch (Exception ex)
-      {
-        logger.Error("SetProperty: " + ex);
-      }
-    }
-
     /// <summary>
     /// Scan Folder for files by Mask and Import it to Database
     /// </summary>
@@ -902,50 +886,50 @@ namespace FanartHandler
       m_CurrentTitleTag = null;
       m_CurrentGenreTag = null;
       m_SelectedItem = null;
-      SetProperty("#fanarthandler.scraper.task", string.Empty);
-      SetProperty("#fanarthandler.scraper.percent.completed", string.Empty);
-      SetProperty("#fanarthandler.scraper.percent.sign", string.Empty);
-      SetProperty("#fanarthandler.games.userdef.backdrop1.any", string.Empty);
-      SetProperty("#fanarthandler.games.userdef.backdrop2.any", string.Empty);
-      SetProperty("#fanarthandler.movie.userdef.backdrop1.any", string.Empty);
-      SetProperty("#fanarthandler.movie.userdef.backdrop2.any", string.Empty);
-      SetProperty("#fanarthandler.movie.scraper.backdrop1.any", string.Empty);
-      SetProperty("#fanarthandler.movie.scraper.backdrop2.any", string.Empty);
-      SetProperty("#fanarthandler.movie.backdrop1.selected", string.Empty);
-      SetProperty("#fanarthandler.movie.backdrop2.selected", string.Empty);
-      SetProperty("#fanarthandler.movie.studios.selected", string.Empty);
-      SetProperty("#fanarthandler.movie.studios.selected.all", string.Empty);
-      SetProperty("#fanarthandler.movingpicture.backdrop1.any", string.Empty);
-      SetProperty("#fanarthandler.movingpicture.backdrop2.any", string.Empty);
-      SetProperty("#fanarthandler.music.userdef.backdrop1.any", string.Empty);
-      SetProperty("#fanarthandler.music.userdef.backdrop2.any", string.Empty);
-      SetProperty("#fanarthandler.music.scraper.backdrop1.any", string.Empty);
-      SetProperty("#fanarthandler.music.scraper.backdrop2.any", string.Empty);
-      SetProperty("#fanarthandler.music.overlay.play", string.Empty);
-      SetProperty("#fanarthandler.music.artisthumb.play", string.Empty);
-      SetProperty("#fanarthandler.music.artistclearart.play", string.Empty);
-      SetProperty("#fanarthandler.music.artistbanner.play", string.Empty);
-      SetProperty("#fanarthandler.music.albumcd.play", string.Empty);
-      SetProperty("#fanarthandler.music.backdrop1.play", string.Empty);
-      SetProperty("#fanarthandler.music.backdrop2.play", string.Empty);
-      SetProperty("#fanarthandler.music.backdrop1.selected", string.Empty);
-      SetProperty("#fanarthandler.music.backdrop2.selected", string.Empty);
-      SetProperty("#fanarthandler.music.artistclearart.selected", string.Empty);
-      SetProperty("#fanarthandler.music.artistbanner.selected", string.Empty);
-      SetProperty("#fanarthandler.picture.userdef.backdrop1.any", string.Empty);
-      SetProperty("#fanarthandler.picture.userdef.backdrop2.any", string.Empty);
-      SetProperty("#fanarthandler.scorecenter.backdrop1.selected", string.Empty);
-      SetProperty("#fanarthandler.scorecenter.backdrop2.selected", string.Empty);
-      SetProperty("#fanarthandler.scorecenter.userdef.backdrop1.any", string.Empty);
-      SetProperty("#fanarthandler.scorecenter.userdef.backdrop2.any", string.Empty);
-      SetProperty("#fanarthandler.tvseries.backdrop1.any", string.Empty);
-      SetProperty("#fanarthandler.tvseries.backdrop2.any", string.Empty);
-      SetProperty("#fanarthandler.tv.userdef.backdrop1.any", string.Empty);
-      SetProperty("#fanarthandler.tv.userdef.backdrop2.any", string.Empty);
-      SetProperty("#fanarthandler.plugins.userdef.backdrop1.any", string.Empty);
-      SetProperty("#fanarthandler.plugins.userdef.backdrop2.any", string.Empty);
-      SetProperty("#fanarthandler.pictures.slideshow.translation", Translation.FHSlideshow);
-      SetProperty("#fanarthandler.pictures.slideshow.enabled", (Utils.UseMyPicturesSlideShow ? "true" : "false"));
+      Utils.SetProperty("#fanarthandler.scraper.task", string.Empty);
+      Utils.SetProperty("#fanarthandler.scraper.percent.completed", string.Empty);
+      Utils.SetProperty("#fanarthandler.scraper.percent.sign", string.Empty);
+      Utils.SetProperty("#fanarthandler.games.userdef.backdrop1.any", string.Empty);
+      Utils.SetProperty("#fanarthandler.games.userdef.backdrop2.any", string.Empty);
+      Utils.SetProperty("#fanarthandler.movie.userdef.backdrop1.any", string.Empty);
+      Utils.SetProperty("#fanarthandler.movie.userdef.backdrop2.any", string.Empty);
+      Utils.SetProperty("#fanarthandler.movie.scraper.backdrop1.any", string.Empty);
+      Utils.SetProperty("#fanarthandler.movie.scraper.backdrop2.any", string.Empty);
+      Utils.SetProperty("#fanarthandler.movie.backdrop1.selected", string.Empty);
+      Utils.SetProperty("#fanarthandler.movie.backdrop2.selected", string.Empty);
+      Utils.SetProperty("#fanarthandler.movie.studios.selected", string.Empty);
+      Utils.SetProperty("#fanarthandler.movie.studios.selected.all", string.Empty);
+      Utils.SetProperty("#fanarthandler.movingpicture.backdrop1.any", string.Empty);
+      Utils.SetProperty("#fanarthandler.movingpicture.backdrop2.any", string.Empty);
+      Utils.SetProperty("#fanarthandler.music.userdef.backdrop1.any", string.Empty);
+      Utils.SetProperty("#fanarthandler.music.userdef.backdrop2.any", string.Empty);
+      Utils.SetProperty("#fanarthandler.music.scraper.backdrop1.any", string.Empty);
+      Utils.SetProperty("#fanarthandler.music.scraper.backdrop2.any", string.Empty);
+      Utils.SetProperty("#fanarthandler.music.overlay.play", string.Empty);
+      Utils.SetProperty("#fanarthandler.music.artisthumb.play", string.Empty);
+      Utils.SetProperty("#fanarthandler.music.artistclearart.play", string.Empty);
+      Utils.SetProperty("#fanarthandler.music.artistbanner.play", string.Empty);
+      Utils.SetProperty("#fanarthandler.music.albumcd.play", string.Empty);
+      Utils.SetProperty("#fanarthandler.music.backdrop1.play", string.Empty);
+      Utils.SetProperty("#fanarthandler.music.backdrop2.play", string.Empty);
+      Utils.SetProperty("#fanarthandler.music.backdrop1.selected", string.Empty);
+      Utils.SetProperty("#fanarthandler.music.backdrop2.selected", string.Empty);
+      Utils.SetProperty("#fanarthandler.music.artistclearart.selected", string.Empty);
+      Utils.SetProperty("#fanarthandler.music.artistbanner.selected", string.Empty);
+      Utils.SetProperty("#fanarthandler.picture.userdef.backdrop1.any", string.Empty);
+      Utils.SetProperty("#fanarthandler.picture.userdef.backdrop2.any", string.Empty);
+      Utils.SetProperty("#fanarthandler.scorecenter.backdrop1.selected", string.Empty);
+      Utils.SetProperty("#fanarthandler.scorecenter.backdrop2.selected", string.Empty);
+      Utils.SetProperty("#fanarthandler.scorecenter.userdef.backdrop1.any", string.Empty);
+      Utils.SetProperty("#fanarthandler.scorecenter.userdef.backdrop2.any", string.Empty);
+      Utils.SetProperty("#fanarthandler.tvseries.backdrop1.any", string.Empty);
+      Utils.SetProperty("#fanarthandler.tvseries.backdrop2.any", string.Empty);
+      Utils.SetProperty("#fanarthandler.tv.userdef.backdrop1.any", string.Empty);
+      Utils.SetProperty("#fanarthandler.tv.userdef.backdrop2.any", string.Empty);
+      Utils.SetProperty("#fanarthandler.plugins.userdef.backdrop1.any", string.Empty);
+      Utils.SetProperty("#fanarthandler.plugins.userdef.backdrop2.any", string.Empty);
+      Utils.SetProperty("#fanarthandler.pictures.slideshow.translation", Translation.FHSlideshow);
+      Utils.SetProperty("#fanarthandler.pictures.slideshow.enabled", (Utils.UseMyPicturesSlideShow ? "true" : "false"));
       FS.Properties = new Hashtable();
       FP.PropertiesPlay = new Hashtable();
       FR.PropertiesRandom = new Hashtable();
@@ -1232,9 +1216,9 @@ namespace FanartHandler
           }
           else
           {
-            SetProperty("#fanarthandler.scraper.task", string.Empty);
-            SetProperty("#fanarthandler.scraper.percent.completed", string.Empty);
-            SetProperty("#fanarthandler.scraper.percent.sign", string.Empty);
+            Utils.SetProperty("#fanarthandler.scraper.task", string.Empty);
+            Utils.SetProperty("#fanarthandler.scraper.percent.completed", string.Empty);
+            Utils.SetProperty("#fanarthandler.scraper.percent.sign", string.Empty);
             HideScraperProgressIndicator();
             Utils.GetDbm().TotArtistsBeingScraped = 0.0;
             Utils.GetDbm().CurrArtistsBeingScraped = 0.0;
@@ -1280,13 +1264,13 @@ namespace FanartHandler
               FP.FanartAvailablePlay = false;
               FP.FanartIsNotAvailablePlay(activeWindowId);
               FP.PrevPlayMusic = -1;
-              SetProperty("#fanarthandler.music.artisthumb.play", string.Empty);
-              SetProperty("#fanarthandler.music.artistclearart.play", string.Empty);
-              SetProperty("#fanarthandler.music.artistbanner.play", string.Empty);
-              SetProperty("#fanarthandler.music.albumcd.play", string.Empty);
-              SetProperty("#fanarthandler.music.overlay.play", string.Empty);
-              SetProperty("#fanarthandler.music.backdrop1.play", string.Empty);
-              SetProperty("#fanarthandler.music.backdrop2.play", string.Empty);
+              Utils.SetProperty("#fanarthandler.music.artisthumb.play", string.Empty);
+              Utils.SetProperty("#fanarthandler.music.artistclearart.play", string.Empty);
+              Utils.SetProperty("#fanarthandler.music.artistbanner.play", string.Empty);
+              Utils.SetProperty("#fanarthandler.music.albumcd.play", string.Empty);
+              Utils.SetProperty("#fanarthandler.music.overlay.play", string.Empty);
+              Utils.SetProperty("#fanarthandler.music.backdrop1.play", string.Empty);
+              Utils.SetProperty("#fanarthandler.music.backdrop2.play", string.Empty);
               FP.CurrCountPlay = 0;
               FP.UpdateVisibilityCountPlay = 0;
               IsPlaying = false;
@@ -1319,28 +1303,28 @@ namespace FanartHandler
           }
           else if (IsRandom)
           {
-            SetProperty("#fanarthandler.games.userdef.backdrop1.any", string.Empty);
-            SetProperty("#fanarthandler.games.userdef.backdrop2.any", string.Empty);
-            SetProperty("#fanarthandler.movie.userdef.backdrop1.any", string.Empty);
-            SetProperty("#fanarthandler.movie.userdef.backdrop2.any", string.Empty);
-            SetProperty("#fanarthandler.movie.scraper.backdrop1.any", string.Empty);
-            SetProperty("#fanarthandler.movie.scraper.backdrop2.any", string.Empty);
-            SetProperty("#fanarthandler.music.userdef.backdrop1.any", string.Empty);
-            SetProperty("#fanarthandler.music.userdef.backdrop2.any", string.Empty);
-            SetProperty("#fanarthandler.music.scraper.backdrop1.any", string.Empty);
-            SetProperty("#fanarthandler.music.scraper.backdrop2.any", string.Empty);
-            SetProperty("#fanarthandler.picture.userdef.backdrop1.any", string.Empty);
-            SetProperty("#fanarthandler.picture.userdef.backdrop2.any", string.Empty);
-            SetProperty("#fanarthandler.scorecenter.userdef.backdrop1.any", string.Empty);
-            SetProperty("#fanarthandler.scorecenter.userdef.backdrop2.any", string.Empty);
-            SetProperty("#fanarthandler.tv.userdef.backdrop1.any", string.Empty);
-            SetProperty("#fanarthandler.tv.userdef.backdrop2.any", string.Empty);
-            SetProperty("#fanarthandler.plugins.userdef.backdrop1.any", string.Empty);
-            SetProperty("#fanarthandler.plugins.userdef.backdrop2.any", string.Empty);
-            SetProperty("#fanarthandler.movingpicture.backdrop1.any", string.Empty);
-            SetProperty("#fanarthandler.movingpicture.backdrop2.any", string.Empty);
-            SetProperty("#fanarthandler.tvseries.backdrop1.any", string.Empty);
-            SetProperty("#fanarthandler.tvseries.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.games.userdef.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.games.userdef.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.movie.userdef.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.movie.userdef.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.movie.scraper.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.movie.scraper.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.music.userdef.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.music.userdef.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.music.scraper.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.music.scraper.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.picture.userdef.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.picture.userdef.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.scorecenter.userdef.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.scorecenter.userdef.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.tv.userdef.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.tv.userdef.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.plugins.userdef.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.plugins.userdef.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.movingpicture.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.movingpicture.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.tvseries.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.tvseries.backdrop2.any", string.Empty);
             FR.CurrCountRandom = 0;
             EmptyAllImages(ref FR.ListAnyGamesUser);
             EmptyAllImages(ref FR.ListAnyMoviesUser);
@@ -1394,7 +1378,7 @@ namespace FanartHandler
           EmptyAllImages(ref ListPictureHash);
           PrevPicture = string.Empty;
           PrevPictureImage = string.Empty;
-          SetProperty("#fanarthandler.picture.backdrop.selected", string.Empty);
+          Utils.SetProperty("#fanarthandler.picture.backdrop.selected", string.Empty);
           IsSelectedPicture = false;
         }
         if (IsPlaying)
@@ -1408,13 +1392,13 @@ namespace FanartHandler
           FP.FanartAvailablePlay = false;
           FP.FanartIsNotAvailablePlay(GUIWindowManager.ActiveWindow);
           FP.PrevPlayMusic = -1;
-          SetProperty("#fanarthandler.music.artisthumb.play", string.Empty);
-          SetProperty("#fanarthandler.music.artistclearart.play", string.Empty);
-          SetProperty("#fanarthandler.music.artistbanner.play", string.Empty);
-          SetProperty("#fanarthandler.music.albumcd.play", string.Empty);
-          SetProperty("#fanarthandler.music.overlay.play", string.Empty);
-          SetProperty("#fanarthandler.music.backdrop1.play", string.Empty);
-          SetProperty("#fanarthandler.music.backdrop2.play", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.artisthumb.play", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.artistclearart.play", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.artistbanner.play", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.albumcd.play", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.overlay.play", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.backdrop1.play", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.backdrop2.play", string.Empty);
           FP.CurrCountPlay = 0;
           FP.UpdateVisibilityCountPlay = 0;
           IsPlaying = false;
@@ -1431,10 +1415,10 @@ namespace FanartHandler
           FS.UpdateVisibilityCount = 0;
           FS.FanartAvailable = false;
           FS.FanartIsNotAvailable(GUIWindowManager.ActiveWindow);
-          SetProperty("#fanarthandler.music.backdrop1.selected", string.Empty);
-          SetProperty("#fanarthandler.music.backdrop2.selected", string.Empty);
-          SetProperty("#fanarthandler.music.artistclearart.selected", string.Empty);
-          SetProperty("#fanarthandler.music.artistbanner.selected", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.backdrop1.selected", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.backdrop2.selected", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.artistclearart.selected", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.artistbanner.selected", string.Empty);
           IsSelectedMusic = false;
         }
         if (IsSelectedVideo)
@@ -1447,10 +1431,10 @@ namespace FanartHandler
           FS.UpdateVisibilityCount = 0;
           FS.FanartAvailable = false;
           FS.FanartIsNotAvailable(GUIWindowManager.ActiveWindow);
-          SetProperty("#fanarthandler.movie.backdrop1.selected", string.Empty);
-          SetProperty("#fanarthandler.movie.backdrop2.selected", string.Empty);
-          SetProperty("#fanarthandler.movie.studios.selected", string.Empty);
-          SetProperty("#fanarthandler.movie.studios.selected.all", string.Empty);
+          Utils.SetProperty("#fanarthandler.movie.backdrop1.selected", string.Empty);
+          Utils.SetProperty("#fanarthandler.movie.backdrop2.selected", string.Empty);
+          Utils.SetProperty("#fanarthandler.movie.studios.selected", string.Empty);
+          Utils.SetProperty("#fanarthandler.movie.studios.selected.all", string.Empty);
           IsSelectedVideo = false;
         }
         if (IsSelectedScoreCenter)
@@ -1463,34 +1447,34 @@ namespace FanartHandler
           FS.UpdateVisibilityCount = 0;
           FS.FanartAvailable = false;
           FS.FanartIsNotAvailable(GUIWindowManager.ActiveWindow);
-          SetProperty("#fanarthandler.scorecenter.backdrop1.selected", string.Empty);
-          SetProperty("#fanarthandler.scorecenter.backdrop2.selected", string.Empty);
+          Utils.SetProperty("#fanarthandler.scorecenter.backdrop1.selected", string.Empty);
+          Utils.SetProperty("#fanarthandler.scorecenter.backdrop2.selected", string.Empty);
           IsSelectedScoreCenter = false;
         }
         if (!IsRandom)
           return;
-        SetProperty("#fanarthandler.games.userdef.backdrop1.any", string.Empty);
-        SetProperty("#fanarthandler.games.userdef.backdrop2.any", string.Empty);
-        SetProperty("#fanarthandler.movie.userdef.backdrop1.any", string.Empty);
-        SetProperty("#fanarthandler.movie.userdef.backdrop2.any", string.Empty);
-        SetProperty("#fanarthandler.movie.scraper.backdrop1.any", string.Empty);
-        SetProperty("#fanarthandler.movie.scraper.backdrop2.any", string.Empty);
-        SetProperty("#fanarthandler.music.userdef.backdrop1.any", string.Empty);
-        SetProperty("#fanarthandler.music.userdef.backdrop2.any", string.Empty);
-        SetProperty("#fanarthandler.music.scraper.backdrop1.any", string.Empty);
-        SetProperty("#fanarthandler.music.scraper.backdrop2.any", string.Empty);
-        SetProperty("#fanarthandler.picture.userdef.backdrop1.any", string.Empty);
-        SetProperty("#fanarthandler.picture.userdef.backdrop2.any", string.Empty);
-        SetProperty("#fanarthandler.scorecenter.userdef.backdrop1.any", string.Empty);
-        SetProperty("#fanarthandler.scorecenter.userdef.backdrop2.any", string.Empty);
-        SetProperty("#fanarthandler.tv.userdef.backdrop1.any", string.Empty);
-        SetProperty("#fanarthandler.tv.userdef.backdrop2.any", string.Empty);
-        SetProperty("#fanarthandler.plugins.userdef.backdrop1.any", string.Empty);
-        SetProperty("#fanarthandler.plugins.userdef.backdrop2.any", string.Empty);
-        SetProperty("#fanarthandler.movingpicture.backdrop1.any", string.Empty);
-        SetProperty("#fanarthandler.movingpicture.backdrop2.any", string.Empty);
-        SetProperty("#fanarthandler.tvseries.backdrop1.any", string.Empty);
-        SetProperty("#fanarthandler.tvseries.backdrop2.any", string.Empty);
+        Utils.SetProperty("#fanarthandler.games.userdef.backdrop1.any", string.Empty);
+        Utils.SetProperty("#fanarthandler.games.userdef.backdrop2.any", string.Empty);
+        Utils.SetProperty("#fanarthandler.movie.userdef.backdrop1.any", string.Empty);
+        Utils.SetProperty("#fanarthandler.movie.userdef.backdrop2.any", string.Empty);
+        Utils.SetProperty("#fanarthandler.movie.scraper.backdrop1.any", string.Empty);
+        Utils.SetProperty("#fanarthandler.movie.scraper.backdrop2.any", string.Empty);
+        Utils.SetProperty("#fanarthandler.music.userdef.backdrop1.any", string.Empty);
+        Utils.SetProperty("#fanarthandler.music.userdef.backdrop2.any", string.Empty);
+        Utils.SetProperty("#fanarthandler.music.scraper.backdrop1.any", string.Empty);
+        Utils.SetProperty("#fanarthandler.music.scraper.backdrop2.any", string.Empty);
+        Utils.SetProperty("#fanarthandler.picture.userdef.backdrop1.any", string.Empty);
+        Utils.SetProperty("#fanarthandler.picture.userdef.backdrop2.any", string.Empty);
+        Utils.SetProperty("#fanarthandler.scorecenter.userdef.backdrop1.any", string.Empty);
+        Utils.SetProperty("#fanarthandler.scorecenter.userdef.backdrop2.any", string.Empty);
+        Utils.SetProperty("#fanarthandler.tv.userdef.backdrop1.any", string.Empty);
+        Utils.SetProperty("#fanarthandler.tv.userdef.backdrop2.any", string.Empty);
+        Utils.SetProperty("#fanarthandler.plugins.userdef.backdrop1.any", string.Empty);
+        Utils.SetProperty("#fanarthandler.plugins.userdef.backdrop2.any", string.Empty);
+        Utils.SetProperty("#fanarthandler.movingpicture.backdrop1.any", string.Empty);
+        Utils.SetProperty("#fanarthandler.movingpicture.backdrop2.any", string.Empty);
+        Utils.SetProperty("#fanarthandler.tvseries.backdrop1.any", string.Empty);
+        Utils.SetProperty("#fanarthandler.tvseries.backdrop2.any", string.Empty);
         FR.CurrCountRandom = 0;
         FR.CountSetVisibility = 0;
         FR.ClearPropertiesRandom();
@@ -1704,7 +1688,6 @@ namespace FanartHandler
           UtilsMovingPictures.DisposeMovingPicturesLatest();
         }
         catch { }
-
         try
         {
           UtilsTVSeries.DisposeTVSeriesLatest();

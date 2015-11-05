@@ -1338,6 +1338,47 @@ namespace FanartHandler
     }
     */
 
+    internal static void SetProperty (string property, string value)
+    {
+      try
+      {
+        if (property == null)
+          return;
+
+        //logger.Debug("SetProperty: "+property+" -> "+value) ;
+        GUIPropertyManager.SetProperty(property, value);
+      }
+      catch (Exception ex)
+      {
+        logger.Error("SetProperty: " + ex);
+      }
+    }
+
+    internal static string GetProperty (string property)
+    {
+      string result = string.Empty;
+      if (property == null)
+        return result;
+
+      try
+      {
+        result = GUIPropertyManager.GetProperty(property);
+        if (string.IsNullOrEmpty(result))
+          return result;
+
+        result = result.Trim();
+        if (result.Equals(property, StringComparison.CurrentCultureIgnoreCase))
+          result = string.Empty;
+        //logger.Debug("GetProperty: "+property+" -> "+value) ;
+      }
+      catch (Exception ex)
+      {
+        result = string.Empty;
+        logger.Error("GetProperty: " + ex);
+      }
+      return result;
+    }
+
     public static bool Contains(this string source, string toCheck, StringComparison comp)
     {
       return source.IndexOf(toCheck, comp) >= 0;

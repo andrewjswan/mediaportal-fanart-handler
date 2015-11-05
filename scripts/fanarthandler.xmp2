@@ -564,18 +564,12 @@ cul8er</Value>
        * push random images from selected folders
 
 </ExtensionDescription>
-    <VersionDescription>- Internal rework
-- Bug fixes
-- Bug fixes for multi artists on now playing
-- Fix for #fanarthandler.movie.studios.selected.all
-- Rework Pictures Slide Show when music plays
-+ Add FanartHandler.SlideShowFolders.xml for MyPictures SlideShow (if the file is there, and it is not empty, then the folders from it, or use of my pictures)
-+ Add #fanarthandler.pictures.slideshow.enabled (true, false) Slide show mode is activated or not Fanart Handler.
-If Slide show activated (#fanarthandler.pictures.slideshow.enabled = true) and #skin.fanarthandler.pictures.slideshow.enabled = true then when playing music should show your pictures but not the backdrop for an artist.
-+ Add new tab in Configurator for SlideShow</VersionDescription>
+    <VersionDescription>* Cosmetic
+* Fixes for MyPictures slide show
+</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-{VERSION}.MPE1</OnlineLocation>
-    <ReleaseDate>2015-11-01T15:04:24</ReleaseDate>
+    <ReleaseDate>2015-11-05T15:04:24</ReleaseDate>
     <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper</Tags>
     <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
     <Params>

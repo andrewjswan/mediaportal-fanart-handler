@@ -59,7 +59,7 @@ namespace FanartHandler
           if (window != null && ActiveWindow == 2 && window.GetFocusControlId() == 50)
           {
             DebugStep = 3;
-            var property = GUIPropertyManager.GetProperty("#selecteditem");
+            var property = Utils.GetProperty("#selecteditem");
             if (property != null && !property.Equals(FanartHandlerSetup.Fh.PrevPicture))
             {
               DebugStep = 4;
@@ -69,7 +69,7 @@ namespace FanartHandler
                 DebugStep = 5;
                 FanartHandlerSetup.Fh.AddPictureToCache("#fanarthandler.picture.backdrop.selected", selectedListItem.Path, ref FanartHandlerSetup.Fh.ListPictureHash);
                 FanartHandlerSetup.Fh.HandleOldImages(ref FanartHandlerSetup.Fh.ListPictureHash);
-                FanartHandlerSetup.Fh.SetProperty("#fanarthandler.picture.backdrop.selected", selectedListItem.Path);
+                Utils.SetProperty("#fanarthandler.picture.backdrop.selected", selectedListItem.Path);
                 FanartHandlerSetup.Fh.PrevPicture = property;
                 FanartHandlerSetup.Fh.PrevPictureImage = selectedListItem.Path;
                 DebugStep = 6;
@@ -82,7 +82,7 @@ namespace FanartHandler
                   FanartHandlerSetup.Fh.EmptyAllImages(ref FanartHandlerSetup.Fh.ListPictureHash);
                   FanartHandlerSetup.Fh.PrevPicture = string.Empty;
                   FanartHandlerSetup.Fh.PrevPictureImage = string.Empty;
-                  FanartHandlerSetup.Fh.SetProperty("#fanarthandler.picture.backdrop.selected", string.Empty);
+                  Utils.SetProperty("#fanarthandler.picture.backdrop.selected", string.Empty);
                   FanartHandlerSetup.Fh.IsSelectedPicture = false;
                 }
               }
@@ -97,7 +97,7 @@ namespace FanartHandler
             FanartHandlerSetup.Fh.EmptyAllImages(ref FanartHandlerSetup.Fh.ListPictureHash);
             FanartHandlerSetup.Fh.PrevPicture = string.Empty;
             FanartHandlerSetup.Fh.PrevPictureImage = string.Empty;
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.picture.backdrop.selected", string.Empty);
+            Utils.SetProperty("#fanarthandler.picture.backdrop.selected", string.Empty);
             FanartHandlerSetup.Fh.IsSelectedPicture = false;
           }
         }
@@ -109,8 +109,8 @@ namespace FanartHandler
         FanartHandlerSetup.Fh.FP.HasUpdatedCurrCountPlay = false;
         if (ActiveWindow == 730718) // MP Grooveshark
         {
-          FanartHandlerSetup.Fh.CurrentTrackTag = GUIPropertyManager.GetProperty("#mpgrooveshark.current.artist");
-          FanartHandlerSetup.Fh.CurrentAlbumTag = GUIPropertyManager.GetProperty("#mpgrooveshark.current.album");
+          FanartHandlerSetup.Fh.CurrentTrackTag = Utils.GetProperty("#mpgrooveshark.current.artist");
+          FanartHandlerSetup.Fh.CurrentAlbumTag = Utils.GetProperty("#mpgrooveshark.current.album");
           FanartHandlerSetup.Fh.CurrentGenreTag = null;
         }
         else
@@ -118,55 +118,19 @@ namespace FanartHandler
           FanartHandlerSetup.Fh.CurrentTrackTag = string.Empty;
 
           // Common play
-          var selAlbumArtist = string.Empty;
-          var selArtist = string.Empty;
-          var selTitle = string.Empty;
-          try
-          {
-            selAlbumArtist = GUIPropertyManager.GetProperty("#Play.Current.AlbumArtist").Trim();
-          }
-          catch
-          {
-            selAlbumArtist = string.Empty;
-          }
-          try
-          {
-            selArtist = GUIPropertyManager.GetProperty("#Play.Current.Artist").Trim();
-          }
-          catch
-          {
-            selArtist = string.Empty;
-          }
-          try
-          {
-            selTitle = GUIPropertyManager.GetProperty("#Play.Current.Title").Trim();
-          }
-          catch
-          {
-            selTitle = string.Empty;
-          }
+          var selAlbumArtist = Utils.GetProperty("#Play.Current.AlbumArtist").Trim();
+          var selArtist = Utils.GetProperty("#Play.Current.Artist").Trim();
+          var selTitle = Utils.GetProperty("#Play.Current.Title").Trim();
           // Radio Time
           /*
-          var tuneArtist = GUIPropertyManager.GetProperty("#RadioTime.Play.Artist");
-          var tuneAlbum = GUIPropertyManager.GetProperty("#RadioTime.Play.Album");
-          var tuneTrack = GUIPropertyManager.GetProperty("#RadioTime.Play.Song");
+          var tuneArtist = Utils.GetProperty("#RadioTime.Play.Artist");
+          var tuneAlbum = Utils.GetProperty("#RadioTime.Play.Album");
+          var tuneTrack = Utils.GetProperty("#RadioTime.Play.Song");
           */
           // mvCentral
-          var mvcArtist = GUIPropertyManager.GetProperty("#Play.Current.mvArtist");
-          var mvcAlbum = GUIPropertyManager.GetProperty("#Play.Current.mvAlbum");
-          var mvcPlay = GUIPropertyManager.GetProperty("#mvCentral.isPlaying");
-          /*
-          if (!string.IsNullOrEmpty(tuneArtist) && (tuneArtist.IndexOf("#RadioTime") > 0))
-            tuneArtist = string.Empty;
-          if (!string.IsNullOrEmpty(tuneAlbum) && (tuneAlbum.IndexOf("#RadioTime") > 0))
-            tuneAlbum = string.Empty;
-          if (!string.IsNullOrEmpty(tuneTrack) && (tuneTrack.IndexOf("#RadioTime") > 0))
-            tuneTrack = string.Empty;
-          */
-          if (!string.IsNullOrEmpty(mvcArtist) && (mvcArtist.IndexOf("#Play") > 0))
-            mvcArtist = string.Empty;
-          if (!string.IsNullOrEmpty(mvcAlbum) && (mvcAlbum.IndexOf("#Play") > 0))
-            mvcAlbum = string.Empty;
+          var mvcArtist = Utils.GetProperty("#Play.Current.mvArtist");
+          var mvcAlbum = Utils.GetProperty("#Play.Current.mvAlbum");
+          var mvcPlay = Utils.GetProperty("#mvCentral.isPlaying");
 
           if (!string.IsNullOrEmpty(selArtist))
             if (!string.IsNullOrEmpty(selAlbumArtist))
@@ -180,8 +144,8 @@ namespace FanartHandler
           if (!string.IsNullOrEmpty(tuneArtist))
             FanartHandlerSetup.Fh.CurrentTrackTag = FanartHandlerSetup.Fh.CurrentTrackTag + (string.IsNullOrEmpty(FanartHandlerSetup.Fh.CurrentTrackTag) ? "" : "|") + tuneArtist; 
           */
-          FanartHandlerSetup.Fh.CurrentAlbumTag = GUIPropertyManager.GetProperty("#Play.Current.Album");
-          FanartHandlerSetup.Fh.CurrentGenreTag = GUIPropertyManager.GetProperty("#Play.Current.Genre");
+          FanartHandlerSetup.Fh.CurrentAlbumTag = Utils.GetProperty("#Play.Current.Album");
+          FanartHandlerSetup.Fh.CurrentGenreTag = Utils.GetProperty("#Play.Current.Genre");
 
           if (!string.IsNullOrEmpty(selArtist) && !string.IsNullOrEmpty(selTitle) && string.IsNullOrEmpty(FanartHandlerSetup.Fh.CurrentAlbumTag))
           {
@@ -287,13 +251,13 @@ namespace FanartHandler
           FanartHandlerSetup.Fh.FP.FanartAvailablePlay = false;
           FanartHandlerSetup.Fh.FP.FanartIsNotAvailablePlay(ActiveWindow);
           FanartHandlerSetup.Fh.FP.PrevPlayMusic = -1;
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.artisthumb.play", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.artistclearart.play", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.artistbanner.play", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.albumcd.play", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.overlay.play", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.backdrop1.play", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.backdrop2.play", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.artisthumb.play", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.artistclearart.play", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.artistbanner.play", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.albumcd.play", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.overlay.play", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.backdrop1.play", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.backdrop2.play", string.Empty);
           FanartHandlerSetup.Fh.FP.CurrCountPlay = 0;
           FanartHandlerSetup.Fh.FP.UpdateVisibilityCountPlay = 0;
           FanartHandlerSetup.Fh.IsPlaying = false;
@@ -307,10 +271,10 @@ namespace FanartHandler
 
         if (string.IsNullOrEmpty(FanartHandlerSetup.Fh.CurrentTrackTag) && (g_Player.Playing || g_Player.Paused))
         {
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.artisthumb.play", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.artistclearart.play", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.artistbanner.play", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.albumcd.play", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.artisthumb.play", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.artistclearart.play", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.artistbanner.play", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.albumcd.play", string.Empty);
           Report(e);
         }
         #endregion
@@ -354,10 +318,10 @@ namespace FanartHandler
             FanartHandlerSetup.Fh.FS.PrevSelectedMusic = -1;
             FanartHandlerSetup.Fh.FS.PrevSelectedGeneric = -1;
             FanartHandlerSetup.Fh.FS.SetCurrentArtistsImageNames(null);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.backdrop1.selected", string.Empty);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.backdrop2.selected", string.Empty);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.artistclearart.selected", string.Empty);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.artistbanner.selected", string.Empty);
+            Utils.SetProperty("#fanarthandler.music.backdrop1.selected", string.Empty);
+            Utils.SetProperty("#fanarthandler.music.backdrop2.selected", string.Empty);
+            Utils.SetProperty("#fanarthandler.music.artistclearart.selected", string.Empty);
+            Utils.SetProperty("#fanarthandler.music.artistbanner.selected", string.Empty);
             FanartHandlerSetup.Fh.IsSelectedMusic = false;
             Report(e);
           }
@@ -431,10 +395,10 @@ namespace FanartHandler
             FanartHandlerSetup.Fh.FS.CurrSelectedMovieTitle = string.Empty;
             FanartHandlerSetup.Fh.FS.SetCurrentArtistsImageNames(null);
             FanartHandlerSetup.Fh.FS.PrevSelectedGeneric = -1;
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movie.backdrop1.selected", string.Empty);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movie.backdrop2.selected", string.Empty);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movie.studios.selected", string.Empty);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movie.studios.selected.all", string.Empty);
+            Utils.SetProperty("#fanarthandler.movie.backdrop1.selected", string.Empty);
+            Utils.SetProperty("#fanarthandler.movie.backdrop2.selected", string.Empty);
+            Utils.SetProperty("#fanarthandler.movie.studios.selected", string.Empty);
+            Utils.SetProperty("#fanarthandler.movie.studios.selected.all", string.Empty);
             FanartHandlerSetup.Fh.IsSelectedVideo = false;
             Report(e);
           }
@@ -464,8 +428,8 @@ namespace FanartHandler
             FanartHandlerSetup.Fh.FS.CurrSelectedScorecenterGenre = string.Empty;
             FanartHandlerSetup.Fh.FS.SetCurrentArtistsImageNames(null);
             FanartHandlerSetup.Fh.FS.PrevSelectedScorecenter = -1;
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scorecenter.backdrop1.selected", string.Empty);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scorecenter.backdrop2.selected", string.Empty);
+            Utils.SetProperty("#fanarthandler.scorecenter.backdrop1.selected", string.Empty);
+            Utils.SetProperty("#fanarthandler.scorecenter.backdrop2.selected", string.Empty);
             FanartHandlerSetup.Fh.IsSelectedScoreCenter = false;
             Report(e);
           }
@@ -487,28 +451,28 @@ namespace FanartHandler
         else if (FanartHandlerSetup.Fh.IsRandom)
         {
           DebugStep = 28;
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.games.userdef.backdrop1.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.games.userdef.backdrop2.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movie.userdef.backdrop1.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movie.userdef.backdrop2.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movie.scraper.backdrop1.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movie.scraper.backdrop2.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.userdef.backdrop1.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.userdef.backdrop2.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.scraper.backdrop1.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.scraper.backdrop2.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.picture.userdef.backdrop1.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.picture.userdef.backdrop2.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scorecenter.userdef.backdrop1.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scorecenter.userdef.backdrop2.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.tv.userdef.backdrop1.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.tv.userdef.backdrop2.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.plugins.userdef.backdrop1.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.plugins.userdef.backdrop2.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movingpicture.backdrop1.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movingpicture.backdrop2.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.tvseries.backdrop1.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.tvseries.backdrop2.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.games.userdef.backdrop1.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.games.userdef.backdrop2.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.movie.userdef.backdrop1.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.movie.userdef.backdrop2.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.movie.scraper.backdrop1.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.movie.scraper.backdrop2.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.userdef.backdrop1.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.userdef.backdrop2.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.scraper.backdrop1.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.scraper.backdrop2.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.picture.userdef.backdrop1.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.picture.userdef.backdrop2.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.scorecenter.userdef.backdrop1.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.scorecenter.userdef.backdrop2.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.tv.userdef.backdrop1.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.tv.userdef.backdrop2.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.plugins.userdef.backdrop1.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.plugins.userdef.backdrop2.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.movingpicture.backdrop1.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.movingpicture.backdrop2.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.tvseries.backdrop1.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.tvseries.backdrop2.any", string.Empty);
           FanartHandlerSetup.Fh.FR.CurrCountRandom = 0;
           FanartHandlerSetup.Fh.EmptyAllImages(ref FanartHandlerSetup.Fh.FR.ListAnyGamesUser);
           FanartHandlerSetup.Fh.EmptyAllImages(ref FanartHandlerSetup.Fh.FR.ListAnyMoviesUser);

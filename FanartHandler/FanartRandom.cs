@@ -126,14 +126,14 @@ namespace FanartHandler
               if (DoShowImageOneRandom)
               {
                 AddPropertyRandom("#fanarthandler.movie.userdef.backdrop1.any", randomFilename, ref ListAnyMoviesUser, doPerm);
-                var property = GUIPropertyManager.GetProperty("#fanarthandler.movie.userdef.backdrop2.any");
+                var property = Utils.GetProperty("#fanarthandler.movie.userdef.backdrop2.any");
                 if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                   AddPropertyRandom("#fanarthandler.movie.userdef.backdrop2.any", randomFilename, ref ListAnyMoviesUser, doPerm);
               }
               else
               {
                 AddPropertyRandom("#fanarthandler.movie.userdef.backdrop2.any", randomFilename, ref ListAnyMoviesUser, doPerm);
-                var property = GUIPropertyManager.GetProperty("#fanarthandler.movie.userdef.backdrop1.any");
+                var property = Utils.GetProperty("#fanarthandler.movie.userdef.backdrop1.any");
                 if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                   AddPropertyRandom("#fanarthandler.movie.userdef.backdrop1.any", randomFilename, ref ListAnyMoviesUser, doPerm);
               }
@@ -142,8 +142,8 @@ namespace FanartHandler
             }
             else
             {
-              FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movie.userdef.backdrop1.any", string.Empty);
-              FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movie.userdef.backdrop2.any", string.Empty);
+              Utils.SetProperty("#fanarthandler.movie.userdef.backdrop1.any", string.Empty);
+              Utils.SetProperty("#fanarthandler.movie.userdef.backdrop2.any", string.Empty);
               PrevSelectedMoviesUser = -1;
               if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
                 rw.ReportProgress(100, "Updated Properties");
@@ -152,8 +152,8 @@ namespace FanartHandler
           else
           {
             FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyMoviesUser);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movie.userdef.backdrop1.any", string.Empty);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movie.userdef.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.movie.userdef.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.movie.userdef.backdrop2.any", string.Empty);
             PrevSelectedMoviesUser = -1;
             if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
               rw.ReportProgress(100, "Updated Properties");
@@ -166,14 +166,14 @@ namespace FanartHandler
               if (DoShowImageOneRandom)
               {
                 AddPropertyRandom("#fanarthandler.movie.scraper.backdrop1.any", randomFilename, ref ListAnyMoviesScraper, doPerm);
-                var property = GUIPropertyManager.GetProperty("#fanarthandler.movie.scraper.backdrop2.any");
+                var property = Utils.GetProperty("#fanarthandler.movie.scraper.backdrop2.any");
                 if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                   AddPropertyRandom("#fanarthandler.movie.scraper.backdrop2.any", randomFilename, ref ListAnyMoviesScraper, doPerm);
               }
               else
               {
                 AddPropertyRandom("#fanarthandler.movie.scraper.backdrop2.any", randomFilename, ref ListAnyMoviesScraper, doPerm);
-                var property = GUIPropertyManager.GetProperty("#fanarthandler.movie.scraper.backdrop1.any");
+                var property = Utils.GetProperty("#fanarthandler.movie.scraper.backdrop1.any");
                 if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                   AddPropertyRandom("#fanarthandler.movie.scraper.backdrop1.any", randomFilename, ref ListAnyMoviesScraper, doPerm);
               }
@@ -182,8 +182,8 @@ namespace FanartHandler
             }
             else
             {
-              FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.movie.backdrop1.any", string.Empty);
-              FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.movie.backdrop2.any", string.Empty);
+              Utils.SetProperty("#fanarthandler.scraper.movie.backdrop1.any", string.Empty);
+              Utils.SetProperty("#fanarthandler.scraper.movie.backdrop2.any", string.Empty);
               PrevSelectedMoviesScraper = -1;
               if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
                 rw.ReportProgress(100, "Updated Properties");
@@ -192,8 +192,8 @@ namespace FanartHandler
           else
           {
             FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyMoviesScraper);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movie.scraper.backdrop1.any", string.Empty);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movie.scraper.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.movie.scraper.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.movie.scraper.backdrop2.any", string.Empty);
             PrevSelectedMoviesScraper = -1;
             if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
               rw.ReportProgress(100, "Updated Properties");
@@ -206,14 +206,14 @@ namespace FanartHandler
               if (DoShowImageOneRandom)
               {
                 AddPropertyRandom("#fanarthandler.movingpicture.backdrop1.any", randomFilename, ref ListAnyMovingPictures, doPerm);
-                var property = GUIPropertyManager.GetProperty("#fanarthandler.movingpicture.backdrop2.any");
+                var property = Utils.GetProperty("#fanarthandler.movingpicture.backdrop2.any");
                 if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                   AddPropertyRandom("#fanarthandler.movingpicture.backdrop2.any", randomFilename, ref ListAnyMovingPictures, doPerm);
               }
               else
               {
                 AddPropertyRandom("#fanarthandler.movingpicture.backdrop2.any", randomFilename, ref ListAnyMovingPictures, doPerm);
-                var property = GUIPropertyManager.GetProperty("#fanarthandler.movingpicture.backdrop1.any");
+                var property = Utils.GetProperty("#fanarthandler.movingpicture.backdrop1.any");
                 if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                   AddPropertyRandom("#fanarthandler.movingpicture.backdrop1.any", randomFilename, ref ListAnyMovingPictures, doPerm);
               }
@@ -222,8 +222,8 @@ namespace FanartHandler
             }
             else
             {
-              FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movingpicture.backdrop1.any", string.Empty);
-              FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movingpicture.backdrop2.any", string.Empty);
+              Utils.SetProperty("#fanarthandler.movingpicture.backdrop1.any", string.Empty);
+              Utils.SetProperty("#fanarthandler.movingpicture.backdrop2.any", string.Empty);
               PrevSelectedMovingPictures = -1;
               if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
                 rw.ReportProgress(100, "Updated Properties");
@@ -232,8 +232,8 @@ namespace FanartHandler
           else
           {
             FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyMovingPictures);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movingpicture.backdrop1.any", string.Empty);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movingpicture.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.movingpicture.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.movingpicture.backdrop2.any", string.Empty);
             PrevSelectedMovingPictures = -1;
             if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
               rw.ReportProgress(100, "Updated Properties");
@@ -248,14 +248,14 @@ namespace FanartHandler
               if (DoShowImageOneRandom)
               {
                 AddPropertyRandom("#fanarthandler.music.userdef.backdrop1.any", randomFilename, ref ListAnyMusicUser, doPerm);
-                var property = GUIPropertyManager.GetProperty("#fanarthandler.music.userdef.backdrop2.any");
+                var property = Utils.GetProperty("#fanarthandler.music.userdef.backdrop2.any");
                 if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                   AddPropertyRandom("#fanarthandler.music.userdef.backdrop2.any", randomFilename, ref ListAnyMusicUser, doPerm);
               }
               else
               {
                 AddPropertyRandom("#fanarthandler.music.userdef.backdrop2.any", randomFilename, ref ListAnyMusicUser, doPerm);
-                var property = GUIPropertyManager.GetProperty("#fanarthandler.music.userdef.backdrop1.any");
+                var property = Utils.GetProperty("#fanarthandler.music.userdef.backdrop1.any");
                 if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                   AddPropertyRandom("#fanarthandler.music.userdef.backdrop1.any", randomFilename, ref ListAnyMusicUser, doPerm);
               }
@@ -264,8 +264,8 @@ namespace FanartHandler
             }
             else
             {
-              FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.userdef.backdrop1.any", string.Empty);
-              FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.userdef.backdrop2.any", string.Empty);
+              Utils.SetProperty("#fanarthandler.music.userdef.backdrop1.any", string.Empty);
+              Utils.SetProperty("#fanarthandler.music.userdef.backdrop2.any", string.Empty);
               PrevSelectedMusicUser = -1;
               if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
                 rw.ReportProgress(100, "Updated Properties");
@@ -274,8 +274,8 @@ namespace FanartHandler
           else
           {
             FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyMusicUser);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.userdef.backdrop1.any", string.Empty);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.userdef.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.music.userdef.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.music.userdef.backdrop2.any", string.Empty);
             PrevSelectedMusicUser = -1;
             if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
               rw.ReportProgress(100, "Updated Properties");
@@ -288,14 +288,14 @@ namespace FanartHandler
               if (DoShowImageOneRandom)
               {
                 AddPropertyRandom("#fanarthandler.music.scraper.backdrop1.any", randomFilename, ref ListAnyMusicScraper, doPerm);
-                var property = GUIPropertyManager.GetProperty("#fanarthandler.music.scraper.backdrop2.any");
+                var property = Utils.GetProperty("#fanarthandler.music.scraper.backdrop2.any");
                 if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                   AddPropertyRandom("#fanarthandler.music.scraper.backdrop2.any", randomFilename, ref ListAnyMusicScraper, doPerm);
               }
               else
               {
                 AddPropertyRandom("#fanarthandler.music.scraper.backdrop2.any", randomFilename, ref ListAnyMusicScraper, doPerm);
-                var property = GUIPropertyManager.GetProperty("#fanarthandler.music.scraper.backdrop1.any");
+                var property = Utils.GetProperty("#fanarthandler.music.scraper.backdrop1.any");
                 if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                   AddPropertyRandom("#fanarthandler.music.scraper.backdrop1.any", randomFilename, ref ListAnyMusicScraper, doPerm);
               }
@@ -304,8 +304,8 @@ namespace FanartHandler
             }
             else
             {
-              FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.scraper.backdrop1.any", string.Empty);
-              FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.scraper.backdrop2.any", string.Empty);
+              Utils.SetProperty("#fanarthandler.music.scraper.backdrop1.any", string.Empty);
+              Utils.SetProperty("#fanarthandler.music.scraper.backdrop2.any", string.Empty);
               PrevSelectedMusicScraper = -1;
               if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
                 rw.ReportProgress(100, "Updated Properties");
@@ -314,8 +314,8 @@ namespace FanartHandler
           else
           {
             FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyMusicScraper);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.scraper.backdrop1.any", string.Empty);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.scraper.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.music.scraper.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.music.scraper.backdrop2.any", string.Empty);
             PrevSelectedMusicScraper = -1;
             if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
               rw.ReportProgress(100, "Updated Properties");
@@ -330,14 +330,14 @@ namespace FanartHandler
               if (DoShowImageOneRandom)
               {
                 AddPropertyRandom("#fanarthandler.tv.userdef.backdrop1.any", randomFilename, ref ListAnyTVUser, doPerm);
-                var property = GUIPropertyManager.GetProperty("#fanarthandler.tv.userdef.backdrop2.any");
+                var property = Utils.GetProperty("#fanarthandler.tv.userdef.backdrop2.any");
                 if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                   AddPropertyRandom("#fanarthandler.tv.userdef.backdrop2.any", randomFilename, ref ListAnyTVUser, doPerm);
               }
               else
               {
                 AddPropertyRandom("#fanarthandler.tv.userdef.backdrop2.any", randomFilename, ref ListAnyTVUser, doPerm);
-                var property = GUIPropertyManager.GetProperty("#fanarthandler.tv.backdrop1.any");
+                var property = Utils.GetProperty("#fanarthandler.tv.backdrop1.any");
                 if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                   AddPropertyRandom("#fanarthandler.tv.userdef.backdrop1.any", randomFilename, ref ListAnyTVUser, doPerm);
               }
@@ -346,8 +346,8 @@ namespace FanartHandler
             }
             else
             {
-              FanartHandlerSetup.Fh.SetProperty("#fanarthandler.tv.userdef.backdrop1.any", string.Empty);
-              FanartHandlerSetup.Fh.SetProperty("#fanarthandler.tv.userdef.backdrop2.any", string.Empty);
+              Utils.SetProperty("#fanarthandler.tv.userdef.backdrop1.any", string.Empty);
+              Utils.SetProperty("#fanarthandler.tv.userdef.backdrop2.any", string.Empty);
               PrevSelectedTVUser = -1;
               if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
                 rw.ReportProgress(100, "Updated Properties");
@@ -356,8 +356,8 @@ namespace FanartHandler
           else
           {
             FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyTVUser);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.tv.userdef.backdrop1.any", string.Empty);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.tv.userdef.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.tv.userdef.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.tv.userdef.backdrop2.any", string.Empty);
             PrevSelectedTVUser = -1;
             if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
               rw.ReportProgress(100, "Updated Properties");
@@ -372,14 +372,14 @@ namespace FanartHandler
               if (DoShowImageOneRandom)
               {
                 AddPropertyRandom("#fanarthandler.tvseries.backdrop1.any", randomFilename, ref ListAnyTVSeries, doPerm);
-                var property = GUIPropertyManager.GetProperty("#fanarthandler.tvseries.backdrop2.any");
+                var property = Utils.GetProperty("#fanarthandler.tvseries.backdrop2.any");
                 if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                   AddPropertyRandom("#fanarthandler.tvseries.backdrop2.any", randomFilename, ref ListAnyTVSeries, doPerm);
               }
               else
               {
                 AddPropertyRandom("#fanarthandler.tvseries.backdrop2.any", randomFilename, ref ListAnyTVSeries, doPerm);
-                var property = GUIPropertyManager.GetProperty("#fanarthandler.tvseries.backdrop1.any");
+                var property = Utils.GetProperty("#fanarthandler.tvseries.backdrop1.any");
                 if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                   AddPropertyRandom("#fanarthandler.tvseries.backdrop1.any", randomFilename, ref ListAnyTVSeries, doPerm);
               }
@@ -388,8 +388,8 @@ namespace FanartHandler
             }
             else
             {
-              FanartHandlerSetup.Fh.SetProperty("#fanarthandler.tvseries.backdrop1.any", string.Empty);
-              FanartHandlerSetup.Fh.SetProperty("#fanarthandler.tvseries.backdrop2.any", string.Empty);
+              Utils.SetProperty("#fanarthandler.tvseries.backdrop1.any", string.Empty);
+              Utils.SetProperty("#fanarthandler.tvseries.backdrop2.any", string.Empty);
               PrevSelectedTVSeries = -1;
               if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
                 rw.ReportProgress(100, "Updated Properties");
@@ -398,8 +398,8 @@ namespace FanartHandler
           else
           {
             FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyTVSeries);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.tvseries.backdrop1.any", string.Empty);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.tvseries.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.tvseries.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.tvseries.backdrop2.any", string.Empty);
             PrevSelectedTVSeries = -1;
             if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
               rw.ReportProgress(100, "Updated Properties");
@@ -414,14 +414,14 @@ namespace FanartHandler
               if (DoShowImageOneRandom)
               {
                 AddPropertyRandom("#fanarthandler.picture.userdef.backdrop1.any", randomFilename, ref ListAnyPicturesUser, doPerm);
-                var property = GUIPropertyManager.GetProperty("#fanarthandler.picture.userdef.backdrop2.any");
+                var property = Utils.GetProperty("#fanarthandler.picture.userdef.backdrop2.any");
                 if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                   AddPropertyRandom("#fanarthandler.picture.userdef.backdrop2.any", randomFilename, ref ListAnyPicturesUser, doPerm);
               }
               else
               {
                 AddPropertyRandom("#fanarthandler.picture.userdef.backdrop2.any", randomFilename, ref ListAnyPicturesUser, doPerm);
-                var property = GUIPropertyManager.GetProperty("#fanarthandler.picture.userdef.backdrop1.any");
+                var property = Utils.GetProperty("#fanarthandler.picture.userdef.backdrop1.any");
                 if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                   AddPropertyRandom("#fanarthandler.picture.userdef.backdrop1.any", randomFilename, ref ListAnyPicturesUser, doPerm);
               }
@@ -430,8 +430,8 @@ namespace FanartHandler
             }
             else
             {
-              FanartHandlerSetup.Fh.SetProperty("#fanarthandler.picture.userdef.backdrop1.any", string.Empty);
-              FanartHandlerSetup.Fh.SetProperty("#fanarthandler.picture.userdef.backdrop2.any", string.Empty);
+              Utils.SetProperty("#fanarthandler.picture.userdef.backdrop1.any", string.Empty);
+              Utils.SetProperty("#fanarthandler.picture.userdef.backdrop2.any", string.Empty);
               PrevSelectedPicturesUser = -1;
               if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
                 rw.ReportProgress(100, "Updated Properties");
@@ -440,8 +440,8 @@ namespace FanartHandler
           else
           {
             FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyPicturesUser);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.picture.userdef.backdrop1.any", string.Empty);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.picture.userdef.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.picture.userdef.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.picture.userdef.backdrop2.any", string.Empty);
             PrevSelectedPicturesUser = -1;
             if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
               rw.ReportProgress(100, "Updated Properties");
@@ -456,14 +456,14 @@ namespace FanartHandler
               if (DoShowImageOneRandom)
               {
                 AddPropertyRandom("#fanarthandler.games.userdef.backdrop1.any", randomFilename, ref ListAnyGamesUser, doPerm);
-                var property = GUIPropertyManager.GetProperty("#fanarthandler.games.userdef.backdrop2.any");
+                var property = Utils.GetProperty("#fanarthandler.games.userdef.backdrop2.any");
                 if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                   AddPropertyRandom("#fanarthandler.games.userdef.backdrop2.any", randomFilename, ref ListAnyGamesUser, doPerm);
               }
               else
               {
                 AddPropertyRandom("#fanarthandler.games.userdef.backdrop2.any", randomFilename, ref ListAnyGamesUser, doPerm);
-                var property = GUIPropertyManager.GetProperty("#fanarthandler.games.userdef.backdrop1.any");
+                var property = Utils.GetProperty("#fanarthandler.games.userdef.backdrop1.any");
                 if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                   AddPropertyRandom("#fanarthandler.games.userdef.backdrop1.any", randomFilename, ref ListAnyGamesUser, doPerm);
               }
@@ -472,8 +472,8 @@ namespace FanartHandler
             }
             else
             {
-              FanartHandlerSetup.Fh.SetProperty("#fanarthandler.games.userdef.backdrop1.any", string.Empty);
-              FanartHandlerSetup.Fh.SetProperty("#fanarthandler.games.userdef.backdrop2.any", string.Empty);
+              Utils.SetProperty("#fanarthandler.games.userdef.backdrop1.any", string.Empty);
+              Utils.SetProperty("#fanarthandler.games.userdef.backdrop2.any", string.Empty);
               PrevSelectedGamesUser = -1;
               if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
                 rw.ReportProgress(100, "Updated Properties");
@@ -482,8 +482,8 @@ namespace FanartHandler
           else
           {
             FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyGamesUser);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.games.userdef.backdrop1.any", string.Empty);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.games.userdef.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.games.userdef.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.games.userdef.backdrop2.any", string.Empty);
             PrevSelectedGamesUser = -1;
             if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
               rw.ReportProgress(100, "Updated Properties");
@@ -498,14 +498,14 @@ namespace FanartHandler
               if (DoShowImageOneRandom)
               {
                 AddPropertyRandom("#fanarthandler.scorecenter.userdef.backdrop1.any", randomFilename, ref ListAnyScorecenterUser, doPerm);
-                var property = GUIPropertyManager.GetProperty("#fanarthandler.scorecenter.userdef.backdrop2.any");
+                var property = Utils.GetProperty("#fanarthandler.scorecenter.userdef.backdrop2.any");
                 if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                   AddPropertyRandom("#fanarthandler.scorecenter.userdef.backdrop2.any", randomFilename, ref ListAnyScorecenterUser, doPerm);
               }
               else
               {
                 AddPropertyRandom("#fanarthandler.scorecenter.userdef.backdrop2.any", randomFilename, ref ListAnyScorecenterUser, doPerm);
-                var property = GUIPropertyManager.GetProperty("#fanarthandler.scorecenter.userdef.backdrop1.any");
+                var property = Utils.GetProperty("#fanarthandler.scorecenter.userdef.backdrop1.any");
                 if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                   AddPropertyRandom("#fanarthandler.scorecenter.userdef.backdrop1.any", randomFilename, ref ListAnyScorecenterUser, doPerm);
               }
@@ -514,8 +514,8 @@ namespace FanartHandler
             }
             else
             {
-              FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scorecenter.userdef.backdrop1.any", string.Empty);
-              FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scorecenter.userdef.backdrop2.any", string.Empty);
+              Utils.SetProperty("#fanarthandler.scorecenter.userdef.backdrop1.any", string.Empty);
+              Utils.SetProperty("#fanarthandler.scorecenter.userdef.backdrop2.any", string.Empty);
               PrevSelectedScorecenterUser = -1;
               if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
                 rw.ReportProgress(100, "Updated Properties");
@@ -524,8 +524,8 @@ namespace FanartHandler
           else
           {
             FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyScorecenterUser);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scorecenter.userdef.backdrop1.any", string.Empty);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scorecenter.userdef.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.scorecenter.userdef.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.scorecenter.userdef.backdrop2.any", string.Empty);
             PrevSelectedScorecenterUser = -1;
             if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
               rw.ReportProgress(100, "Updated Properties");
@@ -540,14 +540,14 @@ namespace FanartHandler
               if (DoShowImageOneRandom)
               {
                 AddPropertyRandom("#fanarthandler.plugins.userdef.backdrop1.any", randomFilename, ref ListAnyPluginsUser, doPerm);
-                var property = GUIPropertyManager.GetProperty("#fanarthandler.plugins.userdef.backdrop2.any");
+                var property = Utils.GetProperty("#fanarthandler.plugins.userdef.backdrop2.any");
                 if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                   AddPropertyRandom("#fanarthandler.plugins.userdef.backdrop2.any", randomFilename, ref ListAnyPluginsUser, doPerm);
               }
               else
               {
                 AddPropertyRandom("#fanarthandler.plugins.userdef.backdrop2.any", randomFilename, ref ListAnyPluginsUser, doPerm);
-                var property = GUIPropertyManager.GetProperty("#fanarthandler.plugins.userdef.backdrop1.any");
+                var property = Utils.GetProperty("#fanarthandler.plugins.userdef.backdrop1.any");
                 if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                   AddPropertyRandom("#fanarthandler.plugins.userdef.backdrop1.any", randomFilename, ref ListAnyPluginsUser, doPerm);
               }
@@ -556,8 +556,8 @@ namespace FanartHandler
             }
             else
             {
-              FanartHandlerSetup.Fh.SetProperty("#fanarthandler.plugins.userdef.backdrop1.any", string.Empty);
-              FanartHandlerSetup.Fh.SetProperty("#fanarthandler.plugins.userdef.backdrop2.any", string.Empty);
+              Utils.SetProperty("#fanarthandler.plugins.userdef.backdrop1.any", string.Empty);
+              Utils.SetProperty("#fanarthandler.plugins.userdef.backdrop2.any", string.Empty);
               PrevSelectedPluginsUser = -1;
               if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
                 rw.ReportProgress(100, "Updated Properties");
@@ -566,8 +566,8 @@ namespace FanartHandler
           else
           {
             FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyPluginsUser);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.plugins.userdef.backdrop1.any", string.Empty);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.plugins.userdef.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.plugins.userdef.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.plugins.userdef.backdrop2.any", string.Empty);
             PrevSelectedPluginsUser = -1;
             if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
               rw.ReportProgress(100, "Updated Properties");
@@ -607,30 +607,30 @@ namespace FanartHandler
             if (DoShowImageOneRandom)
             {
               AddPropertyRandom("#fanarthandler.movie.userdef.backdrop1.any", str2, ref ListAnyMoviesUser, doPerm);
-              var property = GUIPropertyManager.GetProperty("#fanarthandler.movie.userdef.backdrop2.any");
+              var property = Utils.GetProperty("#fanarthandler.movie.userdef.backdrop2.any");
               if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                 AddPropertyRandom("#fanarthandler.movie.userdef.backdrop2.any", str2, ref ListAnyMoviesUser, doPerm);
             }
             else
             {
               AddPropertyRandom("#fanarthandler.movie.userdef.backdrop2.any", str2, ref ListAnyMoviesUser, doPerm);
-              var property = GUIPropertyManager.GetProperty("#fanarthandler.movie.userdef.backdrop1.any");
+              var property = Utils.GetProperty("#fanarthandler.movie.userdef.backdrop1.any");
               if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                 AddPropertyRandom("#fanarthandler.movie.userdef.backdrop1.any", str2, ref ListAnyMoviesUser, doPerm);
             }
           }
           else
           {
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movie.userdef.backdrop1.any", string.Empty);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movie.userdef.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.movie.userdef.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.movie.userdef.backdrop2.any", string.Empty);
             PrevSelectedMoviesUser = -1;
           }
         }
         else
         {
           FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyMoviesUser);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movie.userdef.backdrop1.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movie.userdef.backdrop2.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.movie.userdef.backdrop1.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.movie.userdef.backdrop2.any", string.Empty);
           PrevSelectedMoviesUser = -1;
         }
         if (SupportsRandomImages("useRandomMoviesScraperFanart").Equals("True", StringComparison.CurrentCulture) && propertiesRandomPerm.Contains("#fanarthandler.movie.scraper.backdrop"))
@@ -641,30 +641,30 @@ namespace FanartHandler
             if (DoShowImageOneRandom)
             {
               AddPropertyRandom("#fanarthandler.movie.scraper.backdrop1.any", str2, ref ListAnyMoviesScraper, doPerm);
-              var property = GUIPropertyManager.GetProperty("#fanarthandler.movie.scraper.backdrop2.any");
+              var property = Utils.GetProperty("#fanarthandler.movie.scraper.backdrop2.any");
               if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                 AddPropertyRandom("#fanarthandler.movie.scraper.backdrop2.any", str2, ref ListAnyMoviesScraper, doPerm);
             }
             else
             {
               AddPropertyRandom("#fanarthandler.movie.scraper.backdrop2.any", str2, ref ListAnyMoviesScraper, doPerm);
-              var property = GUIPropertyManager.GetProperty("#fanarthandler.movie.scraper.backdrop1.any");
+              var property = Utils.GetProperty("#fanarthandler.movie.scraper.backdrop1.any");
               if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                 AddPropertyRandom("#fanarthandler.movie.scraper.backdrop1.any", str2, ref ListAnyMoviesScraper, doPerm);
             }
           }
           else
           {
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.movie.backdrop1.any", string.Empty);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scraper.movie.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.scraper.movie.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.scraper.movie.backdrop2.any", string.Empty);
             PrevSelectedMoviesScraper = -1;
           }
         }
         else
         {
           FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyMoviesScraper);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movie.scraper.backdrop1.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movie.scraper.backdrop2.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.movie.scraper.backdrop1.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.movie.scraper.backdrop2.any", string.Empty);
           PrevSelectedMoviesScraper = -1;
         }
         if (SupportsRandomImages("useRandomMovingPicturesFanart").Equals("True", StringComparison.CurrentCulture) && propertiesRandomPerm.Contains("#fanarthandler.movingpicture.backdrop"))
@@ -675,30 +675,30 @@ namespace FanartHandler
             if (DoShowImageOneRandom)
             {
               AddPropertyRandom("#fanarthandler.movingpicture.backdrop1.any", str2, ref ListAnyMovingPictures, doPerm);
-              var property = GUIPropertyManager.GetProperty("#fanarthandler.movingpicture.backdrop2.any");
+              var property = Utils.GetProperty("#fanarthandler.movingpicture.backdrop2.any");
               if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                 AddPropertyRandom("#fanarthandler.movingpicture.backdrop2.any", str2, ref ListAnyMovingPictures, doPerm);
             }
             else
             {
               AddPropertyRandom("#fanarthandler.movingpicture.backdrop2.any", str2, ref ListAnyMovingPictures, doPerm);
-              var property = GUIPropertyManager.GetProperty("#fanarthandler.movingpicture.backdrop1.any");
+              var property = Utils.GetProperty("#fanarthandler.movingpicture.backdrop1.any");
               if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                 AddPropertyRandom("#fanarthandler.movingpicture.backdrop1.any", str2, ref ListAnyMovingPictures, doPerm);
             }
           }
           else
           {
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movingpicture.backdrop1.any", string.Empty);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movingpicture.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.movingpicture.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.movingpicture.backdrop2.any", string.Empty);
             PrevSelectedMovingPictures = -1;
           }
         }
         else
         {
           FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyMovingPictures);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movingpicture.backdrop1.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.movingpicture.backdrop2.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.movingpicture.backdrop1.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.movingpicture.backdrop2.any", string.Empty);
           PrevSelectedMovingPictures = -1;
         }
         if (SupportsRandomImages("useRandomMusicUserFanart").Equals("True", StringComparison.CurrentCulture) && propertiesRandomPerm.Contains("#fanarthandler.music.userdef.backdrop"))
@@ -709,30 +709,30 @@ namespace FanartHandler
             if (DoShowImageOneRandom)
             {
               AddPropertyRandom("#fanarthandler.music.userdef.backdrop1.any", str2, ref ListAnyMusicUser, doPerm);
-              var property = GUIPropertyManager.GetProperty("#fanarthandler.music.userdef.backdrop2.any");
+              var property = Utils.GetProperty("#fanarthandler.music.userdef.backdrop2.any");
               if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                 AddPropertyRandom("#fanarthandler.music.userdef.backdrop2.any", str2, ref ListAnyMusicUser, doPerm);
             }
             else
             {
               AddPropertyRandom("#fanarthandler.music.userdef.backdrop2.any", str2, ref ListAnyMusicUser, doPerm);
-              var property = GUIPropertyManager.GetProperty("#fanarthandler.music.userdef.backdrop1.any");
+              var property = Utils.GetProperty("#fanarthandler.music.userdef.backdrop1.any");
               if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                 AddPropertyRandom("#fanarthandler.music.userdef.backdrop1.any", str2, ref ListAnyMusicUser, doPerm);
             }
           }
           else
           {
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.userdef.backdrop1.any", string.Empty);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.userdef.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.music.userdef.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.music.userdef.backdrop2.any", string.Empty);
             PrevSelectedMusicUser = -1;
           }
         }
         else
         {
           FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyMusicUser);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.userdef.backdrop1.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.userdef.backdrop2.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.userdef.backdrop1.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.userdef.backdrop2.any", string.Empty);
           PrevSelectedMusicUser = -1;
         }
         if (SupportsRandomImages("useRandomMusicScraperFanart").Equals("True", StringComparison.CurrentCulture) && propertiesRandomPerm.Contains("#fanarthandler.music.scraper.backdrop"))
@@ -743,30 +743,30 @@ namespace FanartHandler
             if (DoShowImageOneRandom)
             {
               AddPropertyRandom("#fanarthandler.music.scraper.backdrop1.any", str2, ref ListAnyMusicScraper, doPerm);
-              var property = GUIPropertyManager.GetProperty("#fanarthandler.music.scraper.backdrop2.any");
+              var property = Utils.GetProperty("#fanarthandler.music.scraper.backdrop2.any");
               if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                 AddPropertyRandom("#fanarthandler.music.scraper.backdrop2.any", str2, ref ListAnyMusicScraper, doPerm);
             }
             else
             {
               AddPropertyRandom("#fanarthandler.music.scraper.backdrop2.any", str2, ref ListAnyMusicScraper, doPerm);
-              var property = GUIPropertyManager.GetProperty("#fanarthandler.music.scraper.backdrop1.any");
+              var property = Utils.GetProperty("#fanarthandler.music.scraper.backdrop1.any");
               if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                 AddPropertyRandom("#fanarthandler.music.scraper.backdrop1.any", str2, ref ListAnyMusicScraper, doPerm);
             }
           }
           else
           {
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.scraper.backdrop1.any", string.Empty);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.scraper.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.music.scraper.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.music.scraper.backdrop2.any", string.Empty);
             PrevSelectedMusicScraper = -1;
           }
         }
         else
         {
           FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyMusicScraper);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.scraper.backdrop1.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.music.scraper.backdrop2.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.scraper.backdrop1.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.music.scraper.backdrop2.any", string.Empty);
           PrevSelectedMusicScraper = -1;
         }
         if (SupportsRandomImages("useRandomTVUserFanart").Equals("True", StringComparison.CurrentCulture) && propertiesRandomPerm.Contains("#fanarthandler.tv.userdef.backdrop"))
@@ -777,30 +777,30 @@ namespace FanartHandler
             if (DoShowImageOneRandom)
             {
               AddPropertyRandom("#fanarthandler.tv.userdef.backdrop1.any", str2, ref ListAnyTVUser, doPerm);
-              var property = GUIPropertyManager.GetProperty("#fanarthandler.tv.userdef.backdrop2.any");
+              var property = Utils.GetProperty("#fanarthandler.tv.userdef.backdrop2.any");
               if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                 AddPropertyRandom("#fanarthandler.tv.userdef.backdrop2.any", str2, ref ListAnyTVUser, doPerm);
             }
             else
             {
               AddPropertyRandom("#fanarthandler.tv.userdef.backdrop2.any", str2, ref ListAnyTVUser, doPerm);
-              var property = GUIPropertyManager.GetProperty("#fanarthandler.tv.backdrop1.any");
+              var property = Utils.GetProperty("#fanarthandler.tv.backdrop1.any");
               if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                 AddPropertyRandom("#fanarthandler.tv.userdef.backdrop1.any", str2, ref ListAnyTVUser, doPerm);
             }
           }
           else
           {
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.tv.userdef.backdrop1.any", string.Empty);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.tv.userdef.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.tv.userdef.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.tv.userdef.backdrop2.any", string.Empty);
             PrevSelectedTVUser = -1;
           }
         }
         else
         {
           FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyTVUser);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.tv.userdef.backdrop1.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.tv.userdef.backdrop2.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.tv.userdef.backdrop1.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.tv.userdef.backdrop2.any", string.Empty);
           PrevSelectedTVUser = -1;
         }
         if (SupportsRandomImages("useRandomTVSeriesFanart").Equals("True", StringComparison.CurrentCulture) && propertiesRandomPerm.Contains("#fanarthandler.tvseries.backdrop"))
@@ -811,30 +811,30 @@ namespace FanartHandler
             if (DoShowImageOneRandom)
             {
               AddPropertyRandom("#fanarthandler.tvseries.backdrop1.any", str2, ref ListAnyTVSeries, doPerm);
-              var property = GUIPropertyManager.GetProperty("#fanarthandler.tvseries.backdrop2.any");
+              var property = Utils.GetProperty("#fanarthandler.tvseries.backdrop2.any");
               if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                 AddPropertyRandom("#fanarthandler.tvseries.backdrop2.any", str2, ref ListAnyTVSeries, doPerm);
             }
             else
             {
               AddPropertyRandom("#fanarthandler.tvseries.backdrop2.any", str2, ref ListAnyTVSeries, doPerm);
-              var property = GUIPropertyManager.GetProperty("#fanarthandler.tvseries.backdrop1.any");
+              var property = Utils.GetProperty("#fanarthandler.tvseries.backdrop1.any");
               if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                 AddPropertyRandom("#fanarthandler.tvseries.backdrop1.any", str2, ref ListAnyTVSeries, doPerm);
             }
           }
           else
           {
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.tvseries.backdrop1.any", string.Empty);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.tvseries.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.tvseries.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.tvseries.backdrop2.any", string.Empty);
             PrevSelectedTVSeries = -1;
           }
         }
         else
         {
           FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyTVSeries);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.tvseries.backdrop1.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.tvseries.backdrop2.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.tvseries.backdrop1.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.tvseries.backdrop2.any", string.Empty);
           PrevSelectedTVSeries = -1;
         }
         if (SupportsRandomImages("useRandomPicturesUserFanart").Equals("True", StringComparison.CurrentCulture) && propertiesRandomPerm.Contains("#fanarthandler.picture.userdef.backdrop"))
@@ -845,30 +845,30 @@ namespace FanartHandler
             if (DoShowImageOneRandom)
             {
               AddPropertyRandom("#fanarthandler.picture.userdef.backdrop1.any", str2, ref ListAnyPicturesUser, doPerm);
-              var property = GUIPropertyManager.GetProperty("#fanarthandler.picture.userdef.backdrop2.any");
+              var property = Utils.GetProperty("#fanarthandler.picture.userdef.backdrop2.any");
               if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                 AddPropertyRandom("#fanarthandler.picture.userdef.backdrop2.any", str2, ref ListAnyPicturesUser, doPerm);
             }
             else
             {
               AddPropertyRandom("#fanarthandler.picture.userdef.backdrop2.any", str2, ref ListAnyPicturesUser, doPerm);
-              var property = GUIPropertyManager.GetProperty("#fanarthandler.picture.userdef.backdrop1.any");
+              var property = Utils.GetProperty("#fanarthandler.picture.userdef.backdrop1.any");
               if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                 AddPropertyRandom("#fanarthandler.picture.userdef.backdrop1.any", str2, ref ListAnyPicturesUser, doPerm);
             }
           }
           else
           {
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.picture.userdef.backdrop1.any", string.Empty);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.picture.userdef.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.picture.userdef.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.picture.userdef.backdrop2.any", string.Empty);
             PrevSelectedPicturesUser = -1;
           }
         }
         else
         {
           FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyPicturesUser);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.picture.userdef.backdrop1.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.picture.userdef.backdrop2.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.picture.userdef.backdrop1.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.picture.userdef.backdrop2.any", string.Empty);
           PrevSelectedPicturesUser = -1;
         }
         if (SupportsRandomImages("useRandomGamesUserFanart").Equals("True", StringComparison.CurrentCulture) && propertiesRandomPerm.Contains("#fanarthandler.games.userdef.backdrop"))
@@ -879,30 +879,30 @@ namespace FanartHandler
             if (DoShowImageOneRandom)
             {
               AddPropertyRandom("#fanarthandler.games.userdef.backdrop1.any", str2, ref ListAnyGamesUser, doPerm);
-              var property = GUIPropertyManager.GetProperty("#fanarthandler.games.userdef.backdrop2.any");
+              var property = Utils.GetProperty("#fanarthandler.games.userdef.backdrop2.any");
               if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                 AddPropertyRandom("#fanarthandler.games.userdef.backdrop2.any", str2, ref ListAnyGamesUser, doPerm);
             }
             else
             {
               AddPropertyRandom("#fanarthandler.games.userdef.backdrop2.any", str2, ref ListAnyGamesUser, doPerm);
-              var property = GUIPropertyManager.GetProperty("#fanarthandler.games.userdef.backdrop1.any");
+              var property = Utils.GetProperty("#fanarthandler.games.userdef.backdrop1.any");
               if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                 AddPropertyRandom("#fanarthandler.games.userdef.backdrop1.any", str2, ref ListAnyGamesUser, doPerm);
             }
           }
           else
           {
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.games.userdef.backdrop1.any", string.Empty);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.games.userdef.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.games.userdef.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.games.userdef.backdrop2.any", string.Empty);
             PrevSelectedGamesUser = -1;
           }
         }
         else
         {
           FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyGamesUser);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.games.userdef.backdrop1.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.games.userdef.backdrop2.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.games.userdef.backdrop1.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.games.userdef.backdrop2.any", string.Empty);
           PrevSelectedGamesUser = -1;
         }
         if (SupportsRandomImages("useRandomScoreCenterUserFanart").Equals("True", StringComparison.CurrentCulture) && propertiesRandomPerm.Contains("#fanarthandler.scorecenter.userdef.backdrop"))
@@ -913,30 +913,30 @@ namespace FanartHandler
             if (DoShowImageOneRandom)
             {
               AddPropertyRandom("#fanarthandler.scorecenter.userdef.backdrop1.any", str2, ref ListAnyScorecenterUser, doPerm);
-              var property = GUIPropertyManager.GetProperty("#fanarthandler.scorecenter.userdef.backdrop2.any");
+              var property = Utils.GetProperty("#fanarthandler.scorecenter.userdef.backdrop2.any");
               if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                 AddPropertyRandom("#fanarthandler.scorecenter.userdef.backdrop2.any", str2, ref ListAnyScorecenterUser, doPerm);
             }
             else
             {
               AddPropertyRandom("#fanarthandler.scorecenter.userdef.backdrop2.any", str2, ref ListAnyScorecenterUser, doPerm);
-              var property = GUIPropertyManager.GetProperty("#fanarthandler.scorecenter.userdef.backdrop1.any");
+              var property = Utils.GetProperty("#fanarthandler.scorecenter.userdef.backdrop1.any");
               if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                 AddPropertyRandom("#fanarthandler.scorecenter.userdef.backdrop1.any", str2, ref ListAnyScorecenterUser, doPerm);
             }
           }
           else
           {
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scorecenter.userdef.backdrop1.any", string.Empty);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scorecenter.userdef.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.scorecenter.userdef.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.scorecenter.userdef.backdrop2.any", string.Empty);
             PrevSelectedScorecenterUser = -1;
           }
         }
         else
         {
           FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyScorecenterUser);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scorecenter.userdef.backdrop1.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.scorecenter.userdef.backdrop2.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.scorecenter.userdef.backdrop1.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.scorecenter.userdef.backdrop2.any", string.Empty);
           PrevSelectedScorecenterUser = -1;
         }
         if (SupportsRandomImages("useRandomPluginsUserFanart").Equals("True", StringComparison.CurrentCulture) && propertiesRandomPerm.Contains("#fanarthandler.plugins.userdef.backdrop"))
@@ -947,30 +947,30 @@ namespace FanartHandler
             if (DoShowImageOneRandom)
             {
               AddPropertyRandom("#fanarthandler.plugins.userdef.backdrop1.any", str2, ref ListAnyPluginsUser, doPerm);
-              var property = GUIPropertyManager.GetProperty("#fanarthandler.plugins.userdef.backdrop2.any");
+              var property = Utils.GetProperty("#fanarthandler.plugins.userdef.backdrop2.any");
               if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                 AddPropertyRandom("#fanarthandler.plugins.userdef.backdrop2.any", str2, ref ListAnyPluginsUser, doPerm);
             }
             else
             {
               AddPropertyRandom("#fanarthandler.plugins.userdef.backdrop2.any", str2, ref ListAnyPluginsUser, doPerm);
-              var property = GUIPropertyManager.GetProperty("#fanarthandler.plugins.userdef.backdrop1.any");
+              var property = Utils.GetProperty("#fanarthandler.plugins.userdef.backdrop1.any");
               if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
                 AddPropertyRandom("#fanarthandler.plugins.userdef.backdrop1.any", str2, ref ListAnyPluginsUser, doPerm);
             }
           }
           else
           {
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.plugins.userdef.backdrop1.any", string.Empty);
-            FanartHandlerSetup.Fh.SetProperty("#fanarthandler.plugins.userdef.backdrop2.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.plugins.userdef.backdrop1.any", string.Empty);
+            Utils.SetProperty("#fanarthandler.plugins.userdef.backdrop2.any", string.Empty);
             PrevSelectedPluginsUser = -1;
           }
         }
         else
         {
           FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyPluginsUser);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.plugins.userdef.backdrop1.any", string.Empty);
-          FanartHandlerSetup.Fh.SetProperty("#fanarthandler.plugins.userdef.backdrop2.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.plugins.userdef.backdrop1.any", string.Empty);
+          Utils.SetProperty("#fanarthandler.plugins.userdef.backdrop2.any", string.Empty);
           PrevSelectedPluginsUser = -1;
         }
         ResetCurrCountRandom();
@@ -1197,7 +1197,7 @@ namespace FanartHandler
         var index = 0;
         foreach (DictionaryEntry dictionaryEntry in PropertiesRandom)
         {
-          FanartHandlerSetup.Fh.SetProperty(dictionaryEntry.Key.ToString(), dictionaryEntry.Value.ToString());
+          Utils.SetProperty(dictionaryEntry.Key.ToString(), dictionaryEntry.Value.ToString());
           hashtable.Add(index, dictionaryEntry.Key.ToString());
           checked { ++index; }
         }
