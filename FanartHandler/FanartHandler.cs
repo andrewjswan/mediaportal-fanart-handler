@@ -46,6 +46,7 @@ namespace FanartHandler
     internal int SyncPointRefresh;
     internal int SyncPointScraper;
     internal int SyncPointPictures;
+    internal int SyncPointDefaultBackdrops;
 
     private string m_CurrentTitleTag;
     private string m_CurrentTrackTag;
@@ -68,6 +69,7 @@ namespace FanartHandler
     private DirectoryWorker MyDirectoryWorker;
     private RefreshWorker MyRefreshWorker;
     private PicturesWorker MyPicturesWorker;
+    private DefaultBackdropWorker MyDefaultBackdropWorker;
 
     internal FileSystemWatcher MyFileWatcher { get; set; }
     internal ScraperNowWorker MyScraperNowWorker { get; set; }
@@ -330,35 +332,6 @@ namespace FanartHandler
       AddToDirectoryTimerQueue(FileName);
     }
 
-    internal void SetupDefaultBackdrops(string StartDir, ref int i)
-    {
-      if (!Utils.UseDefaultBackdrop)
-        return;
-
-      try
-      {
-        foreach (var file in Directory.GetFiles(StartDir, Utils.DefaultBackdropMask))
-        {
-          try
-          {
-            DefaultBackdropImages.Add(i, file);
-          }
-          catch (Exception ex)
-          {
-            logger.Error("SetupDefaultBackdrops: " + ex);
-          }
-          checked { ++i; }
-        }
-        // Include SubFolders
-        foreach (var SubDir in Directory.GetDirectories(StartDir))
-          SetupDefaultBackdrops(SubDir, ref i);
-      }
-      catch (Exception ex)
-      {
-        logger.Error("SetupDefaultBackdrops: " + ex);
-      }
-    }
-
     internal void AddToDirectoryTimerQueue(string param)
     {
       try
@@ -520,8 +493,8 @@ namespace FanartHandler
               foreach (FanartImage fanartImage in values1)
               {
                 if ((num1 > iFilePrev || iFilePrev == -1) && 
-                    Utils.CheckImageResolution(fanartImage.DiskImage, category, Utils.UseAspectRatio) && 
-                    Utils.IsFileValid(fanartImage.DiskImage)
+                    Utils.IsFileValid(fanartImage.DiskImage) &&
+                    Utils.CheckImageResolution(fanartImage.DiskImage, category, Utils.UseAspectRatio)
                    )
                 {
                   str = fanartImage.DiskImage;
@@ -542,8 +515,8 @@ namespace FanartHandler
                 foreach (FanartImage fanartImage in values2)
                 {
                   if ((num3 > iFilePrev || iFilePrev == -1) && 
-                      Utils.CheckImageResolution(fanartImage.DiskImage, category, Utils.UseAspectRatio) && 
-                      Utils.IsFileValid(fanartImage.DiskImage)
+                      Utils.IsFileValid(fanartImage.DiskImage) &&
+                      Utils.CheckImageResolution(fanartImage.DiskImage, category, Utils.UseAspectRatio)
                      )
                   {
                     str = fanartImage.DiskImage;
@@ -592,8 +565,8 @@ namespace FanartHandler
                 foreach (string filename in values1)
                 {
                   if ((num1 > iFilePrev || iFilePrev == -1) &&  
-                      Utils.CheckImageResolution(filename, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio) && 
-                      Utils.IsFileValid(filename)
+                      Utils.IsFileValid(filename) &&
+                      Utils.CheckImageResolution(filename, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio)
                      )
                   {
                     str = filename;
@@ -614,8 +587,8 @@ namespace FanartHandler
                   foreach (string filename in values2)
                   {
                     if ((num3 > iFilePrev || iFilePrev == -1) && // WTF? iFilePrev always -1
-                        Utils.CheckImageResolution(filename, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio) && 
-                        Utils.IsFileValid(filename)
+                        Utils.IsFileValid(filename) &&
+                        Utils.CheckImageResolution(filename, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio)
                        )
                     {
                       str = filename;
@@ -661,8 +634,8 @@ namespace FanartHandler
                 foreach (string filename in values1)
                 {
                   if ((num1 > iFilePrev || iFilePrev == -1) &&  
-                      Utils.CheckImageResolution(filename, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio) && 
-                      Utils.IsFileValid(filename)
+                      Utils.IsFileValid(filename) &&
+                      Utils.CheckImageResolution(filename, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio)
                      )
                   {
                     str = filename;
@@ -683,8 +656,8 @@ namespace FanartHandler
                   foreach (string filename in values2)
                   {
                     if ((num3 > iFilePrev || iFilePrev == -1) && // WTF? iFilePrev always -1
-                        Utils.CheckImageResolution(filename, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio) && 
-                        Utils.IsFileValid(filename)
+                        Utils.IsFileValid(filename) &&
+                        Utils.CheckImageResolution(filename, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio)
                        )
                     {
                       str = filename;
@@ -881,6 +854,7 @@ namespace FanartHandler
       SyncPointDirectoryUpdate = 0;
       SyncPointScraper = 0;
       SyncPointPictures = 0;
+      SyncPointDefaultBackdrops = 0;
       m_CurrentTrackTag = null;
       m_CurrentAlbumTag = null;
       m_CurrentTitleTag = null;
@@ -1055,17 +1029,24 @@ namespace FanartHandler
         SetupVariables();
         Utils.SetupDirectories();
         //
-        var i = 0;
+        logger.Debug("Default backdrops ["+Utils.UseDefaultBackdrop+" - "+Utils.DefaultBackdropMask+"] for Music" + (Utils.DefaultBackdropIsImage ? ":"+Utils.DefaultBackdrop : "."));
         if (Utils.DefaultBackdropIsImage)
         {
           DefaultBackdropImages.Add(0, Utils.DefaultBackdrop);
         }
         else
         {
-          SetupDefaultBackdrops(Utils.DefaultBackdrop, ref i);
-          Utils.Shuffle(ref defaultBackdropImages);
+          if (Utils.UseDefaultBackdrop)
+          {
+            if (!Utils.GetIsStopping() && SyncPointDefaultBackdrops == 0)
+            {
+              MyDefaultBackdropWorker = new DefaultBackdropWorker();
+              MyDefaultBackdropWorker.ProgressChanged += new ProgressChangedEventHandler(MyDefaultBackdropWorker.OnProgressChanged);
+              MyDefaultBackdropWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(MyDefaultBackdropWorker.OnRunWorkerCompleted);
+              MyDefaultBackdropWorker.RunWorkerAsync();
+            }
+          }
         }
-        logger.Debug("Default backdrops ["+Utils.UseDefaultBackdrop+" - "+Utils.DefaultBackdropMask+"] for Music found: " + defaultBackdropImages.Count);
         logger.Debug("MyPictures backdrops "+Utils.Check(Utils.UseMyPicturesSlideShow));
         if (Utils.UseMyPicturesSlideShow)
         {
@@ -1746,6 +1727,11 @@ namespace FanartHandler
         {
           MyPicturesWorker.CancelAsync();
           MyPicturesWorker.Dispose();
+        }
+        if (MyDefaultBackdropWorker != null)
+        {
+          MyDefaultBackdropWorker.CancelAsync();
+          MyDefaultBackdropWorker.Dispose();
         }
         if (Utils.GetDbm() != null)
           Utils.GetDbm().Close();

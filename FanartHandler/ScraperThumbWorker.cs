@@ -42,11 +42,9 @@ namespace FanartHandler
           onlyMissing = true;
 
         Utils.GetDbm().InitialThumbScrape(onlyMissing);
-        Thread.Sleep(2000);
-
-        Utils.GetDbm().IsScraping = false;
 
         ReportProgress(100, "Done");
+        Utils.ThreadToSleep();
         e.Result = 0;
       }
       catch (Exception ex)
@@ -66,14 +64,14 @@ namespace FanartHandler
       {
         Utils.ReleaseDelayStop("FanartHandlerSetup-ThumbScraper");
         FanartHandlerSetup.Fh.SyncPointScraper = 0;
+        Utils.ThreadToSleep();
 
+        Utils.GetDbm().IsScraping = false;
         if (!Utils.GetIsStopping())
         {
-          Thread.Sleep(500); // 1000
           Utils.GetDbm().TotArtistsBeingScraped = 0.0;
           Utils.GetDbm().CurrArtistsBeingScraped = 0.0;
         }
-        // FanartHandlerConfig F = new FanartHandlerConfig();
         FanartHandlerSetup.FhC.StopThumbScraper(FanartHandlerSetup.FhC.oMissing);
       }
       catch (Exception ex)

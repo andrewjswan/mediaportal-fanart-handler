@@ -206,7 +206,7 @@ namespace FanartHandler
           {
             if (num < 2)
             {
-              if (Utils.CheckImageResolution(fanartImage.DiskImage, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio) && Utils.IsFileValid(fanartImage.DiskImage))
+              if (Utils.IsFileValid(fanartImage.DiskImage) && Utils.CheckImageResolution(fanartImage.DiskImage, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio))
               {
                 hashtable1.Add(num, fanartImage.DiskImage);
                 checked { ++num; }

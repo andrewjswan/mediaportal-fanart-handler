@@ -145,6 +145,9 @@
     <Compile Include="PicturesWorker.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="DefaultBackdropWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="SearchResults.cs" />
     <Compile Include="SplashPane.cs">
       <SubType>Form</SubType>

@@ -84,6 +84,7 @@ namespace FanartHandler
     public static bool ShowDummyItems { get; set; }
     public static bool AddAdditionalSeparators { get; set; }
     public static bool UseMyPicturesSlideShow { get; set; }
+    public static bool FastScanMyPicturesSlideShow { get; set; }
     #endregion
 
     #region Providers
@@ -1158,13 +1159,20 @@ namespace FanartHandler
         return;
 
       var num1 = checked (filenames.Count - 1);
-      while (num1 > 0)
+      try
       {
-        var num2 = random.Next(checked (num1 + 1));
-        var obj = filenames[num1];
-        filenames[num1] = filenames[num2];
-        filenames[num2] = obj;
-        checked { --num1; }
+        while (num1 > 0)
+        {
+          var num2 = random.Next(checked (num1 + 1));
+          var obj = filenames[num1];
+          filenames[num1] = filenames[num2];
+          filenames[num2] = obj;
+          checked { --num1; }
+        }
+      }
+      catch  (Exception ex)
+      {
+        logger.Error("Shuffle: " + ex);
       }
     }
 
@@ -1602,6 +1610,7 @@ namespace FanartHandler
       ShowDummyItems = false;
       AddAdditionalSeparators = false;
       UseMyPicturesSlideShow = false;
+      FastScanMyPicturesSlideShow = false;
       #endregion
       #region Init Providers
       UseFanartTV = true;
@@ -1666,6 +1675,7 @@ namespace FanartHandler
           UseMinimumResolutionForDownload = settings.GetValueAsBool("FanartHandler", "UseMinimumResolutionForDownload", UseMinimumResolutionForDownload);
           ShowDummyItems = settings.GetValueAsBool("FanartHandler", "ShowDummyItems", ShowDummyItems);
           UseMyPicturesSlideShow = settings.GetValueAsBool("FanartHandler", "UseMyPicturesSlideShow", UseMyPicturesSlideShow);
+          UseMyPicturesSlideShow = settings.GetValueAsBool("FanartHandler", "FastScanMyPicturesSlideShow", FastScanMyPicturesSlideShow);
           //
           UseFanartTV = settings.GetValueAsBool("Providers", "UseFanartTV", UseFanartTV);
           UseHtBackdrops = settings.GetValueAsBool("Providers", "UseHtBackdrops", UseHtBackdrops);
@@ -1765,6 +1775,7 @@ namespace FanartHandler
           xmlwriter.SetValueAsBool("FanartHandler", "UseMinimumResolutionForDownload", UseMinimumResolutionForDownload);
           xmlwriter.SetValueAsBool("FanartHandler", "ShowDummyItems", ShowDummyItems);
           xmlwriter.SetValueAsBool("FanartHandler", "UseMyPicturesSlideShow", UseMyPicturesSlideShow);
+          // xmlwriter.SetValueAsBool("FanartHandler", "FastScanMyPicturesSlideShow", FastScanMyPicturesSlideShow);
           //
           xmlwriter.SetValueAsBool("Providers", "UseFanartTV", UseFanartTV);
           xmlwriter.SetValueAsBool("Providers", "UseHtBackdrops", UseHtBackdrops);

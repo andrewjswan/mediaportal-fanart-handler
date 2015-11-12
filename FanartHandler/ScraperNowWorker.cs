@@ -61,6 +61,9 @@ namespace FanartHandler
         album = strArray[1];
         triggerRefresh = false;
 
+        Utils.GetDbm().TotArtistsBeingScraped = 0.0;
+        Utils.GetDbm().CurrArtistsBeingScraped = 0.0;
+
         Utils.GetDbm().IsScraping = true;
         Utils.AllocateDelayStop("FanartHandlerSetup-ScraperNowPlaying");
         Utils.SetProperty("#fanartHandler.scraper.task", Translation.ScrapeNowPlaying);
@@ -69,9 +72,9 @@ namespace FanartHandler
         FanartHandlerSetup.Fh.ShowScraperProgressIndicator();
 
         Utils.GetDbm().NowPlayingScrape(artist, album);
-        Utils.GetDbm().IsScraping = false;
 
         ReportProgress(100, "Done");
+        Utils.ThreadToSleep();
         e.Result = 0;
       }
       catch (Exception ex)
@@ -88,6 +91,7 @@ namespace FanartHandler
           return;
 
         Utils.SetProperty("#fanarthandler.scraper.percent.completed", string.Empty + e.ProgressPercentage);
+        Utils.SetProperty("#fanarthandler.scraper.percent.sign", Translation.StatusPercent);
         Utils.ThreadToSleep();
       }
       catch (Exception ex)
@@ -102,13 +106,14 @@ namespace FanartHandler
       {
         Utils.ReleaseDelayStop("FanartHandlerSetup-ScraperNowPlaying");
         FanartHandlerSetup.Fh.SyncPointScraper = 0;
+        Utils.ThreadToSleep();
 
         FanartHandlerSetup.Fh.FP.AddPlayingArtistPropertys(string.Empty, string.Empty, true);
 
         if (Utils.GetIsStopping())
           return;
 
-        // Thread.Sleep(500); // 1000
+        Utils.GetDbm().IsScraping = false;
         FanartHandlerSetup.Fh.HideScraperProgressIndicator();
         Utils.SetProperty("#fanarthandler.scraper.task", string.Empty);
         Utils.SetProperty("#fanarthandler.scraper.percent.completed", string.Empty);
@@ -117,7 +122,6 @@ namespace FanartHandler
         Utils.GetDbm().TotArtistsBeingScraped = 0.0;
         Utils.GetDbm().CurrArtistsBeingScraped = 0.0;
 
-        // FanartHandlerSetup.Fh.FP.RefreshMusicPlayingProperties();
         FanartHandlerSetup.Fh.FP.AddPlayingArtistPropertys(artist, album, true);
       }
       catch (Exception ex)

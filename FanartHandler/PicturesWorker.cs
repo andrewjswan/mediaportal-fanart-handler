@@ -161,11 +161,17 @@ namespace FanartHandler
         {
           try
           {
-              if (Utils.CheckImageResolution(file, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio) && Utils.IsFileValid(file))
+              bool flag = Utils.FastScanMyPicturesSlideShow;
+              if (!flag)
               {
-                  // slideShowImages.Add(i.ToString(), file);
-                  FanartHandlerSetup.Fh.SlideShowImages.Add(i, file);
-                  checked { ++i; }
+                flag = (Utils.IsFileValid(file) && Utils.CheckImageResolution(file, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio));
+              }
+              
+              if (flag)
+              {
+                // slideShowImages.Add(i.ToString(), file);
+                FanartHandlerSetup.Fh.SlideShowImages.Add(i, file);
+                checked { ++i; }
               }
           }
           catch (Exception ex)
