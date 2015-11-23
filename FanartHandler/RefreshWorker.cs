@@ -46,6 +46,15 @@ namespace FanartHandler
       if (Utils.GetIsStopping())
         return;
 
+      if (!Utils.GetDbm().isDBInit)
+      {
+        logger.Debug("Wait for DB...");
+      }
+      while (!Utils.GetDbm().isDBInit)
+      {
+        Thread.Sleep(500);
+      }
+
       var ActiveWindow = GUIWindowManager.ActiveWindow;
       var IsIdle = Utils.IsIdle();
       // logger.Debug("*** AW: "+ActiveWindow);

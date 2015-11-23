@@ -32,6 +32,16 @@ namespace FanartHandler
       {
         if (Utils.GetIsStopping() || Interlocked.CompareExchange(ref FanartHandlerSetup.Fh.SyncPointScraper, 1, 0) != 0)
           return;
+
+        if (!Utils.GetDbm().isDBInit)
+        {
+          logger.Debug("Wait for DB...");
+        }
+        while (!Utils.GetDbm().isDBInit)
+        {
+          Thread.Sleep(500);
+        }
+
         Thread.CurrentThread.Priority = !FanartHandlerSetup.Fh.FHThreadPriority.Equals("Lowest", StringComparison.CurrentCulture) ? ThreadPriority.BelowNormal : ThreadPriority.Lowest;
         Thread.CurrentThread.Name = "ScraperWorker";
         TriggerRefresh = false;

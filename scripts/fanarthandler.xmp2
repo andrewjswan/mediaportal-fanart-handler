@@ -564,11 +564,10 @@ cul8er</Value>
        * push random images from selected folders
 
 </ExtensionDescription>
-    <VersionDescription>* Cosmetic
-</VersionDescription>
+    <VersionDescription>* Fix for suspend/resume</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-{VERSION}.MPE1</OnlineLocation>
-    <ReleaseDate>2015-11-12T15:04:24</ReleaseDate>
+    <ReleaseDate>2015-11-23T15:04:24</ReleaseDate>
     <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper</Tags>
     <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
     <Params>

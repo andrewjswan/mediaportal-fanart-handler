@@ -32,7 +32,7 @@ namespace FanartHandler
         private ArrayList videoDatabaseMovies;
         private List<AlbumInfo> musicDatabaseAlbums;
         private Scraper scraper;
-
+        private bool DBIsInit = false;
 
         public bool IsScraping { get; set; }
 
@@ -50,6 +50,12 @@ namespace FanartHandler
 
         public bool StopScraper { get; set; }
 
+        public bool isDBInit
+        {
+          get { return DBIsInit; }
+          set { DBIsInit = value; }
+        }
+
         static DatabaseManager()
         {
         }
@@ -63,6 +69,7 @@ namespace FanartHandler
         public void InitDB(string type)
         {
             logger.Debug("initDB: Start: "+type);
+            DBIsInit = false;
             try
             {
                 IsScraping = false;
@@ -89,6 +96,8 @@ namespace FanartHandler
 
                 if (HtAnyFanart == null)
                   HtAnyFanart = new Hashtable();
+
+                DBIsInit = true;
 
                 try
                 {
@@ -119,6 +128,7 @@ namespace FanartHandler
                     dbClient.Dispose();
                 }
                 dbClient = null;
+                DBIsInit = false;
             }
             catch (Exception ex)
             {
