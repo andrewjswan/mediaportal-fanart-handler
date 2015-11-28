@@ -65,7 +65,7 @@ namespace FanartHandler
         {
           DebugStep = 2;
           var window = GUIWindowManager.GetWindow(ActiveWindow);
-          if (window != null && ActiveWindow == 2 && window.GetFocusControlId() == 50)
+          if (window != null && window.GetFocusControlId() == 50)
           {
             DebugStep = 3;
             var property = Utils.GetProperty("#selecteditem");

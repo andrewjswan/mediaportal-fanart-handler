@@ -985,31 +985,34 @@ namespace FanartHandler
 
     private string SupportsRandomImages(string type)
     {
-      var skinFile = (SkinFile) WindowsUsingFanartRandom[GUIWindowManager.ActiveWindow.ToString(CultureInfo.CurrentCulture)];
-      if (skinFile != null)
+      if (GUIWindowManager.ActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
       {
-        if (type.Equals("useRandomGamesUserFanart", StringComparison.CurrentCulture))
-          return skinFile.UseRandomGamesFanartUser;
-        if (type.Equals("useRandomMoviesUserFanart", StringComparison.CurrentCulture))
-          return skinFile.UseRandomMoviesFanartUser;
-        if (type.Equals("useRandomMoviesScraperFanart", StringComparison.CurrentCulture))
-          return skinFile.UseRandomMoviesFanartScraper;
-        if (type.Equals("useRandomMovingPicturesFanart", StringComparison.CurrentCulture))
-          return skinFile.UseRandomMovingPicturesFanart;
-        if (type.Equals("useRandomMusicUserFanart", StringComparison.CurrentCulture))
-          return skinFile.UseRandomMusicFanartUser;
-        if (type.Equals("useRandomMusicScraperFanart", StringComparison.CurrentCulture))
-          return skinFile.UseRandomMusicFanartScraper;
-        if (type.Equals("useRandomPicturesUserFanart", StringComparison.CurrentCulture))
-          return skinFile.UseRandomPicturesFanartUser;
-        if (type.Equals("useRandomScoreCenterUserFanart", StringComparison.CurrentCulture))
-          return skinFile.UseRandomScoreCenterFanartUser;
-        if (type.Equals("useRandomTVSeriesFanart", StringComparison.CurrentCulture))
-          return skinFile.UseRandomTVSeriesFanart;
-        if (type.Equals("useRandomTVUserFanart", StringComparison.CurrentCulture))
-          return skinFile.UseRandomTVFanartUser;
-        if (type.Equals("useRandomPluginsUserFanart", StringComparison.CurrentCulture))
-          return skinFile.UseRandomPluginsFanartUser;
+        var skinFile = (SkinFile) WindowsUsingFanartRandom[GUIWindowManager.ActiveWindow.ToString(CultureInfo.CurrentCulture)];
+        if (skinFile != null)
+        {
+          if (type.Equals("useRandomGamesUserFanart", StringComparison.CurrentCulture))
+            return skinFile.UseRandomGamesFanartUser;
+          if (type.Equals("useRandomMoviesUserFanart", StringComparison.CurrentCulture))
+            return skinFile.UseRandomMoviesFanartUser;
+          if (type.Equals("useRandomMoviesScraperFanart", StringComparison.CurrentCulture))
+            return skinFile.UseRandomMoviesFanartScraper;
+          if (type.Equals("useRandomMovingPicturesFanart", StringComparison.CurrentCulture))
+            return skinFile.UseRandomMovingPicturesFanart;
+          if (type.Equals("useRandomMusicUserFanart", StringComparison.CurrentCulture))
+            return skinFile.UseRandomMusicFanartUser;
+          if (type.Equals("useRandomMusicScraperFanart", StringComparison.CurrentCulture))
+            return skinFile.UseRandomMusicFanartScraper;
+          if (type.Equals("useRandomPicturesUserFanart", StringComparison.CurrentCulture))
+            return skinFile.UseRandomPicturesFanartUser;
+          if (type.Equals("useRandomScoreCenterUserFanart", StringComparison.CurrentCulture))
+            return skinFile.UseRandomScoreCenterFanartUser;
+          if (type.Equals("useRandomTVSeriesFanart", StringComparison.CurrentCulture))
+            return skinFile.UseRandomTVSeriesFanart;
+          if (type.Equals("useRandomTVUserFanart", StringComparison.CurrentCulture))
+            return skinFile.UseRandomTVFanartUser;
+          if (type.Equals("useRandomPluginsUserFanart", StringComparison.CurrentCulture))
+            return skinFile.UseRandomPluginsFanartUser;
+        }
       }
       return "False";
     }
@@ -1229,15 +1232,21 @@ namespace FanartHandler
 
     public void ShowImageOneRandom(int windowId)
     {
-      GUIControl.ShowControl(windowId, 91919297);
-      GUIControl.HideControl(windowId, 91919298);
+      if (windowId > (int)GUIWindow.Window.WINDOW_INVALID)
+      {
+        GUIControl.ShowControl(windowId, 91919297);
+        GUIControl.HideControl(windowId, 91919298);
+      }
       DoShowImageOneRandom = false ;
     }
 
     public void ShowImageTwoRandom(int windowId)
     {
-      GUIControl.ShowControl(windowId, 91919298);
-      GUIControl.HideControl(windowId, 91919297);
+      if (windowId > (int)GUIWindow.Window.WINDOW_INVALID)
+      {
+        GUIControl.ShowControl(windowId, 91919298);
+        GUIControl.HideControl(windowId, 91919297);
+      }
       DoShowImageOneRandom = true ;
     }
 

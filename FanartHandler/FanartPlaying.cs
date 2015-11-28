@@ -480,24 +480,36 @@ namespace FanartHandler
 
     public void ShowImageOnePlay(int windowId)
     {
-      GUIControl.ShowControl(windowId, 91919295);
-      GUIControl.HideControl(windowId, 91919296);
+      if (windowId > (int)GUIWindow.Window.WINDOW_INVALID)
+      {
+        GUIControl.ShowControl(windowId, 91919295);
+        GUIControl.HideControl(windowId, 91919296);
+      }
     }
 
     public void ShowImageTwoPlay(int windowId)
     {
-      GUIControl.ShowControl(windowId, 91919296);
-      GUIControl.HideControl(windowId, 91919295);
+      if (windowId > (int)GUIWindow.Window.WINDOW_INVALID)
+      {
+        GUIControl.ShowControl(windowId, 91919296);
+        GUIControl.HideControl(windowId, 91919295);
+      }
     }
 
     public void FanartIsAvailablePlay(int windowId)
     {
-      GUIControl.ShowControl(windowId, 91919294);
+      if (windowId > (int)GUIWindow.Window.WINDOW_INVALID)
+      {
+        GUIControl.ShowControl(windowId, 91919294);
+      }
     }
 
     public void FanartIsNotAvailablePlay(int windowId)
     {
-      GUIControl.HideControl(windowId, 91919294);
+      if (windowId > (int)GUIWindow.Window.WINDOW_INVALID)
+      {
+        GUIControl.HideControl(windowId, 91919294);
+      }
     }
   }
 }

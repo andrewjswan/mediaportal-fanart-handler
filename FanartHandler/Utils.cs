@@ -1372,11 +1372,15 @@ namespace FanartHandler
       {
         result = GUIPropertyManager.GetProperty(property);
         if (string.IsNullOrEmpty(result))
-          return result;
+        {
+          result = string.Empty;
+        }
 
         result = result.Trim();
         if (result.Equals(property, StringComparison.CurrentCultureIgnoreCase))
+        {
           result = string.Empty;
+        }
         //logger.Debug("GetProperty: "+property+" -> "+value) ;
       }
       catch (Exception ex)

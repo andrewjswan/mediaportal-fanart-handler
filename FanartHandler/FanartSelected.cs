@@ -81,6 +81,11 @@ namespace FanartHandler
         if (Utils.GetIsStopping())
           return;
 
+        if (currSelectedGeneric == null)
+          currSelectedGeneric = string.Empty;
+        if (currSelectedGenericTitle == null)
+          currSelectedGenericTitle = string.Empty;
+
         var isMusic = (property.Equals("music", StringComparison.CurrentCulture));
         var isVideo = (property.Equals("movie", StringComparison.CurrentCulture));
         var isMusicVideo = false;
@@ -131,9 +136,9 @@ namespace FanartHandler
           var mvcAlbum = Utils.GetProperty("#Play.Current.mvAlbum");
           var mvcPlay = Utils.GetProperty("#mvCentral.isPlaying");
 
-          var selAlbumArtist = Utils.GetProperty("#Play.Current.AlbumArtist").Trim();
-          var selArtist = Utils.GetProperty("#Play.Current.Artist").Trim();
-          var selTitle = Utils.GetProperty("#Play.Current.Title").Trim();
+          var selAlbumArtist = Utils.GetProperty("#Play.Current.AlbumArtist");
+          var selArtist = Utils.GetProperty("#Play.Current.Artist");
+          var selTitle = Utils.GetProperty("#Play.Current.Title");
 
           if (!string.IsNullOrEmpty(selArtist))
             if (!string.IsNullOrEmpty(selAlbumArtist))
@@ -204,7 +209,7 @@ namespace FanartHandler
                                                     Utils.GetProperty("#title")) : 
                                                  movieID;
           SelectedGenre = Utils.GetProperty("#genre").Replace(" / ", "|").Replace(", ", "|");
-          SelectedStudios = Utils.GetProperty("#studios").Trim().Replace(" / ", "|").Replace(", ", "|");
+          SelectedStudios = Utils.GetProperty("#studios").Replace(" / ", "|").Replace(", ", "|");
           // logger.Debug("*** "+movieID+" - "+Utils.GetProperty("#selecteditem")+" - "+Utils.GetProperty("#title")+" - "+Utils.GetProperty("#myvideosuserfanart")+" -> "+FanartHandlerSetup.Fh.SelectedItem+" - "+SelectedGenre);
         }
         else if (GUIWindowManager.ActiveWindow == 96742)     // Moving Pictures
@@ -304,20 +309,21 @@ namespace FanartHandler
             }
 
             newFanart = FanartHandlerSetup.Fh.GetFilename(FanartHandlerSetup.Fh.SelectedItem, SelectedAlbum, ref currSelectedGeneric, ref PrevSelectedGeneric, category, "FanartSelected", flag, isMusic);
-            if (newFanart.Length == 0 && (GUIWindowManager.ActiveWindow == 2003 || GUIWindowManager.ActiveWindow == 6 || GUIWindowManager.ActiveWindow == 25))  // Dialog Video Info || My Video || My Video Title
+            if (string.IsNullOrEmpty(newFanart) && (GUIWindowManager.ActiveWindow == 2003 || GUIWindowManager.ActiveWindow == 6 || GUIWindowManager.ActiveWindow == 25))  // Dialog Video Info || My Video || My Video Title
               newFanart = Utils.GetProperty("#myvideosuserfanart");
-            if (newFanart.Length == 0 && (GUIWindowManager.ActiveWindow == 2003 || GUIWindowManager.ActiveWindow == 6 || GUIWindowManager.ActiveWindow == 25))  // Dialog Video Info || My Video || My Video Title
+            if (string.IsNullOrEmpty(newFanart) && (GUIWindowManager.ActiveWindow == 2003 || GUIWindowManager.ActiveWindow == 6 || GUIWindowManager.ActiveWindow == 25))  // Dialog Video Info || My Video || My Video Title
               newFanart = FanartHandlerSetup.Fh.GetFilename(GUIWindowManager.ActiveWindow != 2003 ? Utils.GetProperty("#selecteditem") : Utils.GetProperty("#title"), null, ref currSelectedGeneric, ref PrevSelectedGeneric, category, "FanartSelected", true, isMusic);
             // Genre
-            if (newFanart.Length == 0 && !string.IsNullOrEmpty(SelectedGenre) && Utils.UseGenreFanart)
+            if (string.IsNullOrEmpty(newFanart) && !string.IsNullOrEmpty(SelectedGenre) && Utils.UseGenreFanart)
               newFanart = FanartHandlerSetup.Fh.GetFilename(SelectedGenre, null, ref currSelectedGeneric, ref PrevSelectedGeneric, category, "FanartSelected", flag, isMusic);
             // Random
-            if (newFanart.Length == 0 && isMusic)
+            if (string.IsNullOrEmpty(newFanart) && isMusic)
               newFanart = FanartHandlerSetup.Fh.GetRandomDefaultBackdrop(ref currSelectedGeneric, ref PrevSelectedGeneric);
 
-            if (newFanart.Length == 0)
+            if (string.IsNullOrEmpty(newFanart))
             {
               FanartAvailable = false;
+              newFanart = string.Empty;
             }
             else
             {
@@ -333,7 +339,7 @@ namespace FanartHandler
                 AddProperty("#fanarthandler." + property + ".backdrop2.selected", newFanart, ref listSelectedGeneric);
             }
 
-            if (newFanart.Length == 0 || !newFanart.Equals(oldFanart, StringComparison.CurrentCulture))
+            if (string.IsNullOrEmpty(newFanart) || !newFanart.Equals(oldFanart, StringComparison.CurrentCulture))
               ResetCurrCount();
             //
             currSelectedGenericTitle = FanartHandlerSetup.Fh.SelectedItem;
@@ -604,6 +610,9 @@ namespace FanartHandler
     {
       try
       {
+        if (GUIWindowManager.ActiveWindow == (int)GUIWindow.Window.WINDOW_INVALID)
+          return null;
+
         var selectedListItem = GUIControl.GetSelectedListItem(GUIWindowManager.ActiveWindow, 50);
         if (selectedListItem == null)
           return null;
@@ -958,26 +967,38 @@ namespace FanartHandler
 
     public void FanartIsAvailable(int windowId)
     {
-      GUIControl.ShowControl(windowId, 91919293);
+      if (windowId > (int)GUIWindow.Window.WINDOW_INVALID)
+      {
+        GUIControl.ShowControl(windowId, 91919293);
+      }
     }
 
     public void FanartIsNotAvailable(int windowId)
     {
-      GUIControl.HideControl(windowId, 91919293);
+      if (windowId > (int)GUIWindow.Window.WINDOW_INVALID)
+      {
+        GUIControl.HideControl(windowId, 91919293);
+      }
     }
 
     public void ShowImageOne(int windowId)
     {
-      // logger.Debug ("*** First fanart visible ...") ;
-      GUIControl.ShowControl(windowId, 91919291);
-      GUIControl.HideControl(windowId, 91919292);
+      if (windowId > (int)GUIWindow.Window.WINDOW_INVALID)
+      {
+        // logger.Debug ("*** First fanart visible ...") ;
+        GUIControl.ShowControl(windowId, 91919291);
+        GUIControl.HideControl(windowId, 91919292);
+      }
     }
 
     public void ShowImageTwo(int windowId)
     {
-      // logger.Debug ("*** Second fanart visible ...") ;
-      GUIControl.ShowControl(windowId, 91919292);
-      GUIControl.HideControl(windowId, 91919291);
+      if (windowId > (int)GUIWindow.Window.WINDOW_INVALID)
+      {
+        // logger.Debug ("*** Second fanart visible ...") ;
+        GUIControl.ShowControl(windowId, 91919292);
+        GUIControl.HideControl(windowId, 91919291);
+      }
     }
   }
 }

@@ -1617,12 +1617,18 @@ namespace FanartHandler
 
     internal void ShowScraperProgressIndicator()
     {
-      GUIControl.ShowControl(GUIWindowManager.ActiveWindow, 91919280);
+      if (GUIWindowManager.ActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
+      {
+        GUIControl.ShowControl(GUIWindowManager.ActiveWindow, 91919280);
+      }
     }
 
     internal void HideScraperProgressIndicator()
     {
-      GUIControl.HideControl(GUIWindowManager.ActiveWindow, 91919280);
+      if (GUIWindowManager.ActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
+      {
+        GUIControl.HideControl(GUIWindowManager.ActiveWindow, 91919280);
+      }
     }
 
     private void SetupConfigFile()
