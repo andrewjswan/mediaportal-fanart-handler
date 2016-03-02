@@ -1,12 +1,14 @@
-using System;
-using System.IO;
-using System.Drawing;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
+// Type: FanartHandler.Logos
+// Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
+// MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
+
 using MediaPortal.GUI.Library;
-using System.Globalization;
+
 using NLog;
+
+using System;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace FanartHandler
 {
@@ -29,7 +31,7 @@ namespace FanartHandler
           DynLogos = new List<string>();
         }
 
-        public static string BuildConcatImage(string Cat, List<string> logosForBuilding)
+        public static string BuildConcatImage(string Cat, List<string> logosForBuilding, bool bVertical = false)
         {
             try
             {
@@ -37,11 +39,13 @@ namespace FanartHandler
                 {
                     string tmpFile = string.Empty;
                     foreach (string logo in logosForBuilding)
+                    {
                       tmpFile += System.IO.Path.GetFileNameWithoutExtension(logo);
-                    // tmpFile = Path.Combine(PathfortmpFile, "FanartDynLogo" + tmpFile + ".png");
+                      // tmpFile = Path.Combine(PathfortmpFile, "FanartDynLogo" + tmpFile + ".png");
+                    }
                     tmpFile = @"skin\" + Cat + @"\" + tmpFile.Replace(";","-").Replace(" ","") + ".png";
 
-                    return BuildImages(logosForBuilding, tmpFile);
+                    return BuildImages(logosForBuilding, tmpFile, bVertical);
                 }
                 else return string.Empty;
             }
@@ -52,7 +56,7 @@ namespace FanartHandler
             }
         }
 
-        static string BuildImages(List<string> logosForBuilding, string sFileName)
+        static string BuildImages(List<string> logosForBuilding, string sFileName, bool bVertical = false)
         {
             List<Image> imgs    = new List<Image>();
             List<Size> imgSizes = new List<Size>();
@@ -67,51 +71,83 @@ namespace FanartHandler
             bool equal   = false;
             for (int i = 0; i < logosForBuilding.Count; i++)
             {
-                try
-                {
-                    single = Utils.LoadImageFastFromFile(logosForBuilding[i]);
+              try
+              {
+                single = Utils.LoadImageFastFromFile(logosForBuilding[i]);
 
-                    equal = false;
-                    for (int j = 0; j < imgs.Count; j++)
-                    {
-                       equal = (ComparingImages.Compare(new Bitmap(single), new Bitmap(imgs[j])) == ComparingImages.CompareResult.ciCompareOk);
-                       if (equal) 
-                       {
-                         logger.Debug("Skip: Image " + logosForBuilding[i] + " already added.");
-                         break ;
-                       }
-                    }
-                    if (equal) continue ;
-                }
-                catch (Exception)
+                equal = false;
+                for (int j = 0; j < imgs.Count; j++)
                 {
-                    logger.Error("Skip: Could not load Image file... " + logosForBuilding[i]);
-                    continue;
+                  equal = (ComparingImages.Compare(new Bitmap(single), new Bitmap(imgs[j])) == ComparingImages.CompareResult.ciCompareOk);
+                  if (equal) 
+                  {
+                    logger.Debug("Skip: Image " + logosForBuilding[i] + " already added.");
+                    break ;
+                  }
                 }
-                // logger.Debug("*** Logos ["+(i+1)+"/"+logosForBuilding.Count+"] "+logosForBuilding[i]);
+                if (equal) continue ;
+              }
+              catch (Exception)
+              {
+                logger.Error("Skip: Could not load Image file... " + logosForBuilding[i]);
+                continue;
+              }
+              // logger.Debug("*** Logos ["+(i+1)+"/"+logosForBuilding.Count+"] "+logosForBuilding[i]);
 
-                tmp = new Size((int)(single.Width), (int)(single.Height));
+              tmp = new Size((int)(single.Width), (int)(single.Height));
+              if (bVertical)
+              {
+                imgWidth = (single.Width > imgWidth) ? single.Width : imgWidth;
+                imgHeight += tmp.Height;
+              }
+              else
+              {
                 imgWidth += tmp.Width;
-                imgHeight = (single.Height > imgHeight) ? single.Height : imgHeight ;
+                imgHeight = (single.Height > imgHeight) ? single.Height : imgHeight;
+              }
 
-                imgSizes.Add(tmp);
-                imgs.Add(single);
+              imgSizes.Add(tmp);
+              imgs.Add(single);
             }
             // logger.Debug("*** Logos ["+imgs.Count+"] "+sFileName+" - W["+imgWidth+"] H["+imgHeight+"]");
 
             // step two: Scale all images
             float scale = 0;
-            imgWidth    = 0;
+            if (bVertical)
+            {
+              imgHeight = 0;
+            }
+            else
+            {
+              imgWidth = 0;
+            }
+
             for (int i = 0; i < imgSizes.Count; i++)
             {
+              if (bVertical)
+              {
+                scale = (float)imgWidth / (float)imgSizes[i].Width;
+                imgSizes[i] = new Size((int)(imgSizes[i].Width / scale), (int)(imgSizes[i].Height / scale));
+                imgHeight += imgSizes[i].Height;
+              }
+              else
+              {
                 scale = (float)imgHeight / (float)imgSizes[i].Height;
                 imgSizes[i] = new Size((int)(imgSizes[i].Width / scale), (int)(imgSizes[i].Height / scale));
                 imgWidth += imgSizes[i].Width;
+              }
             }
             // logger.Debug("*** Logos ["+imgs.Count+"] "+sFileName+" - SW["+imgWidth+"] SH["+imgHeight+"]");
 
             // step three: add spacers
-            imgWidth += (imgs.Count - 1) * spacer;
+            if (bVertical)
+            {
+              imgHeight += (imgs.Count - 1) * spacer;
+            }
+            else
+            {
+              imgWidth += (imgs.Count - 1) * spacer;
+            }
             // logger.Debug("*** Logos ["+imgs.Count+"] "+sFileName+" - TW["+imgWidth+"] TH["+imgHeight+"]");
 
             // step four: finally draw them
@@ -119,28 +155,37 @@ namespace FanartHandler
             Image img = b;
             Graphics g = Graphics.FromImage(img);
 
-            int x_pos    = 0;
+            int x_pos = 0;
+            int y_pos = 0;
             for (int i = 0; i < imgs.Count; i++)
             {
+              if (bVertical)
+              {
+                g.DrawImage(imgs[i], imgWidth - imgSizes[i].Width, y_pos, imgSizes[i].Width, imgSizes[i].Height);
+                y_pos += imgSizes[i].Height + spacer;
+              }
+              else
+              {
                 g.DrawImage(imgs[i], x_pos, imgHeight - imgSizes[i].Height, imgSizes[i].Width, imgSizes[i].Height);
                 x_pos += imgSizes[i].Width + spacer;
+              }
             }
 
             // step five: build image in memory
             string name = "[FanartHandler:" + sFileName.Trim() + "]";
             try
             {                
-                // we don't have to try first, if name already exists mp will not do anything with the image
-                GUITextureManager.LoadFromMemory(b, name, 0, imgWidth, imgHeight);
-                // logger.Debug("*** Logos ["+name+"] to MP's Graphics memory added.");
+              // we don't have to try first, if name already exists mp will not do anything with the image
+              GUITextureManager.LoadFromMemory(b, name, 0, imgWidth, imgHeight);
+              // logger.Debug("*** Logos ["+name+"] to MP's Graphics memory added.");
 
-                if (!string.IsNullOrEmpty(name) && !DynLogos.Contains(name))
-                  DynLogos.Add(name);
+              if (!string.IsNullOrEmpty(name) && !DynLogos.Contains(name))
+                DynLogos.Add(name);
             }
             catch (Exception)
             {
-                logger.Error("BuildImages: Unable to add to MP's Graphics memory: " + name);
-                return string.Empty;
+              logger.Error("BuildImages: Unable to add to MP's Graphics memory: " + name);
+              return string.Empty;
             }
             return name;
         }

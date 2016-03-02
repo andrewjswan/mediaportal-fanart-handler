@@ -1,12 +1,11 @@
 ﻿// Type: FanartHandler.ScraperThumbWorker
-// Assembly: FanartHandler, Version=3.1.0.0, Culture=neutral, PublicKeyToken=null
+// Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
-// Assembly location: D:\Mes documents\Desktop\FanartHandler.dll
 
 using NLog;
+
 using System;
 using System.ComponentModel;
-using System.IO;
 using System.Threading;
 
 namespace FanartHandler
@@ -32,18 +31,11 @@ namespace FanartHandler
         if (Utils.GetIsStopping() || Interlocked.CompareExchange(ref FanartHandlerSetup.Fh.SyncPointScraper, 1, 0) != 0)
           return;
 
-        if (!Utils.GetDbm().isDBInit)
-        {
-          logger.Debug("Wait for DB...");
-        }
-        while (!Utils.GetDbm().isDBInit)
-        {
-          Thread.Sleep(500);
-        }
+        Utils.WaitForDB();        
 
         Thread.CurrentThread.Priority = !FanartHandlerSetup.Fh.FHThreadPriority.Equals("Lowest", StringComparison.CurrentCulture) ? ThreadPriority.BelowNormal : ThreadPriority.Lowest;
         Thread.CurrentThread.Name = "ScraperWorker";
-        Utils.GetDbm().IsScraping = true;
+        Utils.IsScraping = true;
         Utils.AllocateDelayStop("FanartHandlerSetup-ThumbScraper");
 
         var strArray = e.Argument as string[];
@@ -76,11 +68,11 @@ namespace FanartHandler
         FanartHandlerSetup.Fh.SyncPointScraper = 0;
         Utils.ThreadToSleep();
 
-        Utils.GetDbm().IsScraping = false;
+        Utils.IsScraping = false;
         if (!Utils.GetIsStopping())
         {
-          Utils.GetDbm().TotArtistsBeingScraped = 0.0;
-          Utils.GetDbm().CurrArtistsBeingScraped = 0.0;
+          Utils.TotArtistsBeingScraped = 0.0;
+          Utils.CurrArtistsBeingScraped = 0.0;
         }
         FanartHandlerSetup.FhC.StopThumbScraper(FanartHandlerSetup.FhC.oMissing);
       }

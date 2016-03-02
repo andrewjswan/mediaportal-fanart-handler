@@ -1,18 +1,14 @@
 ﻿// Type: FanartHandler.DefaultBackdropWorker
-// Assembly: FanartHandler, Version=3.1.0.0, Culture=neutral, PublicKeyToken=null
+// Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
-// Assembly location: D:\Mes documents\Desktop\FanartHandler.dll
 
 using NLog;
 
 using System;
-using System.IO;
-using System.Collections;
 using System.ComponentModel;
+using System.IO;
 using System.Threading;
 
-using MediaPortal.Profile;
-using MediaPortal.Configuration;
 
 namespace FanartHandler
 {
@@ -44,7 +40,7 @@ namespace FanartHandler
         Thread.CurrentThread.Name = "DefaultBackdropWorker";
 
         Utils.AllocateDelayStop("FanartHandler-DefaultBackdropScan");
-        Utils.SetProperty("#fanarthandler.defaultbackdrop.scan", "true");
+        Utils.SetProperty("defaultbackdrop.scan", "true");
 
         InitDefaultBackdrops();
 
@@ -81,9 +77,9 @@ namespace FanartHandler
         if (Utils.GetIsStopping())
           return;
 
-        Utils.SetProperty("#fanarthandler.defaultbackdrop.scan", "false");
+        Utils.SetProperty("defaultbackdrop.scan", "false");
 
-        logger.Debug("Default backdrops "+Utils.Check(Utils.UseDefaultBackdrop)+" found: " + FanartHandlerSetup.Fh.DefaultBackdropImages.Count);
+        logger.Debug("Default backdrops "+Utils.Check(Utils.UseDefaultBackdrop)+" found: " + Utils.DefaultBackdropImages.Count);
       }
       catch (Exception ex)
       {
@@ -118,7 +114,7 @@ namespace FanartHandler
         {
           try
           {
-            FanartHandlerSetup.Fh.DefaultBackdropImages.Add(i, file);
+            Utils.DefaultBackdropImages.Add(i, new FanartImage("", "", file, "", "", ""));
           }
           catch (Exception ex)
           {

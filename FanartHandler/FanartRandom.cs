@@ -1,47 +1,48 @@
 ﻿// Type: FanartHandler.FanartRandom
-// Assembly: FanartHandler, Version=3.1.0.0, Culture=neutral, PublicKeyToken=null
+// Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
-// Assembly location: D:\Mes documents\Desktop\FanartHandler.dll
 
 using MediaPortal.GUI.Library;
+
 using NLog;
+
 using System;
 using System.Collections;
 using System.Globalization;
-using System.IO;
-using System.Xml.XPath;
+using System.Threading.Tasks;
 
 namespace FanartHandler
 {
   internal class FanartRandom
   {
+    // Private
     private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-    private bool doShowImageOneRandom = true;
-    private bool firstRandom = true;
+    private bool DoShowImageOneRandom = true;
+    private Hashtable propertiesRandom;
 
-    public ArrayList ListAnyGamesUser;
-    public ArrayList ListAnyMoviesScraper;
-    public ArrayList ListAnyMoviesUser;
-    public ArrayList ListAnyMovingPictures;
-    public ArrayList ListAnyMusicScraper;
-    public ArrayList ListAnyMusicUser;
-    public ArrayList ListAnyPicturesUser;
-    public ArrayList ListAnyPluginsUser;
-    public ArrayList ListAnyScorecenterUser;
-    public ArrayList ListAnyTVSeries;
-    public ArrayList ListAnyTVUser;
+    private ArrayList ListAnyGamesUser;
+    private ArrayList ListAnyMoviesScraper;
+    private ArrayList ListAnyMoviesUser;
+    private ArrayList ListAnyMovingPictures;
+    private ArrayList ListAnyMusicScraper;
+    private ArrayList ListAnyMusicUser;
+    private ArrayList ListAnyPicturesUser;
+    private ArrayList ListAnyPluginsUser;
+    private ArrayList ListAnyScorecenterUser;
+    private ArrayList ListAnyTVSeries;
+    private ArrayList ListAnyTVUser;
 
-    public int PrevSelectedGamesUser;
-    public int PrevSelectedMoviesScraper;
-    public int PrevSelectedMoviesUser;
-    public int PrevSelectedMovingPictures;
-    public int PrevSelectedMusicScraper;
-    public int PrevSelectedMusicUser;
-    public int PrevSelectedPicturesUser;
-    public int PrevSelectedPluginsUser;
-    public int PrevSelectedScorecenterUser;
-    public int PrevSelectedTVSeries;
-    public int PrevSelectedTVUser;
+    private int PrevSelectedGamesUser;
+    private int PrevSelectedMoviesScraper;
+    private int PrevSelectedMoviesUser;
+    private int PrevSelectedMovingPictures;
+    private int PrevSelectedMusicScraper;
+    private int PrevSelectedMusicUser;
+    private int PrevSelectedPicturesUser;
+    private int PrevSelectedPluginsUser;
+    private int PrevSelectedScorecenterUser;
+    private int PrevSelectedTVSeries;
+    private int PrevSelectedTVUser;
 
     private string currAnyGamesUser;
     private string currAnyMoviesScraper;
@@ -55,52 +56,135 @@ namespace FanartHandler
     private string currAnyTVSeries;
     private string currAnyTVUser;
 
-    private Hashtable htAny;
-    private Hashtable propertiesRandomPerm;
-
-    public int CurrCountRandom { get; set; }
-
-    public Random RandAnyGamesUser { get; set; }
-    public Random RandAnyMoviesUser { get; set; }
-    public Random RandAnyMoviesScraper { get; set; }
-    public Random RandAnyMovingPictures { get; set; }
-    public Random RandAnyMusicUser { get; set; }
-    public Random RandAnyMusicScraper { get; set; }
-    public Random RandAnyPicturesUser { get; set; }
-    public Random RandAnyScorecenterUser { get; set; }
-    public Random RandAnyTVSeries { get; set; }
-    public Random RandAnyTVUser { get; set; }
-    public Random RandAnyPluginsUser { get; set; }
-
-    public bool WindowOpen { get; set; }
-
+    // Public
+    public int RefreshTickCount { get; set; }
     public int CountSetVisibility { get; set; }
-    public int UpdateVisibilityCountRandom { get; set; }
+
+    public bool FanartAvailable { get; set; }
+    public bool IsRandom { get; set; }
 
     public Hashtable WindowsUsingFanartRandom { get; set; }
 
-    public Hashtable PropertiesRandom { get; set; }
-
-    public Hashtable PropertiesRandomPerm
-    {
-      get { return propertiesRandomPerm; }
-      set { propertiesRandomPerm = value; }
-    }
-
-    public bool DoShowImageOneRandom
-    {
-      get { return doShowImageOneRandom; }
-      set { doShowImageOneRandom = value; }
-    }
-
-    public bool FirstRandom
-    {
-      get { return firstRandom; }
-      set { firstRandom = value; }
-    }
-
+    // 
     static FanartRandom()
     {
+    }
+
+    public FanartRandom()
+    {
+      FanartAvailable = false;
+
+      PrevSelectedGamesUser = -1;
+      PrevSelectedMoviesScraper = -1;
+      PrevSelectedMoviesUser = -1;
+      PrevSelectedMovingPictures = -1;
+      PrevSelectedMusicScraper = -1;
+      PrevSelectedMusicUser = -1;
+      PrevSelectedPicturesUser = -1;
+      PrevSelectedPluginsUser = -1;
+      PrevSelectedScorecenterUser = -1;
+      PrevSelectedTVSeries = -1;
+      PrevSelectedTVUser = -1;
+
+      currAnyGamesUser = string.Empty;
+      currAnyMoviesScraper = string.Empty;
+      currAnyMoviesUser = string.Empty;
+      currAnyMovingPictures = string.Empty;
+      currAnyMusicScraper = string.Empty;
+      currAnyMusicUser = string.Empty;
+      currAnyPicturesUser = string.Empty;
+      currAnyPluginsUser = string.Empty;
+      currAnyScorecenterUser = string.Empty;
+      currAnyTVSeries = string.Empty;
+      currAnyTVUser = string.Empty;
+
+      DoShowImageOneRandom = true;
+
+      RefreshTickCount = 0;
+      CountSetVisibility = 0;
+
+      propertiesRandom = new Hashtable();
+
+      ListAnyGamesUser = new ArrayList();
+      ListAnyMoviesUser = new ArrayList();
+      ListAnyMoviesScraper = new ArrayList();
+      ListAnyMovingPictures = new ArrayList();
+      ListAnyMusicUser = new ArrayList();
+      ListAnyMusicScraper = new ArrayList();
+      ListAnyPicturesUser = new ArrayList();
+      ListAnyScorecenterUser = new ArrayList();
+      ListAnyTVSeries = new ArrayList();
+      ListAnyTVUser = new ArrayList();
+      ListAnyPluginsUser = new ArrayList();
+
+      IsRandom = false;
+
+      WindowsUsingFanartRandom = new Hashtable();
+    }
+
+    public bool CheckValidWindowIDForFanart()
+    {
+      return (Utils.ContainsID(WindowsUsingFanartRandom));
+    }
+
+    #region Refresh Random Image Properties
+    public void RefreshRandomMoviesImageProperties(RefreshWorker rw)
+    {
+      FillPropertyRandom(Utils.Category.MovieManual, ref currAnyMoviesUser, ref PrevSelectedMoviesUser, "movie.userdef", ref ListAnyMoviesUser);
+      FillPropertyRandom(Utils.Category.MovieScraped, ref currAnyMoviesScraper, ref PrevSelectedMoviesScraper, "movie.scraper", ref ListAnyMoviesScraper);
+      FillPropertyRandom(Utils.Category.MovingPictureManual, ref currAnyMovingPictures, ref PrevSelectedMovingPictures, "movingpicture", ref ListAnyMovingPictures);
+      if (rw != null /*&& WindowOpen*/)
+        rw.ReportProgress(10, "Movies Updated Properties");
+    }
+
+    public void RefreshRandomMusicImageProperties(RefreshWorker rw)
+    {
+      FillPropertyRandom(Utils.Category.MusicFanartManual, ref currAnyMusicUser, ref PrevSelectedMusicUser, "music.userdef", ref ListAnyMusicUser);
+      FillPropertyRandom(Utils.Category.MusicFanartScraped, ref currAnyMusicScraper, ref PrevSelectedMusicScraper, "music.scraper", ref ListAnyMusicScraper);
+      if (rw != null /*&& WindowOpen*/)
+        rw.ReportProgress(10, "Music Updated Properties");
+    }
+
+    public void RefreshRandomTVImageProperties(RefreshWorker rw)
+    {
+      FillPropertyRandom(Utils.Category.TvManual, ref currAnyTVUser, ref PrevSelectedTVUser, "tv.userdef", ref ListAnyTVUser);
+      if (rw != null /*&& WindowOpen*/)
+        rw.ReportProgress(10, "TV Updated Properties");
+    }
+
+    public void RefreshRandomTVSeriesImageProperties(RefreshWorker rw)
+    {
+      FillPropertyRandom(Utils.Category.TvSeriesScraped, ref currAnyTVSeries, ref PrevSelectedTVSeries, "tvseries", ref ListAnyTVSeries);
+      if (rw != null /*&& WindowOpen*/)
+        rw.ReportProgress(10, "TVSeries Updated Properties");
+    }
+
+    public void RefreshRandomPicturesImageProperties(RefreshWorker rw)
+    {
+      FillPropertyRandom(Utils.Category.PictureManual, ref currAnyPicturesUser, ref PrevSelectedPicturesUser, "picture.userdef", ref ListAnyPicturesUser);
+      if (rw != null /*&& WindowOpen*/)
+        rw.ReportProgress(10, "Pictures Updated Properties");
+    }
+
+    public void RefreshRandomGamesImageProperties(RefreshWorker rw)
+    {
+      FillPropertyRandom(Utils.Category.GameManual, ref currAnyGamesUser, ref PrevSelectedGamesUser, "games.userdef", ref ListAnyGamesUser);
+      if (rw != null /*&& WindowOpen*/)
+        rw.ReportProgress(10, "Games Updated Properties");
+    }
+
+    public void RefreshRandomScoreCenterImageProperties(RefreshWorker rw)
+    {
+      FillPropertyRandom(Utils.Category.SportsManual, ref currAnyScorecenterUser, ref PrevSelectedScorecenterUser, "scorecenter.userdef", ref ListAnyScorecenterUser);
+      if (rw != null /*&& WindowOpen*/)
+        rw.ReportProgress(10, "ScoreCenter Updated Properties");
+    }
+
+    public void RefreshRandomPluginsImageProperties(RefreshWorker rw)
+    {
+      FillPropertyRandom(Utils.Category.PluginManual, ref currAnyPluginsUser, ref PrevSelectedPluginsUser, "plugins.userdef", ref ListAnyPluginsUser);
+      if (rw != null /*&& WindowOpen*/)
+        rw.ReportProgress(10, "PlugIns Updated Properties");
     }
 
     public void RefreshRandomImageProperties(RefreshWorker rw)
@@ -110,475 +194,27 @@ namespace FanartHandler
         if (Utils.GetIsStopping())
           return;
 
-        var doPerm = false;
-        if (PropertiesRandomPerm.Count == 0)
-          doPerm = true;
-
-        if (CurrCountRandom >= FanartHandlerSetup.Fh.MaxCountImage || FirstRandom || CurrCountRandom == 0)
+        if (RefreshTickCount >= Utils.MaxRefreshTickCount || RefreshTickCount == 0)
         {
+          // var stopwatch = System.Diagnostics.Stopwatch.StartNew();
           var str = string.Empty;
-          #region Movies
-          if (SupportsRandomImages("useRandomMoviesUserFanart").Equals("True", StringComparison.CurrentCulture))
-          {
-            var randomFilename = GetRandomFilename(ref currAnyMoviesUser, Utils.Category.MovieManual, ref PrevSelectedMoviesUser);
-            if (!string.IsNullOrEmpty(randomFilename))
-            {
-              if (DoShowImageOneRandom)
-              {
-                AddPropertyRandom("#fanarthandler.movie.userdef.backdrop1.any", randomFilename, ref ListAnyMoviesUser, doPerm);
-                var property = Utils.GetProperty("#fanarthandler.movie.userdef.backdrop2.any");
-                if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                  AddPropertyRandom("#fanarthandler.movie.userdef.backdrop2.any", randomFilename, ref ListAnyMoviesUser, doPerm);
-              }
-              else
-              {
-                AddPropertyRandom("#fanarthandler.movie.userdef.backdrop2.any", randomFilename, ref ListAnyMoviesUser, doPerm);
-                var property = Utils.GetProperty("#fanarthandler.movie.userdef.backdrop1.any");
-                if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                  AddPropertyRandom("#fanarthandler.movie.userdef.backdrop1.any", randomFilename, ref ListAnyMoviesUser, doPerm);
-              }
-              if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-                rw.ReportProgress(100, "Updated Properties");
-            }
-            else
-            {
-              Utils.SetProperty("#fanarthandler.movie.userdef.backdrop1.any", string.Empty);
-              Utils.SetProperty("#fanarthandler.movie.userdef.backdrop2.any", string.Empty);
-              PrevSelectedMoviesUser = -1;
-              if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-                rw.ReportProgress(100, "Updated Properties");
-            }
-          }
-          else
-          {
-            FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyMoviesUser);
-            Utils.SetProperty("#fanarthandler.movie.userdef.backdrop1.any", string.Empty);
-            Utils.SetProperty("#fanarthandler.movie.userdef.backdrop2.any", string.Empty);
-            PrevSelectedMoviesUser = -1;
-            if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-              rw.ReportProgress(100, "Updated Properties");
-          }
-          if (SupportsRandomImages("useRandomMoviesScraperFanart").Equals("True", StringComparison.CurrentCulture))
-          {
-            var randomFilename = GetRandomFilename(ref currAnyMoviesScraper, Utils.Category.MovieScraped, ref PrevSelectedMoviesScraper);
-            if (!string.IsNullOrEmpty(randomFilename))
-            {
-              if (DoShowImageOneRandom)
-              {
-                AddPropertyRandom("#fanarthandler.movie.scraper.backdrop1.any", randomFilename, ref ListAnyMoviesScraper, doPerm);
-                var property = Utils.GetProperty("#fanarthandler.movie.scraper.backdrop2.any");
-                if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                  AddPropertyRandom("#fanarthandler.movie.scraper.backdrop2.any", randomFilename, ref ListAnyMoviesScraper, doPerm);
-              }
-              else
-              {
-                AddPropertyRandom("#fanarthandler.movie.scraper.backdrop2.any", randomFilename, ref ListAnyMoviesScraper, doPerm);
-                var property = Utils.GetProperty("#fanarthandler.movie.scraper.backdrop1.any");
-                if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                  AddPropertyRandom("#fanarthandler.movie.scraper.backdrop1.any", randomFilename, ref ListAnyMoviesScraper, doPerm);
-              }
-              if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-                rw.ReportProgress(100, "Updated Properties");
-            }
-            else
-            {
-              Utils.SetProperty("#fanarthandler.scraper.movie.backdrop1.any", string.Empty);
-              Utils.SetProperty("#fanarthandler.scraper.movie.backdrop2.any", string.Empty);
-              PrevSelectedMoviesScraper = -1;
-              if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-                rw.ReportProgress(100, "Updated Properties");
-            }
-          }
-          else
-          {
-            FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyMoviesScraper);
-            Utils.SetProperty("#fanarthandler.movie.scraper.backdrop1.any", string.Empty);
-            Utils.SetProperty("#fanarthandler.movie.scraper.backdrop2.any", string.Empty);
-            PrevSelectedMoviesScraper = -1;
-            if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-              rw.ReportProgress(100, "Updated Properties");
-          }
-          if (SupportsRandomImages("useRandomMovingPicturesFanart").Equals("True", StringComparison.CurrentCulture))
-          {
-            var randomFilename = GetRandomFilename(ref currAnyMovingPictures, Utils.Category.MovingPictureManual, ref PrevSelectedMovingPictures);
-            if (!string.IsNullOrEmpty(randomFilename))
-            {
-              if (DoShowImageOneRandom)
-              {
-                AddPropertyRandom("#fanarthandler.movingpicture.backdrop1.any", randomFilename, ref ListAnyMovingPictures, doPerm);
-                var property = Utils.GetProperty("#fanarthandler.movingpicture.backdrop2.any");
-                if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                  AddPropertyRandom("#fanarthandler.movingpicture.backdrop2.any", randomFilename, ref ListAnyMovingPictures, doPerm);
-              }
-              else
-              {
-                AddPropertyRandom("#fanarthandler.movingpicture.backdrop2.any", randomFilename, ref ListAnyMovingPictures, doPerm);
-                var property = Utils.GetProperty("#fanarthandler.movingpicture.backdrop1.any");
-                if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                  AddPropertyRandom("#fanarthandler.movingpicture.backdrop1.any", randomFilename, ref ListAnyMovingPictures, doPerm);
-              }
-              if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-                rw.ReportProgress(100, "Updated Properties");
-            }
-            else
-            {
-              Utils.SetProperty("#fanarthandler.movingpicture.backdrop1.any", string.Empty);
-              Utils.SetProperty("#fanarthandler.movingpicture.backdrop2.any", string.Empty);
-              PrevSelectedMovingPictures = -1;
-              if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-                rw.ReportProgress(100, "Updated Properties");
-            }
-          }
-          else
-          {
-            FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyMovingPictures);
-            Utils.SetProperty("#fanarthandler.movingpicture.backdrop1.any", string.Empty);
-            Utils.SetProperty("#fanarthandler.movingpicture.backdrop2.any", string.Empty);
-            PrevSelectedMovingPictures = -1;
-            if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-              rw.ReportProgress(100, "Updated Properties");
-          }
-          #endregion
-          #region Music
-          if (SupportsRandomImages("useRandomMusicUserFanart").Equals("True", StringComparison.CurrentCulture))
-          {
-            var randomFilename = GetRandomFilename(ref currAnyMusicUser, Utils.Category.MusicFanartManual, ref PrevSelectedMusicUser);
-            if (!string.IsNullOrEmpty(randomFilename))
-            {
-              if (DoShowImageOneRandom)
-              {
-                AddPropertyRandom("#fanarthandler.music.userdef.backdrop1.any", randomFilename, ref ListAnyMusicUser, doPerm);
-                var property = Utils.GetProperty("#fanarthandler.music.userdef.backdrop2.any");
-                if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                  AddPropertyRandom("#fanarthandler.music.userdef.backdrop2.any", randomFilename, ref ListAnyMusicUser, doPerm);
-              }
-              else
-              {
-                AddPropertyRandom("#fanarthandler.music.userdef.backdrop2.any", randomFilename, ref ListAnyMusicUser, doPerm);
-                var property = Utils.GetProperty("#fanarthandler.music.userdef.backdrop1.any");
-                if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                  AddPropertyRandom("#fanarthandler.music.userdef.backdrop1.any", randomFilename, ref ListAnyMusicUser, doPerm);
-              }
-              if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-                rw.ReportProgress(100, "Updated Properties");
-            }
-            else
-            {
-              Utils.SetProperty("#fanarthandler.music.userdef.backdrop1.any", string.Empty);
-              Utils.SetProperty("#fanarthandler.music.userdef.backdrop2.any", string.Empty);
-              PrevSelectedMusicUser = -1;
-              if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-                rw.ReportProgress(100, "Updated Properties");
-            }
-          }
-          else
-          {
-            FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyMusicUser);
-            Utils.SetProperty("#fanarthandler.music.userdef.backdrop1.any", string.Empty);
-            Utils.SetProperty("#fanarthandler.music.userdef.backdrop2.any", string.Empty);
-            PrevSelectedMusicUser = -1;
-            if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-              rw.ReportProgress(100, "Updated Properties");
-          }
-          if (SupportsRandomImages("useRandomMusicScraperFanart").Equals("True", StringComparison.CurrentCulture))
-          {
-            var randomFilename = GetRandomFilename(ref currAnyMusicScraper, Utils.Category.MusicFanartScraped, ref PrevSelectedMusicScraper);
-            if (!string.IsNullOrEmpty(randomFilename))
-            {
-              if (DoShowImageOneRandom)
-              {
-                AddPropertyRandom("#fanarthandler.music.scraper.backdrop1.any", randomFilename, ref ListAnyMusicScraper, doPerm);
-                var property = Utils.GetProperty("#fanarthandler.music.scraper.backdrop2.any");
-                if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                  AddPropertyRandom("#fanarthandler.music.scraper.backdrop2.any", randomFilename, ref ListAnyMusicScraper, doPerm);
-              }
-              else
-              {
-                AddPropertyRandom("#fanarthandler.music.scraper.backdrop2.any", randomFilename, ref ListAnyMusicScraper, doPerm);
-                var property = Utils.GetProperty("#fanarthandler.music.scraper.backdrop1.any");
-                if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                  AddPropertyRandom("#fanarthandler.music.scraper.backdrop1.any", randomFilename, ref ListAnyMusicScraper, doPerm);
-              }
-              if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-                rw.ReportProgress(100, "Updated Properties");
-            }
-            else
-            {
-              Utils.SetProperty("#fanarthandler.music.scraper.backdrop1.any", string.Empty);
-              Utils.SetProperty("#fanarthandler.music.scraper.backdrop2.any", string.Empty);
-              PrevSelectedMusicScraper = -1;
-              if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-                rw.ReportProgress(100, "Updated Properties");
-            }
-          }
-          else
-          {
-            FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyMusicScraper);
-            Utils.SetProperty("#fanarthandler.music.scraper.backdrop1.any", string.Empty);
-            Utils.SetProperty("#fanarthandler.music.scraper.backdrop2.any", string.Empty);
-            PrevSelectedMusicScraper = -1;
-            if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-              rw.ReportProgress(100, "Updated Properties");
-          }
-          #endregion
-          #region TV
-          if (SupportsRandomImages("useRandomTVUserFanart").Equals("True", StringComparison.CurrentCulture))
-          {
-            var randomFilename = GetRandomFilename(ref currAnyTVUser, Utils.Category.TvManual, ref PrevSelectedTVUser);
-            if (!string.IsNullOrEmpty(randomFilename))
-            {
-              if (DoShowImageOneRandom)
-              {
-                AddPropertyRandom("#fanarthandler.tv.userdef.backdrop1.any", randomFilename, ref ListAnyTVUser, doPerm);
-                var property = Utils.GetProperty("#fanarthandler.tv.userdef.backdrop2.any");
-                if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                  AddPropertyRandom("#fanarthandler.tv.userdef.backdrop2.any", randomFilename, ref ListAnyTVUser, doPerm);
-              }
-              else
-              {
-                AddPropertyRandom("#fanarthandler.tv.userdef.backdrop2.any", randomFilename, ref ListAnyTVUser, doPerm);
-                var property = Utils.GetProperty("#fanarthandler.tv.backdrop1.any");
-                if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                  AddPropertyRandom("#fanarthandler.tv.userdef.backdrop1.any", randomFilename, ref ListAnyTVUser, doPerm);
-              }
-              if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-                rw.ReportProgress(100, "Updated Properties");
-            }
-            else
-            {
-              Utils.SetProperty("#fanarthandler.tv.userdef.backdrop1.any", string.Empty);
-              Utils.SetProperty("#fanarthandler.tv.userdef.backdrop2.any", string.Empty);
-              PrevSelectedTVUser = -1;
-              if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-                rw.ReportProgress(100, "Updated Properties");
-            }
-          }
-          else
-          {
-            FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyTVUser);
-            Utils.SetProperty("#fanarthandler.tv.userdef.backdrop1.any", string.Empty);
-            Utils.SetProperty("#fanarthandler.tv.userdef.backdrop2.any", string.Empty);
-            PrevSelectedTVUser = -1;
-            if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-              rw.ReportProgress(100, "Updated Properties");
-          }
-          #endregion
-          #region TVSeries
-          if (SupportsRandomImages("useRandomTVSeriesFanart").Equals("True", StringComparison.CurrentCulture))
-          {
-            var randomFilename = GetRandomFilename(ref currAnyTVSeries, Utils.Category.TvSeriesScraped, ref PrevSelectedTVSeries);
-            if (!string.IsNullOrEmpty(randomFilename))
-            {
-              if (DoShowImageOneRandom)
-              {
-                AddPropertyRandom("#fanarthandler.tvseries.backdrop1.any", randomFilename, ref ListAnyTVSeries, doPerm);
-                var property = Utils.GetProperty("#fanarthandler.tvseries.backdrop2.any");
-                if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                  AddPropertyRandom("#fanarthandler.tvseries.backdrop2.any", randomFilename, ref ListAnyTVSeries, doPerm);
-              }
-              else
-              {
-                AddPropertyRandom("#fanarthandler.tvseries.backdrop2.any", randomFilename, ref ListAnyTVSeries, doPerm);
-                var property = Utils.GetProperty("#fanarthandler.tvseries.backdrop1.any");
-                if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                  AddPropertyRandom("#fanarthandler.tvseries.backdrop1.any", randomFilename, ref ListAnyTVSeries, doPerm);
-              }
-              if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-                rw.ReportProgress(100, "Updated Properties");
-            }
-            else
-            {
-              Utils.SetProperty("#fanarthandler.tvseries.backdrop1.any", string.Empty);
-              Utils.SetProperty("#fanarthandler.tvseries.backdrop2.any", string.Empty);
-              PrevSelectedTVSeries = -1;
-              if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-                rw.ReportProgress(100, "Updated Properties");
-            }
-          }
-          else
-          {
-            FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyTVSeries);
-            Utils.SetProperty("#fanarthandler.tvseries.backdrop1.any", string.Empty);
-            Utils.SetProperty("#fanarthandler.tvseries.backdrop2.any", string.Empty);
-            PrevSelectedTVSeries = -1;
-            if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-              rw.ReportProgress(100, "Updated Properties");
-          }
-          #endregion
-          #region Pictures
-          if (SupportsRandomImages("useRandomPicturesUserFanart").Equals("True", StringComparison.CurrentCulture))
-          {
-            var randomFilename = GetRandomFilename(ref currAnyPicturesUser, Utils.Category.PictureManual, ref PrevSelectedPicturesUser);
-            if (!string.IsNullOrEmpty(randomFilename))
-            {
-              if (DoShowImageOneRandom)
-              {
-                AddPropertyRandom("#fanarthandler.picture.userdef.backdrop1.any", randomFilename, ref ListAnyPicturesUser, doPerm);
-                var property = Utils.GetProperty("#fanarthandler.picture.userdef.backdrop2.any");
-                if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                  AddPropertyRandom("#fanarthandler.picture.userdef.backdrop2.any", randomFilename, ref ListAnyPicturesUser, doPerm);
-              }
-              else
-              {
-                AddPropertyRandom("#fanarthandler.picture.userdef.backdrop2.any", randomFilename, ref ListAnyPicturesUser, doPerm);
-                var property = Utils.GetProperty("#fanarthandler.picture.userdef.backdrop1.any");
-                if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                  AddPropertyRandom("#fanarthandler.picture.userdef.backdrop1.any", randomFilename, ref ListAnyPicturesUser, doPerm);
-              }
-              if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-                rw.ReportProgress(100, "Updated Properties");
-            }
-            else
-            {
-              Utils.SetProperty("#fanarthandler.picture.userdef.backdrop1.any", string.Empty);
-              Utils.SetProperty("#fanarthandler.picture.userdef.backdrop2.any", string.Empty);
-              PrevSelectedPicturesUser = -1;
-              if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-                rw.ReportProgress(100, "Updated Properties");
-            }
-          }
-          else
-          {
-            FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyPicturesUser);
-            Utils.SetProperty("#fanarthandler.picture.userdef.backdrop1.any", string.Empty);
-            Utils.SetProperty("#fanarthandler.picture.userdef.backdrop2.any", string.Empty);
-            PrevSelectedPicturesUser = -1;
-            if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-              rw.ReportProgress(100, "Updated Properties");
-          }
-          #endregion
-          #region Games
-          if (SupportsRandomImages("useRandomGamesUserFanart").Equals("True", StringComparison.CurrentCulture))
-          {
-            var randomFilename = GetRandomFilename(ref currAnyGamesUser, Utils.Category.GameManual, ref PrevSelectedGamesUser);
-            if (!string.IsNullOrEmpty(randomFilename))
-            {
-              if (DoShowImageOneRandom)
-              {
-                AddPropertyRandom("#fanarthandler.games.userdef.backdrop1.any", randomFilename, ref ListAnyGamesUser, doPerm);
-                var property = Utils.GetProperty("#fanarthandler.games.userdef.backdrop2.any");
-                if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                  AddPropertyRandom("#fanarthandler.games.userdef.backdrop2.any", randomFilename, ref ListAnyGamesUser, doPerm);
-              }
-              else
-              {
-                AddPropertyRandom("#fanarthandler.games.userdef.backdrop2.any", randomFilename, ref ListAnyGamesUser, doPerm);
-                var property = Utils.GetProperty("#fanarthandler.games.userdef.backdrop1.any");
-                if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                  AddPropertyRandom("#fanarthandler.games.userdef.backdrop1.any", randomFilename, ref ListAnyGamesUser, doPerm);
-              }
-              if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-                rw.ReportProgress(100, "Updated Properties");
-            }
-            else
-            {
-              Utils.SetProperty("#fanarthandler.games.userdef.backdrop1.any", string.Empty);
-              Utils.SetProperty("#fanarthandler.games.userdef.backdrop2.any", string.Empty);
-              PrevSelectedGamesUser = -1;
-              if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-                rw.ReportProgress(100, "Updated Properties");
-            }
-          }
-          else
-          {
-            FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyGamesUser);
-            Utils.SetProperty("#fanarthandler.games.userdef.backdrop1.any", string.Empty);
-            Utils.SetProperty("#fanarthandler.games.userdef.backdrop2.any", string.Empty);
-            PrevSelectedGamesUser = -1;
-            if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-              rw.ReportProgress(100, "Updated Properties");
-          }
-          #endregion
-          #region ScoreCenter
-          if (SupportsRandomImages("useRandomScoreCenterUserFanart").Equals("True", StringComparison.CurrentCulture))
-          {
-            var randomFilename = GetRandomFilename(ref currAnyScorecenterUser, Utils.Category.SportsManual, ref PrevSelectedScorecenterUser);
-            if (!string.IsNullOrEmpty(randomFilename))
-            {
-              if (DoShowImageOneRandom)
-              {
-                AddPropertyRandom("#fanarthandler.scorecenter.userdef.backdrop1.any", randomFilename, ref ListAnyScorecenterUser, doPerm);
-                var property = Utils.GetProperty("#fanarthandler.scorecenter.userdef.backdrop2.any");
-                if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                  AddPropertyRandom("#fanarthandler.scorecenter.userdef.backdrop2.any", randomFilename, ref ListAnyScorecenterUser, doPerm);
-              }
-              else
-              {
-                AddPropertyRandom("#fanarthandler.scorecenter.userdef.backdrop2.any", randomFilename, ref ListAnyScorecenterUser, doPerm);
-                var property = Utils.GetProperty("#fanarthandler.scorecenter.userdef.backdrop1.any");
-                if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                  AddPropertyRandom("#fanarthandler.scorecenter.userdef.backdrop1.any", randomFilename, ref ListAnyScorecenterUser, doPerm);
-              }
-              if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-                rw.ReportProgress(100, "Updated Properties");
-            }
-            else
-            {
-              Utils.SetProperty("#fanarthandler.scorecenter.userdef.backdrop1.any", string.Empty);
-              Utils.SetProperty("#fanarthandler.scorecenter.userdef.backdrop2.any", string.Empty);
-              PrevSelectedScorecenterUser = -1;
-              if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-                rw.ReportProgress(100, "Updated Properties");
-            }
-          }
-          else
-          {
-            FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyScorecenterUser);
-            Utils.SetProperty("#fanarthandler.scorecenter.userdef.backdrop1.any", string.Empty);
-            Utils.SetProperty("#fanarthandler.scorecenter.userdef.backdrop2.any", string.Empty);
-            PrevSelectedScorecenterUser = -1;
-            if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-              rw.ReportProgress(100, "Updated Properties");
-          }
-          #endregion
-          #region PlugIns
-          if (SupportsRandomImages("useRandomPluginsUserFanart").Equals("True", StringComparison.CurrentCulture))
-          {
-            var randomFilename = GetRandomFilename(ref currAnyPluginsUser, Utils.Category.PluginManual, ref PrevSelectedPluginsUser);
-            if (!string.IsNullOrEmpty(randomFilename))
-            {
-              if (DoShowImageOneRandom)
-              {
-                AddPropertyRandom("#fanarthandler.plugins.userdef.backdrop1.any", randomFilename, ref ListAnyPluginsUser, doPerm);
-                var property = Utils.GetProperty("#fanarthandler.plugins.userdef.backdrop2.any");
-                if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                  AddPropertyRandom("#fanarthandler.plugins.userdef.backdrop2.any", randomFilename, ref ListAnyPluginsUser, doPerm);
-              }
-              else
-              {
-                AddPropertyRandom("#fanarthandler.plugins.userdef.backdrop2.any", randomFilename, ref ListAnyPluginsUser, doPerm);
-                var property = Utils.GetProperty("#fanarthandler.plugins.userdef.backdrop1.any");
-                if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                  AddPropertyRandom("#fanarthandler.plugins.userdef.backdrop1.any", randomFilename, ref ListAnyPluginsUser, doPerm);
-              }
-              if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-                rw.ReportProgress(100, "Updated Properties");
-            }
-            else
-            {
-              Utils.SetProperty("#fanarthandler.plugins.userdef.backdrop1.any", string.Empty);
-              Utils.SetProperty("#fanarthandler.plugins.userdef.backdrop2.any", string.Empty);
-              PrevSelectedPluginsUser = -1;
-              if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-                rw.ReportProgress(100, "Updated Properties");
-            }
-          }
-          else
-          {
-            FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyPluginsUser);
-            Utils.SetProperty("#fanarthandler.plugins.userdef.backdrop1.any", string.Empty);
-            Utils.SetProperty("#fanarthandler.plugins.userdef.backdrop2.any", string.Empty);
-            PrevSelectedPluginsUser = -1;
-            if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-              rw.ReportProgress(100, "Updated Properties");
-          }
-          #endregion
-          ResetCurrCountRandom();
-          FirstRandom = false;
-          if (rw != null && FanartHandlerSetup.Fh.FR.WindowOpen)
-            rw.ReportProgress(100, "Updated Properties");
+
+          Parallel.Invoke(() => { RefreshRandomMoviesImageProperties(rw); },
+                          () => { RefreshRandomMusicImageProperties(rw); },
+                          () => { RefreshRandomTVImageProperties(rw); },
+                          () => { RefreshRandomTVSeriesImageProperties(rw); },
+                          () => { RefreshRandomPicturesImageProperties(rw); },
+                          () => { RefreshRandomGamesImageProperties(rw); },
+                          () => { RefreshRandomScoreCenterImageProperties(rw); },
+                          () => { RefreshRandomPluginsImageProperties(rw); });
+
+          ResetRefreshTickCount();
+          if (rw != null /*&& WindowOpen*/)
+            rw.ReportProgress(90, "Updated Properties");
+
+          // stopwatch.Stop();
+          // logger.Debug("Refreshing Random properties is done. FanartAvailable: {1} Time elapsed: {0}.", stopwatch.Elapsed, Utils.Check(FanartAvailable));
         }
-        IncreaseCurrCountRandom();
         if (rw == null)
           return;
         rw.ReportProgress(100, "Updated Properties");
@@ -588,518 +224,138 @@ namespace FanartHandler
         logger.Error("RefreshRandomImageProperties: " + ex);
       }
     }
+    #endregion
 
-    public void RefreshRandomImagePropertiesPerm()
+    public void RefreshRandom(RefreshWorker rw, System.ComponentModel.DoWorkEventArgs e)
     {
       try
       {
-        var doPerm = false;
-        var str1 = string.Empty;
-
-        if (propertiesRandomPerm == null)
+        if (Utils.iActiveWindow == (int)GUIWindow.Window.WINDOW_INVALID)
+        {
           return;
+        }
 
-        if (SupportsRandomImages("useRandomMoviesUserFanart").Equals("True", StringComparison.CurrentCulture) && propertiesRandomPerm.Contains("#fanarthandler.movie.userdef.backdrop"))
+        #region Random
+        if (CheckValidWindowIDForFanart())
         {
-          var str2 = PropertiesRandomPerm["#fanarthandler.movie.userdef.backdrop"].ToString();
-          if (str2 != null && str2.Length > 0)
-          {
-            if (DoShowImageOneRandom)
-            {
-              AddPropertyRandom("#fanarthandler.movie.userdef.backdrop1.any", str2, ref ListAnyMoviesUser, doPerm);
-              var property = Utils.GetProperty("#fanarthandler.movie.userdef.backdrop2.any");
-              if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                AddPropertyRandom("#fanarthandler.movie.userdef.backdrop2.any", str2, ref ListAnyMoviesUser, doPerm);
-            }
-            else
-            {
-              AddPropertyRandom("#fanarthandler.movie.userdef.backdrop2.any", str2, ref ListAnyMoviesUser, doPerm);
-              var property = Utils.GetProperty("#fanarthandler.movie.userdef.backdrop1.any");
-              if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                AddPropertyRandom("#fanarthandler.movie.userdef.backdrop1.any", str2, ref ListAnyMoviesUser, doPerm);
-            }
-          }
-          else
-          {
-            Utils.SetProperty("#fanarthandler.movie.userdef.backdrop1.any", string.Empty);
-            Utils.SetProperty("#fanarthandler.movie.userdef.backdrop2.any", string.Empty);
-            PrevSelectedMoviesUser = -1;
-          }
+          IsRandom = true;
+          RefreshRandomImageProperties(rw);
         }
         else
         {
-          FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyMoviesUser);
-          Utils.SetProperty("#fanarthandler.movie.userdef.backdrop1.any", string.Empty);
-          Utils.SetProperty("#fanarthandler.movie.userdef.backdrop2.any", string.Empty);
-          PrevSelectedMoviesUser = -1;
+          EmptyAllProperties();
         }
-        if (SupportsRandomImages("useRandomMoviesScraperFanart").Equals("True", StringComparison.CurrentCulture) && propertiesRandomPerm.Contains("#fanarthandler.movie.scraper.backdrop"))
+        #endregion
+
+        if (FanartAvailable)
         {
-          var str2 = PropertiesRandomPerm["#fanarthandler.movie.scraper.backdrop"].ToString();
-          if (str2 != null && str2.Length > 0)
-          {
-            if (DoShowImageOneRandom)
-            {
-              AddPropertyRandom("#fanarthandler.movie.scraper.backdrop1.any", str2, ref ListAnyMoviesScraper, doPerm);
-              var property = Utils.GetProperty("#fanarthandler.movie.scraper.backdrop2.any");
-              if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                AddPropertyRandom("#fanarthandler.movie.scraper.backdrop2.any", str2, ref ListAnyMoviesScraper, doPerm);
-            }
-            else
-            {
-              AddPropertyRandom("#fanarthandler.movie.scraper.backdrop2.any", str2, ref ListAnyMoviesScraper, doPerm);
-              var property = Utils.GetProperty("#fanarthandler.movie.scraper.backdrop1.any");
-              if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                AddPropertyRandom("#fanarthandler.movie.scraper.backdrop1.any", str2, ref ListAnyMoviesScraper, doPerm);
-            }
-          }
-          else
-          {
-            Utils.SetProperty("#fanarthandler.scraper.movie.backdrop1.any", string.Empty);
-            Utils.SetProperty("#fanarthandler.scraper.movie.backdrop2.any", string.Empty);
-            PrevSelectedMoviesScraper = -1;
-          }
+          IncreaseRefreshTickCount();
         }
         else
         {
-          FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyMoviesScraper);
-          Utils.SetProperty("#fanarthandler.movie.scraper.backdrop1.any", string.Empty);
-          Utils.SetProperty("#fanarthandler.movie.scraper.backdrop2.any", string.Empty);
-          PrevSelectedMoviesScraper = -1;
+          EmptyAllProperties();
         }
-        if (SupportsRandomImages("useRandomMovingPicturesFanart").Equals("True", StringComparison.CurrentCulture) && propertiesRandomPerm.Contains("#fanarthandler.movingpicture.backdrop"))
-        {
-          var str2 = PropertiesRandomPerm["#fanarthandler.movingpicture.backdrop"].ToString();
-          if (str2 != null && str2.Length > 0)
-          {
-            if (DoShowImageOneRandom)
-            {
-              AddPropertyRandom("#fanarthandler.movingpicture.backdrop1.any", str2, ref ListAnyMovingPictures, doPerm);
-              var property = Utils.GetProperty("#fanarthandler.movingpicture.backdrop2.any");
-              if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                AddPropertyRandom("#fanarthandler.movingpicture.backdrop2.any", str2, ref ListAnyMovingPictures, doPerm);
-            }
-            else
-            {
-              AddPropertyRandom("#fanarthandler.movingpicture.backdrop2.any", str2, ref ListAnyMovingPictures, doPerm);
-              var property = Utils.GetProperty("#fanarthandler.movingpicture.backdrop1.any");
-              if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                AddPropertyRandom("#fanarthandler.movingpicture.backdrop1.any", str2, ref ListAnyMovingPictures, doPerm);
-            }
-          }
-          else
-          {
-            Utils.SetProperty("#fanarthandler.movingpicture.backdrop1.any", string.Empty);
-            Utils.SetProperty("#fanarthandler.movingpicture.backdrop2.any", string.Empty);
-            PrevSelectedMovingPictures = -1;
-          }
-        }
-        else
-        {
-          FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyMovingPictures);
-          Utils.SetProperty("#fanarthandler.movingpicture.backdrop1.any", string.Empty);
-          Utils.SetProperty("#fanarthandler.movingpicture.backdrop2.any", string.Empty);
-          PrevSelectedMovingPictures = -1;
-        }
-        if (SupportsRandomImages("useRandomMusicUserFanart").Equals("True", StringComparison.CurrentCulture) && propertiesRandomPerm.Contains("#fanarthandler.music.userdef.backdrop"))
-        {
-          var str2 = PropertiesRandomPerm["#fanarthandler.music.userdef.backdrop"].ToString();
-          if (str2 != null && str2.Length > 0)
-          {
-            if (DoShowImageOneRandom)
-            {
-              AddPropertyRandom("#fanarthandler.music.userdef.backdrop1.any", str2, ref ListAnyMusicUser, doPerm);
-              var property = Utils.GetProperty("#fanarthandler.music.userdef.backdrop2.any");
-              if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                AddPropertyRandom("#fanarthandler.music.userdef.backdrop2.any", str2, ref ListAnyMusicUser, doPerm);
-            }
-            else
-            {
-              AddPropertyRandom("#fanarthandler.music.userdef.backdrop2.any", str2, ref ListAnyMusicUser, doPerm);
-              var property = Utils.GetProperty("#fanarthandler.music.userdef.backdrop1.any");
-              if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                AddPropertyRandom("#fanarthandler.music.userdef.backdrop1.any", str2, ref ListAnyMusicUser, doPerm);
-            }
-          }
-          else
-          {
-            Utils.SetProperty("#fanarthandler.music.userdef.backdrop1.any", string.Empty);
-            Utils.SetProperty("#fanarthandler.music.userdef.backdrop2.any", string.Empty);
-            PrevSelectedMusicUser = -1;
-          }
-        }
-        else
-        {
-          FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyMusicUser);
-          Utils.SetProperty("#fanarthandler.music.userdef.backdrop1.any", string.Empty);
-          Utils.SetProperty("#fanarthandler.music.userdef.backdrop2.any", string.Empty);
-          PrevSelectedMusicUser = -1;
-        }
-        if (SupportsRandomImages("useRandomMusicScraperFanart").Equals("True", StringComparison.CurrentCulture) && propertiesRandomPerm.Contains("#fanarthandler.music.scraper.backdrop"))
-        {
-          var str2 = PropertiesRandomPerm["#fanarthandler.music.scraper.backdrop"].ToString();
-          if (str2 != null && str2.Length > 0)
-          {
-            if (DoShowImageOneRandom)
-            {
-              AddPropertyRandom("#fanarthandler.music.scraper.backdrop1.any", str2, ref ListAnyMusicScraper, doPerm);
-              var property = Utils.GetProperty("#fanarthandler.music.scraper.backdrop2.any");
-              if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                AddPropertyRandom("#fanarthandler.music.scraper.backdrop2.any", str2, ref ListAnyMusicScraper, doPerm);
-            }
-            else
-            {
-              AddPropertyRandom("#fanarthandler.music.scraper.backdrop2.any", str2, ref ListAnyMusicScraper, doPerm);
-              var property = Utils.GetProperty("#fanarthandler.music.scraper.backdrop1.any");
-              if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                AddPropertyRandom("#fanarthandler.music.scraper.backdrop1.any", str2, ref ListAnyMusicScraper, doPerm);
-            }
-          }
-          else
-          {
-            Utils.SetProperty("#fanarthandler.music.scraper.backdrop1.any", string.Empty);
-            Utils.SetProperty("#fanarthandler.music.scraper.backdrop2.any", string.Empty);
-            PrevSelectedMusicScraper = -1;
-          }
-        }
-        else
-        {
-          FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyMusicScraper);
-          Utils.SetProperty("#fanarthandler.music.scraper.backdrop1.any", string.Empty);
-          Utils.SetProperty("#fanarthandler.music.scraper.backdrop2.any", string.Empty);
-          PrevSelectedMusicScraper = -1;
-        }
-        if (SupportsRandomImages("useRandomTVUserFanart").Equals("True", StringComparison.CurrentCulture) && propertiesRandomPerm.Contains("#fanarthandler.tv.userdef.backdrop"))
-        {
-          var str2 = PropertiesRandomPerm["#fanarthandler.tv.userdef.backdrop"].ToString();
-          if (str2 != null && str2.Length > 0)
-          {
-            if (DoShowImageOneRandom)
-            {
-              AddPropertyRandom("#fanarthandler.tv.userdef.backdrop1.any", str2, ref ListAnyTVUser, doPerm);
-              var property = Utils.GetProperty("#fanarthandler.tv.userdef.backdrop2.any");
-              if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                AddPropertyRandom("#fanarthandler.tv.userdef.backdrop2.any", str2, ref ListAnyTVUser, doPerm);
-            }
-            else
-            {
-              AddPropertyRandom("#fanarthandler.tv.userdef.backdrop2.any", str2, ref ListAnyTVUser, doPerm);
-              var property = Utils.GetProperty("#fanarthandler.tv.backdrop1.any");
-              if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                AddPropertyRandom("#fanarthandler.tv.userdef.backdrop1.any", str2, ref ListAnyTVUser, doPerm);
-            }
-          }
-          else
-          {
-            Utils.SetProperty("#fanarthandler.tv.userdef.backdrop1.any", string.Empty);
-            Utils.SetProperty("#fanarthandler.tv.userdef.backdrop2.any", string.Empty);
-            PrevSelectedTVUser = -1;
-          }
-        }
-        else
-        {
-          FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyTVUser);
-          Utils.SetProperty("#fanarthandler.tv.userdef.backdrop1.any", string.Empty);
-          Utils.SetProperty("#fanarthandler.tv.userdef.backdrop2.any", string.Empty);
-          PrevSelectedTVUser = -1;
-        }
-        if (SupportsRandomImages("useRandomTVSeriesFanart").Equals("True", StringComparison.CurrentCulture) && propertiesRandomPerm.Contains("#fanarthandler.tvseries.backdrop"))
-        {
-          var str2 = PropertiesRandomPerm["#fanarthandler.tvseries.backdrop"].ToString();
-          if (str2 != null && str2.Length > 0)
-          {
-            if (DoShowImageOneRandom)
-            {
-              AddPropertyRandom("#fanarthandler.tvseries.backdrop1.any", str2, ref ListAnyTVSeries, doPerm);
-              var property = Utils.GetProperty("#fanarthandler.tvseries.backdrop2.any");
-              if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                AddPropertyRandom("#fanarthandler.tvseries.backdrop2.any", str2, ref ListAnyTVSeries, doPerm);
-            }
-            else
-            {
-              AddPropertyRandom("#fanarthandler.tvseries.backdrop2.any", str2, ref ListAnyTVSeries, doPerm);
-              var property = Utils.GetProperty("#fanarthandler.tvseries.backdrop1.any");
-              if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                AddPropertyRandom("#fanarthandler.tvseries.backdrop1.any", str2, ref ListAnyTVSeries, doPerm);
-            }
-          }
-          else
-          {
-            Utils.SetProperty("#fanarthandler.tvseries.backdrop1.any", string.Empty);
-            Utils.SetProperty("#fanarthandler.tvseries.backdrop2.any", string.Empty);
-            PrevSelectedTVSeries = -1;
-          }
-        }
-        else
-        {
-          FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyTVSeries);
-          Utils.SetProperty("#fanarthandler.tvseries.backdrop1.any", string.Empty);
-          Utils.SetProperty("#fanarthandler.tvseries.backdrop2.any", string.Empty);
-          PrevSelectedTVSeries = -1;
-        }
-        if (SupportsRandomImages("useRandomPicturesUserFanart").Equals("True", StringComparison.CurrentCulture) && propertiesRandomPerm.Contains("#fanarthandler.picture.userdef.backdrop"))
-        {
-          var str2 = PropertiesRandomPerm["#fanarthandler.picture.userdef.backdrop"].ToString();
-          if (str2 != null && str2.Length > 0)
-          {
-            if (DoShowImageOneRandom)
-            {
-              AddPropertyRandom("#fanarthandler.picture.userdef.backdrop1.any", str2, ref ListAnyPicturesUser, doPerm);
-              var property = Utils.GetProperty("#fanarthandler.picture.userdef.backdrop2.any");
-              if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                AddPropertyRandom("#fanarthandler.picture.userdef.backdrop2.any", str2, ref ListAnyPicturesUser, doPerm);
-            }
-            else
-            {
-              AddPropertyRandom("#fanarthandler.picture.userdef.backdrop2.any", str2, ref ListAnyPicturesUser, doPerm);
-              var property = Utils.GetProperty("#fanarthandler.picture.userdef.backdrop1.any");
-              if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                AddPropertyRandom("#fanarthandler.picture.userdef.backdrop1.any", str2, ref ListAnyPicturesUser, doPerm);
-            }
-          }
-          else
-          {
-            Utils.SetProperty("#fanarthandler.picture.userdef.backdrop1.any", string.Empty);
-            Utils.SetProperty("#fanarthandler.picture.userdef.backdrop2.any", string.Empty);
-            PrevSelectedPicturesUser = -1;
-          }
-        }
-        else
-        {
-          FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyPicturesUser);
-          Utils.SetProperty("#fanarthandler.picture.userdef.backdrop1.any", string.Empty);
-          Utils.SetProperty("#fanarthandler.picture.userdef.backdrop2.any", string.Empty);
-          PrevSelectedPicturesUser = -1;
-        }
-        if (SupportsRandomImages("useRandomGamesUserFanart").Equals("True", StringComparison.CurrentCulture) && propertiesRandomPerm.Contains("#fanarthandler.games.userdef.backdrop"))
-        {
-          var str2 = PropertiesRandomPerm["#fanarthandler.games.userdef.backdrop"].ToString();
-          if (str2 != null && str2.Length > 0)
-          {
-            if (DoShowImageOneRandom)
-            {
-              AddPropertyRandom("#fanarthandler.games.userdef.backdrop1.any", str2, ref ListAnyGamesUser, doPerm);
-              var property = Utils.GetProperty("#fanarthandler.games.userdef.backdrop2.any");
-              if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                AddPropertyRandom("#fanarthandler.games.userdef.backdrop2.any", str2, ref ListAnyGamesUser, doPerm);
-            }
-            else
-            {
-              AddPropertyRandom("#fanarthandler.games.userdef.backdrop2.any", str2, ref ListAnyGamesUser, doPerm);
-              var property = Utils.GetProperty("#fanarthandler.games.userdef.backdrop1.any");
-              if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                AddPropertyRandom("#fanarthandler.games.userdef.backdrop1.any", str2, ref ListAnyGamesUser, doPerm);
-            }
-          }
-          else
-          {
-            Utils.SetProperty("#fanarthandler.games.userdef.backdrop1.any", string.Empty);
-            Utils.SetProperty("#fanarthandler.games.userdef.backdrop2.any", string.Empty);
-            PrevSelectedGamesUser = -1;
-          }
-        }
-        else
-        {
-          FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyGamesUser);
-          Utils.SetProperty("#fanarthandler.games.userdef.backdrop1.any", string.Empty);
-          Utils.SetProperty("#fanarthandler.games.userdef.backdrop2.any", string.Empty);
-          PrevSelectedGamesUser = -1;
-        }
-        if (SupportsRandomImages("useRandomScoreCenterUserFanart").Equals("True", StringComparison.CurrentCulture) && propertiesRandomPerm.Contains("#fanarthandler.scorecenter.userdef.backdrop"))
-        {
-          var str2 = PropertiesRandomPerm["#fanarthandler.scorecenter.userdef.backdrop"].ToString();
-          if (str2 != null && str2.Length > 0)
-          {
-            if (DoShowImageOneRandom)
-            {
-              AddPropertyRandom("#fanarthandler.scorecenter.userdef.backdrop1.any", str2, ref ListAnyScorecenterUser, doPerm);
-              var property = Utils.GetProperty("#fanarthandler.scorecenter.userdef.backdrop2.any");
-              if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                AddPropertyRandom("#fanarthandler.scorecenter.userdef.backdrop2.any", str2, ref ListAnyScorecenterUser, doPerm);
-            }
-            else
-            {
-              AddPropertyRandom("#fanarthandler.scorecenter.userdef.backdrop2.any", str2, ref ListAnyScorecenterUser, doPerm);
-              var property = Utils.GetProperty("#fanarthandler.scorecenter.userdef.backdrop1.any");
-              if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                AddPropertyRandom("#fanarthandler.scorecenter.userdef.backdrop1.any", str2, ref ListAnyScorecenterUser, doPerm);
-            }
-          }
-          else
-          {
-            Utils.SetProperty("#fanarthandler.scorecenter.userdef.backdrop1.any", string.Empty);
-            Utils.SetProperty("#fanarthandler.scorecenter.userdef.backdrop2.any", string.Empty);
-            PrevSelectedScorecenterUser = -1;
-          }
-        }
-        else
-        {
-          FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyScorecenterUser);
-          Utils.SetProperty("#fanarthandler.scorecenter.userdef.backdrop1.any", string.Empty);
-          Utils.SetProperty("#fanarthandler.scorecenter.userdef.backdrop2.any", string.Empty);
-          PrevSelectedScorecenterUser = -1;
-        }
-        if (SupportsRandomImages("useRandomPluginsUserFanart").Equals("True", StringComparison.CurrentCulture) && propertiesRandomPerm.Contains("#fanarthandler.plugins.userdef.backdrop"))
-        {
-          var str2 = PropertiesRandomPerm["#fanarthandler.plugins.userdef.backdrop"].ToString();
-          if (str2 != null && str2.Length > 0)
-          {
-            if (DoShowImageOneRandom)
-            {
-              AddPropertyRandom("#fanarthandler.plugins.userdef.backdrop1.any", str2, ref ListAnyPluginsUser, doPerm);
-              var property = Utils.GetProperty("#fanarthandler.plugins.userdef.backdrop2.any");
-              if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                AddPropertyRandom("#fanarthandler.plugins.userdef.backdrop2.any", str2, ref ListAnyPluginsUser, doPerm);
-            }
-            else
-            {
-              AddPropertyRandom("#fanarthandler.plugins.userdef.backdrop2.any", str2, ref ListAnyPluginsUser, doPerm);
-              var property = Utils.GetProperty("#fanarthandler.plugins.userdef.backdrop1.any");
-              if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
-                AddPropertyRandom("#fanarthandler.plugins.userdef.backdrop1.any", str2, ref ListAnyPluginsUser, doPerm);
-            }
-          }
-          else
-          {
-            Utils.SetProperty("#fanarthandler.plugins.userdef.backdrop1.any", string.Empty);
-            Utils.SetProperty("#fanarthandler.plugins.userdef.backdrop2.any", string.Empty);
-            PrevSelectedPluginsUser = -1;
-          }
-        }
-        else
-        {
-          FanartHandlerSetup.Fh.EmptyAllImages(ref ListAnyPluginsUser);
-          Utils.SetProperty("#fanarthandler.plugins.userdef.backdrop1.any", string.Empty);
-          Utils.SetProperty("#fanarthandler.plugins.userdef.backdrop2.any", string.Empty);
-          PrevSelectedPluginsUser = -1;
-        }
-        ResetCurrCountRandom();
-        FirstRandom = false;
-        IncreaseCurrCountRandom();
+        if (rw != null)
+          rw.Report(e);
       }
       catch (Exception ex)
       {
-        logger.Error("RefreshRandomImagePropertiesPerm: " + ex);
+        logger.Error("RefreshRandom: " + ex);
       }
     }
 
-    private string SupportsRandomImages(string type)
+    public void EmptyAllProperties()
     {
-      if (GUIWindowManager.ActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
+      if (IsRandom)
       {
-        var skinFile = (SkinFile) WindowsUsingFanartRandom[GUIWindowManager.ActiveWindow.ToString(CultureInfo.CurrentCulture)];
-        if (skinFile != null)
-        {
-          if (type.Equals("useRandomGamesUserFanart", StringComparison.CurrentCulture))
-            return skinFile.UseRandomGamesFanartUser;
-          if (type.Equals("useRandomMoviesUserFanart", StringComparison.CurrentCulture))
-            return skinFile.UseRandomMoviesFanartUser;
-          if (type.Equals("useRandomMoviesScraperFanart", StringComparison.CurrentCulture))
-            return skinFile.UseRandomMoviesFanartScraper;
-          if (type.Equals("useRandomMovingPicturesFanart", StringComparison.CurrentCulture))
-            return skinFile.UseRandomMovingPicturesFanart;
-          if (type.Equals("useRandomMusicUserFanart", StringComparison.CurrentCulture))
-            return skinFile.UseRandomMusicFanartUser;
-          if (type.Equals("useRandomMusicScraperFanart", StringComparison.CurrentCulture))
-            return skinFile.UseRandomMusicFanartScraper;
-          if (type.Equals("useRandomPicturesUserFanart", StringComparison.CurrentCulture))
-            return skinFile.UseRandomPicturesFanartUser;
-          if (type.Equals("useRandomScoreCenterUserFanart", StringComparison.CurrentCulture))
-            return skinFile.UseRandomScoreCenterFanartUser;
-          if (type.Equals("useRandomTVSeriesFanart", StringComparison.CurrentCulture))
-            return skinFile.UseRandomTVSeriesFanart;
-          if (type.Equals("useRandomTVUserFanart", StringComparison.CurrentCulture))
-            return skinFile.UseRandomTVFanartUser;
-          if (type.Equals("useRandomPluginsUserFanart", StringComparison.CurrentCulture))
-            return skinFile.UseRandomPluginsFanartUser;
-        }
+        FanartIsNotAvailableRandom();
+
+        FanartAvailable = false;
+        EmptyAllRandomProperties();
+        RefreshTickCount = 0;
+        CountSetVisibility = 0;
+        ClearPropertiesRandom();
+        IsRandom = false;
+
+        EmptyAllRandomImages();
       }
-      return "False";
     }
 
-    public bool IsPropertyRandomPerm(string value)
+    public void EmptyAllRandomImages()
     {
-      try
+      Utils.EmptyAllImages(ref ListAnyGamesUser);
+      Utils.EmptyAllImages(ref ListAnyMoviesUser);
+      Utils.EmptyAllImages(ref ListAnyMoviesScraper);
+      Utils.EmptyAllImages(ref ListAnyMovingPictures);
+      Utils.EmptyAllImages(ref ListAnyMusicUser);
+      Utils.EmptyAllImages(ref ListAnyMusicScraper);
+      Utils.EmptyAllImages(ref ListAnyPicturesUser);
+      Utils.EmptyAllImages(ref ListAnyScorecenterUser);
+      Utils.EmptyAllImages(ref ListAnyTVSeries);
+      Utils.EmptyAllImages(ref ListAnyTVUser);
+      Utils.EmptyAllImages(ref ListAnyPluginsUser);
+    }
+
+    private bool SupportsRandomImages(Utils.Category category)
+    {
+      if (WindowsUsingFanartRandom != null)
       {
-        if (value == null)
-          value = string.Empty;
-        foreach (DictionaryEntry dictionaryEntry in PropertiesRandomPerm)
+        if (Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
         {
-          if (dictionaryEntry.Value.ToString().Equals(value))
-            return true;
+          var skinFile = (SkinFile) WindowsUsingFanartRandom[Utils.sActiveWindow];
+          if (skinFile != null)
+          {
+            if (category == Utils.Category.GameManual)
+              return skinFile.UseRandomGamesFanartUser;
+            if (category == Utils.Category.MovieManual)
+              return skinFile.UseRandomMoviesFanartUser;
+            if (category == Utils.Category.MovieScraped)
+              return skinFile.UseRandomMoviesFanartScraper;
+            if (category == Utils.Category.MovingPictureManual)
+              return skinFile.UseRandomMovingPicturesFanart;
+            if (category == Utils.Category.MusicFanartManual)
+              return skinFile.UseRandomMusicFanartUser;
+            if (category == Utils.Category.MusicFanartScraped || category == Utils.Category.MusicFanartAlbum)
+              return skinFile.UseRandomMusicFanartScraper;
+            if (category == Utils.Category.PictureManual)
+              return skinFile.UseRandomPicturesFanartUser;
+            if (category == Utils.Category.SportsManual)
+              return skinFile.UseRandomScoreCenterFanartUser;
+            if (category == Utils.Category.TvSeriesScraped || category == Utils.Category.TVSeriesManual)
+              return skinFile.UseRandomTVSeriesFanart;
+            if (category == Utils.Category.TvManual)
+              return skinFile.UseRandomTVFanartUser;
+            if (category == Utils.Category.PluginManual)
+              return skinFile.UseRandomPluginsFanartUser;
+          }
         }
-      }
-      catch (Exception ex)
-      {
-        logger.Error("IsPropertyRandomPerm: " + ex);
       }
       return false;
     }
 
-    public string GetRandomFilename(ref string prevImage, Utils.Category category, ref int iFilePrev)
+    public string GetRandomFilename(ref int iFilePrev, ref string sFileNamePrev, Utils.Category category)
     {
-      var str = string.Empty;
+      var result = string.Empty;
+      // logger.Debug("*** GetRandomFilename: "+iFilePrev+" - "+sFileNamePrev+" - "+category);
+      // var stopwatch = System.Diagnostics.Stopwatch.StartNew();
       try
       {
         if (!Utils.GetIsStopping())
         {
-          str = prevImage;
-          htAny = Utils.GetDbm().GetAnyFanart(category);
+          Hashtable htAny = Utils.GetDbm().GetAnyFanart(category);
           if (htAny != null)
           {
             if (htAny.Count > 0)
             {
-              var values1 = htAny.Values;
-              var num1 = 0;
-              var num2 = 0;
-              foreach (FanartImage fanartImage in values1)
-              {
-                if ((num1 > iFilePrev || iFilePrev == -1) && 
-                    (num2 == 0 && Utils.CheckImageResolution(fanartImage.DiskImage, category, Utils.UseAspectRatio)) && 
-                    Utils.IsFileValid(fanartImage.DiskImage))
-                {
-                  str = fanartImage.DiskImage;
-                  iFilePrev = num1;
-                  prevImage = fanartImage.DiskImage;
-                  num2 = 1;
-                  if (CountSetVisibility == 0)
-                  {
-                    CountSetVisibility = 1;
-                    break;
-                  }
-                  else
-                    break;
-                }
-                else
-                  checked { ++num1; }
-              }
+             if (iFilePrev == -1)
+               Utils.Shuffle(ref htAny);
 
-              if (num2 == 0)
+              var htAnyValues = htAny.Values;
+              result = Utils.GetFanartFilename(ref iFilePrev, ref sFileNamePrev, ref htAnyValues, category);
+
+              if (!string.IsNullOrEmpty(result) && (CountSetVisibility == 0))
               {
-                var values2 = htAny.Values;
-                iFilePrev = -1;
-                var num3 = 0;
-                var num4 = 0;
-                foreach (FanartImage fanartImage in values2)
-                {
-                  if ((num3 > iFilePrev || iFilePrev == -1) && 
-                      (num4 == 0 && Utils.CheckImageResolution(fanartImage.DiskImage, category, Utils.UseAspectRatio)) && 
-                      Utils.IsFileValid(fanartImage.DiskImage))
-                  {
-                    str = fanartImage.DiskImage;
-                    iFilePrev = num3;
-                    prevImage = fanartImage.DiskImage;
-                    if (CountSetVisibility == 0)
-                    {
-                      CountSetVisibility = 1;
-                      break;
-                    }
-                    else
-                      break;
-                  }
-                  else
-                    checked { ++num3; }
-                }
+                CountSetVisibility = 1;
               }
             }
           }
@@ -1109,160 +365,272 @@ namespace FanartHandler
       {
         logger.Error("GetRandomFilename: " + ex);
       }
-      return str;
+      // stopwatch.Stop();
+      // logger.Debug("*** GetRandomFilename: {0} -> {1}", stopwatch.Elapsed, result);
+      return result;
     }
 
-    public void ResetCurrCountRandom()
+    public void RefreshRandomFilenames(bool FullUpdate = true)
     {
-      CurrCountRandom = 0;
-      UpdateVisibilityCountRandom = 1;
+      // var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+      Utils.GetDbm().RefreshAnyFanart(Utils.Category.PictureManual, FullUpdate);
+      Utils.GetDbm().RefreshAnyFanart(Utils.Category.MovieManual, FullUpdate);
+      Utils.GetDbm().RefreshAnyFanart(Utils.Category.MovieScraped, FullUpdate);
+      Utils.GetDbm().RefreshAnyFanart(Utils.Category.MusicFanartManual, FullUpdate);
+      Utils.GetDbm().RefreshAnyFanart(Utils.Category.MusicFanartScraped, FullUpdate);
+      Utils.GetDbm().RefreshAnyFanart(Utils.Category.TvSeriesScraped, FullUpdate);
+      Utils.GetDbm().RefreshAnyFanart(Utils.Category.MovingPictureManual, FullUpdate);
+      Utils.GetDbm().RefreshAnyFanart(Utils.Category.TvManual, FullUpdate);
+      Utils.GetDbm().RefreshAnyFanart(Utils.Category.GameManual, FullUpdate);
+      Utils.GetDbm().RefreshAnyFanart(Utils.Category.SportsManual, FullUpdate);
+      Utils.GetDbm().RefreshAnyFanart(Utils.Category.PluginManual, FullUpdate);
+      // stopwatch.Stop();
+      // logger.Debug("Refreshing Any Random filenames hashtable is done. Time elapsed: {0}.", stopwatch.Elapsed);
     }
 
-    private void IncreaseCurrCountRandom()
+    private void IncreaseRefreshTickCount()
     {
-      CurrCountRandom = checked (CurrCountRandom + 1);
+      RefreshTickCount = checked (RefreshTickCount + 1);
     }
 
-    public int GetPropertiesRandom()
+    public void ResetRefreshTickCount()
     {
-      if (PropertiesRandom == null)
+      RefreshTickCount = 0;
+    }
+
+    public void RefreshRefreshTickCount()
+    {
+      RefreshTickCount = Utils.MaxRefreshTickCount;
+    }
+
+    public int GetPropertiesRandomCount()
+    {
+      if (propertiesRandom == null)
         return 0;
       else
-        return PropertiesRandom.Count;
+        return propertiesRandom.Count;
+    }
+
+    public void UpdateProperties()
+    {
+      Utils.UpdateProperties(ref propertiesRandom);
     }
 
     public void ClearPropertiesRandom()
     {
-      if (PropertiesRandom == null)
+      if (propertiesRandom == null)
         return;
-      PropertiesRandom.Clear();
+      lock (propertiesRandom)
+        propertiesRandom.Clear();
     }
 
-    public void ClearPropertiesRandomPerm()
+    private void FillPropertyRandom(Utils.Category category, ref string prevImage, ref int iFilePrev, string propertyname, ref ArrayList al)
     {
-      if (PropertiesRandomPerm == null)
-        return;
-      PropertiesRandomPerm.Clear();
-    }
-
-    private void AddPropertyRandom(string property, string value, ref ArrayList al, bool doPerm)
-    {
-      try
+      // var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+      var randomFilename = string.Empty;
+      if (SupportsRandomImages(category))
       {
-        if (string.IsNullOrEmpty(value))
-          value = string.Empty;
+        randomFilename = GetRandomFilename(ref iFilePrev, ref prevImage, category);
+      }
+      else
+      {
+        Utils.EmptyAllImages(ref al);
+      }
 
-        if (PropertiesRandom.Contains(property))
-          PropertiesRandom[property] = value;
+      propertyname = propertyname + ".backdrop";
+      if (!string.IsNullOrEmpty(randomFilename))
+      {
+        lock (propertiesRandom)
+          Utils.AddProperty(ref propertiesRandom, propertyname + (DoShowImageOneRandom ? "1" : "2") + ".any", randomFilename, ref al);
+
+        var property = Utils.GetProperty(propertyname + (DoShowImageOneRandom ? "2" : "1") + ".any");
+        if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
+        {
+          lock (propertiesRandom)
+            Utils.AddProperty(ref propertiesRandom, propertyname + (DoShowImageOneRandom ? "2" : "1") + ".any", randomFilename, ref al);
+        }
+        FanartAvailable = FanartAvailable || true;
+      }
+      else
+      {
+        Utils.SetProperty(propertyname + "1.any", string.Empty);
+        Utils.SetProperty(propertyname + "2.any", string.Empty);
+        iFilePrev = -1;
+        FanartAvailable = FanartAvailable || false;
+      }
+      // stopwatch.Stop();
+      // logger.Debug("*** FillPropertyRandom: {0}", stopwatch.Elapsed);
+    }
+
+    public void EmptyRandomGamesProperties()
+    {
+      Utils.SetProperty("games.userdef.backdrop1.any", string.Empty);
+      Utils.SetProperty("games.userdef.backdrop2.any", string.Empty);
+    }
+
+    public void EmptyRandomMoviesProperties()
+    {
+      Utils.SetProperty("movie.userdef.backdrop1.any", string.Empty);
+      Utils.SetProperty("movie.userdef.backdrop2.any", string.Empty);
+      Utils.SetProperty("movie.scraper.backdrop1.any", string.Empty);
+      Utils.SetProperty("movie.scraper.backdrop2.any", string.Empty);
+    }
+
+    public void EmptyRandomMisicProperties()
+    {
+      Utils.SetProperty("music.userdef.backdrop1.any", string.Empty);
+      Utils.SetProperty("music.userdef.backdrop2.any", string.Empty);
+      Utils.SetProperty("music.scraper.backdrop1.any", string.Empty);
+      Utils.SetProperty("music.scraper.backdrop2.any", string.Empty);
+    }
+
+    public void EmptyRandomPicturesProperties()
+    {
+      Utils.SetProperty("picture.userdef.backdrop1.any", string.Empty);
+      Utils.SetProperty("picture.userdef.backdrop2.any", string.Empty);
+    }
+
+    public void EmptyRandomScorecenterProperties()
+    {
+      Utils.SetProperty("scorecenter.userdef.backdrop1.any", string.Empty);
+      Utils.SetProperty("scorecenter.userdef.backdrop2.any", string.Empty);
+    }
+
+    public void EmptyRandomTVProperties()
+    {
+      Utils.SetProperty("tv.userdef.backdrop1.any", string.Empty);
+      Utils.SetProperty("tv.userdef.backdrop2.any", string.Empty);
+    }
+
+    public void EmptyRandomPluginsProperties()
+    {
+      Utils.SetProperty("plugins.userdef.backdrop1.any", string.Empty);
+      Utils.SetProperty("plugins.userdef.backdrop2.any", string.Empty);
+    }
+
+    public void EmptyRandomMovingPicturesProperties()
+    {
+      Utils.SetProperty("movingpicture.backdrop1.any", string.Empty);
+      Utils.SetProperty("movingpicture.backdrop2.any", string.Empty);
+    }
+
+    public void EmptyRandomTVSeriesProperties()
+    {
+      Utils.SetProperty("tvseries.backdrop1.any", string.Empty);
+      Utils.SetProperty("tvseries.backdrop2.any", string.Empty);
+    }
+
+    public void EmptyAllRandomProperties()
+    {
+      if ((Utils.GetDbm().HtAnyFanart != null) && (Utils.GetDbm().HtAnyFanart.Count > 0))
+      {
+        return;
+      }
+
+      EmptyRandomMoviesProperties();
+      EmptyRandomMisicProperties();
+      EmptyRandomPicturesProperties();
+      EmptyRandomTVSeriesProperties();
+      EmptyRandomTVProperties();
+      EmptyRandomGamesProperties();
+      EmptyRandomScorecenterProperties();
+      EmptyRandomPluginsProperties();
+      EmptyRandomMovingPicturesProperties();
+    }
+
+    public void ShowImageRandom()
+    {
+      if (FanartAvailable)
+      {
+        FanartIsAvailableRandom();
+        if (DoShowImageOneRandom)
+        {
+          ShowImageOneRandom();
+        }
         else
-          PropertiesRandom.Add(property, value);
-
-        if (doPerm)
         {
-          var str = property.Substring(0, checked (property.IndexOf(".any") - 1));
-          if (propertiesRandomPerm.Contains(str))
-            propertiesRandomPerm[str] = value;
-          else
-            propertiesRandomPerm.Add(str, value);
+          ShowImageTwoRandom();
         }
-
-        FanartHandlerSetup.Fh.AddPictureToCache(property, value, ref al);
-        /*
-        if (value == null || value.Length <= 0 || al == null)
-          return;
-
-        if (al.Contains(value))
-          return;
-
-        try
-        {
-          al.Add(value);
-        }
-        catch (Exception ex)
-        {
-          logger.Error("AddPropertyRandom: " + ex);
-        }
-
-        Utils.LoadImage(value);
-        */
       }
-      catch (Exception ex)
+      else
       {
-        logger.Error("AddPropertyRandom: " + ex);
+        FanartIsNotAvailableRandom();
+        HideImageRandom();
       }
     }
 
-    public void UpdatePropertiesRandom()
+    public void HideImageRandom()
     {
-      try
+      if (Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
       {
-        var hashtable = new Hashtable();
-        var index = 0;
-        foreach (DictionaryEntry dictionaryEntry in PropertiesRandom)
-        {
-          Utils.SetProperty(dictionaryEntry.Key.ToString(), dictionaryEntry.Value.ToString());
-          hashtable.Add(index, dictionaryEntry.Key.ToString());
-          checked { ++index; }
-        }
-        index = 0;
-        while (index < hashtable.Count)
-        {
-          PropertiesRandom.Remove(hashtable[index].ToString());
-          checked { ++index; }
-        }
-        if (hashtable != null)
-          hashtable.Clear();
-      }
-      catch (Exception ex)
-      {
-        logger.Error("UpdatePropertiesRandom: " + ex);
+        GUIControl.HideControl(Utils.iActiveWindow, 91919297);
+        GUIControl.HideControl(Utils.iActiveWindow, 91919298);
+        DoShowImageOneRandom = true;
+        // logger.Debug("*** Random hide all images");
       }
     }
 
-    private string GetNodeValue(XPathNodeIterator myXPathNodeIterator)
+    public void FanartIsAvailableRandom()
     {
-      if (myXPathNodeIterator.Count > 0)
+      if (Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
       {
-        myXPathNodeIterator.MoveNext();
-        if (myXPathNodeIterator.Current != null)
-          return myXPathNodeIterator.Current.Value;
+        GUIControl.ShowControl(Utils.iActiveWindow, 91919299);
+        // logger.Debug("*** Random fanart available");
       }
-      return string.Empty;
     }
 
-    public void ShowImageOneRandom(int windowId)
+    public void FanartIsNotAvailableRandom()
     {
-      if (windowId > (int)GUIWindow.Window.WINDOW_INVALID)
+      if (Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
       {
-        GUIControl.ShowControl(windowId, 91919297);
-        GUIControl.HideControl(windowId, 91919298);
+        GUIControl.HideControl(Utils.iActiveWindow, 91919299);
+        // logger.Debug("*** Random fanart not available");
       }
-      DoShowImageOneRandom = false ;
     }
 
-    public void ShowImageTwoRandom(int windowId)
+    public void ShowImageOneRandom()
     {
-      if (windowId > (int)GUIWindow.Window.WINDOW_INVALID)
+      if (Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
       {
-        GUIControl.ShowControl(windowId, 91919298);
-        GUIControl.HideControl(windowId, 91919297);
+        GUIControl.ShowControl(Utils.iActiveWindow, 91919297);
+        GUIControl.HideControl(Utils.iActiveWindow, 91919298);
+        DoShowImageOneRandom = false ;
+        // logger.Debug("*** Random show image 1");
       }
-      DoShowImageOneRandom = true ;
+      else
+      {
+        RefreshTickCount = 0;
+      }
+    }
+
+    public void ShowImageTwoRandom()
+    {
+      if (Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
+      {
+        GUIControl.ShowControl(Utils.iActiveWindow, 91919298);
+        GUIControl.HideControl(Utils.iActiveWindow, 91919297);
+        DoShowImageOneRandom = true ;
+        // logger.Debug("*** Random show image 2");
+      }
+      else
+      {
+        RefreshTickCount = 0;
+      }
     }
 
     public class SkinFile
     {
-      public string UseRandomGamesFanartUser;
-      public string UseRandomMoviesFanartScraper;
-      public string UseRandomMoviesFanartUser;
-      public string UseRandomMovingPicturesFanart;
-      public string UseRandomMusicFanartScraper;
-      public string UseRandomMusicFanartUser;
-      public string UseRandomPicturesFanartUser;
-      public string UseRandomPluginsFanartUser;
-      public string UseRandomScoreCenterFanartUser;
-      public string UseRandomTVFanartUser;
-      public string UseRandomTVSeriesFanart;
+      public bool UseRandomGamesFanartUser; 
+      public bool UseRandomMoviesFanartScraper;
+      public bool UseRandomMoviesFanartUser;
+      public bool UseRandomMovingPicturesFanart;
+      public bool UseRandomMusicFanartScraper;
+      public bool UseRandomMusicFanartUser;
+      public bool UseRandomPicturesFanartUser;
+      public bool UseRandomPluginsFanartUser;
+      public bool UseRandomScoreCenterFanartUser;
+      public bool UseRandomTVFanartUser;
+      public bool UseRandomTVSeriesFanart;
     }
   }
 }

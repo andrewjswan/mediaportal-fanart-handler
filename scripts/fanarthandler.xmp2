@@ -115,6 +115,27 @@
               <ZipFileName>Installer{CopyFile}\{546bff2a-eb9e-4714-a9ff-75fe8af84ecc}-FanartHandler.SlideShowFolders.xml</ZipFileName>
               <DestinationFilename>%Config%\FanartHandler.SlideShowFolders.xml</DestinationFilename>
             </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\config\FanartHandler.Genres.xml</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{cbbdae53-9565-4fd2-94d2-e4461f236d23}-FanartHandler.Genres.xml</ZipFileName>
+              <DestinationFilename>%Config%\FanartHandler.Genres.xml</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\config\FanartHandler.Characters.xml</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{06c6e56f-7b9a-4ed0-aa1c-69176281c82a}-FanartHandler.Characters.xml</ZipFileName>
+              <DestinationFilename>%Config%\FanartHandler.Characters.xml</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\config\FanartHandler.Studios.xml</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{6cd0a57a-9020-4ba2-a4ac-cde8654c8f66}-FanartHandler.Studios.xml</ZipFileName>
+              <DestinationFilename>%Config%\FanartHandler.Studios.xml</DestinationFilename>
+            </FileItem>
           </Items>
         </Files>
       </GroupItem>
@@ -307,7 +328,7 @@
               <UpdateOption>OverwriteIfOlder</UpdateOption>
               <LocalFileName>..\Installer\language\en.xml</LocalFileName>
               <ZipFileName>Installer{CopyFile}\{740c3bc4-d5a4-4449-8444-3279b18c73d5}-en.xml</ZipFileName>
-              <DestinationFilename>%Language%\FanartHandler\ru.xml</DestinationFilename>
+              <DestinationFilename>%Language%\FanartHandler\en.xml</DestinationFilename>
             </FileItem>
             <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
               <Param1 />
@@ -315,6 +336,13 @@
               <LocalFileName>..\Installer\language\ru.xml</LocalFileName>
               <ZipFileName>Installer{CopyFile}\{9c31a83a-205a-45a9-804f-9de3e0bdb025}-ru.xml</ZipFileName>
               <DestinationFilename>%Language%\FanartHandler\ru.xml</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\language\es.xml</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{3a5d39a3-5fef-499d-9675-eb8e63bb03ff}-es.xml</ZipFileName>
+              <DestinationFilename>%Language%\FanartHandler\es.xml</DestinationFilename>
             </FileItem>
           </Items>
         </Files>
@@ -564,10 +592,39 @@ cul8er</Value>
        * push random images from selected folders
 
 </ExtensionDescription>
-    <VersionDescription>* Cosmetic</VersionDescription>
+    <VersionDescription>- optimization
+- code clean
+- internal rework and optimization
+- change Random fanart algoritm ...
+- speedup
+- bugfixes
+- genres rework
+
+#fanarthandler.movie.studios.selected.all - It should work in moving pictures.
+
+- Add:
+#fanarthandler.picture.backdrop1.selected
+#fanarthandler.picture.backdrop2.selected
+#fanarthandler.picture.backdrop1.selected &amp; #fanarthandler.picture.backdrop2.selected - If a folder is selected, returns randomly first 10 pictures.
+#fanarthandler.music.genres.play
+#fanarthandler.music.genres.play.all
+#fanarthandler.music.genres.play.verticalall
+#fanarthandler.movie.studios.selected.verticalall
+#fanarthandler.movie.genres.selected
+#fanarthandler.movie.genres.selected.all
+#fanarthandler.movie.genres.selected.verticalall
+#fanarthandler.music.genres.selected
+#fanarthandler.music.genres.selected.all
+#fanarthandler.music.genres.selected.verticalall
+Added FanartHandler.Genres.xml thx @catavolt @azzuro 
+Added FanartHandler.Studios.xml thx @catavolt 
+
+- Remove:
+#fanarthandler.picture.backdrop.selected
+</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-{VERSION}.MPE1</OnlineLocation>
-    <ReleaseDate>2015-11-28T15:04:24</ReleaseDate>
+    <ReleaseDate>2016-03-03T15:04:24</ReleaseDate>
     <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper</Tags>
     <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
     <Params>
@@ -708,6 +765,27 @@ cul8er</Value>
         <LocalFileName>..\Installer\config\FanartHandler.SlideShowFolders.xml</LocalFileName>
         <ZipFileName>Installer{CopyFile}\{546bff2a-eb9e-4714-a9ff-75fe8af84ecc}-FanartHandler.SlideShowFolders.xml</ZipFileName>
         <DestinationFilename>%Config%\FanartHandler.SlideShowFolders.xml</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\config\FanartHandler.Genres.xml</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{cbbdae53-9565-4fd2-94d2-e4461f236d23}-FanartHandler.Genres.xml</ZipFileName>
+        <DestinationFilename>%Config%\FanartHandler.Genres.xml</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\config\FanartHandler.Characters.xml</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{06c6e56f-7b9a-4ed0-aa1c-69176281c82a}-FanartHandler.Characters.xml</ZipFileName>
+        <DestinationFilename>%Config%\FanartHandler.Characters.xml</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\config\FanartHandler.Studios.xml</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{6cd0a57a-9020-4ba2-a4ac-cde8654c8f66}-FanartHandler.Studios.xml</ZipFileName>
+        <DestinationFilename>%Config%\FanartHandler.Studios.xml</DestinationFilename>
       </FileItem>
       <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
         <Param1 />
@@ -882,7 +960,7 @@ cul8er</Value>
         <UpdateOption>OverwriteIfOlder</UpdateOption>
         <LocalFileName>..\Installer\language\en.xml</LocalFileName>
         <ZipFileName>Installer{CopyFile}\{740c3bc4-d5a4-4449-8444-3279b18c73d5}-en.xml</ZipFileName>
-        <DestinationFilename>%Language%\FanartHandler\ru.xml</DestinationFilename>
+        <DestinationFilename>%Language%\FanartHandler\en.xml</DestinationFilename>
       </FileItem>
       <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
         <Param1 />
@@ -890,6 +968,13 @@ cul8er</Value>
         <LocalFileName>..\Installer\language\ru.xml</LocalFileName>
         <ZipFileName>Installer{CopyFile}\{9c31a83a-205a-45a9-804f-9de3e0bdb025}-ru.xml</ZipFileName>
         <DestinationFilename>%Language%\FanartHandler\ru.xml</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\language\es.xml</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{3a5d39a3-5fef-499d-9675-eb8e63bb03ff}-es.xml</ZipFileName>
+        <DestinationFilename>%Language%\FanartHandler\es.xml</DestinationFilename>
       </FileItem>
       <FileItem InstallType="CopyFile" SystemFile="true" Modified="true">
         <Param1 />

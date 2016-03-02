@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<characters>
+    <!-- https://github.com/andrewjswan/mediaportal.images.genres/tree/master/genres/characters -->
+    <character name="bond">007</character>
+    <character name="dr. no">007</character>
+    <character name="from russia with love">007</character>
+    <character name="goldfinger">007</character>
+    <character name="thunderball">007</character>
+    <character name="you only live twice">007</character>
+    <character name="on her majesty's secret service">007</character>
+    <character name="diamonds are forever">007</character>
+    <character name="live and let die">007</character>
+    <character name="the man with the golden gun">007</character>
+    <character name="the spy who loved me">007</character>
+    <character name="moonraker">007</character>
+    <character name="for your eyes only">007</character>
+    <character name="octopussy">007</character>
+    <character name="a view to a kill">007</character>
+    <character name="the living daylights">007</character>
+    <character name="licence to kill">007</character>
+    <character name="goldeneye">007</character>
+    <character name="tomorrow never dies">007</character>
+    <character name="the world is not enough">007</character>
+    <character name="die another day">007</character>
+    <character name="casino royale">007</character>
+    <character name="quantum of solace">007</character>
+    <character name="skyfall">007</character>
+    <character name="spectre">007</character>
+    <!-- -->
+    <character name="aliens">alien</character>
+    <character name="astronauts">astronaut</character>
+    <character name="comets">comet</character>
+    <character name="ghosts">ghost</character>
+    <character name="martians">martian</character>
+    <character name="mummys">mummy</character>
+    <character name="ninja turtles">ninja turtle</character>
+    <character name="vampires">vampire</character>
+    <character name="werewolf">werewolf</character>
+    <character name="daredevil">dare devil</character>
+    <character name="the martian">astronaut</character>
+    <character name="game of thrones">house arryn|house baratheon|house greyjoy|house lannister|house martell|house stark|house targaryen|house tully|house tyrell</character>
+    <character name="battlestar galactica">cylon head</character>
+    <character name="lord of the rings">hobbit</character>
+</characters>

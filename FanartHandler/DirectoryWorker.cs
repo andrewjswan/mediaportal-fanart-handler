@@ -1,12 +1,12 @@
 ﻿// Type: FanartHandler.DirectoryWorker
-// Assembly: FanartHandler, Version=3.1.0.0, Culture=neutral, PublicKeyToken=null
+// Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
-// Assembly location: D:\Mes documents\Desktop\FanartHandler.dll
 
 using MediaPortal.Configuration;
+
 using NLog;
+
 using System;
-using System.Collections;
 using System.ComponentModel;
 using System.IO;
 using System.Threading;
@@ -39,9 +39,9 @@ namespace FanartHandler
           Thread.CurrentThread.Priority = !FanartHandlerSetup.Fh.FHThreadPriority.Equals("Lowest", StringComparison.CurrentCulture) ? ThreadPriority.BelowNormal : ThreadPriority.Lowest;
           Thread.CurrentThread.Name = "DirectoryWorker";
           Utils.AllocateDelayStop("DirectoryWorker-OnDoWork");
-          Thread.Sleep(500);
+          Utils.ThreadToLongSleep();
 
-          Utils.SetProperty("#fanarthandler.directory.scan", "true");
+          Utils.SetProperty("directory.scan", "true");
           logger.Info("Refreshing local fanart is starting...");
           //
           var strArray = e.Argument as string[];
@@ -64,63 +64,67 @@ namespace FanartHandler
               }
             }
             //
-            ReportProgress(4, "Importing local fanart for Games...");
-            if (All || strArray[0].Contains(Utils.FAHUDGames, StringComparison.OrdinalIgnoreCase))
+            ReportProgress(4, "Importing local fanart for Pictures...");
+            if (All || strArray[0].Contains(Utils.FAHUDPictures, StringComparison.OrdinalIgnoreCase))
             {
-              logger.Info("Refreshing local fanart for Games is starting.");
-              FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHUDGames, "*.jpg", Utils.Category.GameManual, null, Utils.Provider.Local);
-              if (Utils.GetDbm().HtAnyFanart.ContainsKey(Utils.Category.GameManual))
-                Utils.GetDbm().HtAnyFanart.Remove(Utils.Category.GameManual);
-              logger.Info("Refreshing local fanart for Games is done.");
+              logger.Info("Refreshing local fanart for Pictures is starting.");
+              Utils.SetupFilenames(Utils.FAHUDPictures, "*.jpg", Utils.Category.PictureManual, null, Utils.Provider.Local);
+              // Utils.GetDbm().RemoveFromAnyHashtable(Utils.Category.PictureManual);
+              Utils.GetDbm().RefreshAnyFanart(Utils.Category.PictureManual, false);
+              logger.Info("Refreshing local fanart for Pictures is done.");
             }
             ReportProgress(10, "Importing loacal fanart for Movies (User)...");
             if (All || strArray[0].Contains(Utils.FAHUDMovies, StringComparison.OrdinalIgnoreCase))
             {
               logger.Info("Refreshing local fanart for Movies (User) is starting.");
-              FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHUDMovies, "*.jpg", Utils.Category.MovieManual, null, Utils.Provider.Local);
-              if (Utils.GetDbm().HtAnyFanart.ContainsKey(Utils.Category.MovieManual))
-                Utils.GetDbm().HtAnyFanart.Remove(Utils.Category.MovieManual);
+              Utils.SetupFilenames(Utils.FAHUDMovies, "*.jpg", Utils.Category.MovieManual, null, Utils.Provider.Local);
+              // Utils.GetDbm().RemoveFromAnyHashtable(Utils.Category.MovieManual);
+              Utils.GetDbm().RefreshAnyFanart(Utils.Category.MovieManual, false);
               logger.Info("Refreshing local fanart for Movies (User) is done.");
             }
             ReportProgress(16, "Importing loacal fanart for Movies (Scraper)...");
             if (All || strArray[0].Contains(Utils.FAHSMovies, StringComparison.OrdinalIgnoreCase))
             {
               logger.Info("Refreshing local fanart for Movies (Scraper) is starting.");
-              FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHSMovies, "*.jpg", Utils.Category.MovieScraped, null, Utils.Provider.MyVideos);
-              if (Utils.GetDbm().HtAnyFanart.ContainsKey(Utils.Category.MovieScraped))
-                Utils.GetDbm().HtAnyFanart.Remove(Utils.Category.MovieScraped);
+              Utils.SetupFilenames(Utils.FAHSMovies, "*.jpg", Utils.Category.MovieScraped, null, Utils.Provider.MyVideos);
+              // Utils.GetDbm().RemoveFromAnyHashtable(Utils.Category.MovieScraped);
+              Utils.GetDbm().RefreshAnyFanart(Utils.Category.MovieScraped, false);
               logger.Info("Refreshing local fanart for Movies (Scraper) is done.");
             }
             ReportProgress(22, "Importing local fanart for Music (Albums)...");
             if (All || strArray[0].Contains(Utils.FAHMusicAlbums, StringComparison.OrdinalIgnoreCase))
             {
               logger.Info("Refreshing local fanart for Music (Albums) is starting.");
-              FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHMusicAlbums, "*L.jpg", Utils.Category.MusicAlbumThumbScraped, null, Utils.Provider.Local);
+              Utils.SetupFilenames(Utils.FAHMusicAlbums, "*L.jpg", Utils.Category.MusicAlbumThumbScraped, null, Utils.Provider.Local);
+              Utils.GetDbm().RemoveFromAnyHashtable(Utils.Category.MusicAlbumThumbScraped);
+              // Utils.GetDbm().RefreshAnyFanart(Utils.Category.MusicAlbumThumbScraped, false);
               logger.Info("Refreshing local fanart for Music Albums is done.");
             }
             ReportProgress(28, "Importing local fanart for Music (Artists)...");
             if (All || strArray[0].Contains(Utils.FAHMusicArtists, StringComparison.OrdinalIgnoreCase))
             {
               logger.Info("Refreshing local fanart for Music (Artists) is starting.");
-              FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHMusicArtists, "*L.jpg", Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.Local);
+              Utils.SetupFilenames(Utils.FAHMusicArtists, "*L.jpg", Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.Local);
+              Utils.GetDbm().RemoveFromAnyHashtable(Utils.Category.MusicArtistThumbScraped);
+              // Utils.GetDbm().RefreshAnyFanart(Utils.Category.MusicArtistThumbScraped, false);
               logger.Info("Refreshing local fanart for Music Artists is done.");
             }
             ReportProgress(34, "Importing local fanart for Music (User)...");
             if (All || strArray[0].Contains(Utils.FAHUDMusic, StringComparison.OrdinalIgnoreCase))
             {
               logger.Info("Refreshing local fanart for Music (User) is starting.");
-              FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHUDMusic, "*.jpg", Utils.Category.MusicFanartManual, null, Utils.Provider.Local);
-              if (Utils.GetDbm().HtAnyFanart.ContainsKey(Utils.Category.MusicFanartManual))
-                Utils.GetDbm().HtAnyFanart.Remove(Utils.Category.MusicFanartManual);
+              Utils.SetupFilenames(Utils.FAHUDMusic, "*.jpg", Utils.Category.MusicFanartManual, null, Utils.Provider.Local);
+              // Utils.GetDbm().RemoveFromAnyHashtable(Utils.Category.MusicFanartManual);
+              Utils.GetDbm().RefreshAnyFanart(Utils.Category.MusicFanartManual, false);
               logger.Info("Refreshing local fanart for Music (User) is done.");
             }
             ReportProgress(40, "Importing local fanart for Music (User Album)...");
             if (All || strArray[0].Contains(Utils.FAHUDMusicAlbum, StringComparison.OrdinalIgnoreCase))
             {
               logger.Info("Refreshing local fanart for Music (User Album) is starting.");
-              FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHUDMusicAlbum, "*.jpg", Utils.Category.MusicFanartAlbum, null, Utils.Provider.Local);
-              if (Utils.GetDbm().HtAnyFanart.ContainsKey(Utils.Category.MusicFanartAlbum))
-                Utils.GetDbm().HtAnyFanart.Remove(Utils.Category.MusicFanartManual);
+              Utils.SetupFilenames(Utils.FAHUDMusicAlbum, "*.jpg", Utils.Category.MusicFanartAlbum, null, Utils.Provider.Local);
+              Utils.GetDbm().RemoveFromAnyHashtable(Utils.Category.MusicFanartAlbum);
+              // Utils.GetDbm().RefreshAnyFanart(Utils.Category.MusicFanartAlbum, false);
               logger.Info("Refreshing local fanart for Music (User Album) is done.");
             }
             /*
@@ -128,9 +132,9 @@ namespace FanartHandler
             if (All || strArray[0].Contains(Utils.FAHUDMusicGenre, StringComparison.OrdinalIgnoreCase))
             {
               logger.Info("Refreshing local fanart for Music (User Genre) is starting.");
-              FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHUDMusicGenre, "*.jpg", Utils.Category.MusicFanartManual, null, Utils.Provider.Local);
-              if (Utils.GetDbm().HtAnyFanart.ContainsKey(Utils.Category.MusicFanartManual))
-                Utils.GetDbm().HtAnyFanart.Remove(Utils.Category.MusicFanartManual);
+              Utils.SetupFilenames(Utils.FAHUDMusicGenre, "*.jpg", Utils.Category.MusicFanartManual, null, Utils.Provider.Local);
+              // Utils.GetDbm().RemoveFromAnyHashtable(Utils.Category.MusicFanartManual);
+              Utils.GetDbm().RefreshAnyFanart(Utils.Category.MusicFanartManual, false);
               logger.Info("Refreshing local fanart for Music (User Genre) is done.");
             }
             */
@@ -138,9 +142,9 @@ namespace FanartHandler
             if (All || strArray[0].Contains(Utils.FAHSMusic, StringComparison.OrdinalIgnoreCase))
             {
               logger.Info("Refreshing local fanart for Music (Scraper) is starting.");
-              FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHSMusic, "*.jpg", Utils.Category.MusicFanartScraped, null, Utils.Provider.Local);
-              if (Utils.GetDbm().HtAnyFanart.ContainsKey(Utils.Category.MusicFanartScraped))
-                Utils.GetDbm().HtAnyFanart.Remove(Utils.Category.MusicFanartScraped);
+              Utils.SetupFilenames(Utils.FAHSMusic, "*.jpg", Utils.Category.MusicFanartScraped, null, Utils.Provider.Local);
+              // Utils.GetDbm().RemoveFromAnyHashtable(Utils.Category.MusicFanartScraped);
+              Utils.GetDbm().RefreshAnyFanart(Utils.Category.MusicFanartScraped, false);
               logger.Info("Refreshing local fanart for Music (Scraper) is done.");
             }
             ReportProgress(58, "Importing local fanart for Music (Folder)...");
@@ -148,40 +152,40 @@ namespace FanartHandler
             {
               Utils.ScanMusicFoldersForFanarts();
             }
-            ReportProgress(64, "Importing local fanart for Pictures...");
-            if (All || strArray[0].Contains(Utils.FAHUDPictures, StringComparison.OrdinalIgnoreCase))
+            ReportProgress(64, "Importing local fanart for Games...");
+            if (All || strArray[0].Contains(Utils.FAHUDGames, StringComparison.OrdinalIgnoreCase))
             {
-              logger.Info("Refreshing local fanart for Pictures is starting.");
-              FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHUDPictures, "*.jpg", Utils.Category.PictureManual, null, Utils.Provider.Local);
-              if (Utils.GetDbm().HtAnyFanart.ContainsKey(Utils.Category.PictureManual))
-                Utils.GetDbm().HtAnyFanart.Remove(Utils.Category.PictureManual);
-              logger.Info("Refreshing local fanart for Pictures is done.");
+              logger.Info("Refreshing local fanart for Games is starting.");
+              Utils.SetupFilenames(Utils.FAHUDGames, "*.jpg", Utils.Category.GameManual, null, Utils.Provider.Local);
+              // Utils.GetDbm().RemoveFromAnyHashtable(Utils.Category.GameManual);
+              Utils.GetDbm().RefreshAnyFanart(Utils.Category.GameManual, false);
+              logger.Info("Refreshing local fanart for Games is done.");
             }
             ReportProgress(70, "Importing local fanart for Scorecenter...");
             if (All || strArray[0].Contains(Utils.FAHUDScorecenter, StringComparison.OrdinalIgnoreCase))
             {
               logger.Info("Refreshing local fanart for ScoreCenter is starting.");
-              FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHUDScorecenter, "*.jpg", Utils.Category.SportsManual, null, Utils.Provider.Local);
-              if (Utils.GetDbm().HtAnyFanart.ContainsKey(Utils.Category.SportsManual))
-                Utils.GetDbm().HtAnyFanart.Remove(Utils.Category.SportsManual);
+              Utils.SetupFilenames(Utils.FAHUDScorecenter, "*.jpg", Utils.Category.SportsManual, null, Utils.Provider.Local);
+              // Utils.GetDbm().RemoveFromAnyHashtable(Utils.Category.SportsManual);
+              Utils.GetDbm().RefreshAnyFanart(Utils.Category.SportsManual, false);
               logger.Info("Refreshing local fanart for ScoreCenter is done.");
             }
             ReportProgress(76, "Importing local fanart for TV...");
             if (All || strArray[0].Contains(Utils.FAHUDTV, StringComparison.OrdinalIgnoreCase))
             {
               logger.Info("Refreshing local fanart for TV is starting.");
-              FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHUDTV, "*.jpg", Utils.Category.TvManual, null, Utils.Provider.Local);
-              if (Utils.GetDbm().HtAnyFanart.ContainsKey(Utils.Category.TvManual))
-                Utils.GetDbm().HtAnyFanart.Remove(Utils.Category.TvManual);
+              Utils.SetupFilenames(Utils.FAHUDTV, "*.jpg", Utils.Category.TvManual, null, Utils.Provider.Local);
+              // Utils.GetDbm().RemoveFromAnyHashtable(Utils.Category.TvManual);
+              Utils.GetDbm().RefreshAnyFanart(Utils.Category.TvManual, false);
               logger.Info("Refreshing local fanart for TV is done.");
             }
             ReportProgress(82, "Importing local fanart for Plugins...");
             if (All || strArray[0].Contains(Utils.FAHUDPlugins, StringComparison.OrdinalIgnoreCase))
             {
               logger.Info("Refreshing local fanart for Plugins is starting.");
-              FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHUDPlugins, "*.jpg", Utils.Category.PluginManual, null, Utils.Provider.Local);
-              if (Utils.GetDbm().HtAnyFanart.ContainsKey(Utils.Category.PluginManual))
-                Utils.GetDbm().HtAnyFanart.Remove(Utils.Category.PluginManual);
+              Utils.SetupFilenames(Utils.FAHUDPlugins, "*.jpg", Utils.Category.PluginManual, null, Utils.Provider.Local);
+              // Utils.GetDbm().RemoveFromAnyHashtable(Utils.Category.PluginManual);
+              Utils.GetDbm().RefreshAnyFanart(Utils.Category.PluginManual, false);
               logger.Info("Refreshing local fanart for Plugins is done.");
             }
             ReportProgress(88, "Importing local fanart for TVSeries...");
@@ -194,12 +198,12 @@ namespace FanartHandler
                 var tvSeriesName = UtilsTVSeries.GetTVSeriesName(Utils.Category.TvSeriesScraped);
                 if (tvSeriesName != null)
                 {
-                  FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHTVSeries, "*.jpg", Utils.Category.TvSeriesScraped, tvSeriesName, Utils.Provider.TVSeries);
+                  Utils.SetupFilenames(Utils.FAHTVSeries, "*.jpg", Utils.Category.TvSeriesScraped, tvSeriesName, Utils.Provider.TVSeries);
                   logger.Info("Refreshing local fanart for TVSeries added files.");
                   tvSeriesName.Clear();
+                  // Utils.GetDbm().RemoveFromAnyHashtable(Utils.Category.TvSeriesScraped);
+                  Utils.GetDbm().RefreshAnyFanart(Utils.Category.TvSeriesScraped, false);
                 }
-                if (Utils.GetDbm().HtAnyFanart.ContainsKey(Utils.Category.TvSeriesScraped))
-                  Utils.GetDbm().HtAnyFanart.Remove(Utils.Category.TvSeriesScraped);
               }
               catch { }
               logger.Info("Refreshing local fanart for TVSeries is done.");
@@ -212,8 +216,8 @@ namespace FanartHandler
               try
               {
                 UtilsMovingPictures.GetMovingPicturesBackdrops();
-                if (Utils.GetDbm().HtAnyFanart.ContainsKey(Utils.Category.MovingPictureManual))
-                  Utils.GetDbm().HtAnyFanart.Remove(Utils.Category.MovingPictureManual);
+                // Utils.GetDbm().RemoveFromAnyHashtable(Utils.Category.MovingPictureManual);
+                Utils.GetDbm().RefreshAnyFanart(Utils.Category.MovingPictureManual, false);
               }
               catch { }
               logger.Info("Refreshing local fanart for MovingPictures is done.");
@@ -226,7 +230,7 @@ namespace FanartHandler
         }
       }
       ReportProgress(100, "Done / Idle");
-      Thread.Sleep(500);
+      Utils.ThreadToLongSleep();
       ReportProgress(0, "Done / Idle");
       e.Result = 0;
     }
@@ -260,12 +264,12 @@ namespace FanartHandler
 
       try
       {
-        logger.Info("Refreshing local fanart is done.");
+        Utils.SetProperty("directory.scan", "false");
+        // FanartHandlerSetup.Fh.FRandom.RefreshRandomFilenames(false);
 
         Utils.ReleaseDelayStop("DirectoryWorker-OnDoWork");
         FanartHandlerSetup.Fh.SyncPointDirectory = 0;
-        
-        Utils.SetProperty("#fanarthandler.directory.scan", "false");
+        logger.Info("Refreshing local fanart is done.");
 
         if (type == null)
           return;

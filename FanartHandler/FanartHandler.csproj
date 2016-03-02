@@ -116,8 +116,10 @@
     <Compile Include="DatabaseManager.cs" />
     <Compile Include="FanartImage.cs" />
     <Compile Include="FanartPlaying.cs" />
+    <Compile Include="FanartPlayOther.cs" />
     <Compile Include="FanartRandom.cs" />
     <Compile Include="FanartSelected.cs" />
+    <Compile Include="FanartSelectedOther.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

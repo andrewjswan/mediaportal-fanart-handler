@@ -14,7 +14,7 @@
 
 
  <!-- Delete -->
-  <string Field="DeleteMissing">Delete missing enries</string>
+  <string Field="DeleteMissing">Delete missing entries</string>
 
  <!-- Status -->
   <string Field="StatusPercent">%</string>

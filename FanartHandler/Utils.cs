@@ -1,19 +1,6 @@
 ﻿// Type: FanartHandler.Utils
-// Assembly: FanartHandler, Version=3.1.0.0, Culture=neutral, PublicKeyToken=null
+// Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
-// Assembly location: D:\Mes documents\Desktop\FanartHandler.dll
-
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Globalization;
-using System.IO;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
 
 using MediaPortal.Configuration;
 using MediaPortal.GUI.Library;
@@ -22,21 +9,54 @@ using MediaPortal.Profile;
 
 using NLog;
 
-using SQLite.NET;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Xml;
 
 using Monitor.Core.Utilities;
+using MediaPortal.TagReader;
 
 namespace FanartHandler
 {
   internal static class Utils
   {
     private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-    private static int idleTimeInMillis = 250;
-    private static bool isStopping;
-    private static DatabaseManager dbm;
     private const string ConfigFilename = "FanartHandler.xml";
     private const string ConfigBadArtistsFilename = "FanartHandler.Artists.xml";
     private const string ConfigBadMyPicturesSlideShowFilename = "FanartHandler.SlideShowFolders.xml";
+    private const string ConfigGenresFilename = "FanartHandler.Genres.xml";
+    private const string ConfigCharactersFilename = "FanartHandler.Characters.xml";
+    private const string ConfigStudiosFilename = "FanartHandler.Studios.xml";
+    private const string FanartHandlerPrefix = "#fanarthandler.";
+
+    private static bool isStopping;
+    private static DatabaseManager dbm;
+
+    private static int scrapperTimerInterval = 3600000; // milliseconds
+    private static int refreshTimerInterval = 250; // milliseconds
+    private static int maxRefreshTickCount = 120;  // 30sec - 120 / (1000 / 250)
+    private static int idleTimeInMillis = 250;
+
+    private const int ThreadSleep = 0;
+    private const int ThreadLongSleep = 500;
+
+    private static double MinWResolution;
+    private static double MinHResolution;
+
+    private static Hashtable defaultBackdropImages;
+    private static Hashtable slideshowImages;
+
+    private static int activeWindow = (int)GUIWindow.Window.WINDOW_INVALID;
 
     public static DateTime LastRefreshRecording { get; set; }
     public static bool Used4TRTV { get; set; }
@@ -45,8 +65,9 @@ namespace FanartHandler
     public static List<string> BadArtistsList;  
     public static List<string> MyPicturesSlideShowFolders;  
     public static string[] PipesArray ;
-
-    public const int ThreadSleep = 0;
+    public static Hashtable Genres;
+    public static Hashtable Characters;
+    public static Hashtable Studios;
 
     #region Settings
     public static bool UseFanart { get; set; }
@@ -70,6 +91,7 @@ namespace FanartHandler
     public static bool UseOverlayFanart { get; set; } 
     public static bool UseMusicFanart { get; set; } 
     public static bool UseVideoFanart { get; set; } 
+    public static bool UsePicturesFanart { get; set; } 
     public static bool UseScoreCenterFanart { get; set; } 
     public static string DefaultBackdrop { get; set; } 
     public static string DefaultBackdropMask { get; set; } 
@@ -85,6 +107,7 @@ namespace FanartHandler
     public static bool AddAdditionalSeparators { get; set; }
     public static bool UseMyPicturesSlideShow { get; set; }
     public static bool FastScanMyPicturesSlideShow { get; set; }
+    public static int LimitNumberFanart { get; set; }
     #endregion
 
     #region Providers
@@ -150,21 +173,86 @@ namespace FanartHandler
     public static string MoviesCDArtFolder { get; set; }
     #endregion
 
+    #region Genres and Studios folders
+    public static string FAHGenres { get; set; }
+    public static string FAHCharacters { get; set; }
+    public static string FAHStudios { get; set; }
+    #endregion
+
     #region Junction
     public static bool IsJunction { get; set; }
     public static string JunctionSource { get; set; }
     public static string JunctionTarget { get; set; }
     #endregion
 
-    #region Other
-    public static string LastArtistTrack { get; set; }
-    public static string LastAlbumArtistTrack { get; set; }
-    #endregion
+    public static int iActiveWindow
+    {
+      get { return activeWindow; }
+      set { activeWindow = value; }
+    }
+
+    public static string sActiveWindow
+    {
+      get { return activeWindow.ToString(); }
+    }
 
     public static int IdleTimeInMillis
     {
       get { return idleTimeInMillis; }
       set { idleTimeInMillis = value; }
+    }
+
+    internal static int ScrapperTimerInterval
+    {
+      get { return scrapperTimerInterval; }
+      set { scrapperTimerInterval = value; }
+    }
+
+    internal static int RefreshTimerInterval
+    {
+      get { return refreshTimerInterval; }
+      set { refreshTimerInterval = value; }
+    }
+
+    internal static int MaxRefreshTickCount
+    {
+      get { return maxRefreshTickCount; }
+      set { maxRefreshTickCount = value; }
+    }
+
+    public static Hashtable DefaultBackdropImages
+    {
+      get { return defaultBackdropImages; }
+      set { defaultBackdropImages = value; }
+    }
+
+    public static Hashtable SlideShowImages
+    {
+      get { return slideshowImages; }
+      set { slideshowImages = value; }
+    }
+
+    public static double CurrArtistsBeingScraped 
+    { 
+      get { return dbm.CurrArtistsBeingScraped; }
+      set { dbm.CurrArtistsBeingScraped = value; }
+    }
+    public static double TotArtistsBeingScraped 
+    {
+      get { return dbm.TotArtistsBeingScraped; }
+      set { dbm.TotArtistsBeingScraped = value; }
+    }
+
+    public static bool IsScraping 
+    {
+      get { return dbm.IsScraping; }
+      set { dbm.IsScraping = value; }
+    }
+
+    public static bool StopScraper 
+    {
+      get { return dbm.StopScraper; }
+      set { dbm.StopScraper = value; }
     }
 
     static Utils()
@@ -214,8 +302,9 @@ namespace FanartHandler
       JunctionSource = string.Empty;
       JunctionTarget = string.Empty;
 
-      LastArtistTrack = string.Empty;
-      LastAlbumArtistTrack = string.Empty;
+      FAHGenres = string.Empty;
+      FAHCharacters = string.Empty;
+      FAHStudios = string.Empty;
       #endregion
 
       MPThumbsFolder = Config.GetFolder((Config.Dir) 6) ;
@@ -343,6 +432,15 @@ namespace FanartHandler
       logger.Debug("mvCentral Albums folder: "+FAHTVSeries);
       #endregion
 
+      #region Genres and Studios folders
+      FAHGenres = @"\Media\Logos\Genres\";
+      logger.Debug("Fanart Handler Genres folder: Skin|Theme "+FAHGenres);
+      FAHCharacters = FAHGenres + @"Characters\";
+      logger.Debug("Fanart Handler Characters folder: Skin|Theme "+FAHCharacters);
+      FAHStudios = @"\Media\Logos\Studios\";
+      logger.Debug("Fanart Handler Studios folder: Skin|Theme "+FAHStudios);
+      #endregion
+
       WatchFullThumbFolder = true ;
       
       #region Junction
@@ -427,7 +525,7 @@ namespace FanartHandler
           if (!MediaPortal.Util.Utils.IsDVD(sharePathData) && sharePathData != string.Empty && string.IsNullOrEmpty(sharePinData))
           {
             logger.Debug("Mediaportal Music folder: "+sharePathData) ;
-            FanartHandlerSetup.Fh.SetupFilenames(sharePathData, "fanart*.jpg", Utils.Category.MusicFanartManual, null, Utils.Provider.MusicFolder, true);
+            SetupFilenames(sharePathData, "fanart*.jpg", Utils.Category.MusicFanartManual, null, Utils.Provider.MusicFolder, true);
           }
         }
       }
@@ -446,10 +544,27 @@ namespace FanartHandler
       dbm.InitDB(type);
     }
 
+    public static void WaitForDB()
+    {
+      if (!dbm.isDBInit)
+      {
+        logger.Debug("Wait for DB...");
+      }
+      while (!dbm.isDBInit)
+      {
+        ThreadToLongSleep();
+      }
+    }
+
     public static void ThreadToSleep()
     {
       Thread.Sleep(Utils.ThreadSleep); 
       // Application.DoEvents();
+    }
+
+    public static void ThreadToLongSleep()
+    {
+      Thread.Sleep(Utils.ThreadLongSleep); 
     }
 
     public static void AllocateDelayStop(string key)
@@ -510,11 +625,6 @@ namespace FanartHandler
       return isStopping;
     }
 
-    public static void LogDevMsg(string msg)
-    {
-      logger.Debug("DEV MSG: " + msg);
-    }
-
     public static string GetMusicFanartCategoriesInStatement(bool highDef)
     {
       if (highDef)
@@ -557,6 +667,14 @@ namespace FanartHandler
       return key;
     }
 
+    public static string RemoveSpacesAndDashs(this string self)
+    {
+      if (self == null)
+        return string.Empty;
+
+      return self.Replace(" ", "").Replace("-", "").Trim();
+    }
+
     public static string RemoveDiacritics(this string self)
     {
       if (self == null)
@@ -580,7 +698,7 @@ namespace FanartHandler
       if (self == null)
         return string.Empty;
       var str1 = self;
-      var str2 = Utils.RemoveDiacritics(self);
+      var str2 = self.RemoveDiacritics();
       var stringBuilder = new StringBuilder();
       var index = 0;
       while (index < str1.Length)
@@ -683,7 +801,7 @@ namespace FanartHandler
       if (string.IsNullOrEmpty(key))
         return string.Empty;
 
-      key = GetFilenameNoPath(key);
+      key = GetFileName(key);
       key = RemoveExtension(key);
       if (category == Category.TvSeriesScraped)
         return key;
@@ -918,70 +1036,85 @@ namespace FanartHandler
 
     public static string GetArtistLeftOfMinusSign(string key, bool flag = false)
     {
-      if (key == null)
+      if (string.IsNullOrEmpty(key))
+      {
         return string.Empty;
-
+      }
       if ((flag) && (key.IndexOf(" - ", StringComparison.CurrentCulture) >= 0))
+      {
         key = key.Substring(0, key.LastIndexOf(" - ", StringComparison.CurrentCulture));
+      }
       else if (key.IndexOf("-", StringComparison.CurrentCulture) >= 0)
+      {
         key = key.Substring(0, key.LastIndexOf("-", StringComparison.CurrentCulture));
+      }
       return key.Trim();
     }
 
     public static string GetAlbumRightOfMinusSign(string key, bool flag = false)
     {
-      if (key == null)
+      if (string.IsNullOrEmpty(key))
+      {
         return string.Empty;
-
+      }
       if ((flag) && (key.IndexOf(" - ", StringComparison.CurrentCulture) >= 0))
+      {
         key = key.Substring(checked (key.LastIndexOf(" - ", StringComparison.CurrentCulture) + 3));
+      }
       else if (key.IndexOf("-", StringComparison.CurrentCulture) >= 0)
+      {
         key = key.Substring(checked (key.LastIndexOf("-", StringComparison.CurrentCulture) + 1));
+      }
       return key.Trim();
     }
 
-    public static string GetFilenameOnly(string filename)
+    public static string GetFileName(string filename)
     {
-      if (!string.IsNullOrEmpty(filename))
-        return Path.GetFileName(filename);
-      else
-        return string.Empty;
+      var result = string.Empty;
+      try
+      {
+        if (!string.IsNullOrEmpty(filename))
+        {
+          result = Path.GetFileName(filename);
+        }
+      }
+      catch
+      {
+        result = string.Empty;
+      }
+      return result;
     }
 
-    public static string GetFilenameNoPath(string key)
+    public static string GetGetDirectoryName(string filename)
     {
-      if (string.IsNullOrEmpty(key))
-        return string.Empty;
-
-      if (File.Exists(key))
-        return Path.GetFileName(key);
-      else
-        return key;
+      var result = string.Empty;
+      try
+      {
+        if (!string.IsNullOrEmpty(filename))
+        {
+          result = Path.GetDirectoryName(filename);
+        }
+      }
+      catch
+      {
+        result = string.Empty;
+      }
+      return result;
     }
 
     public static string RemoveExtension(string key)
     {
-      if (key == null)
+      if (string.IsNullOrEmpty(key))
+      {
         return string.Empty;
-      /*
-      key = Regex.Replace(key, ".jpg", string.Empty);
-      key = Regex.Replace(key, ".JPG", string.Empty);
-      key = Regex.Replace(key, ".png", string.Empty);
-      key = Regex.Replace(key, ".PNG", string.Empty);
-      key = Regex.Replace(key, ".bmp", string.Empty);
-      key = Regex.Replace(key, ".BMP", string.Empty);
-      key = Regex.Replace(key, ".tif", string.Empty);
-      key = Regex.Replace(key, ".TIF", string.Empty);
-      key = Regex.Replace(key, ".gif", string.Empty);
-      key = Regex.Replace(key, ".GIF", string.Empty);
-      */
+      }
       key = Regex.Replace(key.Trim(), @"\.(jpe?g|png|bmp|tiff?|gif)$",string.Empty,RegexOptions.IgnoreCase);
       return key;
     }
 
     public static string RemoveDigits(string key)
     {
-      if (key == null)
+      if (string.IsNullOrEmpty(key))
         return string.Empty;
       else
         return Regex.Replace(key, @"\d", string.Empty);
@@ -989,7 +1122,7 @@ namespace FanartHandler
 
     public static string PatchSql(string s)
     {
-      if (s == null)
+      if (string.IsNullOrEmpty(s))
         return string.Empty;
       else
         return s.Replace("'", "''");
@@ -1004,101 +1137,35 @@ namespace FanartHandler
       old = s.Trim() ;
       s = Regex.Replace(s.Trim(), @"(.*?\S\s)(\([^\s\d]+?\))(,|\s|$)","$1$3",RegexOptions.IgnoreCase);
       if (string.IsNullOrEmpty(s.Trim())) s = old ;
-      /*
-      s = s.Replace("loseless", string.Empty);
-      s = s.Replace("Loseless", string.Empty);
-      */
+
       old = s.Trim() ;
       s = Regex.Replace(s.Trim(), @"([^\S]|^)[\[\(]?loseless[\]\)]?([^\S]|$)","$1$2",RegexOptions.IgnoreCase);
       if (string.IsNullOrEmpty(s.Trim())) s = old ;
-      /*
-      s = s.Replace("Thumbnail", string.Empty);
-      s = s.Replace("thumbnail", string.Empty);
-      s = s.Replace("Thumb", string.Empty);
-      s = s.Replace("thumb", string.Empty);
-      */
+
       old = s.Trim() ;
       s = Regex.Replace(s.Trim(), @"([^\S]|^)thumb(nail)?s?([^\S]|$)","$1$3",RegexOptions.IgnoreCase);
       if (string.IsNullOrEmpty(s.Trim())) s = old ;
-      /*
-      s = s.Replace("400x400", string.Empty);
-      s = s.Replace("400X400", string.Empty);
-      s = s.Replace("500x500", string.Empty);
-      s = s.Replace("500X500", string.Empty);
-      s = s.Replace("600x600", string.Empty);
-      s = s.Replace("600X600", string.Empty);
-      s = s.Replace("700x700", string.Empty);
-      s = s.Replace("700X700", string.Empty);
-      s = s.Replace("800x800", string.Empty);
-      s = s.Replace("800X800", string.Empty);
-      s = s.Replace("900x900", string.Empty);
-      s = s.Replace("900X900", string.Empty);
-      s = s.Replace("1000x1000", string.Empty);
-      s = s.Replace("1000X1000", string.Empty);
-      s = s.Replace("1920x1080", string.Empty);
-      */
+
       old = s.Trim() ;
       s = Regex.Replace(s.Trim(), @"\d{3,4}x\d{3,4}",string.Empty,RegexOptions.IgnoreCase);
       if (string.IsNullOrEmpty(s.Trim())) s = old ;
-      /*
-      s = s.Replace("-(1080P)", string.Empty);
-      s = s.Replace("-(720P)", string.Empty);
-      s = s.Replace("-[1080P]", string.Empty);
-      s = s.Replace("-[720P]", string.Empty);
-      s = s.Replace("_(1080P)", string.Empty);
-      s = s.Replace("_(720P)", string.Empty);
-      s = s.Replace("_[1080P]", string.Empty);
-      s = s.Replace("_[720P]", string.Empty);
-      s = s.Replace(" (1080P)", string.Empty);
-      s = s.Replace(" (720P)", string.Empty);
-      s = s.Replace(" [1080P]", string.Empty);
-      s = s.Replace(" [720P]", string.Empty);
-      s = s.Replace("(1080P)", string.Empty);
-      s = s.Replace("(720P)", string.Empty);
-      s = s.Replace("[1080P]", string.Empty);
-      s = s.Replace("[720P]", string.Empty);
-      s = s.Replace("-1080P", string.Empty);
-      s = s.Replace("-720P", string.Empty);
-      s = s.Replace("_1080P", string.Empty);
-      s = s.Replace("_720P", string.Empty);
-      s = s.Replace(" 1080P", string.Empty);
-      s = s.Replace(" 720P", string.Empty);
-      s = s.Replace("1080P", string.Empty);
-      s = s.Replace("720P", string.Empty);
-      */
+
       old = s.Trim() ;
       s = Regex.Replace(s.Trim(), @"[-_]?[\[\(]?\d{3,4}(p|i)[\]\)]?",string.Empty,RegexOptions.IgnoreCase);
       if (string.IsNullOrEmpty(s.Trim())) s = old ;
-      /*
-      s = s.Replace("-1080", string.Empty);
-      s = s.Replace("-720", string.Empty);
-      s = s.Replace("_1080", string.Empty);
-      s = s.Replace("_720", string.Empty);
-      s = s.Replace(" 1080", string.Empty);
-      s = s.Replace(" 720", string.Empty);
-      s = s.Replace("1080", string.Empty);
-      s = s.Replace("720", string.Empty);
-      s = s.Replace("_1920", string.Empty);
-      s = s.Replace("-400", string.Empty);
-      s = s.Replace("-500", string.Empty);
-      s = s.Replace("-600", string.Empty);
-      s = s.Replace("-700", string.Empty);
-      s = s.Replace("-800", string.Empty);
-      s = s.Replace("-900", string.Empty);
-      s = s.Replace("-1000", string.Empty);
-      */
+
       old = s.Trim() ;
       s = Regex.Replace(s.Trim(), @"([^\S]|^)([\-_]?[\[\(]?(720|1080|1280|1440|1714|1920|2160)[\]\)]?)","$1",RegexOptions.IgnoreCase);
       if (string.IsNullOrEmpty(s.Trim())) s = old ;
-      //
+
       old = s.Trim() ;
       s = Regex.Replace(s.Trim(), @"[\-_][\[\(]?(400|500|600|700|800|900|1000)[\]\)]?",string.Empty,RegexOptions.IgnoreCase);
       if (string.IsNullOrEmpty(s.Trim())) s = old ;
-      //
+
       old = s.Trim() ;
       s = Regex.Replace(s.Trim(), @"([^\S]|^)([\-_]?[\[\(]?(21|22|23|24|25|26|27|28|29)\d{2,}[\]\)]?)","$1",RegexOptions.IgnoreCase);
       if (string.IsNullOrEmpty(s.Trim())) s = old ;
-      //
+
       old = s.Trim() ;
       s = Regex.Replace(s.Trim(), @"([^\S]|^)([\-_]?[\[\(]?(3|4|5|6|7|8|9)\d{3,}[\]\)]?)","$1",RegexOptions.IgnoreCase);
       if (string.IsNullOrEmpty(s.Trim())) s = old ;
@@ -1154,20 +1221,19 @@ namespace FanartHandler
 
     public static void Shuffle(ref Hashtable filenames)
     {
-      var random = new Random();
-      if (filenames == null || random == null)
+      if (filenames == null)
         return;
 
-      var num1 = checked (filenames.Count - 1);
       try
-      {
-        while (num1 > 0)
+      { 
+        int n = filenames.Count;
+        while (n > 1)
         {
-          var num2 = random.Next(checked (num1 + 1));
-          var obj = filenames[num1];
-          filenames[num1] = filenames[num2];
-          filenames[num2] = obj;
-          checked { --num1; }
+          n--;
+          int k = ThreadSafeRandom.ThisThreadsRandom.Next(n + 1);
+          var value = filenames[k];
+          filenames[k] = filenames[n];
+          filenames[n] = value;
         }
       }
       catch  (Exception ex)
@@ -1204,18 +1270,26 @@ namespace FanartHandler
       return false;
     }
 
-    public static bool IsIdle(int basichomeFadeTime)
+    public static void AddPictureToCache(string property, string value, ref ArrayList al)
     {
+      if (string.IsNullOrEmpty(value))
+        return;
+
+      if (al == null)
+        return;
+
+      if (al.Contains(value))
+        return;
+
       try
       {
-        if ((DateTime.Now - GUIGraphicsContext.LastActivity).TotalSeconds >= basichomeFadeTime)
-          return true;
+        al.Add(value);
       }
       catch (Exception ex)
       {
-        logger.Error("IsIdle: " + ex);
+        logger.Error("AddPictureToCache: " + ex);
       }
-      return false;
+      LoadImage(value);
     }
 
     public static void LoadImage(string filename)
@@ -1232,20 +1306,59 @@ namespace FanartHandler
       }
       catch (Exception ex)
       {
-        if (isStopping)
+        logger.Error("LoadImage (" + filename + "): " + ex);
+      }
+    }
+
+    public static void EmptyAllImages(ref ArrayList al)
+    {
+      try
+      {
+        if (al == null || al.Count <= 0)
           return;
-        logger.Error(string.Concat(new object[4]
+
+        foreach (var obj in al)
         {
-          "LoadImage (",
-          filename,
-          "): ",
-          ex
-        }));
+          if (obj != null)
+            UNLoadImage(obj.ToString());
+        }
+        al.Clear();
+      }
+      catch (Exception ex)
+      {
+        logger.Error("EmptyAllImages: " + ex);
+      }
+    }
+
+    private static void UNLoadImage(string filename)
+    {
+      try
+      {
+        GUITextureManager.ReleaseTexture(filename);
+      }
+      catch (Exception ex)
+      {
+        logger.Error("UnLoadImage (" + filename + "): " + ex);
       }
     }
 
     [DllImport("gdiplus.dll", CharSet = CharSet.Unicode)]
     private static extern int GdipLoadImageFromFile(string filename, out IntPtr image);
+
+    public static Image LoadImageFastFromMemory (string filename) 
+    { 
+      using (MemoryStream ms = new MemoryStream(File.ReadAllBytes(filename)))
+      {
+        try
+        {
+          return Image.FromStream(ms, false, false); 
+        }
+        catch
+        {
+          return null;
+        }
+      }
+    }
 
     public static Image LoadImageFastFromFile(string filename)
     {
@@ -1255,7 +1368,7 @@ namespace FanartHandler
       {
         if (GdipLoadImageFromFile(filename, out image1) != 0)
         {
-          logger.Warn("gdiplus.dll method failed. Will degrade performance.");
+          logger.Warn("GdipLoadImageFromFile: gdiplus.dll method failed. Will degrade performance.");
           image2 = Image.FromFile(filename);
         }
         else
@@ -1266,10 +1379,712 @@ namespace FanartHandler
       }
       catch (Exception ex)
       {
-        logger.Error("Failed to load image from " + filename+ " - " + ex);
+        logger.Error("GdipLoadImageFromFile: Failed to load image from " + filename+ " - " + ex);
         image2 = null;
       }
       return image2;
+    }
+
+    public static Image ApplyInvert(Image bmpImage)
+    {  
+      byte A, R, G, B;  
+      Color pixelColor;  
+      Bitmap bitmapImage = (Bitmap)bmpImage.Clone();
+
+      for (int y = 0; y < bitmapImage.Height; y++)  
+      {  
+        for (int x = 0; x < bitmapImage.Width; x++)  
+        {  
+          pixelColor = bitmapImage.GetPixel(x, y);  
+          A = (byte)(255 - pixelColor.A); 
+          R = pixelColor.R;  
+          G = pixelColor.G;  
+          B = pixelColor.B;  
+          bitmapImage.SetPixel(x, y, Color.FromArgb((int)A, (int)R, (int)G, (int)B));  
+        }  
+      }
+      return bitmapImage;  
+    }
+
+    #region Selected Item
+    public static string GetSelectedMyVideoTitle()
+    {
+      string result = string.Empty;
+
+      if (iActiveWindow == (int)GUIWindow.Window.WINDOW_INVALID)
+        return result;
+
+      try
+      {
+        if (iActiveWindow == 2003 ||  // Dialog Video Info
+            iActiveWindow == 6 ||     // My Video
+            iActiveWindow == 25 ||    // My Video Title
+            iActiveWindow == 614 ||   // Dialog Video Artist Info
+            iActiveWindow == 28       // My Video Play List
+           )
+        {
+          result = (iActiveWindow != 2003 ? Utils.GetProperty("#selecteditem") : Utils.GetProperty("#title"));
+        }
+      }
+      catch (Exception ex)
+      {
+        logger.Error("GetSelectedTitle: " + ex);
+      }
+      return result;
+    }
+
+    public static void GetSelectedItem(ref string SelectedItem, ref string SelectedAlbum, ref string SelectedGenre, ref string SelectedStudios, ref bool isMusicVideo)
+    {
+      try
+      {
+        if (iActiveWindow == (int)GUIWindow.Window.WINDOW_INVALID)
+          return;
+
+        #region SelectedItem
+        if (iActiveWindow == 6623)       // mVids plugin - Outdated.
+        {
+          SelectedItem = Utils.GetProperty("#mvids.artist");
+          SelectedItem = Utils.GetArtistLeftOfMinusSign(SelectedItem);
+        }
+        else if (iActiveWindow == 47286) // Rockstar plugin
+        {
+          SelectedItem = Utils.GetProperty("#Rockstar.SelectedTrack.ArtistName");
+          SelectedAlbum = Utils.GetProperty("#Rockstar.SelectedTrack.AlbumName") ;
+        }
+        else if (iActiveWindow == 759)     // My TV Recorder
+          SelectedItem = Utils.GetProperty("#TV.RecordedTV.Title");
+        else if (iActiveWindow == 1)       // My TV View
+          SelectedItem = Utils.GetProperty("#TV.View.title");
+        else if (iActiveWindow == 600)     // My TV Guide
+          SelectedItem = Utils.GetProperty("#TV.Guide.Title");
+        else if (iActiveWindow == 880)     // MusicVids plugin
+          SelectedItem = Utils.GetProperty("#MusicVids.ArtistName");
+        else if (iActiveWindow == 510 ||   // My Music Plaing Now - Why is it here? 
+                 iActiveWindow == 90478 || // My Lyrics - Why is it here? 
+                 iActiveWindow == 25652 || // Radio Time - Why is it here? 
+                 iActiveWindow == 35)      // Basic Home - Why is it here? And where there may appear tag: #Play.Current.Title
+        {
+          SelectedItem = string.Empty;
+
+          // mvCentral
+          var mvcArtist = Utils.GetProperty("#Play.Current.mvArtist");
+          var mvcAlbum = Utils.GetProperty("#Play.Current.mvAlbum");
+          var mvcPlay = Utils.GetProperty("#mvCentral.isPlaying");
+
+          var selAlbumArtist = Utils.GetProperty("#Play.Current.AlbumArtist");
+          var selArtist = Utils.GetProperty("#Play.Current.Artist");
+          var selTitle = Utils.GetProperty("#Play.Current.Title");
+
+          if (!string.IsNullOrEmpty(selArtist))
+            if (!string.IsNullOrEmpty(selAlbumArtist))
+              if (selArtist.Equals(selAlbumArtist, StringComparison.InvariantCultureIgnoreCase))
+                SelectedItem = selArtist;
+              else
+                SelectedItem = selArtist + '|' + selAlbumArtist;
+            else
+              SelectedItem = selArtist;
+          /*
+          if (!string.IsNullOrEmpty(tuneArtist))
+            SelectedItem = SelectedItem + (string.IsNullOrEmpty(SelectedItem) ? "" : "|") + tuneArtist; 
+          */
+          SelectedAlbum = Utils.GetProperty("#Play.Current.Album");
+          SelectedGenre = Utils.GetProperty("#Play.Current.Genre");
+
+          if (!string.IsNullOrEmpty(selArtist) && !string.IsNullOrEmpty(selTitle) && string.IsNullOrEmpty(SelectedAlbum))
+          {
+            Scraper scraper = new Scraper();
+            SelectedAlbum = scraper.LastFMGetAlbum (selArtist, selTitle);
+            scraper = null;
+          }
+          if (!string.IsNullOrEmpty(selAlbumArtist) && !string.IsNullOrEmpty(selTitle) && string.IsNullOrEmpty(SelectedAlbum))
+          {
+            Scraper scraper = new Scraper();
+            SelectedAlbum = scraper.LastFMGetAlbum (selAlbumArtist, selTitle);
+            scraper = null;
+          }
+          /*
+          if (!string.IsNullOrEmpty(tuneArtist) && !string.IsNullOrEmpty(tuneTrack) && string.IsNullOrEmpty(tuneAlbum) && string.IsNullOrEmpty(SelectedAlbum))
+          {
+            Scraper scraper = new Scraper();
+            SelectedAlbum = scraper.LastFMGetAlbum (tuneArtist, tuneTrack);
+            scraper = null;
+          }
+          */
+          if (!string.IsNullOrEmpty(mvcPlay) && mvcPlay.Equals("true",StringComparison.CurrentCulture))
+          {
+            isMusicVideo = true;
+            if (!string.IsNullOrEmpty(mvcArtist))
+              SelectedItem = SelectedItem + (string.IsNullOrEmpty(SelectedItem) ? "" : "|") + mvcArtist; 
+            if (string.IsNullOrEmpty(SelectedAlbum))
+              SelectedAlbum = string.Empty + mvcAlbum;
+          }
+
+          if (string.IsNullOrEmpty(SelectedItem) && string.IsNullOrEmpty(selArtist) && string.IsNullOrEmpty(selAlbumArtist))
+            SelectedItem = selTitle;
+        }
+        else if (iActiveWindow == 6622)    // Music Trivia 
+        {
+          SelectedItem = Utils.GetProperty("#selecteditem2");
+          SelectedItem = Utils.GetArtistLeftOfMinusSign(SelectedItem);
+        }
+        else if (iActiveWindow == 2003 ||  // Dialog Video Info
+                 iActiveWindow == 6 ||     // My Video
+                 iActiveWindow == 25 ||    // My Video Title
+                 iActiveWindow == 614 ||   // Dialog Video Artist Info
+                 iActiveWindow == 28       // My Video Play List
+                )
+        {
+          var movieID = Utils.GetProperty("#movieid");
+          var selectedTitle = (iActiveWindow != 2003 ? Utils.GetProperty("#selecteditem") : Utils.GetProperty("#title"));
+          SelectedItem = (movieID == null || movieID == string.Empty || movieID == "-1" || movieID == "0") ? selectedTitle : movieID;
+          SelectedGenre = Utils.GetProperty("#genre");
+          SelectedStudios = Utils.GetProperty("#studios");
+          // logger.Debug("*** "+movieID+" - "+Utils.GetProperty("#selecteditem")+" - "+Utils.GetProperty("#title")+" - "+Utils.GetProperty("#myvideosuserfanart")+" -> "+SelectedItem+" - "+SelectedGenre);
+        }
+        else if (iActiveWindow == 96742)     // Moving Pictures
+        {
+          SelectedItem = Utils.GetProperty("#selecteditem");
+          SelectedStudios = Utils.GetProperty("#MovingPictures.SelectedMovie.studios");
+          SelectedGenre = Utils.GetProperty("#MovingPictures.SelectedMovie.genres");
+        }
+        else if (iActiveWindow == 9811 ||    // TVSeries
+                 iActiveWindow == 9813)      // TVSeries Playlist
+        {
+          SelectedItem = UtilsTVSeries.GetTVSeriesAttributes(ref SelectedGenre, ref SelectedStudios);
+          if (string.IsNullOrEmpty(SelectedItem))
+          {
+            SelectedItem = Utils.GetProperty("#TVSeries.Title"); 
+          }
+          if (string.IsNullOrEmpty(SelectedStudios))
+          {
+            SelectedStudios = Utils.GetProperty("#TVSeries.Series.Network");
+          }
+          if (string.IsNullOrEmpty(SelectedGenre))
+          {
+            SelectedGenre = Utils.GetProperty("#TVSeries.Series.Genre");
+          }
+          // logger.Debug("*** TVSeries: " + SelectedItem + " - " + SelectedStudios + " - " + SelectedGenre);
+        }
+        else if (iActiveWindow == 112011 ||  // mvCentral
+                 iActiveWindow == 112012 ||  // mvCentral Playlist
+                 iActiveWindow == 112013 ||  // mvCentral StatsAndInfo
+                 iActiveWindow == 112015)    // mvCentral SmartDJ
+        {
+          SelectedItem = Utils.GetProperty("#mvCentral.ArtistName");
+
+          SelectedAlbum = Utils.GetProperty("#mvCentral.Album");
+          SelectedGenre = Utils.GetProperty("#mvCentral.Genre");
+
+          var mvcIsPlaying = Utils.GetProperty("#mvCentral.isPlaying");
+          if (!string.IsNullOrEmpty(mvcIsPlaying) && mvcIsPlaying.Equals("true",StringComparison.CurrentCulture))
+          {
+            isMusicVideo = true;
+          }
+        }
+        else if (iActiveWindow == 25650)     // Radio Time
+        {
+          SelectedItem = Utils.GetProperty("#RadioTime.Selected.Subtext"); // Artist - Track || TODO for: Artist - Album - Track
+          SelectedItem = Utils.GetArtistLeftOfMinusSign(SelectedItem, true);
+        }
+        else if (iActiveWindow == 29050 || // youtube.fm videosbase
+                 iActiveWindow == 29051 || // youtube.fm playlist
+                 iActiveWindow == 29052    // youtube.fm info
+                )
+        {
+          SelectedItem = Utils.GetProperty("#selecteditem");
+          SelectedItem = Utils.GetArtistLeftOfMinusSign(SelectedItem);
+        }
+        else if (iActiveWindow == 30885)   // GlobalSearch Music
+        {
+          SelectedItem = Utils.GetProperty("#selecteditem");
+          SelectedItem = Utils.GetArtistLeftOfMinusSign(SelectedItem);
+        }
+        else if (iActiveWindow == 30886)   // GlobalSearch Music Details
+        {
+          try
+          {
+            if (GUIWindowManager.GetWindow(iActiveWindow).GetControl(1) != null)
+              SelectedItem = ((GUIFadeLabel) GUIWindowManager.GetWindow(iActiveWindow).GetControl(1)).Label;
+          }
+          catch { }
+        }
+        else
+          SelectedItem = Utils.GetProperty("#selecteditem");
+
+        SelectedAlbum   = (string.IsNullOrEmpty(SelectedAlbum) ? null : SelectedAlbum); 
+        SelectedGenre   = (string.IsNullOrEmpty(SelectedGenre) ? null : SelectedGenre.Replace(" / ", "|").Replace(", ", "|")); 
+        SelectedStudios = (string.IsNullOrEmpty(SelectedStudios) ? null : SelectedStudios.Replace(" / ", "|").Replace(", ", "|")); 
+        #endregion
+      }
+      catch (Exception ex)
+      {
+        logger.Error("GetSelectedItem: " + ex);
+      }
+    }
+    #endregion
+
+    #region Music Items                                                                                                         
+    public static void GetCurrMusicPlayItem(ref string CurrentTrackTag, ref string CurrentAlbumTag, ref string CurrentGenreTag, ref string LastArtistTrack, ref string LastAlbumArtistTrack)
+    {
+      try
+      {
+        #region Fill current tags
+        if (Utils.iActiveWindow == 730718) // MP Grooveshark
+        {
+          CurrentTrackTag = Utils.GetProperty("#mpgrooveshark.current.artist");
+          CurrentAlbumTag = Utils.GetProperty("#mpgrooveshark.current.album");
+          CurrentGenreTag = null;
+        }
+        else
+        {
+          CurrentTrackTag = string.Empty;
+
+          // Common play
+          var selAlbumArtist = Utils.GetProperty("#Play.Current.AlbumArtist").Trim();
+          var selArtist = Utils.GetProperty("#Play.Current.Artist").Trim();
+          var selTitle = Utils.GetProperty("#Play.Current.Title").Trim();
+          // Radio Time
+          /*
+          var tuneArtist = Utils.GetProperty("#RadioTime.Play.Artist");
+          var tuneAlbum = Utils.GetProperty("#RadioTime.Play.Album");
+          var tuneTrack = Utils.GetProperty("#RadioTime.Play.Song");
+          */
+          // mvCentral
+          var mvcArtist = Utils.GetProperty("#Play.Current.mvArtist");
+          var mvcAlbum = Utils.GetProperty("#Play.Current.mvAlbum");
+          var mvcPlay = Utils.GetProperty("#mvCentral.isPlaying");
+
+          if (!string.IsNullOrEmpty(selArtist))
+            if (!string.IsNullOrEmpty(selAlbumArtist))
+              if (selArtist.Equals(selAlbumArtist, StringComparison.InvariantCultureIgnoreCase))
+                CurrentTrackTag = selArtist;
+              else
+                CurrentTrackTag = selArtist + '|' + selAlbumArtist;
+            else
+              CurrentTrackTag = selArtist;
+          /*
+          if (!string.IsNullOrEmpty(tuneArtist))
+            CurrentTrackTag = CurrentTrackTag + (string.IsNullOrEmpty(CurrentTrackTag) ? "" : "|") + tuneArtist; 
+          */
+          CurrentAlbumTag = Utils.GetProperty("#Play.Current.Album");
+          CurrentGenreTag = Utils.GetProperty("#Play.Current.Genre");
+
+          if (!string.IsNullOrEmpty(selArtist) && !string.IsNullOrEmpty(selTitle) && string.IsNullOrEmpty(CurrentAlbumTag))
+          {
+            if (!LastArtistTrack.Equals(selArtist+"#"+selTitle, StringComparison.CurrentCulture))
+            {
+              Scraper scraper = new Scraper();
+              CurrentAlbumTag = scraper.LastFMGetAlbum(selArtist, selTitle);
+              scraper = null;
+              LastArtistTrack = selArtist+"#"+selTitle;
+            }
+          }
+          if (!string.IsNullOrEmpty(selAlbumArtist) && !string.IsNullOrEmpty(selTitle) && string.IsNullOrEmpty(CurrentAlbumTag))
+          {
+            if (!LastAlbumArtistTrack.Equals(selAlbumArtist+"#"+selTitle, StringComparison.CurrentCulture))
+            {
+              Scraper scraper = new Scraper();
+              CurrentAlbumTag = scraper.LastFMGetAlbum(selAlbumArtist, selTitle);
+              scraper = null;
+              LastAlbumArtistTrack = selAlbumArtist+"#"+selTitle;
+            }
+          }
+          /*
+          if (!string.IsNullOrEmpty(tuneArtist) && !string.IsNullOrEmpty(tuneTrack) && string.IsNullOrEmpty(tuneAlbum) && string.IsNullOrEmpty(CurrentAlbumTag))
+          {
+            Scraper scraper = new Scraper();
+            CurrentAlbumTag = scraper.LastFMGetAlbum (tuneArtist, tuneTrack);
+            scraper = null;
+          }
+          */
+          if (!string.IsNullOrEmpty(mvcPlay) && mvcPlay.Equals("true",StringComparison.CurrentCulture))
+          {
+            if (!string.IsNullOrEmpty(mvcArtist))
+              CurrentTrackTag = CurrentTrackTag + (string.IsNullOrEmpty(CurrentTrackTag) ? "" : "|") + mvcArtist; 
+            if (string.IsNullOrEmpty(CurrentAlbumTag))
+              CurrentAlbumTag = string.Empty + mvcAlbum;
+          }
+        }
+        #endregion
+      }
+      catch (Exception ex)
+      {
+        logger.Error("GetCurrMusicPlayItem: " + ex);
+      }
+    }
+
+    public static string GetMusicArtistFromListControl(ref string currSelectedMusicAlbum)
+    {
+      try
+      {
+        if (iActiveWindow == (int)GUIWindow.Window.WINDOW_INVALID)
+          return null;
+
+        var selectedListItem = GUIControl.GetSelectedListItem(iActiveWindow, 50);
+        if (selectedListItem == null)
+          return null;
+
+        // if (selectedListItem.MusicTag == null && selectedListItem.Label.Equals("..", StringComparison.CurrentCulture))
+        //   return "..";
+
+        var selAlbumArtist = Utils.GetProperty("#music.albumArtist");
+        var selArtist = Utils.GetProperty("#music.artist");
+        var selAlbum = Utils.GetProperty("#music.album");
+        var selItem = Utils.GetProperty("#selecteditem");
+
+        if (!string.IsNullOrEmpty(selAlbum))
+          currSelectedMusicAlbum = selAlbum ;
+
+        // logger.Debug("*** GMAFLC: 1 - ["+selArtist+"] ["+selAlbumArtist+"] ["+selAlbum+"] ["+selItem+"]");
+        if (!string.IsNullOrEmpty(selArtist))
+          if (!string.IsNullOrEmpty(selAlbumArtist))
+            if (selArtist.Equals(selAlbumArtist, StringComparison.InvariantCultureIgnoreCase))
+              return selArtist;
+            else
+              return selArtist + '|' + selAlbumArtist;
+          else
+            return selArtist;
+        else
+          if (!string.IsNullOrEmpty(selAlbumArtist))
+            return selAlbumArtist;
+
+        if (selectedListItem.MusicTag == null)
+        {
+          var musicDB = MusicDatabase.Instance;
+          var list = new List<SongMap>();
+          musicDB.GetSongsByPath(selectedListItem.Path, ref list);
+          if (list != null)
+          {
+            using (var enumerator = list.GetEnumerator())
+            {
+              if (enumerator.MoveNext())
+              {
+                currSelectedMusicAlbum = enumerator.Current.m_song.Album.Trim() ;
+                // return Utils.MovePrefixToBack(Utils.RemoveMPArtistPipes(enumerator.Current.m_song.Artist))+"|"+enumerator.Current.m_song.Artist+"|"+enumerator.Current.m_song.AlbumArtist;
+                // logger.Debug("*** GMAFLC: 2 - ["+enumerator.Current.m_song.Artist+"] ["+enumerator.Current.m_song.AlbumArtist+"]");
+                return Utils.RemoveMPArtistPipes(enumerator.Current.m_song.Artist)+"|"+enumerator.Current.m_song.Artist+"|"+enumerator.Current.m_song.AlbumArtist;
+              }
+            }
+          }
+
+          if (selItem.Equals("..", StringComparison.CurrentCulture))
+            return selItem;
+
+          var FoundArtist = (string) null;
+          //
+          var SelArtist = Utils.MovePrefixToBack(Utils.RemoveMPArtistPipes(Utils.GetArtistLeftOfMinusSign(selItem)));
+          var arrayList = new ArrayList();
+          musicDB.GetAllArtists(ref arrayList);
+          var index = 0;
+          while (index < arrayList.Count)
+          {
+            var MPArtist = Utils.MovePrefixToBack(Utils.RemoveMPArtistPipes(arrayList[index].ToString()));
+            if (SelArtist.IndexOf(MPArtist, StringComparison.InvariantCultureIgnoreCase) >= 0)
+            {
+              FoundArtist = MPArtist;
+              break;
+            }
+            checked { ++index; }
+          }
+          if (arrayList != null)
+            arrayList.Clear();
+          arrayList = null;
+          // logger.Debug("*** GMAFLC: 3 - ["+FoundArtist+"]");
+          if (!string.IsNullOrEmpty(FoundArtist))
+            return FoundArtist;
+          //
+          SelArtist = Utils.GetArtistLeftOfMinusSign(selItem);
+          arrayList = new ArrayList();
+          if (musicDB.GetAlbums(3, SelArtist, ref arrayList))
+          {
+            var albumInfo = (AlbumInfo) arrayList[0];
+            if (albumInfo != null)
+            {
+              FoundArtist = (albumInfo.Artist == null || albumInfo.Artist.Length <= 0 ? albumInfo.AlbumArtist : albumInfo.Artist + 
+                            (albumInfo.AlbumArtist == null || albumInfo.AlbumArtist.Length <= 0 ? string.Empty : "|" + albumInfo.AlbumArtist));
+              currSelectedMusicAlbum = albumInfo.Album.Trim() ;
+            }
+          }
+          if (arrayList != null)
+            arrayList.Clear();
+          arrayList = null;
+          // logger.Debug("*** GMAFLC: 4 - ["+FoundArtist+"]");
+          if (!string.IsNullOrEmpty(FoundArtist))
+            return FoundArtist;
+          //
+          // var str3 = Utils.MovePrefixToBack(Utils.RemoveMPArtistPipes(Utils.GetArtistLeftOfMinusSign(artistLeftOfMinusSign)));
+          // var SelArtistWithoutPipes = Utils.RemoveMPArtistPipes(Utils.GetArtistLeftOfMinusSign(SelArtist));
+          var SelArtistWithoutPipes = Utils.RemoveMPArtistPipes(SelArtist);
+          arrayList = new ArrayList();
+          if (musicDB.GetAlbums(3, SelArtistWithoutPipes, ref arrayList))
+          {
+            var albumInfo = (AlbumInfo) arrayList[0];
+            if (albumInfo != null)
+            {
+              FoundArtist = (albumInfo.Artist == null || albumInfo.Artist.Length <= 0 ? albumInfo.AlbumArtist : albumInfo.Artist + 
+                            (albumInfo.AlbumArtist == null || albumInfo.AlbumArtist.Length <= 0 ? string.Empty : "|" + albumInfo.AlbumArtist));
+              currSelectedMusicAlbum = albumInfo.Album.Trim() ;
+            }
+          }
+          if (arrayList != null)
+            arrayList.Clear();
+          arrayList = null;
+          // return Utils.MovePrefixToBack(Utils.RemoveMPArtistPipes(s));
+          // logger.Debug("*** GMAFLC: 5 - ["+FoundArtist+"]");
+          if (!string.IsNullOrEmpty(FoundArtist))
+            return FoundArtist;
+        }
+        else
+        {
+          var musicTag = (MusicTag) selectedListItem.MusicTag;
+          if (musicTag == null)
+            return null;
+
+          selArtist = string.Empty ;
+          selAlbumArtist = string.Empty ;
+
+          if (!string.IsNullOrEmpty(musicTag.Album))
+            currSelectedMusicAlbum = musicTag.Album.Trim();
+
+          if (!string.IsNullOrEmpty(musicTag.Artist))
+            // selArtist = Utils.MovePrefixToBack(Utils.RemoveMPArtistPipes(musicTag.Artist)).Trim();
+            selArtist = Utils.RemoveMPArtistPipes(musicTag.Artist).Trim()+"|"+musicTag.Artist.Trim();
+          if (!string.IsNullOrEmpty(musicTag.AlbumArtist))
+            // selAlbumArtist = Utils.MovePrefixToBack(Utils.RemoveMPArtistPipes(musicTag.AlbumArtist)).Trim();
+            selAlbumArtist = Utils.RemoveMPArtistPipes(musicTag.AlbumArtist).Trim()+"|"+musicTag.AlbumArtist.Trim();
+
+          // logger.Debug("*** GMAFLC: 6 - ["+selArtist+"] ["+selAlbumArtist+"]");
+          if (!string.IsNullOrEmpty(selArtist))
+            if (!string.IsNullOrEmpty(selAlbumArtist))
+              if (selArtist.Equals(selAlbumArtist, StringComparison.InvariantCultureIgnoreCase))
+                return selArtist;
+              else
+                return selArtist + '|' + selAlbumArtist;
+            else
+              return selArtist;
+          else
+            if (!string.IsNullOrEmpty(selAlbumArtist))
+              return selAlbumArtist;
+        }
+        // logger.Debug("*** GMAFLC: 7 - ["+selItem+"]");
+        return selItem;
+      }
+      catch (Exception ex)
+      {
+        logger.Error("getMusicArtistFromListControl: " + ex);
+      }
+      return null;
+    }
+    #endregion
+
+    public static string GetRandomDefaultBackdrop(ref string currFile, ref int iFilePrev)
+    {
+      var result = string.Empty;
+      try
+      {
+        if (!GetIsStopping())
+        {
+          if (UseDefaultBackdrop)
+          {
+            if (DefaultBackdropImages != null)
+            {
+              if (DefaultBackdropImages.Count > 0)
+              {
+                if (iFilePrev == -1)
+                  Shuffle(ref defaultBackdropImages);
+
+                var htValues = DefaultBackdropImages.Values;
+                result = GetFanartFilename(ref iFilePrev, ref currFile, ref htValues, Category.MusicFanartScraped);
+              }
+            }
+          }
+        }
+      }
+      catch (Exception ex)
+      {
+        logger.Error("GetRandomDefaultBackdrop: " + ex);
+      }
+      return result;
+    }
+
+    public static string GetRandomSlideShowImages(ref string currFile, ref int iFilePrev)
+    {
+      var result = string.Empty;
+      try
+      {
+        if (!GetIsStopping())
+        {
+          if (UseMyPicturesSlideShow)
+          {
+            if (SlideShowImages != null)
+            {
+              if (SlideShowImages.Count > 0)
+              {
+                if (iFilePrev == -1)
+                  Shuffle(ref slideshowImages);
+
+                var htValues = SlideShowImages.Values;
+                result = GetFanartFilename(ref iFilePrev, ref currFile, ref htValues, Category.MusicFanartScraped);
+              }
+            }
+          }
+        }
+      }
+      catch (Exception ex)
+      {
+        logger.Error("GetRandomSlideShowImages: " + ex);
+      }
+      return result;
+    }
+
+    public static string GetFanartFilename(ref int iFilePrev, ref string sFileNamePrev, ref ICollection htValues, Category category, bool recursion = false)
+    {
+      var result = string.Empty;
+      // result = sFileNamePrev;
+      try
+      {
+        if (!GetIsStopping())
+        {
+          if (htValues != null)
+          {
+            if (htValues.Count > 0)
+            {
+              var i = 0;
+              var found = false;
+              foreach (FanartImage fanartImage in htValues)
+              {
+                if (i <= iFilePrev)
+                {
+                  checked { ++i; }
+                  continue;
+                }
+
+                if (CheckImageResolution(fanartImage.DiskImage, category, UseAspectRatio))
+                {
+                  result = fanartImage.DiskImage;
+                  iFilePrev = i;
+                  sFileNamePrev = result;
+                  found = true;
+                  break;
+                }
+                checked { ++i; }
+              }
+
+              if (!recursion && !found)
+              {
+                iFilePrev = -1;
+                result = GetFanartFilename(ref iFilePrev, ref sFileNamePrev, ref htValues, category, true);
+              }
+            }
+          }
+        }
+      }
+      catch (Exception ex)
+      {
+        logger.Error("GetFanartFilename: " + ex);
+      }
+      return result;
+    }
+
+    /// <summary>
+    /// Scan Folder for files by Mask and Import it to Database
+    /// </summary>
+    /// <param name="s">Folder</param>
+    /// <param name="filter">Mask</param>
+    /// <param name="category">Picture Category</param>
+    /// <param name="ht"></param>
+    /// <param name="provider">Picture Provider</param>
+    /// <returns></returns>
+    public static void SetupFilenames(string s, string filter, Category category, Hashtable ht, Provider provider, bool SubFolders = false)
+    {
+      if (provider == Provider.MusicFolder)
+      {
+        if (string.IsNullOrEmpty(MusicFoldersArtistAlbumRegex))
+          return;
+      }
+
+      try
+      {
+        // logger.Debug("*** SetupFilenames: "+category.ToString()+" "+provider.ToString()+" folder: "+s+ " mask: "+filter);
+        if (Directory.Exists(s))
+        {
+          var allFilenames = dbm.GetAllFilenames((category == Category.MusicFanartAlbum ? Category.MusicFanartManual : category));
+          var localfilter = (provider != Provider.MusicFolder)
+                               ? string.Format("^{0}$", filter.Replace(".", @"\.").Replace("*", ".*").Replace("?", ".").Replace("jpg", "(j|J)(p|P)(e|E)?(g|G)").Trim())
+                               : string.Format(@"\\{0}$", filter.Replace(".", @"\.").Replace("*", ".*").Replace("?", ".").Trim()) ;
+          // logger.Debug("*** SetupFilenames: "+category.ToString()+" "+provider.ToString()+" filter: " + localfilter);
+          foreach (var FileName in Enumerable.Select<FileInfo, string>(Enumerable.Where<FileInfo>(new DirectoryInfo(s).GetFiles("*.*", SearchOption.AllDirectories), fi =>
+          {
+            return Regex.IsMatch(fi.FullName, localfilter, ((provider != Provider.MusicFolder) ? RegexOptions.CultureInvariant : RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)) ;
+          }), fi => fi.FullName))
+          {
+            if (allFilenames == null || !allFilenames.Contains(FileName))
+            {
+              if (!GetIsStopping())
+              {
+                var artist = string.Empty;
+                var album = string.Empty;
+
+                if (provider != Provider.MusicFolder)
+                {
+                  artist = GetArtist(FileName, category).Trim();
+                  album = GetAlbum(FileName, category).Trim();
+                }
+                else // Fanart from Music folders 
+                {
+                  var fnWithoutFolder = string.Empty;
+                  try
+                  {
+                    fnWithoutFolder = FileName.Substring(checked (s.Length));
+                  }
+                  catch
+                  { 
+                    fnWithoutFolder = FileName; 
+                  }
+                  artist = RemoveResolutionFromFileName(GetArtist(GetArtistFromFolder(fnWithoutFolder, MusicFoldersArtistAlbumRegex), category), true).Trim();
+                  album = RemoveResolutionFromFileName(GetAlbum(GetAlbumFromFolder(fnWithoutFolder, MusicFoldersArtistAlbumRegex), category), true).Trim();
+                  if (!string.IsNullOrEmpty(artist))
+                    logger.Debug("For Artist: [" + artist + "] Album: ["+album+"] fanart found: "+FileName);
+                }
+                // logger.Debug("*** SetupFilenames: "+category.ToString()+" "+provider.ToString()+" artist: " + artist + " album: "+album+" - "+FileName);
+                if (!string.IsNullOrEmpty(artist))
+                {
+                  if (ht != null && ht.Contains(artist))
+                  {
+                    dbm.LoadFanart(ht[artist].ToString(), FileName, FileName, category, album, provider, null, null);
+                    // if (category == Category.TvSeriesScraped)
+                    //   dbm.LoadFanart(artist, FileName, FileName, category, album, provider, null, null);
+                  }
+                  else
+                    dbm.LoadFanart(artist, FileName, FileName, category, album, provider, null, null);
+                }
+              }
+              else
+                break;
+            }
+          }
+
+          if ((ht == null) && (SubFolders))
+            // Include Subfolders
+            foreach (var SubFolder in Directory.GetDirectories(s))
+              SetupFilenames(SubFolder, filter, category, ht, provider, SubFolders);
+        }
+
+        if (ht != null)
+          ht.Clear();
+        ht = null;
+      }
+      catch (Exception ex)
+      {
+        logger.Error("SetupFilenames: " + ex);
+      }
+    }
+
+    public static List<string> LoadPathToAllFiles(string pathToFolder, string fileMask, int numberOfFilesToReturn, bool allDir)
+    {
+      var DirInfo = new DirectoryInfo(pathToFolder);
+      var firstFiles = DirInfo.EnumerateFiles(fileMask, (allDir ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly)).Take(numberOfFilesToReturn).ToList();
+      return firstFiles.Select(l => l.FullName).ToList();
     }
 
     public static bool IsFileValid(string filename)
@@ -1286,7 +2101,7 @@ namespace FanartHandler
       try
       {
         TestImage = LoadImageFastFromFile(filename);
-        flag = (TestImage != null && TestImage.Width > 0);
+        flag = (TestImage != null && TestImage.Width > 0 && TestImage.Height > 0);
       }
       catch 
       { 
@@ -1299,24 +2114,32 @@ namespace FanartHandler
       return flag;
     }
 
-    public static bool CheckImageResolution(string filename, Utils.Category category, bool UseAspectRatio)
+    public static bool CheckImageResolution(string filename, Category category, bool UseAspectRatio)
     {
+      if (string.IsNullOrEmpty(filename))
+        return false;
+
       try
       {
         if (!File.Exists(filename))
         {
-          Utils.GetDbm().DeleteImage(filename);
+          dbm.DeleteImage(filename);
           return false;
         }
         else
         {
-          var image = Image.FromFile(filename);
-          var num1 = (double) Convert.ToInt32(Utils.MinResolution.Substring(0, Utils.MinResolution.IndexOf("x", StringComparison.CurrentCulture)), CultureInfo.CurrentCulture);
-          var num2 = (double) Convert.ToInt32(Utils.MinResolution.Substring(checked (Utils.MinResolution.IndexOf("x", StringComparison.CurrentCulture) + 1)), CultureInfo.CurrentCulture);
-          var num3 = (double) image.Width;
-          var num4 = (double) image.Height;
-          image.Dispose();
-          return num3 >= num1 && num4 >= num2 && (!UseAspectRatio || num4 > 0.0 && num3 / num4 >= 1.3);
+          var image = LoadImageFastFromFile(filename); // Image.FromFile(filename);
+          if (image != null)
+          {
+            var imgWidth = (double) image.Width;
+            var imgHeight = (double) image.Height;
+            image.Dispose();
+            // 3.5 SetImageRatio(filename, 0.0, imgWidth, imgHeight)
+            if (imgWidth > 0.0 && imgHeight > 0.0) 
+            {
+              return imgWidth >= MinWResolution && imgHeight >= MinHResolution && (!UseAspectRatio || (imgHeight > 0.0 && imgWidth / imgHeight >= 1.3));
+            }
+          }
         }
       }
       catch (Exception ex)
@@ -1324,6 +2147,13 @@ namespace FanartHandler
         logger.Error("CheckImageResolution: " + ex);
       }
       return false;
+    }
+
+    public static bool AllowFanartInActiveWindow()
+    {                              
+      return (iActiveWindow != 511 &&    // Music Full Screen
+              iActiveWindow != 2005 &&   // Video Full Screen
+              iActiveWindow != 602);     // My TV Full Screen
     }
 
     public static bool IsDirectoryEmpty (string path) 
@@ -1346,13 +2176,79 @@ namespace FanartHandler
     }
     */
 
-    internal static void SetProperty (string property, string value)
+    #region Properties
+    internal static void AddProperty(ref Hashtable Properties, string property, string value, ref ArrayList al, bool Now = false, bool AddToCache = true)
     {
       try
       {
-        if (property == null)
-          return;
+        if (string.IsNullOrEmpty(value))
+        {
+          value = string.Empty;
+        }
+        if (Now)
+        {
+          SetProperty(property, value);
+        }
+        // if (!AddToCache) // in Selected ???
+        // {
+        //   return;
+        // }
 
+        if (Properties.Contains(property))
+        {
+          Properties[property] = value;
+        }
+        else
+        {
+          Properties.Add(property, value);
+        }
+
+        if (!AddToCache)
+        {
+          return;
+        }
+        AddPictureToCache(property, value, ref al);
+      }
+      catch (Exception ex)
+      {
+        logger.Error("AddProperty: " + ex);
+      }
+    }
+
+    internal static void UpdateProperties(ref Hashtable Properties)
+    {
+      try
+      {
+        if (Properties == null)
+        {
+          return;
+        }
+
+        foreach (DictionaryEntry dictionaryEntry in Properties)
+        {
+          SetProperty(dictionaryEntry.Key.ToString(), dictionaryEntry.Value.ToString());
+        }
+        Properties.Clear();
+      }
+      catch (Exception ex)
+      {
+        logger.Error("UpdateProperties: " + ex);
+      }
+    }
+
+    internal static void SetProperty(string property, string value)
+    {
+      if (string.IsNullOrEmpty(property))
+      {
+        return;
+      }
+      if (property.IndexOf('#') == -1)
+      {
+        property = FanartHandlerPrefix + property;
+      }
+
+      try
+      {
         //logger.Debug("SetProperty: "+property+" -> "+value) ;
         GUIPropertyManager.SetProperty(property, value);
       }
@@ -1362,11 +2258,17 @@ namespace FanartHandler
       }
     }
 
-    internal static string GetProperty (string property)
+    internal static string GetProperty(string property)
     {
       string result = string.Empty;
-      if (property == null)
+      if (string.IsNullOrEmpty(property))
+      {
         return result;
+      }
+      if (property.IndexOf('#') == -1)
+      {
+        property = FanartHandlerPrefix + property;
+      }
 
       try
       {
@@ -1382,13 +2284,26 @@ namespace FanartHandler
           result = string.Empty;
         }
         //logger.Debug("GetProperty: "+property+" -> "+value) ;
+        return result;
       }
       catch (Exception ex)
       {
-        result = string.Empty;
         logger.Error("GetProperty: " + ex);
       }
-      return result;
+      return string.Empty;
+    }
+    #endregion
+
+    public static bool GetBool (string value)
+    {
+      if (string.IsNullOrEmpty(value))
+      { 
+        return false;
+      }
+      else
+      {
+        return value.Equals("True", StringComparison.CurrentCultureIgnoreCase);
+      }
     }
 
     public static bool Contains(this string source, string toCheck, StringComparison comp)
@@ -1396,6 +2311,62 @@ namespace FanartHandler
       return source.IndexOf(toCheck, comp) >= 0;
     }
 
+    public static bool Contains(this string source, string toCheck, bool useRegex)
+    {
+      if (useRegex)
+      {
+        return Regex.IsMatch(source, @"\b" + toCheck + @"\b", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant) ;
+      }
+      else
+      {
+        return source.Contains(toCheck, StringComparison.OrdinalIgnoreCase);
+      }
+    }
+
+    #region ConainsID - Hashtable contains WindowID 
+    public static bool ContainsID(Hashtable ht)
+    {
+      try
+      {
+        if (iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
+        {
+          return ContainsID(ht, sActiveWindow);
+        }
+      }
+      catch { }
+      return false;
+    }
+
+    public static bool ContainsID(Hashtable ht, Utils.Logo logoType)
+    {
+      try
+      {
+        if (iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
+        {
+          return ContainsID(ht, sActiveWindow + logoType.ToString());
+        }
+      }
+      catch { }
+      return false;
+    }
+
+    public static bool ContainsID(Hashtable ht, int iStr)
+    {
+      try
+      {
+        return ContainsID(ht, string.Empty + iStr);
+      }
+      catch { }
+      return false;
+    }
+
+    public static bool ContainsID(Hashtable ht, string sStr)
+    {
+      return (ht != null) && (ht.ContainsKey(sStr));
+    }
+    #endregion
+
+    #region Percent for progressbar
     public static int Percent(int Value, int Max)
     {
       return (Max > 0) ? Convert.ToInt32((Value*100)/Max) : 0 ;
@@ -1405,13 +2376,295 @@ namespace FanartHandler
     {
       return (Max > 0.0) ? Convert.ToInt32((Value*100.0)/Max) : 0 ;
     }
+    #endregion
 
+    #region Check [x]|[ ] for Log file
     public static string Check(bool Value, bool Box = true)
     {
       return (Box ? "[" : string.Empty) + (Value ? "x" : " ") + (Box ? "]" : string.Empty) ;
     }
+    #endregion
+
+    #region Get Genres and Studios
+    public static string GetGenre(string sGenre)
+    {
+      if (string.IsNullOrEmpty(sGenre))
+      {
+        return string.Empty;
+      }
+
+      if (Genres != null && Genres.Count > 0)
+      {
+        var _genre = sGenre.ToLower(CultureInfo.InvariantCulture).RemoveDiacritics().RemoveSpacesAndDashs();
+        if (Genres.ContainsKey(_genre))
+        {
+          return (string) Genres[_genre];
+        }
+      }
+      return sGenre;
+    }
+
+    public static string GetCharacters(string sLine)
+    {
+      if (string.IsNullOrEmpty(sLine) || Characters == null)
+      {
+        return string.Empty;
+      }
+
+      string result = string.Empty;
+      foreach (DictionaryEntry value in Characters)
+      {
+        try
+        {
+          // logger.Debug("*** " + sLine.ToLower(CultureInfo.InvariantCulture).RemoveDiacritics() + " - " + value.Key.ToString());
+          if (sLine.ToLower(CultureInfo.InvariantCulture).RemoveDiacritics().Contains(value.Key.ToString(), true))
+          {
+            result = result + (string.IsNullOrEmpty(result) ? "" : "|") + value.Value; 
+          }
+        }
+        catch { }
+      }
+      return result;
+    }
+
+    public static string GetCharacter(string sCharacter)
+    {
+      if (string.IsNullOrEmpty(sCharacter))
+      {
+        return string.Empty;
+      }
+
+      if (Characters != null && Characters.Count > 0)
+      {
+        var _character = sCharacter.ToLower(CultureInfo.InvariantCulture).RemoveDiacritics().Trim();
+        if (Characters.ContainsKey(_character))
+        {
+          return (string) Characters[_character];
+        }
+      }
+      return sCharacter;
+    }
+
+    public static string GetStudio(string sStudio)
+    {
+      if (string.IsNullOrEmpty(sStudio))
+      {
+        return string.Empty;
+      }
+
+      if (Studios != null && Studios.Count > 0)
+      {
+        var _studio = sStudio.ToLower(CultureInfo.InvariantCulture).RemoveDiacritics().RemoveSpacesAndDashs();
+        if (Studios.ContainsKey(_studio))
+        {
+          return (string) Studios[_studio];
+        }
+      }
+      return sStudio;
+    }
+    #endregion
 
     #region Settings
+    public static void LoadGenresNames()
+    {
+      Genres = new Hashtable();
+      try
+      {
+        string FullFileName = Config.GetFile((Config.Dir) 10, ConfigGenresFilename);
+        if (!File.Exists(FullFileName))
+        {
+          return;
+        }
+
+        logger.Debug("Load Genres from file: {0}", ConfigGenresFilename);
+
+        XmlDocument doc = new XmlDocument();
+        doc.Load(FullFileName);
+
+        if (doc.DocumentElement != null)
+        {
+          XmlNodeList genresList = doc.DocumentElement.SelectNodes("/genres");
+          
+          if (genresList == null)
+          {
+            logger.Debug("Genres tag for file: {0} not exist. Skipped.", ConfigGenresFilename);
+            return;
+          }
+
+          foreach (XmlNode nodeGenres in genresList)
+          {
+            if (nodeGenres != null)
+            {
+              XmlNodeList genreList = nodeGenres.SelectNodes("genre");
+              foreach (XmlNode nodeGenre in genreList)
+              {
+                if (nodeGenre != null && nodeGenre.Attributes != null && nodeGenre.InnerText != null)
+                {
+                  string name = nodeGenre.Attributes["name"].Value;
+                  string genre = nodeGenre.InnerText;
+                  if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(genre))
+                  {
+                    name = name.ToLower(CultureInfo.InvariantCulture).RemoveDiacritics().RemoveSpacesAndDashs();
+                    genre = genre.Trim();
+                    if (!Genres.Contains(name))
+                    {
+                      Genres.Add (name, genre);
+                      // logger.Debug("*** Genre loaded: {0}/{1}", name, genre);
+                    }
+                  }
+                }
+              }
+            }
+          }
+          logger.Debug("Load Genres from file: {0} complete. {1} loaded.", ConfigGenresFilename, Genres.Count);
+        }
+      }
+      catch (Exception ex)
+      {
+        Log.Error("LoadGenresNames: Error loading genres from file: {0} - {1} ", ConfigGenresFilename, ex.Message);
+      }
+    }
+
+    public static void LoadCharactersNames()
+    {
+      Characters = new Hashtable();
+      try
+      {
+        string FullFileName = Config.GetFile((Config.Dir) 10, ConfigCharactersFilename);
+        if (!File.Exists(FullFileName))
+        {
+          return;
+        }
+
+        logger.Debug("Load Characters from file: {0}", ConfigCharactersFilename);
+
+        XmlDocument doc = new XmlDocument();
+        doc.Load(FullFileName);
+
+        if (doc.DocumentElement != null)
+        {
+          XmlNodeList charactersList = doc.DocumentElement.SelectNodes("/characters");
+          
+          if (charactersList == null)
+          {
+            logger.Debug("Characters tag for file: {0} not exist. Skipped.", ConfigCharactersFilename);
+            return;
+          }
+
+          foreach (XmlNode nodeCharacters in charactersList)
+          {
+            if (nodeCharacters != null)
+            {
+              XmlNodeList characterList = nodeCharacters.SelectNodes("character");
+              foreach (XmlNode nodeCharacter in characterList)
+              {
+                if (nodeCharacter != null && nodeCharacter.Attributes != null && nodeCharacter.InnerText != null)
+                {
+                  string name = nodeCharacter.Attributes["name"].Value;
+                  string character = nodeCharacter.InnerText;
+                  if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(character))
+                  {
+                    name = name.ToLower(CultureInfo.InvariantCulture).RemoveDiacritics().Trim();
+                    character = character.Trim();
+                    if (!Characters.Contains(name))
+                    {
+                      Characters.Add(name, character);
+                      // logger.Debug("*** Character loaded: {0}/{1}", name, character);
+                    }
+                  }
+                }
+              }
+            }
+          }
+          logger.Debug("Load Characters from file: {0} complete. {1} loaded.", ConfigCharactersFilename, Characters.Count);
+        }
+      }
+      catch (Exception ex)
+      {
+        Log.Error("LoadCharactersNames: Error loading characters from file: {0} - {1} ", ConfigCharactersFilename, ex.Message);
+      }
+
+      try
+      {
+        logger.Debug("Load Characters from folder: {0}", FAHCharacters);
+        var files = new DirectoryInfo(GUIGraphicsContext.GetThemedSkinDirectory(FAHCharacters)).GetFiles("*.png");
+        foreach (var fileInfo in files)
+        {
+          string fname = RemoveExtension(GetFileName(fileInfo.Name));
+          string name = fname.ToLower(CultureInfo.InvariantCulture).RemoveDiacritics().Trim();
+          if (!Characters.Contains(name))
+          {
+            Characters.Add(name, fname);
+            // logger.Debug("*** Character loaded: {0}/{1}", name, fname);
+          }
+        }
+        logger.Debug("Load Characters from folder: {0} complete. Total: {1} loaded.", FAHCharacters, Characters.Count);
+      }
+      catch (Exception ex)
+      {
+        Log.Error("LoadCharactersNames: Error loading characters from folder: {0} - {1} ", FAHCharacters, ex.Message);
+      }
+    }
+
+    public static void LoadStudiosNames()
+    {
+      Studios = new Hashtable();
+      try
+      {
+        string FullFileName = Config.GetFile((Config.Dir) 10, ConfigStudiosFilename);
+        if (!File.Exists(FullFileName))
+        {
+          return;
+        }
+
+        logger.Debug("Load Studios from file: {0}", ConfigStudiosFilename);
+        XmlDocument doc = new XmlDocument();
+        doc.Load(FullFileName);
+
+        if (doc.DocumentElement != null)
+        {
+          XmlNodeList studiosList = doc.DocumentElement.SelectNodes("/studios");
+          
+          if (studiosList == null)
+          {
+            logger.Debug("Studios tag for file: {0} not exist. Skipped.", ConfigStudiosFilename);
+            return;
+          }
+
+          foreach (XmlNode nodeStudios in studiosList)
+          {
+            if (nodeStudios != null)
+            {
+              XmlNodeList studioList = nodeStudios.SelectNodes("studio");
+              foreach (XmlNode nodeStudio in studioList)
+              {
+                if (nodeStudio != null && nodeStudio.Attributes != null && nodeStudio.InnerText != null)
+                {
+                  string name = nodeStudio.Attributes["name"].Value;
+                  string studio = nodeStudio.InnerText;
+                  if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(studio))
+                  {
+                    name = name.ToLower(CultureInfo.InvariantCulture).RemoveDiacritics().RemoveSpacesAndDashs();
+                    studio = studio.Trim();
+                    if (!Studios.Contains(name))
+                    {
+                      Studios.Add (name, studio);
+                      // logger.Debug("*** Studio loaded: {0}/{1}", name, studio);
+                    }
+                  }
+                }
+              }
+            }
+          }
+          logger.Debug("Load Studios from file: {0} complete. {1} loaded.", ConfigStudiosFilename, Studios.Count);
+        }
+      }
+      catch (Exception ex)
+      {
+        Log.Error("LoadStudiosNames: Error loading studios from file: {0} - {1} ", ConfigStudiosFilename, ex.Message);
+      }
+    }
+
     public static void LoadBadArtists()
     {
       try
@@ -1524,7 +2777,7 @@ namespace FanartHandler
       }
     }
 
-    public static void LoadSeparators (Settings xmlreader)
+    public static void LoadSeparators(Settings xmlreader)
     {
       try
       {
@@ -1597,9 +2850,10 @@ namespace FanartHandler
       UseGenreFanart = false;
       ScanMusicFoldersForFanart = false;
       MusicFoldersArtistAlbumRegex = string.Empty;
-      UseOverlayFanart = true;
+      UseOverlayFanart = false;
       UseMusicFanart = true;
       UseVideoFanart = true;
+      UsePicturesFanart = true;
       UseScoreCenterFanart = true;
       DefaultBackdrop = string.Empty;
       DefaultBackdropMask = "*.jpg";
@@ -1615,6 +2869,7 @@ namespace FanartHandler
       AddAdditionalSeparators = false;
       UseMyPicturesSlideShow = false;
       FastScanMyPicturesSlideShow = false;
+      LimitNumberFanart = 10;
       #endregion
       #region Init Providers
       UseFanartTV = true;
@@ -1637,6 +2892,12 @@ namespace FanartHandler
       //
       PipesArray = new string[2] { "|", ";" };
       #endregion
+      
+      #region Internal
+      MinWResolution = 0.0;
+      MinHResolution = 0.0;
+      #endregion
+
       try
       {
         logger.Debug("Load settings from: "+ConfigFilename);
@@ -1666,6 +2927,7 @@ namespace FanartHandler
           // UseOverlayFanart = settings.GetValueAsBool("FanartHandler", "UseOverlayFanart", UseOverlayFanart);
           // UseMusicFanart = settings.GetValueAsBool("FanartHandler", "UseMusicFanart", UseMusicFanart);
           // UseVideoFanart = settings.GetValueAsBool("FanartHandler", "UseVideoFanart", UseVideoFanart);
+          // UsePicturesFanart = settings.GetValueAsBool("FanartHandler", "UsePicturesFanart", UsePicturesFanart);
           // UseScoreCenterFanart = settings.GetValueAsBool("FanartHandler", "UseScoreCenterFanart", UseScoreCenterFanart);
           // DefaultBackdrop = settings.GetValueAsString("FanartHandler", "DefaultBackdrop", DefaultBackdrop);
           DefaultBackdropMask = settings.GetValueAsString("FanartHandler", "DefaultBackdropMask", DefaultBackdropMask);
@@ -1679,7 +2941,7 @@ namespace FanartHandler
           UseMinimumResolutionForDownload = settings.GetValueAsBool("FanartHandler", "UseMinimumResolutionForDownload", UseMinimumResolutionForDownload);
           ShowDummyItems = settings.GetValueAsBool("FanartHandler", "ShowDummyItems", ShowDummyItems);
           UseMyPicturesSlideShow = settings.GetValueAsBool("FanartHandler", "UseMyPicturesSlideShow", UseMyPicturesSlideShow);
-          UseMyPicturesSlideShow = settings.GetValueAsBool("FanartHandler", "FastScanMyPicturesSlideShow", FastScanMyPicturesSlideShow);
+          FastScanMyPicturesSlideShow = settings.GetValueAsBool("FanartHandler", "FastScanMyPicturesSlideShow", FastScanMyPicturesSlideShow);
           //
           UseFanartTV = settings.GetValueAsBool("Providers", "UseFanartTV", UseFanartTV);
           UseHtBackdrops = settings.GetValueAsBool("Providers", "UseHtBackdrops", UseHtBackdrops);
@@ -1713,31 +2975,48 @@ namespace FanartHandler
         logger.Error("LoadSettings: "+ex);
       }
       //
+      LoadGenresNames();
+      LoadStudiosNames();
+      LoadCharactersNames();
       LoadBadArtists();
       LoadMyPicturesSlideShowFolders();
       //
       #region Check Settings
-      DefaultBackdrop = (string.IsNullOrEmpty(DefaultBackdrop) ? Utils.FAHUDMusic : DefaultBackdrop);
+      DefaultBackdrop = (string.IsNullOrEmpty(DefaultBackdrop) ? FAHUDMusic : DefaultBackdrop);
       if ((string.IsNullOrEmpty(MusicFoldersArtistAlbumRegex)) || (MusicFoldersArtistAlbumRegex.IndexOf("?<artist>") < 0) || (MusicFoldersArtistAlbumRegex.IndexOf("?<album>") < 0))
       {
         ScanMusicFoldersForFanart = false;
       }
       //
       FanartTVPersonalAPIKey = FanartTVPersonalAPIKey.Trim();
+      MaxRefreshTickCount = checked (Convert.ToInt32(ImageInterval, CultureInfo.CurrentCulture) * (1000 / refreshTimerInterval));
+      ScrapperTimerInterval = checked (Convert.ToInt32(ScraperInterval, CultureInfo.CurrentCulture) * ScrapperTimerInterval);
+      //
+      try
+      {
+        MinWResolution = (double) Convert.ToInt32(MinResolution.Substring(0, MinResolution.IndexOf("x", StringComparison.CurrentCulture)), CultureInfo.CurrentCulture);
+        MinHResolution = (double) Convert.ToInt32(MinResolution.Substring(checked (MinResolution.IndexOf("x", StringComparison.CurrentCulture) + 1)), CultureInfo.CurrentCulture);
+      }
+      catch
+      {
+        MinResolution = "0x0";
+        MinWResolution = 0.0;
+        MinHResolution = 0.0;
+      }
       #endregion
       //
       #region Report Settings
-      logger.Info("Fanart Handler is using: " + Check(Utils.UseFanart) + " Fanart, " + Check(Utils.UseAlbum) + " Album Thumbs, " + Check(Utils.UseArtist) + " Artist Thumbs, "+Check(UseGenreFanart)+" Genre Fanart, Min: "+MinResolution+", "+Check(UseAspectRatio)+" Aspect Ratio >= 1.3");
-      logger.Debug("Scan: "+Check(ScanMusicFoldersForFanart)+" Music Folders for Fanart, RegExp: "+MusicFoldersArtistAlbumRegex);
-      logger.Debug("Scraper: [x] Fanart, "+Check(ScraperMPDatabase)+" MP Databases , "+Check(ScrapeThumbnails)+" Artists Thumb , "+Check(ScrapeThumbnailsAlbum)+" Album Thumb, "+Check(UseMinimumResolutionForDownload)+" Delete if less then "+MinResolution+", "+Check(UseHighDefThumbnails)+" High Def Thumbs, Max Count ["+ScraperMaxImages+"]");
-      logger.Debug("Providers: "+Check(UseFanartTV)+" Fanart.TV, "+Check(UseHtBackdrops)+" HtBackdrops, "+Check(UseLastFM)+" Last.fm, "+Check(UseCoverArtArchive)+" CoverArtArchive");
+      logger.Info("Fanart Handler is using: " + Check(UseFanart) + " Fanart, " + Check(UseAlbum) + " Album Thumbs, " + Check(UseArtist) + " Artist Thumbs, " + Check(UseGenreFanart) + " Genre Fanart, Min: " + MinResolution + ", " + Check(UseAspectRatio) + " Aspect Ratio >= 1.3");
+      logger.Debug("Scan: " + Check(ScanMusicFoldersForFanart) + " Music Folders for Fanart, RegExp: " + MusicFoldersArtistAlbumRegex);
+      logger.Debug("Scraper: [x] Fanart, " + Check(ScraperMPDatabase) + " MP Databases , " + Check(ScrapeThumbnails) + " Artists Thumb , " + Check(ScrapeThumbnailsAlbum) + " Album Thumb, " + Check(UseMinimumResolutionForDownload) + " Delete if less then " + MinResolution + ", " + Check(UseHighDefThumbnails) + " High Def Thumbs, Max Count [" + ScraperMaxImages + "]");
+      logger.Debug("Providers: " + Check(UseFanartTV) + " Fanart.TV, " + Check(UseHtBackdrops) + " HtBackdrops, " + Check(UseLastFM) + " Last.fm, " + Check(UseCoverArtArchive) + " CoverArtArchive");
       if (UseFanartTV)
       {
-        logger.Debug("Fanart.TV: Language: ["+(string.IsNullOrEmpty(FanartTVLanguage) ? "Any]" : FanartTVLanguage+"] If not found, try to use Any language: "+FanartTVLanguageToAny));
-        logger.Debug("Fanart.TV: Music: "+Check(MusicClearArtDownload)+" ClearArt, "+Check(MusicBannerDownload)+" Banner, "+Check(MusicCDArtDownload)+" CD");
-        logger.Debug("Fanart.TV: Movie: "+Check(MoviesClearArtDownload)+" ClearArt, "+Check(MoviesBannerDownload)+" Banner, "+Check(MoviesCDArtDownload)+" CD, "+Check(MoviesClearLogoDownload)+" ClearLogo");
+        logger.Debug("Fanart.TV: Language: [" + (string.IsNullOrEmpty(FanartTVLanguage) ? "Any]" : FanartTVLanguage + "] If not found, try to use Any language: " + FanartTVLanguageToAny));
+        logger.Debug("Fanart.TV: Music: " + Check(MusicClearArtDownload) + " ClearArt, " + Check(MusicBannerDownload) + " Banner, " + Check(MusicCDArtDownload) + " CD");
+        logger.Debug("Fanart.TV: Movie: " + Check(MoviesClearArtDownload) + " ClearArt, " + Check(MoviesBannerDownload) + " Banner, " + Check(MoviesCDArtDownload) + " CD, " + Check(MoviesClearLogoDownload) + " ClearLogo");
       }
-      logger.Debug("Artists pipes: ["+string.Join("][", PipesArray)+"]");
+      logger.Debug("Artists pipes: [" + string.Join("][", PipesArray) + "]");
       #endregion
     }
 
@@ -1747,7 +3026,7 @@ namespace FanartHandler
       //
       try
       {
-        logger.Debug("Save settings to: "+ConfigFilename);
+        logger.Debug("Save settings to: " + ConfigFilename);
         #region Save settings
         using (var xmlwriter = new Settings(Config.GetFile((Config.Dir) 10, ConfigFilename)))
         {
@@ -1810,11 +3089,11 @@ namespace FanartHandler
         catch
         {   }
         */
-        logger.Debug("Save settings to: "+ConfigFilename+" complete.");
+        logger.Debug("Save settings to: " + ConfigFilename + " complete.");
       }
       catch (Exception ex)
       {
-        logger.Error("SaveSettings: "+ex);
+        logger.Error("SaveSettings: " + ex);
       }
     }
 
@@ -1847,7 +3126,7 @@ namespace FanartHandler
       #endregion
       try
       {
-        logger.Debug("Upgrade settings file: "+ConfigFilename);
+        logger.Debug("Upgrade settings file: " + ConfigFilename);
         #region Read Old Entry
         try
         {
@@ -2001,11 +3280,11 @@ namespace FanartHandler
         catch
         {   }
         */
-        logger.Debug("Upgrade settings file: "+ConfigFilename+" complete.");
+        logger.Debug("Upgrade settings file: " + ConfigFilename + " complete.");
       }
       catch (Exception ex)
       {
-        logger.Error("UpgradeSettings: "+ex);
+        logger.Error("UpgradeSettings: " + ex);
       }
     }
     #endregion
@@ -2024,8 +3303,8 @@ namespace FanartHandler
       PictureManual,
       PluginManual,
       SportsManual,
-      SeriesManual,
       TvManual,
+      TVSeriesManual,
       TvSeriesScraped,
       FanartTVArt, 
       FanartTVCDArt, 
@@ -2045,6 +3324,22 @@ namespace FanartHandler
       CoverArtArchive, 
       Local,
       Dummy, 
+    }
+
+    public enum Logo
+    {
+      Horizontal,
+      Vertical,
+    }
+  }
+
+  public static class ThreadSafeRandom
+  {
+    [ThreadStatic] private static Random Local;
+
+    public static Random ThisThreadsRandom
+    {
+      get { return Local ?? (Local = new Random(unchecked(Environment.TickCount * 31 + Thread.CurrentThread.ManagedThreadId))); }
     }
   }
 }

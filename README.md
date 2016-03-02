@@ -45,7 +45,13 @@ push cycling fanart from the following folders for use anywhere in a skin for<br
 - A skin that supports the Fanart Handler.
 NOTE! This plugin only supports JPG images.
 
+#Additional for Skin
+Studios - https://github.com/andrewjswan/mediaportal.images.studios
+Genres - https://github.com/andrewjswan/mediaportal.images.genres
+
 #Supported Skins
+Titan ( full support in ajs Theme for Titan - https://github.com/andrewjswan/mediaportal-skin-themes )
+DWHD
 aMPed
 X-Factor
 Please let me know if your skin supports the Fanart Handler and I will add it to the list
@@ -76,6 +82,10 @@ To the team behind the MP Moving Picture plugin. From who I have used some of th
 #fanarthandler.movie.backdrop2.selected
 #fanarthandler.movie.studios.selected
 #fanarthandler.movie.studios.selected.all
+#fanarthandler.movie.studios.selected.verticalall
+#fanarthandler.movie.genres.selected
+#fanarthandler.movie.genres.selected.all
+#fanarthandler.movie.genres.selected.verticalall
 
 #fanarthandler.movingpicture.backdrop1.any
 #fanarthandler.movingpicture.backdrop2.any
@@ -95,10 +105,18 @@ To the team behind the MP Moving Picture plugin. From who I have used some of th
 #fanarthandler.music.backdrop2.selected
 #fanarthandler.music.artistclearart.selected
 #fanarthandler.music.artistbanner.selected
+#fanarthandler.music.genres.play
+#fanarthandler.music.genres.play.all
+#fanarthandler.music.genres.play.verticalall
+#fanarthandler.music.genres.selected
+#fanarthandler.music.genres.selected.all
+#fanarthandler.music.genres.selected.verticalall
 
 #fanarthandler.pictures.slideshow.translation
 #fanarthandler.pictures.slideshow.enabled
 
+#fanarthandler.picture.backdrop1.selected
+#fanarthandler.picture.backdrop2.selected
 #fanarthandler.picture.userdef.backdrop1.any
 #fanarthandler.picture.userdef.backdrop2.any
 

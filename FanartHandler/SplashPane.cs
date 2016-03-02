@@ -1,12 +1,7 @@
 ﻿// Type: FanartHandler.SplashPane
-// Assembly: FanartHandler, Version=3.1.0.0, Culture=neutral, PublicKeyToken=null
+// Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
-// Assembly location: D:\Mes documents\Desktop\FanartHandler.dll
 
-using FanartHandler.Properties;
-using System;
-using System.ComponentModel;
-using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 

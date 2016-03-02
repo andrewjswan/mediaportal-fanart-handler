@@ -1,15 +1,20 @@
+// Type: Monitor.Core.Utilities.JunctionPoint
+// Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
+// MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
+
+using Microsoft.Win32.SafeHandles;
+
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
-using Microsoft.Win32.SafeHandles;
 
 namespace Monitor.Core.Utilities
 {
     /// <summary>
     /// Provides access to NTFS junction points in .Net.
     /// </summary>
-    public static class JunctionPoint
+  public static class JunctionPoint
     {
         /// <summary>
         /// The file or directory is not a reparse point.

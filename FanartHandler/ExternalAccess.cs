@@ -1,9 +1,9 @@
 ﻿// Type: FanartHandler.ExternalAccess
-// Assembly: FanartHandler, Version=3.1.0.0, Culture=neutral, PublicKeyToken=null
+// Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
-// Assembly location: D:\Mes documents\Desktop\FanartHandler.dll
 
 using NLog;
+
 using System;
 using System.Collections;
 using System.Threading;
@@ -118,14 +118,14 @@ namespace FanartHandler
       var flag = true;
       try
       {
-        if (!Utils.GetDbm().GetIsScraping())
+        if (!Utils.IsScraping)
         {
           if (!Utils.GetIsStopping() && Interlocked.CompareExchange(ref FanartHandlerSetup.Fh.SyncPointScraper, 1, 0) == 0)
           {
             Utils.AllocateDelayStop("FanartHandlerSetup-StartScraperExternal");
-            Utils.GetDbm().IsScraping = true;
+            Utils.IsScraping = true;
             Utils.GetDbm().ArtistAlbumScrape(artist, album);
-            Utils.GetDbm().IsScraping = false;
+            Utils.IsScraping = false;
           }
           else
             flag = false;
@@ -206,7 +206,7 @@ namespace FanartHandler
           {
             if (num < 2)
             {
-              if (Utils.IsFileValid(fanartImage.DiskImage) && Utils.CheckImageResolution(fanartImage.DiskImage, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio))
+              if (Utils.CheckImageResolution(fanartImage.DiskImage, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio))
               {
                 hashtable1.Add(num, fanartImage.DiskImage);
                 checked { ++num; }
@@ -221,7 +221,7 @@ namespace FanartHandler
         {
           var currFile = string.Empty;
           var iFilePrev = -1;
-          var randomDefaultBackdrop = FanartHandlerSetup.Fh.GetRandomDefaultBackdrop(ref currFile, ref iFilePrev);
+          var randomDefaultBackdrop = Utils.GetRandomDefaultBackdrop(ref currFile, ref iFilePrev);
           hashtable1.Add(0, randomDefaultBackdrop);
         }
       }

@@ -4,8 +4,11 @@
 // Assembly location: D:\Mes documents\Desktop\FanartHandler.dll
 
 using MediaPortal.Configuration;
+
 using NLog;
+
 using SQLite.NET;
+
 using System;
 using System.IO;
 

@@ -1,18 +1,16 @@
 ﻿// Type: FanartHandler.PicturesWorker
-// Assembly: FanartHandler, Version=3.1.0.0, Culture=neutral, PublicKeyToken=null
+// Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
-// Assembly location: D:\Mes documents\Desktop\FanartHandler.dll
+
+using MediaPortal.Configuration;
+using MediaPortal.Profile;
 
 using NLog;
 
 using System;
-using System.IO;
-using System.Collections;
 using System.ComponentModel;
+using System.IO;
 using System.Threading;
-
-using MediaPortal.Profile;
-using MediaPortal.Configuration;
 
 namespace FanartHandler
 {
@@ -46,7 +44,7 @@ namespace FanartHandler
         Thread.CurrentThread.Name = "PicturesWorker";
 
         Utils.AllocateDelayStop("FanartHandler-PicturesScan");
-        Utils.SetProperty("#fanarthandler.pictures.scan", "true");
+        Utils.SetProperty("pictures.scan", "true");
 
         // slideShowImages = new Hashtable();
         InitSlideShowImages();
@@ -84,7 +82,7 @@ namespace FanartHandler
         if (Utils.GetIsStopping())
           return;
 
-        Utils.SetProperty("#fanarthandler.pictures.scan", "false");
+        Utils.SetProperty("pictures.scan", "false");
 
         /*
         Utils.Shuffle(ref slideShowImages);
@@ -95,7 +93,7 @@ namespace FanartHandler
           FanartHandlerSetup.Fh.SlideShowImages.Add(SI.Key.ToString(), SI.Value.ToString());
         }
         */
-        logger.Debug("MyPictures backdrops "+Utils.Check(Utils.UseMyPicturesSlideShow)+" found: " + FanartHandlerSetup.Fh.SlideShowImages.Count);
+        logger.Debug("MyPictures backdrops "+Utils.Check(Utils.UseMyPicturesSlideShow)+" found: " + Utils.SlideShowImages.Count);
       }
       catch (Exception ex)
       {
@@ -164,13 +162,12 @@ namespace FanartHandler
               bool flag = Utils.FastScanMyPicturesSlideShow;
               if (!flag)
               {
-                flag = (Utils.IsFileValid(file) && Utils.CheckImageResolution(file, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio));
+                flag = (Utils.CheckImageResolution(file, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio));
               }
               
               if (flag)
               {
-                // slideShowImages.Add(i.ToString(), file);
-                FanartHandlerSetup.Fh.SlideShowImages.Add(i, file);
+                Utils.SlideShowImages.Add(i, new FanartImage("", "", file, "", "", ""));
                 checked { ++i; }
               }
           }

@@ -1,16 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Xml;
-using System.Text.RegularExpressions;
+﻿// Type: FanartHandler.Translation
+// Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
+// MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 
 using MediaPortal.Configuration;
 using MediaPortal.GUI.Library;
 
 using NLog;
+
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Xml;
 
 namespace FanartHandler
 {
@@ -221,7 +225,7 @@ namespace FanartHandler
     public static string CleanupImages = "Cleanup images";
 
     // Delete 
-    public static string DeleteMissing = "Delete missing enries";
+    public static string DeleteMissing = "Delete missing entries";
 
     // Status
     public static string StatusPercent = "%";

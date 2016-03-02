@@ -1,18 +1,18 @@
 // Type: FanartHandler.FanartHandlerConfig
-// Assembly: FanartHandler, Version=3.1.0.0, Culture=neutral, PublicKeyToken=null
+// Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
-// Assembly location: D:\Mes documents\Desktop\FanartHandler.dll
 
 using MediaPortal.Configuration;
 using MediaPortal.Profile;
 using MediaPortal.Services;
+
 using NLog;
 using NLog.Config;
 using NLog.Targets;
-using SQLite.NET;
+
 using System;
-using System.Text;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
@@ -21,7 +21,6 @@ using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
-using System.Collections.Generic;
 
 namespace FanartHandler
 {
@@ -250,8 +249,8 @@ namespace FanartHandler
         else
         {
           progressBarScraper.Minimum = 0;
-          progressBarScraper.Maximum = Convert.ToInt32(Utils.GetDbm().TotArtistsBeingScraped);
-          progressBarScraper.Value = (Convert.ToInt32(Utils.GetDbm().CurrArtistsBeingScraped) >= progressBarScraper.Maximum) ? progressBarScraper.Maximum : Convert.ToInt32(Utils.GetDbm().CurrArtistsBeingScraped) ;
+          progressBarScraper.Maximum = Convert.ToInt32(Utils.TotArtistsBeingScraped);
+          progressBarScraper.Value = (Convert.ToInt32(Utils.CurrArtistsBeingScraped) >= progressBarScraper.Maximum) ? progressBarScraper.Maximum : Convert.ToInt32(Utils.CurrArtistsBeingScraped) ;
         }
 
         toolStripProgressBar.Minimum = progressBarScraper.Minimum;
@@ -272,8 +271,8 @@ namespace FanartHandler
         else
         {
           progressBarThumbs.Minimum = 0;
-          progressBarThumbs.Maximum = Convert.ToInt32(Utils.GetDbm().TotArtistsBeingScraped);
-          progressBarThumbs.Value = (Convert.ToInt32(Utils.GetDbm().CurrArtistsBeingScraped) >= progressBarThumbs.Maximum) ? progressBarThumbs.Maximum : Convert.ToInt32(Utils.GetDbm().CurrArtistsBeingScraped) ;
+          progressBarThumbs.Maximum = Convert.ToInt32(Utils.TotArtistsBeingScraped);
+          progressBarThumbs.Value = (Convert.ToInt32(Utils.CurrArtistsBeingScraped) >= progressBarThumbs.Maximum) ? progressBarThumbs.Maximum : Convert.ToInt32(Utils.CurrArtistsBeingScraped) ;
         }
 
         toolStripProgressBar.Minimum = progressBarThumbs.Minimum;
@@ -513,7 +512,7 @@ namespace FanartHandler
         myDataTableExternal.Rows.Clear();
       }
       SplashPane.IncrementProgressBar(90);
-      Thread.Sleep(200);
+      Utils.ThreadToLongSleep();
       SplashPane.IncrementProgressBar(100);
       SplashPane.CloseForm();
       //
@@ -522,7 +521,7 @@ namespace FanartHandler
       this.Activate();
       //
       if (FanartHandlerSetup.Fh != null)
-        FanartHandlerSetup.Fh.UpdateDirectoryTimer("All", false, "Fanart");
+        FanartHandlerSetup.Fh.UpdateDirectoryTimer("All", "Fanart");
     }
 
     private void FanartHandlerConfig_FormClosing(object sender, FormClosedEventArgs e)
@@ -777,7 +776,7 @@ namespace FanartHandler
         dataGridViewFanart.ClearSelection();
         myDataTableFanart.Rows.Clear();
         //
-        FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHSMusic, "*.jpg", Utils.Category.MusicFanartScraped, null, Utils.Provider.Local);
+        Utils.SetupFilenames(Utils.FAHSMusic, "*.jpg", Utils.Category.MusicFanartScraped, null, Utils.Provider.Local);
         UpdateFanartTableOnStartup(1);
         //
         myDataTableFanart.AcceptChanges();
@@ -894,8 +893,8 @@ namespace FanartHandler
         dataGridViewThumbs.ClearSelection();
         myDataTableThumbs.Rows.Clear();
         //
-        FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHMusicArtists, "*L.jpg", Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.Local);
-        FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHMusicAlbums, "*L.jpg", Utils.Category.MusicAlbumThumbScraped, null, Utils.Provider.Local);
+        Utils.SetupFilenames(Utils.FAHMusicArtists, "*L.jpg", Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.Local);
+        Utils.SetupFilenames(Utils.FAHMusicAlbums, "*L.jpg", Utils.Category.MusicAlbumThumbScraped, null, Utils.Provider.Local);
         //
         UpdateThumbnailTable(0);
         //
@@ -980,14 +979,14 @@ namespace FanartHandler
           return;
 
         foreach (var path in Directory.GetFiles(Utils.FAHUDFolder + (string) comboBox2.SelectedItem, "*.jpg"))
-          if (!Utils.GetFilenameNoPath(path).ToLower(CultureInfo.CurrentCulture).StartsWith("default", StringComparison.CurrentCulture) && Utils.GetDbm().IsImageProtectedByUser(path).Equals("False"))
+          if (!Utils.GetFileName(path).ToLower(CultureInfo.CurrentCulture).StartsWith("default", StringComparison.CurrentCulture) && Utils.GetDbm().IsImageProtectedByUser(path).Equals("False"))
             MediaPortal.Util.Utils.FileDelete(path);
         Utils.GetDbm().DeleteAllFanart(GetCategoryFromComboFilter(comboBox2.SelectedItem.ToString()));
 
         dataGridViewUserManaged.ClearSelection();
         myDataTableUserManaged.Rows.Clear();
         //
-        FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHUDFolder + (string) comboBox2.SelectedItem, "*.jpg", GetCategoryFromComboFilter(comboBox2.SelectedItem.ToString()), null, Utils.Provider.Local);
+        Utils.SetupFilenames(Utils.FAHUDFolder + (string) comboBox2.SelectedItem, "*.jpg", GetCategoryFromComboFilter(comboBox2.SelectedItem.ToString()), null, Utils.Provider.Local);
         UpdateFanartUserManagedTable();
         //
         myDataTableUserManaged.AcceptChanges();
@@ -1081,9 +1080,9 @@ namespace FanartHandler
 
           if (Utils.UseFanart)
           {
-            FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHUDMusic, "*.jpg", Utils.Category.MusicFanartManual, null, Utils.Provider.Local);
-            FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHUDMusicAlbum, "*.jpg", Utils.Category.MusicFanartAlbum, null, Utils.Provider.Local);
-            FanartHandlerSetup.Fh.SetupFilenames(Utils.FAHSMusic, "*.jpg", Utils.Category.MusicFanartScraped, null, Utils.Provider.Local);
+            Utils.SetupFilenames(Utils.FAHUDMusic, "*.jpg", Utils.Category.MusicFanartManual, null, Utils.Provider.Local);
+            Utils.SetupFilenames(Utils.FAHUDMusicAlbum, "*.jpg", Utils.Category.MusicFanartAlbum, null, Utils.Provider.Local);
+            Utils.SetupFilenames(Utils.FAHSMusic, "*.jpg", Utils.Category.MusicFanartScraped, null, Utils.Provider.Local);
           }
 
           dataGridViewFanart.Enabled = false;
@@ -1111,7 +1110,7 @@ namespace FanartHandler
           button5.Enabled = true;
           button9.Enabled = true;
           button10.Enabled = true;
-          Utils.GetDbm().StopScraper = false;
+          Utils.StopScraper = false;
           UpdateProgressBars(true, true) ;
           dataGridViewFanart.Enabled = true;
         }
@@ -1130,8 +1129,8 @@ namespace FanartHandler
         UpdateSettings();
 
         button6.Enabled = false;
-        Utils.GetDbm().TotArtistsBeingScraped = 0.0;
-        Utils.GetDbm().CurrArtistsBeingScraped = 0.0;
+        Utils.TotArtistsBeingScraped = 0.0;
+        Utils.CurrArtistsBeingScraped = 0.0;
         myScraperWorker = new ScraperWorker();
         myScraperWorker.ProgressChanged += new ProgressChangedEventHandler(myScraperWorker.OnProgressChanged);
         myScraperWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(myScraperWorker.OnRunWorkerCompleted);
@@ -1198,7 +1197,7 @@ namespace FanartHandler
           button42.Enabled = true;
           button43.Enabled = true;
           button44.Enabled = true;
-          Utils.GetDbm().StopScraper = false;
+          Utils.StopScraper = false;
           UpdateProgressBars(false, true) ;
           dataGridViewThumbs.Enabled = true;
         }
@@ -1221,8 +1220,8 @@ namespace FanartHandler
 
         UpdateSettings();
 
-        Utils.GetDbm().TotArtistsBeingScraped = 0.0;
-        Utils.GetDbm().CurrArtistsBeingScraped = 0.0;
+        Utils.TotArtistsBeingScraped = 0.0;
+        Utils.CurrArtistsBeingScraped = 0.0;
         myScraperThumbWorker = new ScraperThumbWorker();
         myScraperThumbWorker.ProgressChanged += new ProgressChangedEventHandler(myScraperThumbWorker.OnProgressChanged);
         myScraperThumbWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(myScraperThumbWorker.OnRunWorkerCompleted);
@@ -1246,7 +1245,7 @@ namespace FanartHandler
     {
       try
       {
-        if (!Utils.ScraperMPDatabase || Utils.GetDbm().GetIsScraping())
+        if (!Utils.ScraperMPDatabase || Utils.IsScraping)
           return;
 
         StartScraper();
@@ -1273,7 +1272,7 @@ namespace FanartHandler
     {
       try
       {
-        Utils.GetDbm().StopScraper = true;
+        Utils.StopScraper = true;
 
         if (button6 != null)
           button6.Enabled = false;
@@ -1288,9 +1287,9 @@ namespace FanartHandler
         isScraping = false;
         if (Utils.GetDbm() != null)
         {
-          Utils.GetDbm().TotArtistsBeingScraped = 0.0;
-          Utils.GetDbm().CurrArtistsBeingScraped = 0.0;
-          Utils.GetDbm().StopScraper = false;
+          Utils.TotArtistsBeingScraped = 0.0;
+          Utils.CurrArtistsBeingScraped = 0.0;
+          Utils.StopScraper = false;
         }
 
         UpdateFanartTableOnStartup(1);
@@ -1338,7 +1337,7 @@ namespace FanartHandler
         else if (button44 != null)
           button44.Enabled = false;
 
-        Utils.GetDbm().StopScraper = true;
+        Utils.StopScraper = true;
         if (myScraperThumbWorker != null)
         {
           myScraperThumbWorker.CancelAsync();
@@ -1349,9 +1348,9 @@ namespace FanartHandler
         isScraping = false;
         if (Utils.GetDbm() != null)
         {
-          Utils.GetDbm().TotArtistsBeingScraped = 0.0;
-          Utils.GetDbm().CurrArtistsBeingScraped = 0.0;
-          Utils.GetDbm().StopScraper = false;
+          Utils.TotArtistsBeingScraped = 0.0;
+          Utils.CurrArtistsBeingScraped = 0.0;
+          Utils.StopScraper = false;
         }
 
         FilterThumbGrid(0);
@@ -1475,7 +1474,7 @@ namespace FanartHandler
             row["Category"] = userManagedTable.GetField(num, 0);
             row["AvailableRandom"] = userManagedTable.GetField(num, 1);
             row["Locked"] = userManagedTable.GetField(num, 3);
-            row["Image"] = Utils.GetFilenameOnly(userManagedTable.GetField(num, 2));
+            row["Image"] = Utils.GetFileName(userManagedTable.GetField(num, 2));
             row["Image Path"] = userManagedTable.GetField(num, 2);
             Convert.ToInt32(userManagedTable.GetField(num, 4), CultureInfo.CurrentCulture);
             myDataTableExternal.Rows.Add(row);
@@ -1511,7 +1510,7 @@ namespace FanartHandler
             row["Category"] = sqLiteResultSet.GetField(num, 0);
             row["AvailableRandom"] = sqLiteResultSet.GetField(num, 1);
             row["Locked"] = sqLiteResultSet.GetField(num, 3);
-            row["Image"] = Utils.GetFilenameOnly(sqLiteResultSet.GetField(num, 2));
+            row["Image"] = Utils.GetFileName(sqLiteResultSet.GetField(num, 2));
             row["Image Path"] = sqLiteResultSet.GetField(num, 2);
             Convert.ToInt32(sqLiteResultSet.GetField(num, 4), CultureInfo.CurrentCulture);
             myDataTableUserManaged.Rows.Add(row);
@@ -1556,7 +1555,7 @@ namespace FanartHandler
                 row["Enabled"] = forConfigTableScan.GetField(num2, 1);
                 row["AvailableRandom"] = forConfigTableScan.GetField(num2, 2);
                 row["Locked"] = forConfigTableScan.GetField(num2, 4);
-                row["Image"] = Utils.GetFilenameOnly(forConfigTableScan.GetField(num2, 3));
+                row["Image"] = Utils.GetFileName(forConfigTableScan.GetField(num2, 3));
                 row["Image Path"] = forConfigTableScan.GetField(num2, 3);
                 try {
                   num1 = Convert.ToInt32(forConfigTableScan.GetField(num2, 5), CultureInfo.CurrentCulture);
@@ -1688,7 +1687,7 @@ namespace FanartHandler
             row["Enabled"] = dataForConfigTable.GetField(num1, 1);
             row["AvailableRandom"] = dataForConfigTable.GetField(num1, 2);
             row["Locked"] = dataForConfigTable.GetField(num1, 4);
-            row["Image"] = Utils.GetFilenameOnly(dataForConfigTable.GetField(num1, 3));
+            row["Image"] = Utils.GetFileName(dataForConfigTable.GetField(num1, 3));
             row["Image Path"] = dataForConfigTable.GetField(num1, 3);
             if (dataForConfigTable.GetField(num1, 4) != null && dataForConfigTable.GetField(num1, 4).Length > 0)
             {
@@ -1734,7 +1733,7 @@ namespace FanartHandler
         if (Utils.UseSelectedMusicFanart)
         {
           ImportLocalFanart(Utils.Category.MusicFanartScraped);
-          FanartHandlerSetup.Fh.UpdateDirectoryTimer(Utils.FAHUDMusic, false, "Fanart");
+          FanartHandlerSetup.Fh.UpdateDirectoryTimer(Utils.FAHUDMusic, "Fanart");
           UpdateFanartTableOnStartup(1);
         }
         isScraping = false;
@@ -2014,7 +2013,7 @@ namespace FanartHandler
           row["Enabled"] = "True";
           row["AvailableRandom"] = "True";
           row["Locked"] = "False";
-          row["Image"] = Utils.GetFilenameOnly(fileName);
+          row["Image"] = Utils.GetFileName(fileName);
           row["Image Path"] = fileName;
           myDataTableFanart.Rows.InsertAt(row, checked (dataGridViewFanart.CurrentRow.Index + 1));
         }
@@ -2714,7 +2713,7 @@ namespace FanartHandler
             this.CheckBoxDeleteMissing.Name = "CheckBoxDeleteMissing";
             this.CheckBoxDeleteMissing.Size = new System.Drawing.Size(444, 20);
             this.CheckBoxDeleteMissing.TabIndex = 0;
-            this.CheckBoxDeleteMissing.Text = "Delete missing enries from DB, when FanartHandler Initial Scrape start.";
+            this.CheckBoxDeleteMissing.Text = "Delete missing entries from DB, when FanartHandler Initial Scrape start.";
             this.CheckBoxDeleteMissing.UseVisualStyleBackColor = true;
             this.CheckBoxDeleteMissing.CheckedChanged += new System.EventHandler(this.CheckBoxDeleteMissing_CheckedChanged);
             // 
@@ -4286,7 +4285,7 @@ namespace FanartHandler
       Utils.SetupDirectories();
       Utils.LoadSettings();
       Utils.InitiateDbm("config");
-      Utils.GetDbm().StopScraper = false;
+      Utils.StopScraper = false;
       //
     }
 
