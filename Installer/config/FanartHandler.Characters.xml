@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <characters>
     <!-- https://github.com/andrewjswan/mediaportal.images.genres/tree/master/genres/characters -->
     <character name="bond">007</character>
@@ -28,17 +28,46 @@
     <character name="spectre">007</character>
     <!-- -->
     <character name="aliens">alien</character>
+    <character name="ants">ant</character>
     <character name="astronauts">astronaut</character>
+    <character name="asteroids">asteroid</character>
     <character name="comets">comet</character>
     <character name="ghosts">ghost</character>
+    <character name="knights">knight</character>
+    <character name="leopards">leopard</character>
     <character name="martians">martian</character>
-    <character name="mummys">mummy</character>
+    <character name="mummies">mummy</character>
     <character name="ninja turtles">ninja turtle</character>
+    <character name="sharks">shark</character>
     <character name="vampires">vampire</character>
-    <character name="werewolf">werewolf</character>
+    <character name="werewolfs">werewolf</character>
     <character name="daredevil">dare devil</character>
     <character name="the martian">astronaut</character>
     <character name="game of thrones">house arryn|house baratheon|house greyjoy|house lannister|house martell|house stark|house targaryen|house tully|house tyrell</character>
     <character name="battlestar galactica">cylon head</character>
     <character name="lord of the rings">hobbit</character>
+    <character name="pirates">pirate</character>
+    <!-- GERMAN -->
+    <character name="liebesgrüsse aus moskau">007</character>
+    <character name="feuerball">007</character>
+    <character name="man lebt nur zweimal">007</character>
+    <character name="im geheimdienst ihrer majestät">007</character>
+    <character name="diamantenfieber">007</character>
+    <character name="leben und sterben lassen">007</character>
+    <character name="der mann mit dem goldenen colt">007</character>
+    <character name="der spion der mich liebte">007</character>
+    <character name="lizenz zum töten">007</character>
+    <character name="der morgen stirbt nie">007</character>
+    <character name="die welt ist nicht genug">007</character>
+    <character name="stirb an einem anderen tag">007</character>
+    <character name="ein quantum trost">007</character>
+    <!-- -->
+    <character name="astronauten">astronaut</character>
+    <character name="kometen">comet</character>
+    <character name="geist">ghost</character>
+    <character name="marsianer">martian</character>
+    <character name="mumie">mummy</character>
+    <character name="vampir">vampire</character>
+    <character name="werwolf">werewolf</character>
+    <character name="der marsianer">astronaut</character>
 </characters>
