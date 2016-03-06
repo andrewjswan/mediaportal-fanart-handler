@@ -592,39 +592,10 @@ cul8er</Value>
        * push random images from selected folders
 
 </ExtensionDescription>
-    <VersionDescription>- optimization
-- code clean
-- internal rework and optimization
-- change Random fanart algoritm ...
-- speedup
-- bugfixes
-- genres rework
-
-#fanarthandler.movie.studios.selected.all - It should work in moving pictures.
-
-- Add:
-#fanarthandler.picture.backdrop1.selected
-#fanarthandler.picture.backdrop2.selected
-#fanarthandler.picture.backdrop1.selected &amp; #fanarthandler.picture.backdrop2.selected - If a folder is selected, returns randomly first 10 pictures.
-#fanarthandler.music.genres.play
-#fanarthandler.music.genres.play.all
-#fanarthandler.music.genres.play.verticalall
-#fanarthandler.movie.studios.selected.verticalall
-#fanarthandler.movie.genres.selected
-#fanarthandler.movie.genres.selected.all
-#fanarthandler.movie.genres.selected.verticalall
-#fanarthandler.music.genres.selected
-#fanarthandler.music.genres.selected.all
-#fanarthandler.music.genres.selected.verticalall
-Added FanartHandler.Genres.xml thx @catavolt @azzuro 
-Added FanartHandler.Studios.xml thx @catavolt 
-
-- Remove:
-#fanarthandler.picture.backdrop.selected
-</VersionDescription>
+    <VersionDescription>Fix Moving Pictures support</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-{VERSION}.MPE1</OnlineLocation>
-    <ReleaseDate>2016-03-03T15:04:24</ReleaseDate>
+    <ReleaseDate>2016-03-06T15:04:24</ReleaseDate>
     <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper</Tags>
     <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
     <Params>

@@ -1072,11 +1072,13 @@ namespace FanartHandler
 
     private void SetupWindowsUsingFanartHandlerVisibility(string SkinDir = (string) null, string ThemeDir = (string) null)
     {
-      var path = string.Empty ;
+      var path = string.Empty;
+      var theme = string.Empty; 
 
       if (string.IsNullOrEmpty(SkinDir))
       {
         path = GUIGraphicsContext.Skin + @"\";
+        theme = Utils.GetThemeFolder(path);
         logger.Debug("Scan Skin folder for XML: "+path) ;
       }
       else
@@ -1146,6 +1148,7 @@ namespace FanartHandler
               {
                 var XMLFullName = Path.Combine(XMLFolder, xpathNodeIterator.Current.Value);
                 if (File.Exists(XMLFullName))
+                {
                   HandleXmlImports(XMLFullName, nodeValue, ref _flag1Music, ref _flag2Music, 
                                                            ref _flag1ScoreCenter, ref _flag2ScoreCenter, 
                                                            ref _flag1Movie, ref _flag2Movie, 
@@ -1157,9 +1160,9 @@ namespace FanartHandler
                                                            ref _flagGenreMovie, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
                                                            ref _flagStudioMovie, ref _flagStudioMovieAll, ref _flagStudioMovieVertical
                                                            );
-                else if ((!string.IsNullOrEmpty(SkinDir)) && (!string.IsNullOrEmpty(ThemeDir)))
+                  if (!string.IsNullOrEmpty(theme))
                   {
-                    XMLFullName = Path.Combine(SkinDir, xpathNodeIterator.Current.Value);
+                    XMLFullName = Path.Combine(theme, xpathNodeIterator.Current.Value);
                     if (File.Exists(XMLFullName))
                       HandleXmlImports(XMLFullName, nodeValue, ref _flag1Music, ref _flag2Music, 
                                                                ref _flag1ScoreCenter, ref _flag2ScoreCenter, 
@@ -1173,6 +1176,23 @@ namespace FanartHandler
                                                                ref _flagStudioMovie, ref _flagStudioMovieAll, ref _flagStudioMovieVertical
                                                                );
                   }
+                }
+                else if ((!string.IsNullOrEmpty(SkinDir)) && (!string.IsNullOrEmpty(ThemeDir)))
+                {
+                  XMLFullName = Path.Combine(SkinDir, xpathNodeIterator.Current.Value);
+                  if (File.Exists(XMLFullName))
+                    HandleXmlImports(XMLFullName, nodeValue, ref _flag1Music, ref _flag2Music, 
+                                                             ref _flag1ScoreCenter, ref _flag2ScoreCenter, 
+                                                             ref _flag1Movie, ref _flag2Movie, 
+                                                             ref _flag1Picture, ref _flag2Picture, 
+                                                             ref _flagPlay, 
+                                                             ref _flagClearArt, ref _flagClearArtPlay,
+                                                             ref _flagGenrePlay, ref _flagGenrePlayAll, ref _flagGenrePlayVertical, 
+                                                             ref _flagGenreMusic, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
+                                                             ref _flagGenreMovie, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
+                                                             ref _flagStudioMovie, ref _flagStudioMovieAll, ref _flagStudioMovieVertical
+                                                             );
+                }
               }
             }
             xpathNodeIterator = navigator.Select("/window/controls/include");
@@ -1182,6 +1202,7 @@ namespace FanartHandler
               {
                 var XMLFullName = Path.Combine(XMLFolder, xpathNodeIterator.Current.Value);
                 if (File.Exists(XMLFullName))
+                {
                   HandleXmlImports(XMLFullName, nodeValue, ref _flag1Music, ref _flag2Music,
                                                            ref _flag1ScoreCenter, ref _flag2ScoreCenter, 
                                                            ref _flag1Movie, ref _flag2Movie, 
@@ -1193,9 +1214,9 @@ namespace FanartHandler
                                                            ref _flagGenreMovie, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
                                                            ref _flagStudioMovie, ref _flagStudioMovieAll, ref _flagStudioMovieVertical
                                                            );
-                else if ((!string.IsNullOrEmpty(SkinDir)) && (!string.IsNullOrEmpty(ThemeDir)))
+                  if (!string.IsNullOrEmpty(theme))
                   {
-                    XMLFullName = Path.Combine(SkinDir, xpathNodeIterator.Current.Value);
+                    XMLFullName = Path.Combine(theme, xpathNodeIterator.Current.Value);
                     if (File.Exists(XMLFullName))
                       HandleXmlImports(XMLFullName, nodeValue, ref _flag1Music, ref _flag2Music, 
                                                                ref _flag1ScoreCenter, ref _flag2ScoreCenter, 
@@ -1206,9 +1227,26 @@ namespace FanartHandler
                                                                ref _flagGenrePlay, ref _flagGenrePlayAll, ref _flagGenrePlayVertical, 
                                                                ref _flagGenreMusic, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
                                                                ref _flagGenreMovie, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
-                                                               ref _flagStudioMovie, ref _flagStudioMovieAll, ref _flagStudioMovieVertical 
+                                                               ref _flagStudioMovie, ref _flagStudioMovieAll, ref _flagStudioMovieVertical
                                                                );
                   }
+                }
+                else if ((!string.IsNullOrEmpty(SkinDir)) && (!string.IsNullOrEmpty(ThemeDir)))
+                {
+                  XMLFullName = Path.Combine(SkinDir, xpathNodeIterator.Current.Value);
+                  if (File.Exists(XMLFullName))
+                    HandleXmlImports(XMLFullName, nodeValue, ref _flag1Music, ref _flag2Music, 
+                                                             ref _flag1ScoreCenter, ref _flag2ScoreCenter, 
+                                                             ref _flag1Movie, ref _flag2Movie, 
+                                                             ref _flag1Picture, ref _flag2Picture, 
+                                                             ref _flagPlay, 
+                                                             ref _flagClearArt, ref _flagClearArtPlay,
+                                                             ref _flagGenrePlay, ref _flagGenrePlayAll, ref _flagGenrePlayVertical, 
+                                                             ref _flagGenreMusic, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
+                                                             ref _flagGenreMovie, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
+                                                             ref _flagStudioMovie, ref _flagStudioMovieAll, ref _flagStudioMovieVertical 
+                                                             );
+                }
               }
             }
 
@@ -1369,18 +1407,13 @@ namespace FanartHandler
         }
       }
 
-      if (string.IsNullOrEmpty(ThemeDir) && !string.IsNullOrEmpty(GUIGraphicsContext.ThemeName)) 
+      if (string.IsNullOrEmpty(ThemeDir)) 
       {
         // Include Themes
-        var tThemeDir = path+@"Themes\"+GUIGraphicsContext.ThemeName.Trim()+@"\";
-        if (Directory.Exists(tThemeDir))
+        if (!string.IsNullOrEmpty(theme))
         {
-          SetupWindowsUsingFanartHandlerVisibility(path, tThemeDir);
-          return;
+          SetupWindowsUsingFanartHandlerVisibility(path, theme);
         }
-        tThemeDir = path+GUIGraphicsContext.ThemeName.Trim()+@"\";
-        if (Directory.Exists(tThemeDir))
-          SetupWindowsUsingFanartHandlerVisibility(path, tThemeDir);
       }
     }
 

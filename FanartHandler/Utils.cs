@@ -1546,6 +1546,7 @@ namespace FanartHandler
           SelectedItem = Utils.GetProperty("#selecteditem");
           SelectedStudios = Utils.GetProperty("#MovingPictures.SelectedMovie.studios");
           SelectedGenre = Utils.GetProperty("#MovingPictures.SelectedMovie.genres");
+          // logger.Debug("*** "+SelectedItem+" - "+SelectedStudios+" - "+SelectedGenre);
         }
         else if (iActiveWindow == 9811 ||    // TVSeries
                  iActiveWindow == 9813)      // TVSeries Playlist
@@ -2176,6 +2177,26 @@ namespace FanartHandler
     }
     */
 
+    public static string GetThemeFolder(string path)
+    {
+      if (string.IsNullOrEmpty(GUIGraphicsContext.ThemeName))
+      {
+        return string.Empty;
+      }
+
+      var tThemeDir = path+@"Themes\"+GUIGraphicsContext.ThemeName.Trim()+@"\";
+      if (Directory.Exists(tThemeDir))
+      {
+        return tThemeDir;
+      }
+      tThemeDir = path+GUIGraphicsContext.ThemeName.Trim()+@"\";
+      if (Directory.Exists(tThemeDir))
+      {
+        return tThemeDir;
+      }
+      return string.Empty;
+    }
+
     #region Properties
     internal static void AddProperty(ref Hashtable Properties, string property, string value, ref ArrayList al, bool Now = false, bool AddToCache = true)
     {
@@ -2318,9 +2339,7 @@ namespace FanartHandler
         return Regex.IsMatch(source, @"\b" + toCheck + @"\b", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant) ;
       }
       else
-      {
         return source.Contains(toCheck, StringComparison.OrdinalIgnoreCase);
-      }
     }
 
     #region ConainsID - Hashtable contains WindowID 
@@ -2602,7 +2621,7 @@ namespace FanartHandler
       }
       catch (Exception ex)
       {
-        Log.Error("LoadCharactersNames: Error loading characters from folder: {0} - {1} ", FAHCharacters, ex.Message);
+        Log.Debug("LoadCharactersNames: Error loading characters from folder: {0} - {1} ", FAHCharacters, ex.Message);
       }
     }
 
