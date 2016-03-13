@@ -86,6 +86,9 @@ To the team behind the MP Moving Picture plugin. From who I have used some of th
 #fanarthandler.movie.genres.selected
 #fanarthandler.movie.genres.selected.all
 #fanarthandler.movie.genres.selected.verticalall
+#fanarthandler.movie.awards.selected
+#fanarthandler.movie.awards.selected.all
+#fanarthandler.movie.awards.selected.verticalall
 
 #fanarthandler.movingpicture.backdrop1.any
 #fanarthandler.movingpicture.backdrop2.any

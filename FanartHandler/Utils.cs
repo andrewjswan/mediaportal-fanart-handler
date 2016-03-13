@@ -37,6 +37,7 @@ namespace FanartHandler
     private const string ConfigGenresFilename = "FanartHandler.Genres.xml";
     private const string ConfigCharactersFilename = "FanartHandler.Characters.xml";
     private const string ConfigStudiosFilename = "FanartHandler.Studios.xml";
+    private const string ConfigAwardsFilename = "FanartHandler.Awards.xml";
     private const string FanartHandlerPrefix = "#fanarthandler.";
 
     private static bool isStopping;
@@ -58,6 +59,8 @@ namespace FanartHandler
 
     private static int activeWindow = (int)GUIWindow.Window.WINDOW_INVALID;
 
+    private static bool AddAwardsToGenre = false;
+
     public static DateTime LastRefreshRecording { get; set; }
     public static bool Used4TRTV { get; set; }
     public static Hashtable DelayStop { get; set; }
@@ -68,6 +71,7 @@ namespace FanartHandler
     public static Hashtable Genres;
     public static Hashtable Characters;
     public static Hashtable Studios;
+    public static List<KeyValuePair<string, object>> AwardsList;
 
     #region Settings
     public static bool UseFanart { get; set; }
@@ -173,10 +177,11 @@ namespace FanartHandler
     public static string MoviesCDArtFolder { get; set; }
     #endregion
 
-    #region Genres and Studios folders
+    #region Genres, Awards and Studios folders
     public static string FAHGenres { get; set; }
     public static string FAHCharacters { get; set; }
     public static string FAHStudios { get; set; }
+    public static string FAHAwards { get; set; }
     #endregion
 
     #region Junction
@@ -305,6 +310,7 @@ namespace FanartHandler
       FAHGenres = string.Empty;
       FAHCharacters = string.Empty;
       FAHStudios = string.Empty;
+      FAHAwards = string.Empty;
       #endregion
 
       MPThumbsFolder = Config.GetFolder((Config.Dir) 6) ;
@@ -439,6 +445,8 @@ namespace FanartHandler
       logger.Debug("Fanart Handler Characters folder: Skin|Theme "+FAHCharacters);
       FAHStudios = @"\Media\Logos\Studios\";
       logger.Debug("Fanart Handler Studios folder: Skin|Theme "+FAHStudios);
+      FAHAwards = @"\Media\Logos\Awards\";
+      logger.Debug("Fanart Handler Awards folder: Skin|Theme "+FAHAwards);
       #endregion
 
       WatchFullThumbFolder = true ;
@@ -2404,6 +2412,45 @@ namespace FanartHandler
     }
     #endregion
 
+    #region Get Awards
+    public static string GetAwards(bool fromGenre)
+    {
+      string sAwardsValue = string.Empty;
+
+      if (fromGenre && !AddAwardsToGenre)
+      {
+        return sAwardsValue; 
+      }
+
+      if (AwardsList != null)
+      {
+        string currentProperty = string.Empty;
+        string currentPropertyValue = string.Empty;
+
+        foreach (KeyValuePair<string, object> pair in AwardsList)
+        {
+          if (sActiveWindow.Equals(pair.Key.ToString()))
+          {
+            var _award = (Awards) pair.Value;
+            if (!currentProperty.Equals(_award.Property))
+            {
+              currentProperty = _award.Property;
+              currentPropertyValue = GetProperty(currentProperty); 
+            }
+            if (!string.IsNullOrEmpty(currentPropertyValue))
+            {
+              if (Regex.IsMatch(currentPropertyValue, _award.Regex, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+              {
+                sAwardsValue = sAwardsValue + (string.IsNullOrEmpty(sAwardsValue) ? "" : "|") + _award.Name;
+              }
+            }
+          }
+        }
+      }
+      return sAwardsValue;
+    }
+    #endregion
+
     #region Get Genres and Studios
     public static string GetGenre(string sGenre)
     {
@@ -2484,6 +2531,112 @@ namespace FanartHandler
     #endregion
 
     #region Settings
+    public static void LoadAwardsNames()
+    {
+      AwardsList = new List<KeyValuePair<string, object>>();
+
+      try
+      {
+        string FullFileName = Config.GetFile((Config.Dir) 10, ConfigAwardsFilename);
+        if (!File.Exists(FullFileName))
+        {
+          return;
+        }
+
+        logger.Debug("Load Awards from file: {0}", ConfigAwardsFilename);
+
+        XmlDocument doc = new XmlDocument();
+        doc.Load(FullFileName);
+
+        if (doc.DocumentElement != null)
+        {
+          XmlNodeList awardsList = doc.DocumentElement.SelectNodes("/awards");
+          
+          if (awardsList == null)
+          {
+            logger.Debug("Awards tag for file: {0} not exist. Skipped.", ConfigAwardsFilename);
+            return;
+          }
+
+          foreach (XmlNode nodeAwards in awardsList)
+          {
+            if (nodeAwards != null)
+            {
+              // Awards settings
+              XmlNode settings = nodeAwards.SelectSingleNode("settings");
+              if (settings != null)
+              {
+                XmlNode nodeAddAwards = settings.SelectSingleNode("addawardstogenre");
+                if (nodeAddAwards != null && nodeAddAwards.InnerText != null)
+                {
+                  string addAwards = nodeAddAwards.InnerText;
+                  if (!string.IsNullOrEmpty(addAwards))
+                  {
+                    AddAwardsToGenre = (addAwards.ToLower().Equals("yes") || addAwards.ToLower().Equals("true"));
+                  }
+                }
+              }
+
+              // Awards
+              XmlNodeList awardList = nodeAwards.SelectNodes("award");
+              foreach (XmlNode nodeAward in awardList)
+              {
+                if (nodeAward != null)
+                {
+                  string awardName = string.Empty;
+                  string awardWinID = string.Empty;
+                  string awardProperty = string.Empty;
+                  string awardRegex = string.Empty;
+
+                  XmlNode nodeAwardName = nodeAward.SelectSingleNode("awardName");
+                  if (nodeAwardName != null && nodeAwardName.InnerText != null)
+                  {
+                    awardName = nodeAwardName.InnerText;
+                  }
+
+                  XmlNodeList awardRuleList = nodeAward.SelectNodes("rule");
+                  foreach (XmlNode nodeAwardRule in awardRuleList)
+                  {
+                    if (nodeAwardRule != null)
+                    {
+                      XmlNode nodeAwardWinID = nodeAwardRule.SelectSingleNode("winID");
+                      XmlNode nodeAwardProperty = nodeAwardRule.SelectSingleNode("searchProperty");
+                      XmlNode nodeAwardRegex = nodeAwardRule.SelectSingleNode("searchRegex");
+
+                      if (nodeAwardWinID != null && nodeAwardWinID.InnerText != null)
+                      {
+                        awardWinID = nodeAwardWinID.InnerText;
+                      }
+                      if (nodeAwardProperty != null && nodeAwardProperty.InnerText != null)
+                      {
+                        awardProperty = nodeAwardProperty.InnerText;
+                      }
+                      if (nodeAwardRegex != null && nodeAwardRegex.InnerText != null)
+                      {
+                        awardRegex = nodeAwardRegex.InnerText;
+                      }
+
+                      if (!string.IsNullOrEmpty(awardName) && !string.IsNullOrEmpty(awardWinID) && !string.IsNullOrEmpty(awardProperty) && !string.IsNullOrEmpty(awardRegex))
+                      {
+                        // Add Award to Awards list
+                        AddAwardToList(awardName, awardWinID, awardProperty, awardRegex);
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          // Summary
+          logger.Debug("Load Awards from file: {0} complete. {2}{1} loaded.", ConfigAwardsFilename, AwardsList.Count, Check(AddAwardsToGenre));
+        }
+      }
+      catch (Exception ex)
+      {
+        Log.Error("LoadAwardsNames: Error loading genres from file: {0} - {1} ", ConfigAwardsFilename, ex.Message);
+      }
+    }
+
     public static void LoadGenresNames()
     {
       Genres = new Hashtable();
@@ -2994,6 +3147,7 @@ namespace FanartHandler
         logger.Error("LoadSettings: "+ex);
       }
       //
+      LoadAwardsNames();
       LoadGenresNames();
       LoadStudiosNames();
       LoadCharactersNames();
@@ -3305,6 +3459,26 @@ namespace FanartHandler
       {
         logger.Error("UpgradeSettings: " + ex);
       }
+    }
+    #endregion
+
+    #region Awards
+    public static void AddAwardToList(string name, string wID, string property, string regex)
+    {
+      var award = new Awards();
+      award.Name = name;
+      award.Property = property;
+      award.Regex = regex;
+
+      KeyValuePair<string,object> myItem = new KeyValuePair<string,object>(wID, award);
+      AwardsList.Add(myItem);
+    }
+
+    public class Awards
+    {
+      public string Name; 
+      public string Property; 
+      public string Regex; 
     }
     #endregion
 

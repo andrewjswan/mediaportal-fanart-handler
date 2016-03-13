@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- https://github.com/andrewjswan/mediaportal.images.genres/tree/master/genres/characters -->
 <characters>
-    <!-- https://github.com/andrewjswan/mediaportal.images.genres/tree/master/genres/characters -->
     <character name="bond">007</character>
     <character name="dr. no">007</character>
     <character name="from russia with love">007</character>
@@ -41,12 +41,32 @@
     <character name="sharks">shark</character>
     <character name="vampires">vampire</character>
     <character name="werewolfs">werewolf</character>
+    <character name="pirates">pirate</character>
+    <character name="zombies">zombie</character>
+    <character name="hemlock grove">werewolf</character>
+    <character name="a spacetime odyssey">galaxy|planet</character>
     <character name="daredevil">dare devil</character>
     <character name="the martian">astronaut</character>
     <character name="game of thrones">house arryn|house baratheon|house greyjoy|house lannister|house martell|house stark|house targaryen|house tully|house tyrell</character>
+    <character name="the legend of korra">air element|fire element|water element|earth element</character>
+    <character name="avatar: the last airbender">air element|fire element|water element|earth element</character>
     <character name="battlestar galactica">cylon head</character>
     <character name="lord of the rings">hobbit</character>
-    <character name="pirates">pirate</character>
+    <character name="black sails">pirate</character>
+    <character name="da vinci's">da vinci</character>
+    <character name="monkeys">monkey</character>
+    <character name="sherlock">detective</character>
+    <character name="elementary">detective</character>
+    <character name="the originals">vampire</character>
+    <character name="vikings">viking</character>
+    <character name="walking dead">zombie</character>
+    <character name="underworld">vampire|werewolf</character>
+    <character name="creed">boxing</character>
+    <character name="rocky">boxing</character>
+    <character name="million dollar baby">boxing</character>
+    <character name="nemo">fish</character>
+    <!-- RUSSIAN -->
+    <character name="мост">bridge</character>
     <!-- GERMAN -->
     <character name="liebesgrüsse aus moskau">007</character>
     <character name="feuerball">007</character>

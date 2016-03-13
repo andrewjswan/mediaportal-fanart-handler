@@ -530,11 +530,12 @@ namespace FanartHandler
         }
         //
         logger.Debug("FanartHandler skin use: " + Utils.Check(FPlayOther.WindowsUsingFanartPlayClearArt.Count > 0) + " Play ClearArt, " + 
-                                                  Utils.Check(FPlayOther.WindowsUsingFanartPlayGenre.Count > 0) + " Play Genres, " + 
-                                                  Utils.Check(FSelectedOther.WindowsUsingFanartSelectedClearArtMusic.Count > 0) + " Selected Music ClearArt, " + 
-                                                  Utils.Check(FSelectedOther.WindowsUsingFanartSelectedGenreMusic.Count > 0) + " Selected Music Genres, " +
-                                                  Utils.Check(FSelectedOther.WindowsUsingFanartSelectedStudioMovie.Count > 0) + " Selected Movie Studios, " + 
-                                                  Utils.Check(FSelectedOther.WindowsUsingFanartSelectedGenreMovie.Count > 0) + " Selected Movie Genres");
+                                                  Utils.Check(FPlayOther.WindowsUsingFanartPlayGenre.Count > 0) + " Play Genres");
+        logger.Debug("                        " + Utils.Check(FSelectedOther.WindowsUsingFanartSelectedClearArtMusic.Count > 0) + " Selected Music ClearArt, " + 
+                                                  Utils.Check(FSelectedOther.WindowsUsingFanartSelectedGenreMusic.Count > 0) + " Selected Music Genres");
+        logger.Debug("                        " + Utils.Check(FSelectedOther.WindowsUsingFanartSelectedStudioMovie.Count > 0) + " Selected Movie Studios, " + 
+                                                  Utils.Check(FSelectedOther.WindowsUsingFanartSelectedGenreMovie.Count > 0) + " Selected Movie Genres, " +
+                                                  Utils.Check(FSelectedOther.WindowsUsingFanartSelectedAwardMovie.Count > 0) + " Selected Movie Awards");
         //
         Utils.InitiateDbm("mediaportal");
         Utils.StopScraper = false;
@@ -1022,12 +1023,20 @@ namespace FanartHandler
         {
           SystemEvents.PowerModeChanged -= new PowerModeChangedEventHandler(OnSystemPowerModeChanged);
         }
-
+        //
+        Utils.BadArtistsList = null;  
+        Utils.MyPicturesSlideShowFolders = null;  
+        Utils.Genres = null;
+        Utils.Characters = null;
+        Utils.Studios = null;
+        Utils.AwardsList = null;
+        //
         FPlay = null;
         FPlayOther = null;
         FSelected = null;
         FSelectedOther = null;
         FRandom = null;
+        //
         Utils.DelayStop = new Hashtable();
       }
       catch (Exception ex)
@@ -1114,6 +1123,9 @@ namespace FanartHandler
           var _flagGenreMusicAll = false;
           var _flagGenreMusicVertical = false;
 
+          var _flagAwardMovie = false;
+          var _flagAwardMovieAll = false;
+          var _flagAwardMovieVertical = false;
           var _flagGenreMovie = false;
           var _flagGenreMovieAll = false;
           var _flagGenreMovieVertical = false;
@@ -1139,7 +1151,8 @@ namespace FanartHandler
                                                            ref _flagGenrePlay, ref _flagGenrePlayAll, ref _flagGenrePlayVertical, 
                                                            ref _flagGenreMusic, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
                                                            ref _flagGenreMovie, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
-                                                           ref _flagStudioMovie, ref _flagStudioMovieAll, ref _flagStudioMovieVertical
+                                                           ref _flagStudioMovie, ref _flagStudioMovieAll, ref _flagStudioMovieVertical,
+                                                           ref _flagAwardMovie, ref _flagAwardMovieAll, ref _flagAwardMovieVertical
                                                            );
             var xpathNodeIterator = navigator.Select("/window/controls/import");
             if (xpathNodeIterator.Count > 0)
@@ -1158,7 +1171,8 @@ namespace FanartHandler
                                                            ref _flagGenrePlay, ref _flagGenrePlayAll, ref _flagGenrePlayVertical, 
                                                            ref _flagGenreMusic, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
                                                            ref _flagGenreMovie, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
-                                                           ref _flagStudioMovie, ref _flagStudioMovieAll, ref _flagStudioMovieVertical
+                                                           ref _flagStudioMovie, ref _flagStudioMovieAll, ref _flagStudioMovieVertical,
+                                                           ref _flagAwardMovie, ref _flagAwardMovieAll, ref _flagAwardMovieVertical
                                                            );
                   if (!string.IsNullOrEmpty(theme))
                   {
@@ -1173,7 +1187,8 @@ namespace FanartHandler
                                                                ref _flagGenrePlay, ref _flagGenrePlayAll, ref _flagGenrePlayVertical, 
                                                                ref _flagGenreMusic, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
                                                                ref _flagGenreMovie, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
-                                                               ref _flagStudioMovie, ref _flagStudioMovieAll, ref _flagStudioMovieVertical
+                                                               ref _flagStudioMovie, ref _flagStudioMovieAll, ref _flagStudioMovieVertical,
+                                                               ref _flagAwardMovie, ref _flagAwardMovieAll, ref _flagAwardMovieVertical
                                                                );
                   }
                 }
@@ -1190,7 +1205,8 @@ namespace FanartHandler
                                                              ref _flagGenrePlay, ref _flagGenrePlayAll, ref _flagGenrePlayVertical, 
                                                              ref _flagGenreMusic, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
                                                              ref _flagGenreMovie, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
-                                                             ref _flagStudioMovie, ref _flagStudioMovieAll, ref _flagStudioMovieVertical
+                                                             ref _flagStudioMovie, ref _flagStudioMovieAll, ref _flagStudioMovieVertical,
+                                                             ref _flagAwardMovie, ref _flagAwardMovieAll, ref _flagAwardMovieVertical
                                                              );
                 }
               }
@@ -1212,7 +1228,8 @@ namespace FanartHandler
                                                            ref _flagGenrePlay, ref _flagGenrePlayAll, ref _flagGenrePlayVertical, 
                                                            ref _flagGenreMusic, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
                                                            ref _flagGenreMovie, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
-                                                           ref _flagStudioMovie, ref _flagStudioMovieAll, ref _flagStudioMovieVertical
+                                                           ref _flagStudioMovie, ref _flagStudioMovieAll, ref _flagStudioMovieVertical,
+                                                           ref _flagAwardMovie, ref _flagAwardMovieAll, ref _flagAwardMovieVertical
                                                            );
                   if (!string.IsNullOrEmpty(theme))
                   {
@@ -1227,7 +1244,8 @@ namespace FanartHandler
                                                                ref _flagGenrePlay, ref _flagGenrePlayAll, ref _flagGenrePlayVertical, 
                                                                ref _flagGenreMusic, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
                                                                ref _flagGenreMovie, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
-                                                               ref _flagStudioMovie, ref _flagStudioMovieAll, ref _flagStudioMovieVertical
+                                                               ref _flagStudioMovie, ref _flagStudioMovieAll, ref _flagStudioMovieVertical,
+                                                               ref _flagAwardMovie, ref _flagAwardMovieAll, ref _flagAwardMovieVertical
                                                                );
                   }
                 }
@@ -1244,7 +1262,8 @@ namespace FanartHandler
                                                              ref _flagGenrePlay, ref _flagGenrePlayAll, ref _flagGenrePlayVertical, 
                                                              ref _flagGenreMusic, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
                                                              ref _flagGenreMovie, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
-                                                             ref _flagStudioMovie, ref _flagStudioMovieAll, ref _flagStudioMovieVertical 
+                                                             ref _flagStudioMovie, ref _flagStudioMovieAll, ref _flagStudioMovieVertical,
+                                                             ref _flagAwardMovie, ref _flagAwardMovieAll, ref _flagAwardMovieVertical
                                                              );
                 }
               }
@@ -1310,6 +1329,19 @@ namespace FanartHandler
             if (_flagGenreMusicVertical && !Utils.ContainsID(FSelectedOther.WindowsUsingFanartSelectedGenreMusic, nodeValue + Utils.Logo.Vertical))
             {
               FSelectedOther.WindowsUsingFanartSelectedGenreMusic.Add(nodeValue + Utils.Logo.Vertical, nodeValue + Utils.Logo.Vertical);
+            }
+            // Selected Movie Award
+            if (_flagAwardMovie && !Utils.ContainsID(FSelectedOther.WindowsUsingFanartSelectedAwardMovie, nodeValue))
+            {
+              FSelectedOther.WindowsUsingFanartSelectedAwardMovie.Add(nodeValue, nodeValue);
+            }
+            if (_flagAwardMovieAll && !Utils.ContainsID(FSelectedOther.WindowsUsingFanartSelectedAwardMovie, nodeValue + Utils.Logo.Horizontal))
+            {
+              FSelectedOther.WindowsUsingFanartSelectedAwardMovie.Add(nodeValue + Utils.Logo.Horizontal, nodeValue + Utils.Logo.Horizontal);
+            }
+            if (_flagAwardMovieVertical && !Utils.ContainsID(FSelectedOther.WindowsUsingFanartSelectedAwardMovie, nodeValue + Utils.Logo.Vertical))
+            {
+              FSelectedOther.WindowsUsingFanartSelectedAwardMovie.Add(nodeValue + Utils.Logo.Vertical, nodeValue + Utils.Logo.Vertical);
             }
             // Selected Movie Genre
             if (_flagGenreMovie && !Utils.ContainsID(FSelectedOther.WindowsUsingFanartSelectedGenreMovie, nodeValue))
@@ -1427,7 +1459,8 @@ namespace FanartHandler
                                   ref bool _flagGenrePlay, ref bool _flagGenrePlayAll, ref bool _flagGenrePlayVertical, 
                                   ref bool _flagGenreMusic, ref bool _flagGenreMusicAll, ref bool _flagGenreMusicVertical, 
                                   ref bool _flagGenreMovie, ref bool _flagGenreMovieAll, ref bool _flagGenreMovieVertical, 
-                                  ref bool _flagStudioMovie, ref bool _flagStudioMovieAll, ref bool _flagStudioMovieVertical 
+                                  ref bool _flagStudioMovie, ref bool _flagStudioMovieAll, ref bool _flagStudioMovieVertical, 
+                                  ref bool _flagAwardMovie, ref bool _flagAwardMovieAll, ref bool _flagAwardMovieVertical
                                   )
     {
       var xpathDocument = new XPathDocument(filename);
@@ -1509,6 +1542,20 @@ namespace FanartHandler
         if (_xml.Contains("#fanarthandler.movie.studios.selected.verticalall"))
         {
           _flagStudioMovieVertical = true;
+        }
+      }
+
+      // Awards
+      if (_xml.Contains("#fanarthandler.movie.awards.selected"))
+      {
+        _flagAwardMovie  = true;
+        if (_xml.Contains("#fanarthandler.movie.awards.selected.all"))
+        {
+          _flagAwardMovieAll = true;
+        }
+        if (_xml.Contains("#fanarthandler.movie.awards.selected.verticalall"))
+        {
+          _flagAwardMovieVertical = true;
         }
       }
 

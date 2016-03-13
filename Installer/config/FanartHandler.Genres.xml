@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- https://github.com/andrewjswan/mediaportal.images.genres/tree/master/genres -->
 <genres>
-    <!-- https://github.com/andrewjswan/mediaportal.images.genres/tree/master/genres -->
 	<!-- English -->
 	<genre name="action and adventure">action</genre>
 	<genre name="science-fiction">sci-fi</genre>
@@ -24,6 +24,8 @@
 	<genre name="короткометражка">short</genre>
 	<genre name="криминал">crime</genre>
 	<genre name="мелодрама">melodrama</genre>
+    <genre name="мини-сериал">mini series</genre>
+    <genre name="мини сериал">mini series</genre>
 	<genre name="музыка">music</genre>
 	<genre name="мультфильм">animation</genre>
 	<genre name="мюзикл">musical</genre>

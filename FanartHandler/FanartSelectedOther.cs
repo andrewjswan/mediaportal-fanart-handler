@@ -37,6 +37,8 @@ namespace FanartHandler
     public Hashtable WindowsUsingFanartSelectedGenreMovie { get; set; }
     public Hashtable WindowsUsingFanartSelectedStudioMovie { get; set; }
 
+    public Hashtable WindowsUsingFanartSelectedAwardMovie { get; set; }
+
     public bool IsSelectedVideo { get; set; }
     public bool IsSelectedMusic { get; set; }
 
@@ -58,6 +60,8 @@ namespace FanartHandler
       WindowsUsingFanartSelectedGenreMovie = new Hashtable();
       WindowsUsingFanartSelectedStudioMovie = new Hashtable();
 
+      WindowsUsingFanartSelectedAwardMovie = new Hashtable();
+
       IsSelectedMusic = false;
       IsSelectedVideo = false;
 
@@ -78,7 +82,8 @@ namespace FanartHandler
       return (Utils.ContainsID(WindowsUsingFanartSelectedGenreMusic) || 
               Utils.ContainsID(WindowsUsingFanartSelectedGenreMovie) || 
               Utils.ContainsID(WindowsUsingFanartSelectedStudioMovie) || 
-              Utils.ContainsID(WindowsUsingFanartSelectedClearArtMusic)
+              Utils.ContainsID(WindowsUsingFanartSelectedClearArtMusic) ||
+              Utils.ContainsID(WindowsUsingFanartSelectedAwardMovie)
              );
     }
 
@@ -120,6 +125,7 @@ namespace FanartHandler
             if (isVideo)
             {
               AddSelectedStudioProperty(SelectedStudios);
+              AddSelectedAwardProperty();
 
               var selectedTitle = Utils.GetSelectedMyVideoTitle();
               if (!string.IsNullOrEmpty(selectedTitle))
@@ -141,6 +147,7 @@ namespace FanartHandler
           if (isVideo)
           {
             AddSelectedStudioProperty(string.Empty) ;
+            AddSelectedAwardProperty();
           }
           AddSelectedGenreProperty(string.Empty, string.Empty, property) ;
 
@@ -246,7 +253,8 @@ namespace FanartHandler
         if (IsIdle)
         {
           if (Utils.ContainsID(WindowsUsingFanartSelectedGenreMovie) || 
-              Utils.ContainsID(WindowsUsingFanartSelectedStudioMovie))
+              Utils.ContainsID(WindowsUsingFanartSelectedStudioMovie) ||
+              Utils.ContainsID(WindowsUsingFanartSelectedAwardMovie))
           {
             IsSelectedVideo = true;
             RefreshGenericSelectedProperties("movie", 
@@ -422,6 +430,68 @@ namespace FanartHandler
       }
     }
 
+    public void AddSelectedAwardProperty()
+    {
+      if (!Utils.ContainsID(WindowsUsingFanartSelectedAwardMovie))
+      {
+        Utils.SetProperty("movie.awards.selected", string.Empty);
+        Utils.SetProperty("movie.awards.selected.all", string.Empty);
+        Utils.SetProperty("movie.awards.selected.verticalall", string.Empty);
+        return;
+      }
+
+      var sFile = string.Empty;
+      var sFileNames = new List<string>() ;  
+      try
+      {
+        // Get Awards name
+        string sAwards = Utils.GetAwards(false);
+        if (!string.IsNullOrEmpty(sAwards))
+        {
+          var awards = sAwards.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
+          if (awards != null)
+          {
+            foreach (string award in awards)
+            {
+              sFile = GUIGraphicsContext.GetThemedSkinFile(Utils.FAHAwards + MediaPortal.Util.Utils.MakeFileName(award) + ".png") ; 
+              if (!string.IsNullOrEmpty(sFile) && File.Exists(sFile))
+              {
+                sFileNames.Add(sFile) ;
+                logger.Debug("- Award [{0}] found. {1}", award, sFile);
+              }
+            }
+          }
+
+          if (sFileNames.Count == 0)
+            sFile = string.Empty ;
+          else if (sFileNames.Count == 1)
+            sFile = sFileNames[0].Trim();
+          else if (sFileNames.Count == 2)
+            sFile = sFileNames[(DoShowImageOne ? 0 : 1)].Trim();
+          else
+          {
+            var rand = new Random();
+            sFile = sFileNames[rand.Next(sFileNames.Count-1)].Trim();
+          }
+        }
+
+        Utils.SetProperty("movie.awards.selected", sFile);
+        if (Utils.ContainsID(WindowsUsingFanartSelectedAwardMovie, Utils.Logo.Horizontal))
+        {
+          Utils.SetProperty("movie.awards.selected.all", Logos.BuildConcatImage("Awards", sFileNames));
+        }
+        if (Utils.ContainsID(WindowsUsingFanartSelectedAwardMovie, Utils.Logo.Vertical))
+        {
+          Utils.SetProperty("movie.awards.selected.verticalall", Logos.BuildConcatImage("VerticalAwards", sFileNames, true));
+        }
+        FanartAvailable = FanartAvailable || !string.IsNullOrEmpty(sFile);
+      }
+      catch (Exception ex)
+      {
+        logger.Error("AddSelectedAwardProperty: " + ex);
+      }
+    }
+
     public void AddSelectedGenreProperty(string Genres, string sTitle, string mode)
     {
       if (string.IsNullOrEmpty(Genres))
@@ -451,6 +521,28 @@ namespace FanartHandler
       var sFileNames = new List<string>() ;  
       try
       {
+        if (!isMusic)
+        {
+          // Get Awards and add to Genre
+          string sAwards = Utils.GetAwards(true);
+          if (!string.IsNullOrEmpty(sAwards))
+          {
+            var awards = sAwards.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
+            if (awards != null)
+            {
+              foreach (string award in awards)
+              {
+                sFile = GUIGraphicsContext.GetThemedSkinFile(Utils.FAHAwards + MediaPortal.Util.Utils.MakeFileName(award) + ".png") ; 
+                if (!string.IsNullOrEmpty(sFile) && File.Exists(sFile))
+                {
+                  sFileNames.Add(sFile) ;
+                  logger.Debug("- Award [{0}] found. {1}", award, sFile);
+                }
+              }
+            }
+          }
+        }
+
         if (!string.IsNullOrEmpty(sTitle))
         {
           // Get Characters from selected and add to Genre
@@ -609,6 +701,10 @@ namespace FanartHandler
       Utils.SetProperty("movie.genres.selected", string.Empty);
       Utils.SetProperty("movie.genres.selected.all", string.Empty);
       Utils.SetProperty("movie.genres.selected.verticalall", string.Empty);
+
+      Utils.SetProperty("movie.awards.selected", string.Empty);
+      Utils.SetProperty("movie.awards.selected.all", string.Empty);
+      Utils.SetProperty("movie.awards.selected.verticalall", string.Empty);
     }
 
     public void EmptyAllSelectedProperties()
