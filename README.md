@@ -45,9 +45,10 @@ push cycling fanart from the following folders for use anywhere in a skin for<br
 - A skin that supports the Fanart Handler.
 NOTE! This plugin only supports JPG images.
 
-#Additional for Skin
-Studios - https://github.com/andrewjswan/mediaportal.images.studios
-Genres - https://github.com/andrewjswan/mediaportal.images.genres
+#Additional packages for Skin
+- Awards https://github.com/andrewjswan/mediaportal.images.awards
+- Genres https://github.com/andrewjswan/mediaportal.images.genres
+- Studios https://github.com/andrewjswan/mediaportal.images.studios
 
 #Supported Skins
 Titan ( full support in ajs Theme for Titan - https://github.com/andrewjswan/mediaportal-skin-themes )
