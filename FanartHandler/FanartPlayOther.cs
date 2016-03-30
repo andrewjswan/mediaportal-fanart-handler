@@ -308,7 +308,7 @@ namespace FanartHandler
           // logger.Debug("*** PlayGenres: > "+Genres) ;
           foreach (string genre in genres)
           {
-            sFile = GUIGraphicsContext.GetThemedSkinFile(@"\Media\Logos\Genres\"+MediaPortal.Util.Utils.MakeFileName(Utils.GetGenre(genre))+".png") ; 
+            sFile = Utils.GetThemedSkinFile(Utils.FAHGenres + MediaPortal.Util.Utils.MakeFileName(Utils.GetGenre(genre))+".png") ; 
             if (!string.IsNullOrEmpty(sFile) && File.Exists(sFile))
             {
               sFileNames.Add(sFile) ;

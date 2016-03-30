@@ -440,13 +440,13 @@ namespace FanartHandler
 
       #region Genres and Studios folders
       FAHGenres = @"\Media\Logos\Genres\";
-      logger.Debug("Fanart Handler Genres folder: Skin|Theme "+FAHGenres);
+      logger.Debug("Fanart Handler Genres folder: Theme|Skin|Thumb "+FAHGenres);
       FAHCharacters = FAHGenres + @"Characters\";
-      logger.Debug("Fanart Handler Characters folder: Skin|Theme "+FAHCharacters);
+      logger.Debug("Fanart Handler Characters folder: Theme|Skin|Thumb "+FAHCharacters);
       FAHStudios = @"\Media\Logos\Studios\";
-      logger.Debug("Fanart Handler Studios folder: Skin|Theme "+FAHStudios);
+      logger.Debug("Fanart Handler Studios folder: Theme|Skin|Thumb "+FAHStudios);
       FAHAwards = @"\Media\Logos\Awards\";
-      logger.Debug("Fanart Handler Awards folder: Skin|Theme "+FAHAwards);
+      logger.Debug("Fanart Handler Awards folder: Theme|Skin|Thumb "+FAHAwards);
       #endregion
 
       WatchFullThumbFolder = true ;
@@ -2185,6 +2185,41 @@ namespace FanartHandler
     }
     */
 
+    /// <summary>
+    /// Return a themed version of the requested skin filename, or default skin filename, otherwise return the default fanart filename.  Use a path to media to get images.
+    /// </summary>
+    /// <param name="filename"></param>
+    /// <returns></returns>
+    public static string GetThemedSkinFile(string filename)
+    {
+      if (File.Exists(filename)) // sometimes filename is full path, don't know why
+      {
+        return filename;
+      }
+      else
+      {
+        return File.Exists(GUIGraphicsContext.Theme + filename) ? 
+                 GUIGraphicsContext.Theme + filename : 
+                 File.Exists(GUIGraphicsContext.Skin + filename) ? 
+                   GUIGraphicsContext.Skin + filename : 
+                   FAHFolder + filename;
+      }
+    }
+
+    /// <summary>
+    /// Return a themed version of the requested directory, or default skin directory, otherwise return the default fanart directory.
+    /// </summary>
+    /// <param name="dir"></param>
+    /// <returns></returns>
+    public static string GetThemedSkinDirectory(string dir)
+    {
+      return Directory.Exists(GUIGraphicsContext.Theme + dir) ? 
+               GUIGraphicsContext.Theme + dir : 
+               Directory.Exists(GUIGraphicsContext.Skin + dir) ? 
+                 GUIGraphicsContext.Skin + dir : 
+                 FAHFolder + dir;
+    }
+
     public static string GetThemeFolder(string path)
     {
       if (string.IsNullOrEmpty(GUIGraphicsContext.ThemeName))
@@ -2218,10 +2253,6 @@ namespace FanartHandler
         {
           SetProperty(property, value);
         }
-        // if (!AddToCache) // in Selected ???
-        // {
-        //   return;
-        // }
 
         if (Properties.Contains(property))
         {
@@ -2278,7 +2309,7 @@ namespace FanartHandler
 
       try
       {
-        //logger.Debug("SetProperty: "+property+" -> "+value) ;
+        // logger.Debug("*** SetProperty: "+property+" -> "+value) ;
         GUIPropertyManager.SetProperty(property, value);
       }
       catch (Exception ex)
@@ -2312,7 +2343,7 @@ namespace FanartHandler
         {
           result = string.Empty;
         }
-        //logger.Debug("GetProperty: "+property+" -> "+value) ;
+        // logger.Debug("*** GetProperty: "+property+" -> "+value) ;
         return result;
       }
       catch (Exception ex)
@@ -2323,7 +2354,7 @@ namespace FanartHandler
     }
     #endregion
 
-    public static bool GetBool (string value)
+    public static bool GetBool(string value)
     {
       if (string.IsNullOrEmpty(value))
       { 
@@ -2331,7 +2362,7 @@ namespace FanartHandler
       }
       else
       {
-        return value.Equals("True", StringComparison.CurrentCultureIgnoreCase);
+        return (value.Equals("true", StringComparison.CurrentCultureIgnoreCase) || value.Equals("yes", StringComparison.CurrentCultureIgnoreCase));
       }
     }
 
@@ -2572,7 +2603,7 @@ namespace FanartHandler
                   string addAwards = nodeAddAwards.InnerText;
                   if (!string.IsNullOrEmpty(addAwards))
                   {
-                    AddAwardsToGenre = (addAwards.ToLower().Equals("yes") || addAwards.ToLower().Equals("true"));
+                    AddAwardsToGenre = GetBool(addAwards);
                   }
                 }
               }
@@ -2756,25 +2787,42 @@ namespace FanartHandler
         Log.Error("LoadCharactersNames: Error loading characters from file: {0} - {1} ", ConfigCharactersFilename, ex.Message);
       }
 
-      try
+      List<string> charFolders = new List<string>();
+      if (Directory.Exists(GUIGraphicsContext.Theme + FAHCharacters))
       {
-        logger.Debug("Load Characters from folder: {0}", FAHCharacters);
-        var files = new DirectoryInfo(GUIGraphicsContext.GetThemedSkinDirectory(FAHCharacters)).GetFiles("*.png");
-        foreach (var fileInfo in files)
-        {
-          string fname = RemoveExtension(GetFileName(fileInfo.Name));
-          string name = fname.ToLower(CultureInfo.InvariantCulture).RemoveDiacritics().Trim();
-          if (!Characters.Contains(name))
-          {
-            Characters.Add(name, fname);
-            // logger.Debug("*** Character loaded: {0}/{1}", name, fname);
-          }
-        }
-        logger.Debug("Load Characters from folder: {0} complete. Total: {1} loaded.", FAHCharacters, Characters.Count);
+        charFolders.Add(GUIGraphicsContext.Theme + FAHCharacters);
       }
-      catch (Exception ex)
+      if (Directory.Exists(GUIGraphicsContext.Skin + FAHCharacters))
       {
-        Log.Debug("LoadCharactersNames: Error loading characters from folder: {0} - {1} ", FAHCharacters, ex.Message);
+        charFolders.Add(GUIGraphicsContext.Skin + FAHCharacters);
+      }
+      if (Directory.Exists(FAHFolder + FAHCharacters))
+      {
+        charFolders.Add(FAHFolder + FAHCharacters);
+      }
+
+      foreach (string charFolder in charFolders)
+      {
+        try
+        {
+          logger.Debug("Load Characters from folder: {0}", FAHCharacters);
+          var files = new DirectoryInfo(charFolder).GetFiles("*.png");
+          foreach (var fileInfo in files)
+          {
+            string fname = RemoveExtension(GetFileName(fileInfo.Name));
+            string name = fname.ToLower(CultureInfo.InvariantCulture).RemoveDiacritics().Trim();
+            if (!Characters.Contains(name))
+            {
+              Characters.Add(name, fname);
+              // logger.Debug("*** Character loaded: {0}/{1}", name, fname);
+            }
+          }
+          logger.Debug("Load Characters from folder: {0} complete. Total: {1} loaded.", FAHCharacters, Characters.Count);
+        }
+        catch (Exception ex)
+        {
+          Log.Error("LoadCharactersNames: Error loading characters from folder: {0} - {1} ", FAHCharacters, ex.Message);
+        }
       }
     }
 

@@ -153,173 +153,180 @@
         <Description>Please select this if you want the included Fanart images to be installed (optional option).</Description>
         <Files>
           <Items>
-            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
               <Param1 />
               <UpdateOption>OverwriteIfOlder</UpdateOption>
               <LocalFileName>..\Installer\Skin Fanart\UserDef\games\default.jpg</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{d805db9e-1cd1-4cd8-8f08-bfd50d1ad980}-default.jpg</ZipFileName>
-              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\games\default.jpg</DestinationFilename>
+              <ZipFileName>Installer{CopyFile}\{2c7f7fbe-71f6-4950-87af-43a3ba16c090}-default.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\games\default.jpg</DestinationFilename>
             </FileItem>
-            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
               <Param1 />
               <UpdateOption>OverwriteIfOlder</UpdateOption>
               <LocalFileName>..\Installer\Skin Fanart\UserDef\games\default1.jpg</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{111d1155-54c3-43ff-a633-cdf98df915b5}-default1.jpg</ZipFileName>
-              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\games\default1.jpg</DestinationFilename>
+              <ZipFileName>Installer{CopyFile}\{972a06d0-137b-4949-884b-6ddfb2c7eb45}-default1.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\games\default1.jpg</DestinationFilename>
             </FileItem>
-            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
               <Param1 />
               <UpdateOption>OverwriteIfOlder</UpdateOption>
               <LocalFileName>..\Installer\Skin Fanart\UserDef\games\default2.jpg</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{903f77c4-c117-42a3-a7e2-ddfc93f81591}-default2.jpg</ZipFileName>
-              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\games\default2.jpg</DestinationFilename>
+              <ZipFileName>Installer{CopyFile}\{1bf2cf38-0a5e-48e7-8029-1871d68fbee4}-default2.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\games\default2.jpg</DestinationFilename>
             </FileItem>
-            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-              <Param1 />
-              <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\Installer\Skin Fanart\UserDef\movies\default.jpg</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{88d29ea3-1a73-48d9-9a6b-87b4d5efed6f}-default.jpg</ZipFileName>
-              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\movies\default.jpg</DestinationFilename>
-            </FileItem>
-            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-              <Param1 />
-              <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\Installer\Skin Fanart\UserDef\movies\default1.jpg</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{e23368ed-cbe2-4b5d-9b65-2c0a39a2e82f}-default1.jpg</ZipFileName>
-              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\movies\default1.jpg</DestinationFilename>
-            </FileItem>
-            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-              <Param1 />
-              <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\Installer\Skin FanArt\UserDef\music\default.jpg</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{70f349ac-b6d3-4646-9552-b94404a0008b}-default.jpg</ZipFileName>
-              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\music\default.jpg</DestinationFilename>
-            </FileItem>
-            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-              <Param1 />
-              <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\Installer\Skin Fanart\UserDef\music\default1.jpg</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{934a26f3-c00a-47a9-b8bd-6ec71b68a9f1}-default1.jpg</ZipFileName>
-              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\music\default1.jpg</DestinationFilename>
-            </FileItem>
-            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-              <Param1 />
-              <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\Installer\Skin Fanart\UserDef\music\default2.jpg</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{313dd448-7acd-4a8e-be80-00949b28dc86}-default2.jpg</ZipFileName>
-              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\music\default2.jpg</DestinationFilename>
-            </FileItem>
-            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-              <Param1 />
-              <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\Installer\Skin Fanart\UserDef\music\default3.jpg</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{9faec894-b60e-4600-8e67-42113b06fb35}-default3.jpg</ZipFileName>
-              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\music\default3.jpg</DestinationFilename>
-            </FileItem>
-            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-              <Param1 />
-              <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\Installer\Skin Fanart\UserDef\pictures\default.jpg</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{bd9dc809-03bf-457f-aa1c-a30146b7834f}-default.jpg</ZipFileName>
-              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\pictures\default.jpg</DestinationFilename>
-            </FileItem>
-            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-              <Param1 />
-              <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\Installer\Skin Fanart\UserDef\pictures\default1.jpg</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{4c3ec49a-74b3-443d-babb-060730debc24}-default1.jpg</ZipFileName>
-              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\pictures\default1.jpg</DestinationFilename>
-            </FileItem>
-            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-              <Param1 />
-              <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\Installer\Skin Fanart\UserDef\plugins\default.jpg</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{1406a45b-7ef2-4d53-99ca-d2b222cf2d97}-default.jpg</ZipFileName>
-              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\plugins\default.jpg</DestinationFilename>
-            </FileItem>
-            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-              <Param1 />
-              <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\Installer\Skin Fanart\UserDef\plugins\default1.jpg</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{207dc3a1-c845-46aa-888c-de21c6a4f32f}-default1.jpg</ZipFileName>
-              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\plugins\default1.jpg</DestinationFilename>
-            </FileItem>
-            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-              <Param1 />
-              <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\Installer\Skin Fanart\UserDef\scorecenter\default.jpg</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{78098c7b-ff28-4ae0-af42-ed0f0806113e}-default.jpg</ZipFileName>
-              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\scorecenter\default.jpg</DestinationFilename>
-            </FileItem>
-            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-              <Param1 />
-              <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\Installer\Skin Fanart\UserDef\scorecenter\default1.jpg</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{80f49ef5-704e-4e9b-95f6-643c1a2e194d}-default1.jpg</ZipFileName>
-              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\scorecenter\default1.jpg</DestinationFilename>
-            </FileItem>
-            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-              <Param1 />
-              <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\Installer\Skin Fanart\UserDef\scorecenter\default2.jpg</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{befdda44-c31b-49e4-8ef8-62ef65243443}-default2.jpg</ZipFileName>
-              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\scorecenter\default2.jpg</DestinationFilename>
-            </FileItem>
-            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-              <Param1 />
-              <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\Installer\Skin Fanart\UserDef\tv\default.jpg</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{e87cbbb8-106a-4c83-9879-54576cfc489d}-default.jpg</ZipFileName>
-              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\tv\default.jpg</DestinationFilename>
-            </FileItem>
-            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-              <Param1 />
-              <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\Installer\Skin Fanart\UserDef\tv\default1.jpg</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{99f9aebc-f651-4808-9c26-84069d26200b}-default1.jpg</ZipFileName>
-              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\tv\default1.jpg</DestinationFilename>
-            </FileItem>
-            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-              <Param1 />
-              <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\Installer\Skin Fanart\UserDef\movies\default2.jpg</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{9de1a903-e6ac-4c3a-bd0d-473698567225}-default2.jpg</ZipFileName>
-              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\movies\default2.jpg</DestinationFilename>
-            </FileItem>
-            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-              <Param1 />
-              <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\Installer\Skin Fanart\UserDef\movies\default3.jpg</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{736ef4fe-dcd7-47d5-81fc-12d7dcb82b37}-default3.jpg</ZipFileName>
-              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\movies\default3.jpg</DestinationFilename>
-            </FileItem>
-            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-              <Param1 />
-              <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\Installer\Skin Fanart\UserDef\tv\default2.jpg</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{5e610e40-8684-4781-b370-395087fe7664}-default2.jpg</ZipFileName>
-              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\tv\default2.jpg</DestinationFilename>
-            </FileItem>
-            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-              <Param1 />
-              <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\Installer\Skin Fanart\UserDef\pictures\default2.jpg</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{5496ab9a-9d69-4b24-b8f3-c1791ede2730}-default2.jpg</ZipFileName>
-              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\pictures\default2.jpg</DestinationFilename>
-            </FileItem>
-            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
               <Param1 />
               <UpdateOption>OverwriteIfOlder</UpdateOption>
               <LocalFileName>..\Installer\Skin Fanart\UserDef\games\default3.jpg</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{8782a09f-e793-4a8a-81e3-6ac8f656475c}-default3.jpg</ZipFileName>
-              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\games\default3.jpg</DestinationFilename>
+              <ZipFileName>Installer{CopyFile}\{c394e629-2e76-409d-baa5-66f8db378793}-default3.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\games\default3.jpg</DestinationFilename>
             </FileItem>
-            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\Skin Fanart\UserDef\movies\default.jpg</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{c1c50461-844c-4bce-baa5-e6f7eb09dfcb}-default.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\movies\default.jpg</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\Skin Fanart\UserDef\movies\default1.jpg</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{97e183d0-cc1d-48af-8ee4-302e5216d795}-default1.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\movies\default1.jpg</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\Skin Fanart\UserDef\movies\default2.jpg</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{668cfc1c-18eb-44d1-a44c-191d6557056a}-default2.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\movies\default2.jpg</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\Skin Fanart\UserDef\movies\default3.jpg</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{6a69d571-89b1-44c0-9b66-b0abdb98ad1c}-default3.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\movies\default3.jpg</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
               <Param1 />
               <UpdateOption>OverwriteIfOlder</UpdateOption>
               <LocalFileName>..\Installer\Skin Fanart\UserDef\movies\default4.jpg</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{9b59d854-007c-4342-9bac-1a4d894e9eb6}-default4.jpg</ZipFileName>
-              <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\movies\default4.jpg</DestinationFilename>
+              <ZipFileName>Installer{CopyFile}\{1fd6856a-89a4-4cde-9e92-d5723325688a}-default4.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\movies\default4.jpg</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\Skin Fanart\UserDef\music\default.jpg</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{a8018af0-25ee-461d-9276-c0f8e6358c5b}-default.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\music\default.jpg</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\Skin Fanart\UserDef\music\default1.jpg</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{eac361ef-51a0-4a5a-a621-c00ee18c4678}-default1.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\music\default1.jpg</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\Skin Fanart\UserDef\music\default2.jpg</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{e356b1a6-b63b-4d59-a5d2-dd29ddb3a449}-default2.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\music\default2.jpg</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\Skin Fanart\UserDef\music\default3.jpg</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{6bcee553-556c-479e-8f71-8816d1ba43a1}-default3.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\music\default3.jpg</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\Skin Fanart\UserDef\pictures\default.jpg</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{b969d7df-554f-4b96-bc11-99c095522b8e}-default.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\pictures\default.jpg</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\Skin Fanart\UserDef\pictures\default1.jpg</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{24377fd3-5c28-45e0-8107-24739ac96b22}-default1.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\pictures\default1.jpg</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\Skin Fanart\UserDef\pictures\default2.jpg</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{d8a99a3f-46dd-433e-81d2-26804b2e79b9}-default2.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\pictures\default2.jpg</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\Skin Fanart\UserDef\plugins\default.jpg</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{9d8cd4fb-5596-44a3-8fb6-71458960c253}-default.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\plugins\default.jpg</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\Skin Fanart\UserDef\plugins\default1.jpg</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{ce2e0206-1b91-4d87-a2a0-7bef8e255e1b}-default1.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\plugins\default1.jpg</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\Skin Fanart\UserDef\scorecenter\default.jpg</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{79ad5dc8-5760-48ec-b7a8-ce9a7f16ba80}-default.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\scorecenter\default.jpg</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\Skin Fanart\UserDef\scorecenter\default1.jpg</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{04f53158-fda4-4820-8a33-2a89f90baa78}-default1.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\scorecenter\default1.jpg</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\Skin Fanart\UserDef\scorecenter\default2.jpg</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{4a557121-f514-49f5-b1fc-34e3d3dd99b5}-default2.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\scorecenter\default2.jpg</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\Skin Fanart\UserDef\scorecenter\default3.jpg</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{8776a02f-0c8c-4e2c-a652-51f86775ed48}-default3.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\scorecenter\default3.jpg</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\Skin Fanart\UserDef\tv\default.jpg</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{473b7963-3f8e-4eaa-9c2f-8d795a48569c}-default.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\tv\default.jpg</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\Skin Fanart\UserDef\tv\default1.jpg</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{51f92eee-3110-46d0-bebf-94e95a35bddc}-default1.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\tv\default1.jpg</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\Skin Fanart\UserDef\tv\default2.jpg</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{a039e7c3-8d06-4fa8-9728-a14bed5d876c}-default2.jpg</ZipFileName>
+              <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\tv\default2.jpg</DestinationFilename>
             </FileItem>
           </Items>
         </Files>
@@ -354,6 +361,41 @@
           </Items>
         </Files>
       </GroupItem>
+      <GroupItem Name="Skin images">
+        <DisplayName>Skin images</DisplayName>
+        <DefaulChecked>true</DefaulChecked>
+        <Description>Skin images</Description>
+        <Files>
+          <Items />
+        </Files>
+      </GroupItem>
+      <GroupItem Name="Awards">
+        <ParentGroup>Skin images</ParentGroup>
+        <DisplayName>Awards</DisplayName>
+        <DefaulChecked>true</DefaulChecked>
+        <Description>Awards</Description>
+        <Files>
+          <Items />
+        </Files>
+      </GroupItem>
+      <GroupItem Name="Genres">
+        <ParentGroup>Skin images</ParentGroup>
+        <DisplayName>Genres</DisplayName>
+        <DefaulChecked>true</DefaulChecked>
+        <Description>Genres</Description>
+        <Files>
+          <Items />
+        </Files>
+      </GroupItem>
+      <GroupItem Name="Studios">
+        <ParentGroup>Skin images</ParentGroup>
+        <DisplayName>Studios</DisplayName>
+        <DefaulChecked>true</DefaulChecked>
+        <Description>Studios</Description>
+        <Files>
+          <Items />
+        </Files>
+      </GroupItem>
     </Items>
   </Groups>
   <Sections>
@@ -374,7 +416,7 @@ It is recommended that you close all other applications before continuing.
 Click Next to continue or Cancel to exit Setup.
 
 Best Regards
-cul8er</Value>
+ajs</Value>
               <ValueType>String</ValueType>
               <Description />
             </SectionParam>
@@ -427,6 +469,10 @@ cul8er</Value>
         </Actions>
         <IncludedGroups>
           <string>Images</string>
+          <string>Skin images</string>
+          <string>Awards</string>
+          <string>Genres</string>
+          <string>Studios</string>
         </IncludedGroups>
         <PanelName>Tree View Selector</PanelName>
         <WizardButtonsEnum>BackNextCancel</WizardButtonsEnum>
@@ -459,11 +505,90 @@ cul8er</Value>
               </Params>
               <ExecuteLocation>AfterPanelShow</ExecuteLocation>
             </ActionItem>
+            <ActionItem Name="Extension Installer" ActionType="Extension Installer" ConditionGroup="Awards">
+              <Params>
+                <Items>
+                  <SectionParam Name="Extension package">
+                    <Value>..\..\..\Mediaportal\mediaportal.images.awards\build\mediaportal.awards.mpe1</Value>
+                    <ValueType>File</ValueType>
+                    <Description>Location of the extension package</Description>
+                  </SectionParam>
+                  <SectionParam Name="Extension Id">
+                    <Value />
+                    <ValueType>String</ValueType>
+                    <Description>Global Id of the extension package - it will be downloaded when no file is set.</Description>
+                  </SectionParam>
+                  <SectionParam Name="Extension Version">
+                    <Value />
+                    <ValueType>String</ValueType>
+                    <Description>Minimum Version of the extension package - older versions will be updated (only used when downloading via Id).</Description>
+                  </SectionParam>
+                  <SectionParam Name="Silent Install">
+                    <Value>NO</Value>
+                    <ValueType>Bool</ValueType>
+                    <Description>Silent install, No wizard screen will be displayed </Description>
+                  </SectionParam>
+                </Items>
+              </Params>
+              <ExecuteLocation>AfterPanelShow</ExecuteLocation>
+            </ActionItem>
+            <ActionItem Name="Extension Installer" ActionType="Extension Installer" ConditionGroup="Genres">
+              <Params>
+                <Items>
+                  <SectionParam Name="Extension package">
+                    <Value>..\..\..\Mediaportal\mediaportal.images.genres\build\mediaportal.genres.mpe1</Value>
+                    <ValueType>File</ValueType>
+                    <Description>Location of the extension package</Description>
+                  </SectionParam>
+                  <SectionParam Name="Extension Id">
+                    <Value />
+                    <ValueType>String</ValueType>
+                    <Description>Global Id of the extension package - it will be downloaded when no file is set.</Description>
+                  </SectionParam>
+                  <SectionParam Name="Extension Version">
+                    <Value />
+                    <ValueType>String</ValueType>
+                    <Description>Minimum Version of the extension package - older versions will be updated (only used when downloading via Id).</Description>
+                  </SectionParam>
+                  <SectionParam Name="Silent Install">
+                    <Value />
+                    <ValueType>Bool</ValueType>
+                    <Description>Silent install, No wizard screen will be displayed </Description>
+                  </SectionParam>
+                </Items>
+              </Params>
+              <ExecuteLocation>AfterPanelShow</ExecuteLocation>
+            </ActionItem>
+            <ActionItem Name="Extension Installer" ActionType="Extension Installer" ConditionGroup="Studios">
+              <Params>
+                <Items>
+                  <SectionParam Name="Extension package">
+                    <Value>..\..\..\Mediaportal\mediaportal.images.studios\build\mediaportal.studios.mpe1</Value>
+                    <ValueType>File</ValueType>
+                    <Description>Location of the extension package</Description>
+                  </SectionParam>
+                  <SectionParam Name="Extension Id">
+                    <Value />
+                    <ValueType>String</ValueType>
+                    <Description>Global Id of the extension package - it will be downloaded when no file is set.</Description>
+                  </SectionParam>
+                  <SectionParam Name="Extension Version">
+                    <Value />
+                    <ValueType>String</ValueType>
+                    <Description>Minimum Version of the extension package - older versions will be updated (only used when downloading via Id).</Description>
+                  </SectionParam>
+                  <SectionParam Name="Silent Install">
+                    <Value />
+                    <ValueType>Bool</ValueType>
+                    <Description>Silent install, No wizard screen will be displayed </Description>
+                  </SectionParam>
+                </Items>
+              </Params>
+              <ExecuteLocation>AfterPanelShow</ExecuteLocation>
+            </ActionItem>
           </Items>
         </Actions>
-        <IncludedGroups>
-          <string>Images</string>
-        </IncludedGroups>
+        <IncludedGroups />
         <PanelName>Install Section</PanelName>
         <WizardButtonsEnum>Next</WizardButtonsEnum>
       </SectionItem>
@@ -600,16 +725,14 @@ cul8er</Value>
 
 </ExtensionDescription>
     <VersionDescription>Bug fixes ...
-Add awards support
-Add properties:
-#fanarthandler.movie.awards.selected
-#fanarthandler.movie.awards.selected.all
-#fanarthandler.movie.awards.selected.verticalall
+Optimization ...
+Add Awards support ...
+Add Awards, Genres, Studios packages...
 </VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-{VERSION}.MPE1</OnlineLocation>
-    <ReleaseDate>2016-03-13T15:04:24</ReleaseDate>
-    <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper</Tags>
+    <ReleaseDate>2016-03-30T15:04:24</ReleaseDate>
+    <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios</Tags>
     <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
     <Params>
       <Items>
@@ -631,7 +754,7 @@ Add properties:
  If have .dll extension used like MP plugin configuration</Description>
         </SectionParam>
         <SectionParam Name="Online Screenshots">
-          <Value>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshot1.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshot2.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshot3.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshot4.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshot5.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshot6.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshot7.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshot8.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshot9.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshot10.jpg</Value>
+          <Value>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshots/screenshot01.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshots/screenshot02.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshots/screenshot03.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshots/screenshot04.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshots/screenshot05.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshots/screenshot06.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshots/screenshot07.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshots/screenshot08.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshots/screenshot09.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshots/screenshot10.jpg</Value>
           <ValueType>String</ValueType>
           <Description>Online stored screenshot urls separated by ; </Description>
         </SectionParam>
@@ -778,173 +901,180 @@ Add properties:
         <ZipFileName>Installer{CopyFile}\{efb0c06f-82d0-47a1-9d38-4f3ee7a69946}-FanartHandler.Awards.xml</ZipFileName>
         <DestinationFilename>%Config%\FanartHandler.Awards.xml</DestinationFilename>
       </FileItem>
-      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
         <Param1 />
         <UpdateOption>OverwriteIfOlder</UpdateOption>
         <LocalFileName>..\Installer\Skin Fanart\UserDef\games\default.jpg</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{d805db9e-1cd1-4cd8-8f08-bfd50d1ad980}-default.jpg</ZipFileName>
-        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\games\default.jpg</DestinationFilename>
+        <ZipFileName>Installer{CopyFile}\{2c7f7fbe-71f6-4950-87af-43a3ba16c090}-default.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\games\default.jpg</DestinationFilename>
       </FileItem>
-      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
         <Param1 />
         <UpdateOption>OverwriteIfOlder</UpdateOption>
         <LocalFileName>..\Installer\Skin Fanart\UserDef\games\default1.jpg</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{111d1155-54c3-43ff-a633-cdf98df915b5}-default1.jpg</ZipFileName>
-        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\games\default1.jpg</DestinationFilename>
+        <ZipFileName>Installer{CopyFile}\{972a06d0-137b-4949-884b-6ddfb2c7eb45}-default1.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\games\default1.jpg</DestinationFilename>
       </FileItem>
-      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
         <Param1 />
         <UpdateOption>OverwriteIfOlder</UpdateOption>
         <LocalFileName>..\Installer\Skin Fanart\UserDef\games\default2.jpg</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{903f77c4-c117-42a3-a7e2-ddfc93f81591}-default2.jpg</ZipFileName>
-        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\games\default2.jpg</DestinationFilename>
+        <ZipFileName>Installer{CopyFile}\{1bf2cf38-0a5e-48e7-8029-1871d68fbee4}-default2.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\games\default2.jpg</DestinationFilename>
       </FileItem>
-      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-        <Param1 />
-        <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\Installer\Skin Fanart\UserDef\movies\default.jpg</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{88d29ea3-1a73-48d9-9a6b-87b4d5efed6f}-default.jpg</ZipFileName>
-        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\movies\default.jpg</DestinationFilename>
-      </FileItem>
-      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-        <Param1 />
-        <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\Installer\Skin Fanart\UserDef\movies\default1.jpg</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{e23368ed-cbe2-4b5d-9b65-2c0a39a2e82f}-default1.jpg</ZipFileName>
-        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\movies\default1.jpg</DestinationFilename>
-      </FileItem>
-      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-        <Param1 />
-        <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\Installer\Skin FanArt\UserDef\music\default.jpg</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{70f349ac-b6d3-4646-9552-b94404a0008b}-default.jpg</ZipFileName>
-        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\music\default.jpg</DestinationFilename>
-      </FileItem>
-      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-        <Param1 />
-        <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\Installer\Skin Fanart\UserDef\music\default1.jpg</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{934a26f3-c00a-47a9-b8bd-6ec71b68a9f1}-default1.jpg</ZipFileName>
-        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\music\default1.jpg</DestinationFilename>
-      </FileItem>
-      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-        <Param1 />
-        <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\Installer\Skin Fanart\UserDef\music\default2.jpg</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{313dd448-7acd-4a8e-be80-00949b28dc86}-default2.jpg</ZipFileName>
-        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\music\default2.jpg</DestinationFilename>
-      </FileItem>
-      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-        <Param1 />
-        <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\Installer\Skin Fanart\UserDef\music\default3.jpg</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{9faec894-b60e-4600-8e67-42113b06fb35}-default3.jpg</ZipFileName>
-        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\music\default3.jpg</DestinationFilename>
-      </FileItem>
-      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-        <Param1 />
-        <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\Installer\Skin Fanart\UserDef\pictures\default.jpg</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{bd9dc809-03bf-457f-aa1c-a30146b7834f}-default.jpg</ZipFileName>
-        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\pictures\default.jpg</DestinationFilename>
-      </FileItem>
-      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-        <Param1 />
-        <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\Installer\Skin Fanart\UserDef\pictures\default1.jpg</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{4c3ec49a-74b3-443d-babb-060730debc24}-default1.jpg</ZipFileName>
-        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\pictures\default1.jpg</DestinationFilename>
-      </FileItem>
-      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-        <Param1 />
-        <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\Installer\Skin Fanart\UserDef\plugins\default.jpg</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{1406a45b-7ef2-4d53-99ca-d2b222cf2d97}-default.jpg</ZipFileName>
-        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\plugins\default.jpg</DestinationFilename>
-      </FileItem>
-      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-        <Param1 />
-        <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\Installer\Skin Fanart\UserDef\plugins\default1.jpg</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{207dc3a1-c845-46aa-888c-de21c6a4f32f}-default1.jpg</ZipFileName>
-        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\plugins\default1.jpg</DestinationFilename>
-      </FileItem>
-      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-        <Param1 />
-        <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\Installer\Skin Fanart\UserDef\scorecenter\default.jpg</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{78098c7b-ff28-4ae0-af42-ed0f0806113e}-default.jpg</ZipFileName>
-        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\scorecenter\default.jpg</DestinationFilename>
-      </FileItem>
-      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-        <Param1 />
-        <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\Installer\Skin Fanart\UserDef\scorecenter\default1.jpg</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{80f49ef5-704e-4e9b-95f6-643c1a2e194d}-default1.jpg</ZipFileName>
-        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\scorecenter\default1.jpg</DestinationFilename>
-      </FileItem>
-      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-        <Param1 />
-        <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\Installer\Skin Fanart\UserDef\scorecenter\default2.jpg</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{befdda44-c31b-49e4-8ef8-62ef65243443}-default2.jpg</ZipFileName>
-        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\scorecenter\default2.jpg</DestinationFilename>
-      </FileItem>
-      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-        <Param1 />
-        <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\Installer\Skin Fanart\UserDef\tv\default.jpg</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{e87cbbb8-106a-4c83-9879-54576cfc489d}-default.jpg</ZipFileName>
-        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\tv\default.jpg</DestinationFilename>
-      </FileItem>
-      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-        <Param1 />
-        <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\Installer\Skin Fanart\UserDef\tv\default1.jpg</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{99f9aebc-f651-4808-9c26-84069d26200b}-default1.jpg</ZipFileName>
-        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\tv\default1.jpg</DestinationFilename>
-      </FileItem>
-      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-        <Param1 />
-        <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\Installer\Skin Fanart\UserDef\movies\default2.jpg</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{9de1a903-e6ac-4c3a-bd0d-473698567225}-default2.jpg</ZipFileName>
-        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\movies\default2.jpg</DestinationFilename>
-      </FileItem>
-      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-        <Param1 />
-        <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\Installer\Skin Fanart\UserDef\movies\default3.jpg</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{736ef4fe-dcd7-47d5-81fc-12d7dcb82b37}-default3.jpg</ZipFileName>
-        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\movies\default3.jpg</DestinationFilename>
-      </FileItem>
-      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-        <Param1 />
-        <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\Installer\Skin Fanart\UserDef\tv\default2.jpg</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{5e610e40-8684-4781-b370-395087fe7664}-default2.jpg</ZipFileName>
-        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\tv\default2.jpg</DestinationFilename>
-      </FileItem>
-      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
-        <Param1 />
-        <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\Installer\Skin Fanart\UserDef\pictures\default2.jpg</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{5496ab9a-9d69-4b24-b8f3-c1791ede2730}-default2.jpg</ZipFileName>
-        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\pictures\default2.jpg</DestinationFilename>
-      </FileItem>
-      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
         <Param1 />
         <UpdateOption>OverwriteIfOlder</UpdateOption>
         <LocalFileName>..\Installer\Skin Fanart\UserDef\games\default3.jpg</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{8782a09f-e793-4a8a-81e3-6ac8f656475c}-default3.jpg</ZipFileName>
-        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\games\default3.jpg</DestinationFilename>
+        <ZipFileName>Installer{CopyFile}\{c394e629-2e76-409d-baa5-66f8db378793}-default3.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\games\default3.jpg</DestinationFilename>
       </FileItem>
-      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\Skin Fanart\UserDef\movies\default.jpg</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{c1c50461-844c-4bce-baa5-e6f7eb09dfcb}-default.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\movies\default.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\Skin Fanart\UserDef\movies\default1.jpg</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{97e183d0-cc1d-48af-8ee4-302e5216d795}-default1.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\movies\default1.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\Skin Fanart\UserDef\movies\default2.jpg</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{668cfc1c-18eb-44d1-a44c-191d6557056a}-default2.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\movies\default2.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\Skin Fanart\UserDef\movies\default3.jpg</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{6a69d571-89b1-44c0-9b66-b0abdb98ad1c}-default3.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\movies\default3.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
         <Param1 />
         <UpdateOption>OverwriteIfOlder</UpdateOption>
         <LocalFileName>..\Installer\Skin Fanart\UserDef\movies\default4.jpg</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{9b59d854-007c-4342-9bac-1a4d894e9eb6}-default4.jpg</ZipFileName>
-        <DestinationFilename>%Thumbs%\Skin FanArt\UserDef\movies\default4.jpg</DestinationFilename>
+        <ZipFileName>Installer{CopyFile}\{1fd6856a-89a4-4cde-9e92-d5723325688a}-default4.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\movies\default4.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\Skin Fanart\UserDef\music\default.jpg</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{a8018af0-25ee-461d-9276-c0f8e6358c5b}-default.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\music\default.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\Skin Fanart\UserDef\music\default1.jpg</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{eac361ef-51a0-4a5a-a621-c00ee18c4678}-default1.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\music\default1.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\Skin Fanart\UserDef\music\default2.jpg</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{e356b1a6-b63b-4d59-a5d2-dd29ddb3a449}-default2.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\music\default2.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\Skin Fanart\UserDef\music\default3.jpg</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{6bcee553-556c-479e-8f71-8816d1ba43a1}-default3.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\music\default3.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\Skin Fanart\UserDef\pictures\default.jpg</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{b969d7df-554f-4b96-bc11-99c095522b8e}-default.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\pictures\default.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\Skin Fanart\UserDef\pictures\default1.jpg</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{24377fd3-5c28-45e0-8107-24739ac96b22}-default1.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\pictures\default1.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\Skin Fanart\UserDef\pictures\default2.jpg</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{d8a99a3f-46dd-433e-81d2-26804b2e79b9}-default2.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\pictures\default2.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\Skin Fanart\UserDef\plugins\default.jpg</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{9d8cd4fb-5596-44a3-8fb6-71458960c253}-default.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\plugins\default.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\Skin Fanart\UserDef\plugins\default1.jpg</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{ce2e0206-1b91-4d87-a2a0-7bef8e255e1b}-default1.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\plugins\default1.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\Skin Fanart\UserDef\scorecenter\default.jpg</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{79ad5dc8-5760-48ec-b7a8-ce9a7f16ba80}-default.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\scorecenter\default.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\Skin Fanart\UserDef\scorecenter\default1.jpg</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{04f53158-fda4-4820-8a33-2a89f90baa78}-default1.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\scorecenter\default1.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\Skin Fanart\UserDef\scorecenter\default2.jpg</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{4a557121-f514-49f5-b1fc-34e3d3dd99b5}-default2.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\scorecenter\default2.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\Skin Fanart\UserDef\scorecenter\default3.jpg</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{8776a02f-0c8c-4e2c-a652-51f86775ed48}-default3.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\scorecenter\default3.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\Skin Fanart\UserDef\tv\default.jpg</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{473b7963-3f8e-4eaa-9c2f-8d795a48569c}-default.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\tv\default.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\Skin Fanart\UserDef\tv\default1.jpg</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{51f92eee-3110-46d0-bebf-94e95a35bddc}-default1.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\tv\default1.jpg</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\Skin Fanart\UserDef\tv\default2.jpg</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{a039e7c3-8d06-4fa8-9728-a14bed5d876c}-default2.jpg</ZipFileName>
+        <DestinationFilename>%Thumbs%\Skin Fanart\UserDef\tv\default2.jpg</DestinationFilename>
       </FileItem>
       <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
         <Param1 />
@@ -972,6 +1102,27 @@ Add properties:
         <UpdateOption>OverwriteIfOlder</UpdateOption>
         <LocalFileName>..\FanartHandler_Icon.png</LocalFileName>
         <ZipFileName>Installer{CopyFile}\{fed5e570-5a1c-46cb-a641-b42cffde70b9}-FanartHandler_Icon.png</ZipFileName>
+        <DestinationFilename />
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="true" Modified="true">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\..\..\Mediaportal\mediaportal.images.awards\build\mediaportal.awards.mpe1</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{fc0c614e-210d-4e77-a139-b08d7ae16d50}-mediaportal.awards.mpe1</ZipFileName>
+        <DestinationFilename />
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="true" Modified="true">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\..\..\Mediaportal\mediaportal.images.genres\build\mediaportal.genres.mpe1</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{a6daaf7d-6ec4-43cf-9eeb-0fba333d881a}-mediaportal.genres.mpe1</ZipFileName>
+        <DestinationFilename />
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="true" Modified="true">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\..\..\Mediaportal\mediaportal.images.studios\build\mediaportal.studios.mpe1</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{fcdaf827-4f83-47db-a498-32d2da498b36}-mediaportal.studios.mpe1</ZipFileName>
         <DestinationFilename />
       </FileItem>
     </Items>

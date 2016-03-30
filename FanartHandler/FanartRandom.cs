@@ -56,6 +56,17 @@ namespace FanartHandler
     private string currAnyTVSeries;
     private string currAnyTVUser;
 
+    /// <summary>
+    /// Fanart Control Visible
+    /// -1 Unknown, 0 Hiden, 1 Visible
+    /// </summary>
+    private int ControlVisible;
+    /// <summary>
+    /// Fanart Image Control Visible
+    /// -1 Unknown, 0 Hiden, 1 Visible
+    /// </summary>
+    private int ControlImageVisible;
+
     // Public
     public int RefreshTickCount { get; set; }
     public int CountSetVisibility { get; set; }
@@ -120,6 +131,14 @@ namespace FanartHandler
       IsRandom = false;
 
       WindowsUsingFanartRandom = new Hashtable();
+
+      ClearCurrProperties();
+    }
+
+    public void ClearCurrProperties()
+    {
+      ControlVisible = -1;
+      ControlImageVisible = -1;
     }
 
     public bool CheckValidWindowIDForFanart()
@@ -442,12 +461,14 @@ namespace FanartHandler
       {
         lock (propertiesRandom)
           Utils.AddProperty(ref propertiesRandom, propertyname + (DoShowImageOneRandom ? "1" : "2") + ".any", randomFilename, ref al);
+        // logger.Debug("*** FillPropertyRandom: {0} - {1}", propertyname + (DoShowImageOneRandom ? "1" : "2") + ".any", randomFilename);
 
         var property = Utils.GetProperty(propertyname + (DoShowImageOneRandom ? "2" : "1") + ".any");
         if (property == null || property.Length < 2 || property.EndsWith("transparent.png", StringComparison.CurrentCulture))
         {
           lock (propertiesRandom)
             Utils.AddProperty(ref propertiesRandom, propertyname + (DoShowImageOneRandom ? "2" : "1") + ".any", randomFilename, ref al);
+          // logger.Debug("*** FillPropertyRandom: {0} - {1}", propertyname + (DoShowImageOneRandom ? "2" : "1") + ".any", randomFilename);
         }
         FanartAvailable = FanartAvailable || true;
       }
@@ -457,6 +478,7 @@ namespace FanartHandler
         Utils.SetProperty(propertyname + "2.any", string.Empty);
         iFilePrev = -1;
         FanartAvailable = FanartAvailable || false;
+        // logger.Debug("*** FillPropertyRandom: {0} - empty", propertyname + "1&2.any");
       }
       // stopwatch.Stop();
       // logger.Debug("*** FillPropertyRandom: {0}", stopwatch.Elapsed);
@@ -561,30 +583,33 @@ namespace FanartHandler
 
     public void HideImageRandom()
     {
-      if (Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
+      if ((Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID) && (ControlImageVisible != 0))
       {
         GUIControl.HideControl(Utils.iActiveWindow, 91919297);
         GUIControl.HideControl(Utils.iActiveWindow, 91919298);
         DoShowImageOneRandom = true;
-        // logger.Debug("*** Random hide all images");
+        ControlImageVisible = 0;
+        // logger.Debug("*** Random hide all images - 91919297, 91919298");
       }
     }
 
     public void FanartIsAvailableRandom()
     {
-      if (Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
+      if ((Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID) && (ControlVisible != 1))
       {
         GUIControl.ShowControl(Utils.iActiveWindow, 91919299);
-        // logger.Debug("*** Random fanart available");
+        ControlVisible = 1;
+        // logger.Debug("*** Random fanart available - 91919299");
       }
     }
 
     public void FanartIsNotAvailableRandom()
     {
-      if (Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
+      if ((Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID) && (ControlVisible != 0))
       {
         GUIControl.HideControl(Utils.iActiveWindow, 91919299);
-        // logger.Debug("*** Random fanart not available");
+        ControlVisible = 0;
+        // logger.Debug("*** Random fanart not available - 91919299");
       }
     }
 
@@ -595,7 +620,8 @@ namespace FanartHandler
         GUIControl.ShowControl(Utils.iActiveWindow, 91919297);
         GUIControl.HideControl(Utils.iActiveWindow, 91919298);
         DoShowImageOneRandom = false ;
-        // logger.Debug("*** Random show image 1");
+        ControlImageVisible = 1;
+        // logger.Debug("*** Random show image 1 - 91919297");
       }
       else
       {
@@ -610,7 +636,8 @@ namespace FanartHandler
         GUIControl.ShowControl(Utils.iActiveWindow, 91919298);
         GUIControl.HideControl(Utils.iActiveWindow, 91919297);
         DoShowImageOneRandom = true ;
-        // logger.Debug("*** Random show image 2");
+        ControlImageVisible = 1;
+        // logger.Debug("*** Random show image 2 - 91919298");
       }
       else
       {
@@ -620,17 +647,17 @@ namespace FanartHandler
 
     public class SkinFile
     {
-      public bool UseRandomGamesFanartUser; 
-      public bool UseRandomMoviesFanartScraper;
-      public bool UseRandomMoviesFanartUser;
-      public bool UseRandomMovingPicturesFanart;
-      public bool UseRandomMusicFanartScraper;
-      public bool UseRandomMusicFanartUser;
-      public bool UseRandomPicturesFanartUser;
-      public bool UseRandomPluginsFanartUser;
-      public bool UseRandomScoreCenterFanartUser;
-      public bool UseRandomTVFanartUser;
-      public bool UseRandomTVSeriesFanart;
+      public bool UseRandomGamesFanartUser = false; 
+      public bool UseRandomMoviesFanartScraper = false;
+      public bool UseRandomMoviesFanartUser = false;
+      public bool UseRandomMovingPicturesFanart = false;
+      public bool UseRandomMusicFanartScraper = false;
+      public bool UseRandomMusicFanartUser = false;
+      public bool UseRandomPicturesFanartUser = false;
+      public bool UseRandomPluginsFanartUser = false;
+      public bool UseRandomScoreCenterFanartUser = false;
+      public bool UseRandomTVFanartUser = false;
+      public bool UseRandomTVSeriesFanart = false;
     }
   }
 }

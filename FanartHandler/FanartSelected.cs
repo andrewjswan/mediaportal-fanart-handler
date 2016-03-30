@@ -39,11 +39,27 @@ namespace FanartHandler
     private int PrevSelectedScorecenter;
     private int PrevSelectedPicture;
 
-    private bool FanartAvailable;
+    private bool FanartAvailableMusic;
+    private bool FanartAvailableMovies;
+    private bool FanartAvailableScorecenter;
+    private bool FanartAvailablePictures;
+
+    /// <summary>
+    /// Fanart Control Visible
+    /// -1 Unknown, 0 Hiden, 1 Visible
+    /// </summary>
+    private int ControlVisible;
+    /// <summary>
+    /// Fanart Image Control Visible
+    /// -1 Unknown, 0 Hiden, 1 Visible
+    /// </summary>
+    private int ControlImageVisible;
 
     private Hashtable CurrentSelectedImageNames;
 
     // Public
+    public bool FanartAvailable { get; set; }
+
     public int RefreshTickCount { get; set; }
 
     public Hashtable WindowsUsingFanartSelectedMusic { get; set; }
@@ -64,6 +80,10 @@ namespace FanartHandler
     {
       DoShowImageOne = true;
       FanartAvailable = false;
+      FanartAvailableMusic = false;
+      FanartAvailableMovies = false;
+      FanartAvailableScorecenter = false;
+      FanartAvailablePictures = false;
 
       RefreshTickCount = 0;
       PrevSelectedVideo = -1;
@@ -103,6 +123,9 @@ namespace FanartHandler
       CurrSelectedScorecenterGenre = string.Empty;
       CurrSelectedPicture = string.Empty;
       CurrSelectedPictureImage = string.Empty;
+
+      ControlVisible = -1;
+      ControlImageVisible = -1;
     }
 
     public bool CheckValidWindowIDForFanart()
@@ -137,7 +160,7 @@ namespace FanartHandler
 
         Utils.GetSelectedItem(ref SelectedItem, ref SelectedAlbum, ref SelectedGenre, ref SelectedStudios, ref isMusicVideo);
 
-        var FanartNotFound = true;
+        // var FanartNotFound = true;
         if (SelectedItem != null && SelectedItem.Trim().Length > 0 && !SelectedItem.Equals("..", StringComparison.CurrentCulture))
         {
           var flag = (!currSelectedGenericTitle.Equals(SelectedItem, StringComparison.CurrentCulture));
@@ -152,7 +175,11 @@ namespace FanartHandler
               currSelectedGeneric = string.Empty;
               prevSelectedGeneric = -1;
               SetCurrentSelectedImageNames(null, category);
-              FanartAvailable = false;
+              // FanartAvailable = false;
+              if (isMusic || isMusicVideo)
+                FanartAvailableMusic = false;
+              else
+                FanartAvailableMovies = false;
             }
 
             newFanart = GetFilename(SelectedItem, SelectedAlbum, ref currSelectedGeneric, ref prevSelectedGeneric, category, flag, isMusic);
@@ -174,18 +201,18 @@ namespace FanartHandler
             else
               PrevSelectedVideo = prevSelectedGeneric;
 
-            if (string.IsNullOrEmpty(newFanart))
+            if (!string.IsNullOrEmpty(newFanart))
             {
-              newFanart = string.Empty;
-            }
-            else
-            {
-              FanartNotFound = false;
+              if (isMusic || isMusicVideo)
+                FanartAvailableMusic = true;
+              else
+                FanartAvailableMovies = true;
               currSelectedGeneric = newFanart;
-            }
 
-            if (!newFanart.Equals(oldFanart, StringComparison.CurrentCulture))
-            {
+              if (newFanart.Equals(oldFanart, StringComparison.CurrentCulture))
+              {
+                DoShowImageOne = !DoShowImageOne;
+              }
               if (DoShowImageOne)
               {
                 Utils.AddProperty(ref propertiesSelect, "" + property + ".backdrop1.selected", newFanart, ref listSelectedGeneric);
@@ -197,13 +224,13 @@ namespace FanartHandler
                 // logger.Debug("*** Image 2: " + newFanart) ;
               }
             }
-            currSelectedGenericTitle = SelectedItem;
-
-            if (string.IsNullOrEmpty(newFanart) || !newFanart.Equals(oldFanart, StringComparison.CurrentCulture))
+            else
             {
-              ResetRefreshTickCount();
+              Utils.AddProperty(ref propertiesSelect, "" + property + ".backdrop1.selected", string.Empty, ref listSelectedGeneric);
+              Utils.AddProperty(ref propertiesSelect, "" + property + ".backdrop2.selected", string.Empty, ref listSelectedGeneric);
             }
-            FanartAvailable = FanartAvailable || !FanartNotFound;
+            currSelectedGenericTitle = SelectedItem;
+            ResetRefreshTickCount();
           }
         }
         else
@@ -221,8 +248,12 @@ namespace FanartHandler
           // logger.Debug("*** Image 1,2: Empty...") ;
           //
           SetCurrentSelectedImageNames(null, category); 
-          FanartAvailable = FanartAvailable || !FanartNotFound;
+          if (isMusic || isMusicVideo)
+            FanartAvailableMusic = false;
+          else
+            FanartAvailableMovies = false;
         }
+
       }
       catch (Exception ex)
       {
@@ -251,7 +282,7 @@ namespace FanartHandler
         // if (SelectedItem == null || SelectedItem.Length <= 0)
         //   SelectedItem = Utils.GetProperty("#selecteditem");
 
-        var FanartNotFound = true;
+        // var FanartNotFound = true;
         if (SelectedItem != null && !SelectedItem.Equals("..", StringComparison.CurrentCulture) && SelectedItem.Trim().Length > 0)
         {
           var oldFanart = CurrSelectedMusic;
@@ -266,7 +297,8 @@ namespace FanartHandler
               CurrSelectedMusic = string.Empty;
               PrevSelectedMusic = -1;
               SetCurrentSelectedImageNames(null, Utils.Category.MusicFanartScraped);
-              FanartAvailable = false;
+              // FanartAvailable = false;
+              FanartAvailableMusic = false;
             }
 
             newFanart = GetFilename(SelectedItem, album, ref CurrSelectedMusic, ref PrevSelectedMusic, Utils.Category.MusicFanartScraped, flag, true);
@@ -277,16 +309,15 @@ namespace FanartHandler
             if (newFanart.Length == 0)
               newFanart = Utils.GetRandomDefaultBackdrop(ref CurrSelectedMusic, ref PrevSelectedMusic);
 
-            if (newFanart.Length != 0)
+            if (!string.IsNullOrEmpty(newFanart))
             {
-              FanartNotFound = false;
+              FanartAvailableMusic = true;
               CurrSelectedMusic = newFanart;
-            }
-            CurrSelectedMusicArtist = SelectedItem;
-            CurrSelectedMusicAlbum = album;
 
-            if (!newFanart.Equals(oldFanart, StringComparison.CurrentCulture))
-            {
+              if (newFanart.Equals(oldFanart, StringComparison.CurrentCulture))
+              {
+                DoShowImageOne = !DoShowImageOne;
+              }
               if (DoShowImageOne)
               {
                 Utils.AddProperty(ref propertiesSelect, "music.backdrop1.selected", newFanart, ref ListSelectedMusic);
@@ -298,16 +329,18 @@ namespace FanartHandler
                 // logger.Debug("*** Image 2: " + newFanart) ;
               }
             }
-            if (string.IsNullOrEmpty(newFanart) || !newFanart.Equals(oldFanart, StringComparison.CurrentCulture))
-            { 
-              ResetRefreshTickCount();
+            else
+            {
+              Utils.AddProperty(ref propertiesSelect, "music.backdrop1.selected", string.Empty, ref ListSelectedMusic);
+              Utils.AddProperty(ref propertiesSelect, "music.backdrop2.selected", string.Empty, ref ListSelectedMusic);
             }
-            FanartAvailable = FanartAvailable || !FanartNotFound;
+            CurrSelectedMusicArtist = SelectedItem;
+            CurrSelectedMusicAlbum = album;
+            ResetRefreshTickCount();
           }
         }
         else
         {
-          FanartAvailable = FanartAvailable || !FanartNotFound;
           CurrSelectedMusic = string.Empty;
           CurrSelectedMusicArtist = string.Empty;
           CurrSelectedMusicAlbum = string.Empty;
@@ -318,6 +351,7 @@ namespace FanartHandler
           // logger.Debug("*** Image 1,2: Empty...") ;
           //
           SetCurrentSelectedImageNames(null, Utils.Category.MusicFanartScraped);
+          FanartAvailableMusic = false;
         }
       }
       catch (Exception ex)
@@ -420,17 +454,18 @@ namespace FanartHandler
               Utils.AddProperty(ref propertiesSelect, "picture.backdrop2.selected", SelectedPath, ref ListSelectedPictures, true);
             }
             ResetRefreshTickCount();
-            FanartAvailable = FanartAvailable || true;
+            // FanartAvailable = FanartAvailable || true;
+            FanartAvailablePictures = true;
           }
         }
         else
         {
           PrevSelectedPicture = -1;
-          FanartAvailable = FanartAvailable || false;
           CurrSelectedPicture = string.Empty;
           CurrSelectedPictureImage = string.Empty;
           Utils.AddProperty(ref propertiesSelect, "picture.backdrop1.selected", string.Empty, ref ListSelectedPictures, true);
           Utils.AddProperty(ref propertiesSelect, "picture.backdrop2.selected", string.Empty, ref ListSelectedPictures, true);
+          FanartAvailablePictures = false;
         }
       }
       catch (Exception ex)
@@ -449,56 +484,59 @@ namespace FanartHandler
           return;
 
         var SelectedItem = (string) null;
-        var FanartNotFound = true;
+        // var FanartNotFound = true;
         SelectedItem = ParseScoreCenterTag(Utils.GetProperty("#ScoreCenter.Results"));
         if (SelectedItem != null && !SelectedItem.Equals("..", StringComparison.CurrentCulture) && SelectedItem.Trim().Length > 0)
         {
           var flag = (!CurrSelectedScorecenterGenre.Equals(SelectedItem, StringComparison.CurrentCulture));
           if (flag || (RefreshTickCount >= Utils.MaxRefreshTickCount))
           {
-            var OldSelectedScorecenter = CurrSelectedScorecenter;
+            var oldFanart = CurrSelectedScorecenter;
             if (flag)
             {
               CurrSelectedScorecenter = string.Empty;
               PrevSelectedScorecenter = -1;
               SetCurrentSelectedImageNames(null, Utils.Category.SportsManual);
-              FanartAvailable = false;
+              FanartAvailableScorecenter = false;
             }
-            var filename = GetFilename(SelectedItem, null, ref CurrSelectedScorecenter, ref PrevSelectedScorecenter, Utils.Category.SportsManual, flag, false);
-            if (filename.Length != 0)
-            {
-              FanartNotFound = false;
-              CurrSelectedScorecenter = filename;
-            }
-            CurrSelectedScorecenterGenre = SelectedItem;
+            var newFanart = GetFilename(SelectedItem, null, ref CurrSelectedScorecenter, ref PrevSelectedScorecenter, Utils.Category.SportsManual, flag, false);
 
-            if (!filename.Equals(OldSelectedScorecenter, StringComparison.CurrentCulture))
+            if (!string.IsNullOrEmpty(newFanart))
             {
+              FanartAvailableScorecenter = true;
+              CurrSelectedScorecenter = newFanart;
+
+              if (newFanart.Equals(oldFanart, StringComparison.CurrentCulture))
+              {
+                DoShowImageOne = !DoShowImageOne;
+              }
               if (DoShowImageOne)
               {
-                Utils.AddProperty(ref propertiesSelect, "scorecenter.backdrop1.selected", filename, ref ListSelectedScorecenter);
+                Utils.AddProperty(ref propertiesSelect, "scorecenter.backdrop1.selected", newFanart, ref ListSelectedScorecenter);
               }
               else
               {
-                Utils.AddProperty(ref propertiesSelect, "scorecenter.backdrop2.selected", filename, ref ListSelectedScorecenter);
+                Utils.AddProperty(ref propertiesSelect, "scorecenter.backdrop2.selected", newFanart, ref ListSelectedScorecenter);
               }
             }
-            if (string.IsNullOrEmpty(filename) || !filename.Equals(OldSelectedScorecenter, StringComparison.CurrentCulture))
+            else
             {
-              ResetRefreshTickCount();
+              Utils.AddProperty(ref propertiesSelect, "scorecenter.backdrop1.selected", string.Empty, ref ListSelectedScorecenter);
+              Utils.AddProperty(ref propertiesSelect, "scorecenter.backdrop2.selected", string.Empty, ref ListSelectedScorecenter);
             }
-            FanartAvailable = FanartAvailable || !FanartNotFound;
+            CurrSelectedScorecenterGenre = SelectedItem;
+            ResetRefreshTickCount();
           }
         }
         else
         {
-          FanartAvailable = FanartAvailable || !FanartNotFound;
           CurrSelectedScorecenter = string.Empty;
           CurrSelectedScorecenterGenre = string.Empty;
           PrevSelectedScorecenter = -1;
           Utils.AddProperty(ref propertiesSelect, "scorecenter.backdrop1.selected", string.Empty, ref ListSelectedScorecenter);
           Utils.AddProperty(ref propertiesSelect, "scorecenter.backdrop2.selected", string.Empty, ref ListSelectedScorecenter);
           SetCurrentSelectedImageNames(null, Utils.Category.SportsManual);
+          FanartAvailableScorecenter = false;
         }
       }
       catch (Exception ex)
@@ -535,7 +573,7 @@ namespace FanartHandler
             IsSelectedPicture = true;
             RefreshPicturesSelectedProperties();
           }
-          else
+          else if (IsSelectedPicture)
           {
             EmptyPicturesProperties();
           }
@@ -565,7 +603,7 @@ namespace FanartHandler
                                                ref CurrSelectedMusicArtist);
             }
           }
-          else
+          else if (IsSelectedMusic)
           {
             EmptyMusicProperties();
           }
@@ -610,7 +648,7 @@ namespace FanartHandler
                                                ref CurrSelectedMovieTitle);
             }
           }
-          else
+          else if (IsSelectedVideo)
           {
             EmptyVideoProperties();
           }
@@ -630,7 +668,7 @@ namespace FanartHandler
               RefreshScorecenterSelectedProperties();
             }
           }
-          else
+          else if (IsSelectedScoreCenter)
           {
             EmptyScoreCenterProperties();
           }
@@ -639,11 +677,13 @@ namespace FanartHandler
           rw.Report(e);
         #endregion
 
+        FanartAvailable = FanartAvailableMusic || FanartAvailableMovies || FanartAvailableScorecenter || FanartAvailablePictures;
+
         if (FanartAvailable)
         {
           IncreaseRefreshTickCount();
         }
-        else
+        else if (IsSelectedScoreCenter || IsSelectedVideo || IsSelectedMusic || IsSelectedPicture)
         {
           EmptyAllProperties(false);
         }
@@ -782,6 +822,7 @@ namespace FanartHandler
       Utils.EmptyAllImages(ref ListSelectedPictures);
       SetCurrentSelectedImageNames(null, Utils.Category.PictureManual);
       IsSelectedPicture = false;
+      FanartAvailablePictures = false;
     } 
 
     private void EmptyMusicProperties(bool currClean = true)
@@ -797,6 +838,7 @@ namespace FanartHandler
       Utils.EmptyAllImages(ref ListSelectedMusic);
       SetCurrentSelectedImageNames(null, Utils.Category.MusicFanartScraped);
       IsSelectedMusic = false;
+      FanartAvailableMusic = false;
     }
 
     private void EmptyVideoProperties(bool currClean = true)
@@ -813,6 +855,7 @@ namespace FanartHandler
       SetCurrentSelectedImageNames(null, Utils.Category.TvSeriesScraped);
       SetCurrentSelectedImageNames(null, Utils.Category.TvManual);
       IsSelectedVideo = false;
+      FanartAvailableMovies = false;
     }
 
     private void EmptyScoreCenterProperties(bool currClean = true)
@@ -827,12 +870,14 @@ namespace FanartHandler
       Utils.EmptyAllImages(ref ListSelectedScorecenter);
       SetCurrentSelectedImageNames(null, Utils.Category.SportsManual);
       IsSelectedScoreCenter = false;
+      FanartAvailableScorecenter = false;
     }
 
     private void EmptySelectedProperties()
     {
       RefreshTickCount = 0;
       FanartAvailable = false;
+
       if (IsSelectedScoreCenter || IsSelectedVideo || IsSelectedMusic || IsSelectedPicture)
       {
         FanartIsNotAvailable();
@@ -941,29 +986,32 @@ namespace FanartHandler
 
     public void HideImageSelected()
     {
-      if (Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
+      if ((Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID) && (ControlImageVisible != 0))
       {
         GUIControl.HideControl(Utils.iActiveWindow, 91919291);
         GUIControl.HideControl(Utils.iActiveWindow, 91919292);
         DoShowImageOne = true;
-        // logger.Debug("*** Hide all fanart [91919291,91919292]...") ;
+        ControlImageVisible = 0;
+        // logger.Debug("*** Hide all fanart [91919291,91919292]... ") ;
       }
     }
 
     public void FanartIsAvailable()
     {
-      if (Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
+      if ((Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID) && (ControlVisible != 1))
       {
         GUIControl.ShowControl(Utils.iActiveWindow, 91919293);
+        ControlVisible = 1;
         // logger.Debug("*** Show fanart [91919293]...");
       }
     }
 
     public void FanartIsNotAvailable()
     {
-      if (Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
+      if ((Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID) && (ControlVisible != 0))
       {
         GUIControl.HideControl(Utils.iActiveWindow, 91919293);
+        ControlVisible = 0;
         // logger.Debug("*** Hide fanart [91919293]...");
       }
     }
@@ -975,6 +1023,7 @@ namespace FanartHandler
         GUIControl.ShowControl(Utils.iActiveWindow, 91919291);
         GUIControl.HideControl(Utils.iActiveWindow, 91919292);
         DoShowImageOne = false;
+        ControlImageVisible = 1;
         // logger.Debug ("*** First fanart [91919291] visible ...");
       }
       else
@@ -990,6 +1039,7 @@ namespace FanartHandler
         GUIControl.ShowControl(Utils.iActiveWindow, 91919292);
         GUIControl.HideControl(Utils.iActiveWindow, 91919291);
         DoShowImageOne = true;
+        ControlImageVisible = 1;
         // logger.Debug ("*** Second fanart [91919292] visible ...") ;
       }
       else

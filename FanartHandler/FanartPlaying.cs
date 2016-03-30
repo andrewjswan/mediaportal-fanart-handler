@@ -40,6 +40,17 @@ namespace FanartHandler
     private Hashtable propertiesPlay;
     private Hashtable CurrentArtistsImageNames;
 
+    /// <summary>
+    /// Fanart Control Visible
+    /// -1 Unknown, 0 Hiden, 1 Visible
+    /// </summary>
+    private int ControlVisible;
+    /// <summary>
+    /// Fanart Image Control Visible
+    /// -1 Unknown, 0 Hiden, 1 Visible
+    /// </summary>
+    private int ControlImageVisible;
+
     // Public
     public bool FanartAvailable { get; set; }
 
@@ -95,6 +106,9 @@ namespace FanartHandler
       CurrPlayFanart = string.Empty;
       CurrPlayMusicArtist = string.Empty;
       CurrPlayMusicAlbum = string.Empty;
+
+      ControlVisible = -1;
+      ControlImageVisible = -1;
     }
 
     public bool CheckValidWindowIDForFanart()
@@ -258,22 +272,27 @@ namespace FanartHandler
           if (!string.IsNullOrEmpty(FileName))
           {
             CurrPlayFanart = FileName;
-          }
-          if (!FileName.Equals(StoreCurrPlayFanart, StringComparison.CurrentCulture))
-          {
+            if (FileName.Equals(StoreCurrPlayFanart, StringComparison.CurrentCulture))
+            {
+              DoShowImageOnePlay = !DoShowImageOnePlay;
+            }
             if (DoShowImageOnePlay)
               Utils.AddProperty(ref propertiesPlay, "music.backdrop1.play", FileName, ref ListPlayMusic);
             else
               Utils.AddProperty(ref propertiesPlay, "music.backdrop2.play", FileName, ref ListPlayMusic);
 
-          if (Utils.UseOverlayFanart)
-            Utils.AddProperty(ref propertiesPlay, "music.overlay.play", FileName, ref ListPlayMusic);
+            if (Utils.UseOverlayFanart)
+              Utils.AddProperty(ref propertiesPlay, "music.overlay.play", FileName, ref ListPlayMusic);
           }
-
-          if (FileName.Length == 0 || !FileName.Equals(StoreCurrPlayFanart, StringComparison.CurrentCulture))
+          else
           {
-            ResetRefreshTickCount();
+            Utils.AddProperty(ref propertiesPlay, "music.backdrop1.play", string.Empty, ref ListPlayMusic);
+            Utils.AddProperty(ref propertiesPlay, "music.backdrop2.play", string.Empty, ref ListPlayMusic);
+
+            if (Utils.UseOverlayFanart)
+              Utils.AddProperty(ref propertiesPlay, "music.overlay.play", string.Empty, ref ListPlayMusic);
           }
+          ResetRefreshTickCount();
           FanartAvailable = (!string.IsNullOrEmpty(FileName));
         }
       }
@@ -507,27 +526,30 @@ namespace FanartHandler
 
     public void HideImagePlay()
     {
-      if (Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
+      if ((Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID) && (ControlImageVisible != 0))
       {
         GUIControl.HideControl(Utils.iActiveWindow, 91919295);
         GUIControl.HideControl(Utils.iActiveWindow, 91919296);
         DoShowImageOnePlay = true;
+        ControlImageVisible = 0;
       }
     }
 
     public void FanartIsAvailablePlay()
     {
-      if (Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
+      if ((Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID) && (ControlVisible != 1))
       {
         GUIControl.ShowControl(Utils.iActiveWindow, 91919294);
+        ControlVisible = 1;
       }
     }
 
     public void FanartIsNotAvailablePlay()
     {
-      if (Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
+      if ((Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID) && (ControlVisible != 0))
       {
         GUIControl.HideControl(Utils.iActiveWindow, 91919294);
+        ControlVisible = 0;
       }
     }
 
@@ -538,6 +560,7 @@ namespace FanartHandler
         GUIControl.ShowControl(Utils.iActiveWindow, 91919295);
         GUIControl.HideControl(Utils.iActiveWindow, 91919296);
         DoShowImageOnePlay = false;
+        ControlImageVisible = 1;
       }
       else
       {
@@ -552,6 +575,7 @@ namespace FanartHandler
         GUIControl.ShowControl(Utils.iActiveWindow, 91919296);
         GUIControl.HideControl(Utils.iActiveWindow, 91919295);
         DoShowImageOnePlay = true;
+        ControlImageVisible = 1;
       }
       else
       {

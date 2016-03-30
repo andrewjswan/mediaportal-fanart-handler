@@ -400,6 +400,7 @@ namespace FanartHandler
       FPlayOther.ClearCurrProperties();
       FSelected.ClearCurrProperties();
       FSelectedOther.ClearCurrProperties();
+      FRandom.ClearCurrProperties();
     }
 
     public void RefreshRefreshTickCount()
@@ -499,7 +500,7 @@ namespace FanartHandler
         SetupVariables();
         Utils.SetupDirectories();
         //
-        logger.Debug("Default backdrops [" + Utils.UseDefaultBackdrop + " - " + Utils.DefaultBackdropMask+"] for Music" + (Utils.DefaultBackdropIsImage ? ":"+Utils.DefaultBackdrop : "."));
+        logger.Debug("Default Backdrops [" + Utils.UseDefaultBackdrop + " - " + Utils.DefaultBackdropMask+"] for Music" + (Utils.DefaultBackdropIsImage ? ":"+Utils.DefaultBackdrop : "."));
         if (Utils.DefaultBackdropIsImage)
         {
           Utils.DefaultBackdropImages.Add(0, new FanartImage("", "", Utils.DefaultBackdrop, "", "", ""));
@@ -517,7 +518,7 @@ namespace FanartHandler
             }
           }
         }
-        logger.Debug("MyPictures backdrops "+Utils.Check(Utils.UseMyPicturesSlideShow));
+        logger.Debug("MyPictures SlideShow: "+Utils.Check(Utils.UseMyPicturesSlideShow));
         if (Utils.UseMyPicturesSlideShow)
         {
           if (!Utils.GetIsStopping() && SyncPointPictures == 0)
@@ -699,7 +700,7 @@ namespace FanartHandler
 
           if (FSelectedOther.CheckValidWindowIDForFanart())
           {
-            // logger.Debug("*** Activate Window:" + Utils.sActiveWindow + " - Selected (Genre/Studio)");
+            // logger.Debug("*** Activate Window:" + Utils.sActiveWindow + " - Selected (Other)");
             refreshStart = true ;
           }
           else
@@ -712,6 +713,7 @@ namespace FanartHandler
               (g_Player.Playing || g_Player.Paused) && (g_Player.IsCDA || g_Player.IsMusic || g_Player.IsRadio) && 
               Utils.AllowFanartInActiveWindow())
           {
+            // logger.Debug("*** Activate Window:" + Utils.sActiveWindow + " - Play");
             refreshStart = true ;
           }
           else
@@ -725,6 +727,7 @@ namespace FanartHandler
 
           if (FPlayOther.CheckValidWindowIDForFanart())
           {
+            // logger.Debug("*** Activate Window:" + Utils.sActiveWindow + " - Play (Other)");
             refreshStart = true ;
           }
           else
@@ -735,6 +738,7 @@ namespace FanartHandler
           // Random
           if (FRandom.CheckValidWindowIDForFanart() && Utils.AllowFanartInActiveWindow())
           {
+            // logger.Debug("*** Activate Window:" + Utils.sActiveWindow + " - Random");
             refreshStart = true ;
           }
           else
@@ -742,14 +746,14 @@ namespace FanartHandler
             FRandom.EmptyAllProperties();
           }
         }
-        else // if (refreshTimer != null && refreshTimer.Enabled)
-        {
-          StopRefreshTimer();
-        }
 
         if (refreshStart)
         {
           StartRefreshTimer();
+        }
+        else
+        {
+          StopRefreshTimer();
         }
       }
       catch (Exception ex)
@@ -847,8 +851,6 @@ namespace FanartHandler
         if (Utils.GetIsStopping())
           return;
 
-        Utils.TotArtistsBeingScraped = 0.0;
-        Utils.CurrArtistsBeingScraped = 0.0;
         if (MyScraperWorker == null)
         {
           MyScraperWorker = new ScraperWorker();
@@ -881,9 +883,6 @@ namespace FanartHandler
         }
         if (MyScraperNowWorker.IsBusy)
           return;
-
-        Utils.TotArtistsBeingScraped = 0.0;
-        Utils.CurrArtistsBeingScraped = 0.0;
 
         MyScraperNowWorker.RunWorkerAsync(new string[3]
         {
@@ -1401,31 +1400,33 @@ namespace FanartHandler
                   skinFile.UseRandomTVFanartUser = Utils.GetBool(ParseNodeValue(s));
                 if (s.StartsWith("#useRandomPluginsUserFanart", StringComparison.CurrentCulture))
                   skinFile.UseRandomPluginsFanartUser = Utils.GetBool(ParseNodeValue(s));
+                // logger.Debug("*** Random check: " + s + " - " + nodeValue);
               }
             }
             try
             {
-              if (skinFile.UseRandomGamesFanartUser == false && 
-                  skinFile.UseRandomMoviesFanartUser == false && 
-                  skinFile.UseRandomMoviesFanartScraper == false && 
-                  skinFile.UseRandomMovingPicturesFanart == false && 
-                  skinFile.UseRandomMusicFanartUser == false && 
-                  skinFile.UseRandomMusicFanartScraper == false && 
-                  skinFile.UseRandomPicturesFanartUser == false && 
-                  skinFile.UseRandomScoreCenterFanartUser == false && 
-                  skinFile.UseRandomTVSeriesFanart == false && 
-                  skinFile.UseRandomTVFanartUser == false &&
-                  skinFile.UseRandomPluginsFanartUser == false)
+              if (skinFile.UseRandomGamesFanartUser || 
+                  skinFile.UseRandomMoviesFanartUser || 
+                  skinFile.UseRandomMoviesFanartScraper || 
+                  skinFile.UseRandomMovingPicturesFanart || 
+                  skinFile.UseRandomMusicFanartUser || 
+                  skinFile.UseRandomMusicFanartScraper || 
+                  skinFile.UseRandomPicturesFanartUser || 
+                  skinFile.UseRandomScoreCenterFanartUser || 
+                  skinFile.UseRandomTVSeriesFanart || 
+                  skinFile.UseRandomTVFanartUser ||
+                  skinFile.UseRandomPluginsFanartUser)
               {
-                continue;
-              }
-              if (Utils.ContainsID(FRandom.WindowsUsingFanartRandom, nodeValue))
-              {
-                FRandom.WindowsUsingFanartRandom[nodeValue] = skinFile ; 
-              }
-              else
-              {
-                FRandom.WindowsUsingFanartRandom.Add(nodeValue, skinFile);
+                if (Utils.ContainsID(FRandom.WindowsUsingFanartRandom, nodeValue))
+                {
+                  FRandom.WindowsUsingFanartRandom[nodeValue] = skinFile ; 
+                  // logger.Debug("*** Random update: " + nodeValue + " - " + (string.IsNullOrEmpty(ThemeDir) ? string.Empty : "Theme: "+ThemeDir+" ")+" Filename:" + XMLName);
+                }
+                else
+                {
+                  FRandom.WindowsUsingFanartRandom.Add(nodeValue, skinFile);
+                  // logger.Debug("*** Random add: " + nodeValue + " - " + (string.IsNullOrEmpty(ThemeDir) ? string.Empty : "Theme: "+ThemeDir+" ")+" Filename:" + XMLName);
+                }
               }
             }
             catch {  }
@@ -1434,7 +1435,7 @@ namespace FanartHandler
         }
         catch (Exception ex)
         {
-          logger.Error("SetupWindowsUsingFanartHandlerVisibility: " + (string.IsNullOrEmpty(ThemeDir) ? string.Empty : "Theme: "+ThemeDir+" ")+" Filename:" + XMLName) ;
+          logger.Error("SetupWindowsUsingFanartHandlerVisibility: " + (string.IsNullOrEmpty(ThemeDir) ? string.Empty : "Theme: "+ThemeDir+" ")+" Filename:" + XMLName);
           logger.Error(ex) ;
         }
       }

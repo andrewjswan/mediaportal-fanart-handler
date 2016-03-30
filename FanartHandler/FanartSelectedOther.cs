@@ -240,7 +240,7 @@ namespace FanartHandler
                                                ref CurrSelectedMusicArtist);
             }
           }
-          else
+          else if (IsSelectedMusic)
           {
             EmptyMusicProperties();
           }
@@ -261,7 +261,7 @@ namespace FanartHandler
                                              ref CurrSelectedMovie, 
                                              ref CurrSelectedMovieTitle);
           }
-          else
+          else if (IsSelectedVideo)
           {
             EmptyVideoProperties();
           }
@@ -274,7 +274,7 @@ namespace FanartHandler
         {
           IncreaseRefreshTickCount();
         }
-        else
+        else if (IsSelectedVideo || IsSelectedMusic)
         {
           EmptyAllProperties(false);
         }
@@ -388,7 +388,7 @@ namespace FanartHandler
           foreach (string studio in studios)
           {
             string _studio = Utils.GetStudio(studio.Trim());
-            sFile = GUIGraphicsContext.GetThemedSkinFile(Utils.FAHStudios + MediaPortal.Util.Utils.MakeFileName(_studio) + ".png") ; 
+            sFile = Utils.GetThemedSkinFile(Utils.FAHStudios + MediaPortal.Util.Utils.MakeFileName(_studio) + ".png") ; 
             if (!string.IsNullOrEmpty(sFile) && File.Exists(sFile))
             {
               sFileNames.Add(sFile) ;
@@ -453,7 +453,7 @@ namespace FanartHandler
           {
             foreach (string award in awards)
             {
-              sFile = GUIGraphicsContext.GetThemedSkinFile(Utils.FAHAwards + MediaPortal.Util.Utils.MakeFileName(award) + ".png") ; 
+              sFile = Utils.GetThemedSkinFile(Utils.FAHAwards + MediaPortal.Util.Utils.MakeFileName(award) + ".png") ; 
               if (!string.IsNullOrEmpty(sFile) && File.Exists(sFile))
               {
                 sFileNames.Add(sFile) ;
@@ -532,7 +532,7 @@ namespace FanartHandler
             {
               foreach (string award in awards)
               {
-                sFile = GUIGraphicsContext.GetThemedSkinFile(Utils.FAHAwards + MediaPortal.Util.Utils.MakeFileName(award) + ".png") ; 
+                sFile = Utils.GetThemedSkinFile(Utils.FAHAwards + MediaPortal.Util.Utils.MakeFileName(award) + ".png") ; 
                 if (!string.IsNullOrEmpty(sFile) && File.Exists(sFile))
                 {
                   sFileNames.Add(sFile) ;
@@ -555,7 +555,7 @@ namespace FanartHandler
               foreach (string character in characters)
               {
                 string _character = Utils.GetCharacter(character.Trim());
-                sFile = GUIGraphicsContext.GetThemedSkinFile(Utils.FAHCharacters + MediaPortal.Util.Utils.MakeFileName(_character) + ".png") ; 
+                sFile = Utils.GetThemedSkinFile(Utils.FAHCharacters + MediaPortal.Util.Utils.MakeFileName(_character) + ".png") ; 
                 if (!string.IsNullOrEmpty(sFile) && File.Exists(sFile))
                 {
                   sFileNames.Add(sFile) ;
@@ -574,7 +574,7 @@ namespace FanartHandler
           foreach (string genre in genres)
           {
             string _genre = Utils.GetGenre(genre.Trim());
-            sFile = GUIGraphicsContext.GetThemedSkinFile(Utils.FAHGenres + MediaPortal.Util.Utils.MakeFileName(_genre) + ".png") ; 
+            sFile = Utils.GetThemedSkinFile(Utils.FAHGenres + MediaPortal.Util.Utils.MakeFileName(_genre) + ".png") ; 
             if (!string.IsNullOrEmpty(sFile) && File.Exists(sFile))
             {
               sFileNames.Add(sFile) ;
