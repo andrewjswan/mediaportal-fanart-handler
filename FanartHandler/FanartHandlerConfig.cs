@@ -1433,7 +1433,7 @@ namespace FanartHandler
         {
           var row = myDataTableThumbs.NewRow();
           var str1 = path;
-          var fileName = Path.GetFileName(str1);
+          var fileName = Utils.GetFileName(str1);
           var str2 = fileName.IndexOf("L.") <= 0 ? fileName.Substring(0, fileName.LastIndexOf(".")) : fileName.Substring(0, fileName.LastIndexOf("L."));
           row["Artist"] = Utils.GetArtist(str2, Utils.Category.MusicAlbumThumbScraped);
           if (str2.IndexOf("-", StringComparison.CurrentCulture) > 0)
@@ -1627,7 +1627,7 @@ namespace FanartHandler
               if (!field1.Contains("_tmp"))
               {
                 var row = myDataTableThumbs.NewRow();
-                var fileName = Path.GetFileName(field1);
+                var fileName = Utils.GetFileName(field1);
                 row["Artist"] = field4;
                 row["Album"] = field5;
                 var str = string.Empty;
@@ -1689,7 +1689,7 @@ namespace FanartHandler
             row["Locked"] = dataForConfigTable.GetField(num1, 4);
             row["Image"] = Utils.GetFileName(dataForConfigTable.GetField(num1, 3));
             row["Image Path"] = dataForConfigTable.GetField(num1, 3);
-            if (dataForConfigTable.GetField(num1, 4) != null && dataForConfigTable.GetField(num1, 4).Length > 0)
+            if (!string.IsNullOrWhiteSpace(dataForConfigTable.GetField(num1, 4)))
             {
               try {
                 num2 = Convert.ToInt32(dataForConfigTable.GetField(num1, 5), CultureInfo.CurrentCulture);

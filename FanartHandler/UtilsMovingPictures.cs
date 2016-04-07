@@ -77,12 +77,12 @@ namespace FanartHandler
             var backdropFullPath = current.BackdropFullPath;
             var ImdbID = current.ImdbID.Trim();
 
-            if (backdropFullPath != null && backdropFullPath.Trim().Length > 0 && (allFilenames == null || !allFilenames.Contains(backdropFullPath)))
+            if (!string.IsNullOrWhiteSpace(backdropFullPath) && (allFilenames == null || !allFilenames.Contains(backdropFullPath)))
               if (File.Exists(backdropFullPath))
                 Utils.GetDbm().LoadFanart(Utils.GetArtist(current.Title, Utils.Category.MovingPictureManual), backdropFullPath, backdropFullPath, Utils.Category.MovingPictureManual, null, Utils.Provider.MovingPictures, null, ImdbID);
 
             backdropFullPath = Path.Combine(Utils.FAHMovingPictures, ImdbID+".jpg");
-            if (ImdbID != null && ImdbID.Trim().Length > 0 && (allFilenames == null || !allFilenames.Contains(backdropFullPath)))
+            if (!string.IsNullOrWhiteSpace(ImdbID) && (allFilenames == null || !allFilenames.Contains(backdropFullPath)))
               if (File.Exists(backdropFullPath))
                 Utils.GetDbm().LoadFanart(Utils.GetArtist(current.Title, Utils.Category.MovingPictureManual), backdropFullPath, backdropFullPath, Utils.Category.MovingPictureManual, null, Utils.Provider.MovingPictures, null, ImdbID);
           }

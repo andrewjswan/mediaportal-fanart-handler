@@ -530,13 +530,20 @@ namespace FanartHandler
           }
         }
         //
-        logger.Debug("FanartHandler skin use: " + Utils.Check(FPlayOther.WindowsUsingFanartPlayClearArt.Count > 0) + " Play ClearArt, " + 
-                                                  Utils.Check(FPlayOther.WindowsUsingFanartPlayGenre.Count > 0) + " Play Genres");
-        logger.Debug("                        " + Utils.Check(FSelectedOther.WindowsUsingFanartSelectedClearArtMusic.Count > 0) + " Selected Music ClearArt, " + 
-                                                  Utils.Check(FSelectedOther.WindowsUsingFanartSelectedGenreMusic.Count > 0) + " Selected Music Genres");
-        logger.Debug("                        " + Utils.Check(FSelectedOther.WindowsUsingFanartSelectedStudioMovie.Count > 0) + " Selected Movie Studios, " + 
-                                                  Utils.Check(FSelectedOther.WindowsUsingFanartSelectedGenreMovie.Count > 0) + " Selected Movie Genres, " +
-                                                  Utils.Check(FSelectedOther.WindowsUsingFanartSelectedAwardMovie.Count > 0) + " Selected Movie Awards");
+        logger.Debug("FanartHandler skin use: ");
+        logger.Debug(" Play: " + Utils.Check(FPlay.WindowsUsingFanartPlay.Count > 0) + " Fanart");
+        logger.Debug("       " + Utils.Check(FPlayOther.WindowsUsingFanartPlayClearArt.Count > 0) + " ClearArt, " + 
+                                 Utils.Check(FPlayOther.WindowsUsingFanartPlayGenre.Count > 0) + " Genres");
+        logger.Debug(" Selected: " + Utils.Check(FSelected.WindowsUsingFanartSelectedMusic.Count > 0) + " Music Fanart, " + 
+                                     Utils.Check(FSelected.WindowsUsingFanartSelectedMovie.Count > 0) + " Movie Fanart, " +
+                                     Utils.Check(FSelected.WindowsUsingFanartSelectedPictures.Count > 0) + " Pictures Fanart, " +
+                                     Utils.Check(FSelected.WindowsUsingFanartSelectedScoreCenter.Count > 0) + " ScoreCenter Fanart");
+        logger.Debug("           " + Utils.Check(FSelectedOther.WindowsUsingFanartSelectedClearArtMusic.Count > 0) + " Music ClearArt, " + 
+                                     Utils.Check(FSelectedOther.WindowsUsingFanartSelectedGenreMusic.Count > 0) + " Music Genres");
+        logger.Debug("           " + Utils.Check(FSelectedOther.WindowsUsingFanartSelectedStudioMovie.Count > 0) + " Movie Studios, " + 
+                                     Utils.Check(FSelectedOther.WindowsUsingFanartSelectedGenreMovie.Count > 0) + " Movie Genres, " +
+                                     Utils.Check(FSelectedOther.WindowsUsingFanartSelectedAwardMovie.Count > 0) + " Movie Awards");
+        logger.Debug(" Random: " + Utils.Check(FRandom.WindowsUsingFanartRandom.Count > 0) + " Fanart");
         //
         Utils.InitiateDbm("mediaportal");
         Utils.StopScraper = false;

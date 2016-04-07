@@ -161,7 +161,7 @@ namespace FanartHandler
         Utils.GetSelectedItem(ref SelectedItem, ref SelectedAlbum, ref SelectedGenre, ref SelectedStudios, ref isMusicVideo);
 
         // var FanartNotFound = true;
-        if (SelectedItem != null && SelectedItem.Trim().Length > 0 && !SelectedItem.Equals("..", StringComparison.CurrentCulture))
+        if (!string.IsNullOrWhiteSpace(SelectedItem) && !SelectedItem.Equals("..", StringComparison.CurrentCulture))
         {
           var flag = (!currSelectedGenericTitle.Equals(SelectedItem, StringComparison.CurrentCulture));
           if (flag || (RefreshTickCount >= Utils.MaxRefreshTickCount))
@@ -270,20 +270,14 @@ namespace FanartHandler
         if (Utils.GetIsStopping())
           return;
 
-        var SelectedItem = (string) null;
-        // logger.Debug("Album Artist: "+Utils.GetProperty("#music.albumArtist")+ " Artist: "+Utils.GetProperty("#music.Artist")+ "Album: "+Utils.GetProperty("#music.album"));
-        var SaveAlbum = CurrSelectedMusicAlbum;
-        SelectedItem = Utils.GetMusicArtistFromListControl(ref CurrSelectedMusicAlbum);
-        var album = string.Empty + CurrSelectedMusicAlbum;
-        CurrSelectedMusicAlbum = SaveAlbum;
+        var SelectedItem = string.Empty;
+        var album = string.Empty;
         var genre = string.Empty + Utils.GetProperty("#music.genre").Replace(" / ", "|").Replace(", ", "|");
-        //
-        // logger.Debug("*** GMAFLC: R - ["+SelectedItem+"]");
-        // if (SelectedItem == null || SelectedItem.Length <= 0)
-        //   SelectedItem = Utils.GetProperty("#selecteditem");
+        SelectedItem = Utils.GetMusicArtistFromListControl(ref album);
+        // logger.Info("*** GMAFLC: R - ["+SelectedItem+"] ["+album+"]");
 
         // var FanartNotFound = true;
-        if (SelectedItem != null && !SelectedItem.Equals("..", StringComparison.CurrentCulture) && SelectedItem.Trim().Length > 0)
+        if (!string.IsNullOrWhiteSpace(SelectedItem) && !SelectedItem.Equals("..", StringComparison.CurrentCulture))
         {
           var oldFanart = CurrSelectedMusic;
           var newFanart = string.Empty ;
@@ -291,7 +285,6 @@ namespace FanartHandler
 
           if (flag || (RefreshTickCount >= Utils.MaxRefreshTickCount))
           {
-            
             if (flag)
             {
               CurrSelectedMusic = string.Empty;
@@ -302,12 +295,15 @@ namespace FanartHandler
             }
 
             newFanart = GetFilename(SelectedItem, album, ref CurrSelectedMusic, ref PrevSelectedMusic, Utils.Category.MusicFanartScraped, flag, true);
+            // logger.Info("*** GMAFLC: FS - ["+newFanart+"]");
             // Genre
             if (newFanart.Length == 0 && !string.IsNullOrEmpty(genre) && Utils.UseGenreFanart)
               newFanart = GetFilename(genre, null, ref CurrSelectedMusic, ref PrevSelectedMusic, Utils.Category.MusicFanartScraped, flag, true);
+            // logger.Info("*** GMAFLC: FG - ["+newFanart+"]");
             // Random
             if (newFanart.Length == 0)
               newFanart = Utils.GetRandomDefaultBackdrop(ref CurrSelectedMusic, ref PrevSelectedMusic);
+            // logger.Info("*** GMAFLC: FR - ["+newFanart+"]");
 
             if (!string.IsNullOrEmpty(newFanart))
             {
@@ -486,7 +482,7 @@ namespace FanartHandler
         var SelectedItem = (string) null;
         // var FanartNotFound = true;
         SelectedItem = ParseScoreCenterTag(Utils.GetProperty("#ScoreCenter.Results"));
-        if (SelectedItem != null && !SelectedItem.Equals("..", StringComparison.CurrentCulture) && SelectedItem.Trim().Length > 0)
+        if (!string.IsNullOrWhiteSpace(SelectedItem) && !SelectedItem.Equals("..", StringComparison.CurrentCulture))
         {
           var flag = (!CurrSelectedScorecenterGenre.Equals(SelectedItem, StringComparison.CurrentCulture));
           if (flag || (RefreshTickCount >= Utils.MaxRefreshTickCount))
@@ -750,41 +746,12 @@ namespace FanartHandler
         if (!Utils.GetIsStopping())
         {
           key = Utils.GetArtist(key, category);
-          key2 = Utils.GetAlbum(key2, category);
+          key2 = isMusic ? Utils.GetAlbum(key2, category) : null;
           var filenames = GetCurrentSelectedImageNames(category);
 
           if (newArtist || filenames == null || filenames.Count == 0)
           {
-            if (isMusic)
-            {
-              filenames = Utils.GetDbm().GetFanart(key, key2, category, true);
-              if (filenames != null && filenames.Count <= 0 && (Utils.SkipWhenHighResAvailable && (Utils.UseArtist || Utils.UseAlbum)))
-              {
-                filenames = Utils.GetDbm().GetFanart(key, key2, category, false);
-              }
-              else if (!Utils.SkipWhenHighResAvailable && (Utils.UseArtist || Utils.UseAlbum))
-              {
-                if (filenames != null && filenames.Count > 0)
-                {
-                  var fanart = Utils.GetDbm().GetFanart(key, key2, category, false);
-                  var enumerator = fanart.GetEnumerator();
-                  var count = filenames.Count;
-
-                  while (enumerator.MoveNext())
-                  {
-                    filenames.Add(count, enumerator.Value);
-                    checked { ++count; }
-                  }
-                  if (fanart != null)
-                    fanart.Clear();
-                }
-                else
-                  filenames = Utils.GetDbm().GetFanart(key, key2, category, false);
-              }
-            }
-            else 
-              filenames = Utils.GetDbm().GetFanart(key, null, category, false);
-
+            Utils.GetFanart(ref filenames, key, key2, category, isMusic);
             if (iFilePrev == -1)
               Utils.Shuffle(ref filenames);
 

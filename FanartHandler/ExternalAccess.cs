@@ -177,27 +177,8 @@ namespace FanartHandler
           return null;
 
         // logger.Debug("*** Artist: "+artist+" Album: "+album) ;
-        var fanart1 = Utils.GetDbm().GetFanart(artist, album, Utils.Category.MusicFanartScraped, true);
-        if (fanart1 != null && fanart1.Count <= 0 && (Utils.SkipWhenHighResAvailable && (Utils.UseArtist || Utils.UseAlbum)))
-          fanart1 = Utils.GetDbm().GetFanart(artist, album, Utils.Category.MusicFanartScraped, false);
-        else if (!Utils.SkipWhenHighResAvailable && (Utils.UseArtist || Utils.UseAlbum))
-        {
-          if (fanart1 != null && fanart1.Count > 0)
-          {
-            var fanart2 = Utils.GetDbm().GetFanart(artist, album, Utils.Category.MusicFanartScraped, false);
-            var enumerator = fanart2.GetEnumerator();
-            var count = fanart1.Count;
-            while (enumerator.MoveNext())
-            {
-              fanart1.Add(count, enumerator.Value);
-              checked { ++count; }
-            }
-            if (fanart2 != null)
-              fanart2.Clear();
-          }
-          else
-            fanart1 = Utils.GetDbm().GetFanart(artist, album, Utils.Category.MusicFanartScraped, false);
-        }
+        var fanart1 = new Hashtable();
+        Utils.GetFanart(ref fanart1, artist, album, Utils.Category.MusicFanartScraped, true);
 
         var num = 0;
         if (fanart1 != null && fanart1.Count > 0)
@@ -222,6 +203,7 @@ namespace FanartHandler
           var currFile = string.Empty;
           var iFilePrev = -1;
           var randomDefaultBackdrop = Utils.GetRandomDefaultBackdrop(ref currFile, ref iFilePrev);
+
           hashtable1.Add(0, randomDefaultBackdrop);
         }
       }

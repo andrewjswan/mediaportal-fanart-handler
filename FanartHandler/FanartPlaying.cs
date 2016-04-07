@@ -267,7 +267,7 @@ namespace FanartHandler
               }
             }
           }
-          // logger.Debug("RefreshMusicPlayingProperties: " + CurrentTrackTag + " - " + CurrentAlbumTag + " - " + CurrentGenreTag + " | " + (File.Exists(FileName) ? "True" : "False") + " > " + FileName);
+          // logger.Debug("*** RefreshMusicPlayingProperties: " + CurrentTrackTag + " - " + CurrentAlbumTag + " - " + CurrentGenreTag + " | " + (File.Exists(FileName) ? "True" : "False") + " > " + FileName);
 
           if (!string.IsNullOrEmpty(FileName))
           {
@@ -381,41 +381,13 @@ namespace FanartHandler
         if (!Utils.GetIsStopping())
         {
           key = Utils.GetArtist(key, category);
-          key2 = Utils.GetAlbum(key2, category);
+          key2 = isMusic ? Utils.GetAlbum(key2, category) : null;
+          // logger.Debug("*** GetFilename: " + key + " --- " + (key2 == null ? "null" : key2));
           var filenames = GetCurrentArtistsImageNames();
 
           if (newArtist || filenames == null || filenames.Count == 0)
           {
-            if (isMusic)
-            {
-              filenames = Utils.GetDbm().GetFanart(key, key2, category, true);
-              if (filenames != null && filenames.Count <= 0 && (Utils.SkipWhenHighResAvailable && (Utils.UseArtist || Utils.UseAlbum)))
-              {
-                filenames = Utils.GetDbm().GetFanart(key, key2, category, false);
-              }
-              else if (!Utils.SkipWhenHighResAvailable && (Utils.UseArtist || Utils.UseAlbum))
-              {
-                if (filenames != null && filenames.Count > 0)
-                {
-                  var fanart = Utils.GetDbm().GetFanart(key, key2, category, false);
-                  var enumerator = fanart.GetEnumerator();
-                  var count = filenames.Count;
-
-                  while (enumerator.MoveNext())
-                  {
-                    filenames.Add(count, enumerator.Value);
-                    checked { ++count; }
-                  }
-                  if (fanart != null)
-                    fanart.Clear();
-                }
-                else
-                  filenames = Utils.GetDbm().GetFanart(key, key2, category, false);
-              }
-            }
-            else 
-              filenames = Utils.GetDbm().GetFanart(key, null, category, false);
-
+            Utils.GetFanart(ref filenames, key, key2, category, isMusic);
             if (iFilePrev == -1)
               Utils.Shuffle(ref filenames);
 

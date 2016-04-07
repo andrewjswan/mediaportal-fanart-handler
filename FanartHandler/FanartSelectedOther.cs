@@ -112,7 +112,7 @@ namespace FanartHandler
         Utils.GetSelectedItem(ref SelectedItem, ref SelectedAlbum, ref SelectedGenre, ref SelectedStudios, ref isMusicVideo);
         // logger.Debug("*** Refresh: {0} - {1} - {2} - {3} - {4}", SelectedItem, SelectedAlbum, SelectedGenre,  SelectedStudios, isMusicVideo);
 
-        if (SelectedItem != null && SelectedItem.Trim().Length > 0 && !SelectedItem.Equals("..", StringComparison.CurrentCulture))
+        if (!string.IsNullOrWhiteSpace(SelectedItem) && !SelectedItem.Equals("..", StringComparison.CurrentCulture))
         {
           if ((!currSelectedGenericTitle.Equals(SelectedItem, StringComparison.CurrentCulture)) || (RefreshTickCount >= Utils.MaxRefreshTickCount))
           {
@@ -184,7 +184,7 @@ namespace FanartHandler
         // if (SelectedItem == null || SelectedItem.Length <= 0)
         //   SelectedItem = Utils.GetProperty("#selecteditem");
 
-        if (SelectedItem != null && !SelectedItem.Equals("..", StringComparison.CurrentCulture) && SelectedItem.Trim().Length > 0)
+        if (!string.IsNullOrWhiteSpace(SelectedItem) && !SelectedItem.Equals("..", StringComparison.CurrentCulture))
         {
           CurrSelectedMusicArtist = SelectedItem;
           CurrSelectedMusicAlbum = album;

@@ -744,23 +744,20 @@ namespace FanartHandler
       {
         try
         {
-          if (xml != null)
+          if (!string.IsNullOrWhiteSpace(xml))
           {
-            if (xml.Length > 0)
-            {
-              xmlDocument = new XmlDocument();
-              alSearchResults = new ArrayList();
+            xmlDocument = new XmlDocument();
+            alSearchResults = new ArrayList();
 
-              xmlDocument.LoadXml(xml);
-              nav1 = xmlDocument.CreateNavigator();
-              nav1.MoveToRoot();
-              if (nav1.HasChildren)
-              {
-                nav1.MoveToFirstChild();
-                GetNodeInfo(nav1);
-              }
-              res = alSearchResults.Count > 0 ;
+            xmlDocument.LoadXml(xml);
+            nav1 = xmlDocument.CreateNavigator();
+            nav1.MoveToRoot();
+            if (nav1.HasChildren)
+            {
+              nav1.MoveToFirstChild();
+              GetNodeInfo(nav1);
             }
+            res = alSearchResults.Count > 0 ;
           }
         }
         catch (Exception ex)
@@ -1242,33 +1239,32 @@ namespace FanartHandler
         GetHtml(URL+POST, out html) ;
         try
         {
-          if (html != null) {
-            if (html.Length > 0) {
-              if (html.IndexOf("\">http") > 0) 
-              {
-                sourceFilename = html.Substring(checked (html.IndexOf("size=\"mega\">") + 12));
+          if (!string.IsNullOrWhiteSpace(html))
+          {
+            if (html.IndexOf("\">http") > 0) 
+            {
+              sourceFilename = html.Substring(checked (html.IndexOf("size=\"mega\">") + 12));
+              sourceFilename = sourceFilename.Substring(0, sourceFilename.IndexOf("</image>"));
+              logger.Debug("Last.FM: Thumb Mega for " + Method + " - " + sourceFilename);
+              if (sourceFilename.ToLower().IndexOf(".jpg") > 0 || sourceFilename.ToLower().IndexOf(".png") > 0 || sourceFilename.ToLower().IndexOf(".gif") > 0)
+                flag = true ;
+              else {
+                sourceFilename = html.Substring(checked (html.IndexOf("size=\"extralarge\">") + 18));
                 sourceFilename = sourceFilename.Substring(0, sourceFilename.IndexOf("</image>"));
-                logger.Debug("Last.FM: Thumb Mega for " + Method + " - " + sourceFilename);
+                logger.Debug("Last.FM: Thumb Extra for " + Method + " - " + sourceFilename);
                 if (sourceFilename.ToLower().IndexOf(".jpg") > 0 || sourceFilename.ToLower().IndexOf(".png") > 0 || sourceFilename.ToLower().IndexOf(".gif") > 0)
                   flag = true ;
-                else {
-                  sourceFilename = html.Substring(checked (html.IndexOf("size=\"extralarge\">") + 18));
-                  sourceFilename = sourceFilename.Substring(0, sourceFilename.IndexOf("</image>"));
-                  logger.Debug("Last.FM: Thumb Extra for " + Method + " - " + sourceFilename);
-                  if (sourceFilename.ToLower().IndexOf(".jpg") > 0 || sourceFilename.ToLower().IndexOf(".png") > 0 || sourceFilename.ToLower().IndexOf(".gif") > 0)
-                    flag = true ;
-                  else
-                    flag = false ;
-                }
+                else
+                  flag = false ;
               }
-              if (html.IndexOf("<mbid>") > 0) 
-              {
-                mbid = html.Substring(checked (html.IndexOf("<mbid>") + 6));
-                mbid = mbid.Substring(0, mbid.IndexOf("</mbid>"));
-                logger.Debug("Last.FM: MBID for " + Method + " - " + mbid);
-                if (mbid.Length == 0)
-                  mbid = null;
-              }
+            }
+            if (html.IndexOf("<mbid>") > 0) 
+            {
+              mbid = html.Substring(checked (html.IndexOf("<mbid>") + 6));
+              mbid = mbid.Substring(0, mbid.IndexOf("</mbid>"));
+              logger.Debug("Last.FM: MBID for " + Method + " - " + mbid);
+              if (mbid.Length == 0)
+                mbid = null;
             }
           }
         }
@@ -1325,36 +1321,35 @@ namespace FanartHandler
         logger.Debug("Last.FM: Trying to find album for "+Artist+" - " + Track + ".");
 
         GetHtml(URL+POST, out html) ;
-        if (html != null) {
-          if (html.Length > 0) {
-            XDocument xDoc = null;
-            string Album = string.Empty;
-            string AlbumMusicBrainzId = string.Empty;
+        if (!string.IsNullOrWhiteSpace(html))
+        {
+          XDocument xDoc = null;
+          string Album = string.Empty;
+          string AlbumMusicBrainzId = string.Empty;
 
-            try
-            {
-              xDoc = XDocument.Parse(html);
-              if (xDoc.Root != null)
-              { 
-                var track = xDoc.Root.Element("track");
-                if (track != null)
+          try
+          {
+            xDoc = XDocument.Parse(html);
+            if (xDoc.Root != null)
+            { 
+              var track = xDoc.Root.Element("track");
+              if (track != null)
+              {
+                var albumElement = track.Element("album");
+                if (albumElement != null)
                 {
-                  var albumElement = track.Element("album");
-                  if (albumElement != null)
-                  {
-                    Album = (string)albumElement.Element("title");
-                    AlbumMusicBrainzId = (string)albumElement.Element("mbid");
-                    result = Album;
-                    logger.Debug("Last.FM: Album for "+Artist+" - " + Track + " found: " + Album + " " + AlbumMusicBrainzId);
-                  }
+                  Album = (string)albumElement.Element("title");
+                  AlbumMusicBrainzId = (string)albumElement.Element("mbid");
+                  result = Album;
+                  logger.Debug("Last.FM: Album for "+Artist+" - " + Track + " found: " + Album + " " + AlbumMusicBrainzId);
                 }
               }
             }
-            catch (Exception)
-            {
-              result = string.Empty;
-            }            
           }
+          catch (Exception)
+          {
+            result = string.Empty;
+          }            
         }
       }
       catch (Exception ex) {
@@ -1396,17 +1391,16 @@ namespace FanartHandler
         break;
       }
 
-      if (B != null)
-        if (B.Length > 0)
+      if (!string.IsNullOrWhiteSpace(B))
+      {
+        Regex ru = new Regex(URLRE.Replace("%1",(string.IsNullOrEmpty(Lang) ? "[^}]+?" : Lang)) + (LangIndep ? "?" : string.Empty) ,RegexOptions.IgnoreCase);
+        MatchCollection mcu = ru.Matches(B) ;
+        foreach(Match mu in mcu)
         {
-          Regex ru = new Regex(URLRE.Replace("%1",(string.IsNullOrEmpty(Lang) ? "[^}]+?" : Lang)) + (LangIndep ? "?" : string.Empty) ,RegexOptions.IgnoreCase);
-          MatchCollection mcu = ru.Matches(B) ;
-          foreach(Match mu in mcu)
-          {
-            URLList.Add(mu.Groups[1]+"|"+mu.Groups[2]);
-          }
-          logger.Debug("Extract URL - "+(string.IsNullOrEmpty(L) ? string.Empty : "Lang: ["+L+"] ")+"["+Sec+"] URLs Found: " + URLList.Count) ;
+          URLList.Add(mu.Groups[1]+"|"+mu.Groups[2]);
         }
+        logger.Debug("Extract URL - "+(string.IsNullOrEmpty(L) ? string.Empty : "Lang: ["+L+"] ")+"["+Sec+"] URLs Found: " + URLList.Count) ;
+      }
       return URLList;
     }
 
@@ -1512,12 +1506,12 @@ namespace FanartHandler
         {
           try
           {
-            if (html != null) {
-              if (html.Length > 0) 
+            if (!string.IsNullOrWhiteSpace(html))
+            {
+              URLList = ExtractURL(Section, html);
+              if (URLList != null)
               {
-                URLList = ExtractURL(Section, html);
-                if (URLList != null)
-                  flag = (URLList.Count > 0);
+                flag = (URLList.Count > 0);
               }
             }
           }
@@ -1590,18 +1584,16 @@ namespace FanartHandler
         if (!string.IsNullOrEmpty(Utils.MusicClearArtFolder) && (category == Utils.Category.MusicFanartScraped) && !Utils.StopScraper && Utils.MusicClearArtDownload)
         {
           flag = false;
-          if (html != null) {
-            if (html.Length > 0) 
+          if (!string.IsNullOrWhiteSpace(html))
+          {
+            URLList = ExtractURL("hdmusiclogo", html);
+            if (URLList != null)
+              flag = (URLList.Count > 0);
+            if (!flag)
             {
-              URLList = ExtractURL("hdmusiclogo", html);
+              URLList = ExtractURL("musiclogo", html);
               if (URLList != null)
                 flag = (URLList.Count > 0);
-              if (!flag)
-              {
-                URLList = ExtractURL("musiclogo", html);
-                if (URLList != null)
-                  flag = (URLList.Count > 0);
-              }
             }
           }
           if (flag)
@@ -1617,18 +1609,16 @@ namespace FanartHandler
         if (!string.IsNullOrEmpty(Utils.MoviesClearArtFolder) && (category == Utils.Category.MovieScraped) && !Utils.StopScraper && Utils.MoviesClearArtDownload)
         {
           flag = false;
-          if (html != null) {
-            if (html.Length > 0) 
+          if (!string.IsNullOrWhiteSpace(html)) 
+          {
+            URLList = ExtractURL("hdmovieclearart", html, false);
+            if (URLList != null)
+              flag = (URLList.Count > 0);
+            if (!flag)
             {
-              URLList = ExtractURL("hdmovieclearart", html, false);
+              URLList = ExtractURL("movieart", html, false);
               if (URLList != null)
                 flag = (URLList.Count > 0);
-              if (!flag)
-              {
-                URLList = ExtractURL("movieart", html, false);
-                if (URLList != null)
-                  flag = (URLList.Count > 0);
-              }
             }
           }
           if (flag)
@@ -1646,13 +1636,11 @@ namespace FanartHandler
         if (!string.IsNullOrEmpty(Utils.MusicBannerFolder) && (category == Utils.Category.MusicFanartScraped) && !Utils.StopScraper && Utils.MusicBannerDownload)
         {
           flag = false;
-          if (html != null) {
-            if (html.Length > 0) 
-            {
-              URLList = ExtractURL("musicbanner", html);
-              if (URLList != null)
-                flag = (URLList.Count > 0);
-            }
+          if (!string.IsNullOrWhiteSpace(html)) 
+          {
+            URLList = ExtractURL("musicbanner", html);
+            if (URLList != null)
+              flag = (URLList.Count > 0);
           }
           if (flag)
           {
@@ -1667,13 +1655,11 @@ namespace FanartHandler
         if (!string.IsNullOrEmpty(Utils.MoviesBannerFolder) && (category == Utils.Category.MovieScraped) && !Utils.StopScraper && Utils.MoviesBannerDownload)
         {
           flag = false;
-          if (html != null) {
-            if (html.Length > 0) 
-            {
-              URLList = ExtractURL("moviebanner", html, false);
-              if (URLList != null)
-                flag = (URLList.Count > 0);
-            }
+          if (!string.IsNullOrWhiteSpace(html))
+          {
+            URLList = ExtractURL("moviebanner", html, false);
+            if (URLList != null)
+              flag = (URLList.Count > 0);
           }
           if (flag)
           {
@@ -1690,18 +1676,16 @@ namespace FanartHandler
         if (!string.IsNullOrEmpty(Utils.MoviesClearLogoFolder) && (category == Utils.Category.MovieScraped) && !Utils.StopScraper && Utils.MoviesClearLogoDownload)
         {
           flag = false;
-          if (html != null) {
-            if (html.Length > 0) 
+          if (!string.IsNullOrWhiteSpace(html)) 
+          {
+            URLList = ExtractURL("hdmovielogo", html, false);
+            if (URLList != null)
+              flag = (URLList.Count > 0);
+            if (!flag)
             {
-              URLList = ExtractURL("hdmovielogo", html, false);
+              URLList = ExtractURL("movielogo", html, false);
               if (URLList != null)
                 flag = (URLList.Count > 0);
-              if (!flag)
-              {
-                URLList = ExtractURL("movielogo", html, false);
-                if (URLList != null)
-                  flag = (URLList.Count > 0);
-              }
             }
           }
           if (flag)
@@ -1718,13 +1702,11 @@ namespace FanartHandler
         if (!string.IsNullOrEmpty(Utils.MusicCDArtFolder) && (category == Utils.Category.MusicAlbumThumbScraped) && !Utils.StopScraper && Utils.MusicCDArtDownload)
         {
           flag = false;
-          if (html != null) {
-            if (html.Length > 0) 
-            {
-              URLList = ExtractURL("cdart", html);
-              if (URLList != null)
-                flag = (URLList.Count > 0);
-            }
+          if (!string.IsNullOrWhiteSpace(html)) 
+          {
+            URLList = ExtractURL("cdart", html);
+            if (URLList != null)
+              flag = (URLList.Count > 0);
           }
           if (flag)
           {
@@ -1739,13 +1721,11 @@ namespace FanartHandler
         if (!string.IsNullOrEmpty(Utils.MoviesCDArtFolder) && (category == Utils.Category.MovieScraped) && !Utils.StopScraper && Utils.MoviesCDArtDownload)
         {
           flag = false;
-          if (html != null) {
-            if (html.Length > 0) 
-            {
-              URLList = ExtractURL("moviedisc", html);
-              if (URLList != null)
-                flag = (URLList.Count > 0);
-            }
+          if (!string.IsNullOrWhiteSpace(html))
+          {
+            URLList = ExtractURL("moviedisc", html);
+            if (URLList != null)
+              flag = (URLList.Count > 0);
           }
           if (flag)
           {
@@ -1831,11 +1811,10 @@ namespace FanartHandler
         GetHtml(String.Format(URL,mbid.Trim()), out html) ;
         try
         {
-          if (html != null) {
-            if (html.Length > 0) {
-              sourceFilename = GetCoverArtFrontThumbURL(html) ;
-              flag = !string.IsNullOrEmpty(sourceFilename);
-            }
+          if (!string.IsNullOrWhiteSpace(html))
+          {
+            sourceFilename = GetCoverArtFrontThumbURL(html) ;
+            flag = !string.IsNullOrEmpty(sourceFilename);
           }
         }
         catch (Exception ex)

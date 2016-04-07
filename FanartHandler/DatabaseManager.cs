@@ -1055,7 +1055,7 @@ namespace FanartHandler
                 {
                     var GetImages = 0;
                     // logger.Debug("=== DoScrapeNew: "+artist) ;
-                    if (!string.IsNullOrEmpty(artist))
+                    if (!string.IsNullOrWhiteSpace(artist))
                     {
                     #region NowPlaying Artist
                         var dbartist = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
@@ -1110,7 +1110,7 @@ namespace FanartHandler
                             return GetImages;
                     #endregion
                     #region NowPlaying Album Thumb
-                        if ((album != null && album.Trim().Length > 0) && Utils.ScrapeThumbnailsAlbum)
+                        if (!string.IsNullOrWhiteSpace(album) && Utils.ScrapeThumbnailsAlbum)
                           if (!HasAlbumThumb(dbartist,dbalbum))
                           {
                             scraper = new Scraper();
@@ -1153,7 +1153,7 @@ namespace FanartHandler
                         if (StopScraper)
                             return GetImages;
                     #endregion
-                    } // if (artist != null && artist.Trim().Length > 0)
+                    } // if (!string.IsNullOrWhiteSpace(artist))
                     return GetImages;
                 }
                 catch (Exception ex)
@@ -1174,7 +1174,7 @@ namespace FanartHandler
                 try
                 {
                     var num = 0;
-                    if (artist != null && artist.Trim().Length > 0)
+                    if (!string.IsNullOrWhiteSpace(artist))
                     {
                         var dbartist = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
                         if (!HasArtistThumb(dbartist) || !onlyMissing)
@@ -1407,7 +1407,7 @@ namespace FanartHandler
                       while (index < musicDatabaseAlbums.Count)
                       {
                           var album = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Album).Trim();
-                          if (album != null && album.Length > 0)
+                          if (!string.IsNullOrWhiteSpace(album))
                           {
                               // logger.Debug("*** "+Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Artist).Trim()+"/"+Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].AlbumArtist).Trim()+" - "+Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Album).Trim()) ;
                               var artist   = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Artist).Trim();
@@ -1677,7 +1677,7 @@ namespace FanartHandler
                     while (index < musicDatabaseAlbums.Count)
                     {
                       var album = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Album).Trim();
-                      if (album != null && album.Length > 0)
+                      if (!string.IsNullOrWhiteSpace(album))
                       {
                         var artist = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Artist).Trim();
                         var dbartist = Utils.GetArtist(Scraper.UndoArtistPrefix(artist), Utils.Category.MusicFanartScraped);
@@ -1752,12 +1752,12 @@ namespace FanartHandler
                 logger.Info("ArtistAlbumScrape is starting for Artist: " + artist + ", Album: " + album + ".");
                 if (DoScrapeNew(artist, album, true) > 0)
                 {
-                    logger.Info("ArtistAlbumScrape is done.");
+                    logger.Info("ArtistAlbumScrape is done. Found.");
                     return true;
                 }
                 else
                 {
-                    logger.Info("ArtistAlbumScrape is done.");
+                    logger.Info("ArtistAlbumScrape is done. Not found.");
                     return false;
                 }
             }
@@ -1788,13 +1788,13 @@ namespace FanartHandler
                   logger.Debug("NowPlayingScrape is starting for Artist: " + sartist + (string.IsNullOrEmpty(album) ? string.Empty : " - " + album));
                   if (!StopScraper) 
                   {
-                    var result = (DoScrapeNew(sartist.Trim(), album, false) > 0);
+                    var result = (DoScrapeNew(sartist, album, false) > 0);
                     flag = (flag || result);
                   }
                   else
                     break;
                 }
-                logger.Info("--- NowPlaying --- Scrape is done.");
+                logger.Info("--- NowPlaying --- Scrape is done. " + (flag ? "F" : "Not f") + "ound.");
                 return flag;
             }
             catch (Exception ex)
@@ -1955,7 +1955,7 @@ namespace FanartHandler
                     while (index < musicDatabaseAlbums.Count)
                     {
                       var album = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Album).Trim();
-                      if (album != null && album.Length > 0)
+                      if (!string.IsNullOrWhiteSpace(album))
                       {
                         // Artist
                         var artist   = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Artist).Trim();
