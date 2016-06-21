@@ -28,6 +28,8 @@ namespace FanartHandler
     private bool FanartAvailable;
 
     // Public
+    public Hashtable PicturesCache;
+
     public int RefreshTickCount { get; set; }
 
     public Hashtable WindowsUsingFanartSelectedClearArtMusic { get; set; }
@@ -61,6 +63,8 @@ namespace FanartHandler
       WindowsUsingFanartSelectedStudioMovie = new Hashtable();
 
       WindowsUsingFanartSelectedAwardMovie = new Hashtable();
+
+      PicturesCache = new Hashtable();
 
       IsSelectedMusic = false;
       IsSelectedVideo = false;
@@ -112,7 +116,7 @@ namespace FanartHandler
         Utils.GetSelectedItem(ref SelectedItem, ref SelectedAlbum, ref SelectedGenre, ref SelectedStudios, ref isMusicVideo);
         // logger.Debug("*** Refresh: {0} - {1} - {2} - {3} - {4}", SelectedItem, SelectedAlbum, SelectedGenre,  SelectedStudios, isMusicVideo);
 
-        if (!string.IsNullOrWhiteSpace(SelectedItem) && !SelectedItem.Equals("..", StringComparison.CurrentCulture))
+        if (SelectedItem != null && SelectedItem.Trim().Length > 0 && !SelectedItem.Equals("..", StringComparison.CurrentCulture))
         {
           if ((!currSelectedGenericTitle.Equals(SelectedItem, StringComparison.CurrentCulture)) || (RefreshTickCount >= Utils.MaxRefreshTickCount))
           {
@@ -184,7 +188,7 @@ namespace FanartHandler
         // if (SelectedItem == null || SelectedItem.Length <= 0)
         //   SelectedItem = Utils.GetProperty("#selecteditem");
 
-        if (!string.IsNullOrWhiteSpace(SelectedItem) && !SelectedItem.Equals("..", StringComparison.CurrentCulture))
+        if (SelectedItem != null && !SelectedItem.Equals("..", StringComparison.CurrentCulture) && SelectedItem.Trim().Length > 0)
         {
           CurrSelectedMusicArtist = SelectedItem;
           CurrSelectedMusicAlbum = album;
@@ -366,7 +370,7 @@ namespace FanartHandler
     {
       if (string.IsNullOrEmpty(Studios))
       {
-        Utils.SetProperty("movie.studios.selected", string.Empty);
+        Utils.SetProperty("movie.studios.selected.single", string.Empty);
         Utils.SetProperty("movie.studios.selected.all", string.Empty);
         Utils.SetProperty("movie.studios.selected.verticalall", string.Empty);
         return;
@@ -376,32 +380,49 @@ namespace FanartHandler
         return;
       }
 
+      var picFound = false;
       var sFile = string.Empty;
       var sFileNames = new List<string>() ;  
       try
       {
-        // Get Studio name
-        var studios = Studios.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
-        if (studios != null)
+        if ((Utils.ContainsID(WindowsUsingFanartSelectedStudioMovie, Utils.Logo.Single)) ||
+            (Utils.ContainsID(WindowsUsingFanartSelectedStudioMovie, Utils.Logo.Horizontal) && !Utils.ContainsID(PicturesCache, Studios + Utils.Logo.Horizontal)) ||
+            (Utils.ContainsID(WindowsUsingFanartSelectedStudioMovie, Utils.Logo.Vertical) && !Utils.ContainsID(PicturesCache, Studios + Utils.Logo.Vertical)))
         {
-          // logger.Debug("*** Studios: > "+Studios) ;
-          foreach (string studio in studios)
+          // Get Studio name
+          Utils.FillFilesList(ref sFileNames, Studios, Utils.OtherPictures.Studios);
+          picFound = sFileNames.Count > 0;
+          /*
+          var studios = Studios.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
+          if (studios != null)
           {
-            string _studio = Utils.GetStudio(studio.Trim());
-            sFile = Utils.GetThemedSkinFile(Utils.FAHStudios + MediaPortal.Util.Utils.MakeFileName(_studio) + ".png") ; 
-            if (!string.IsNullOrEmpty(sFile) && File.Exists(sFile))
+            // logger.Debug("*** Studios: > "+Studios) ;
+            foreach (string studio in studios)
             {
-              sFileNames.Add(sFile) ;
-              // logger.Debug("- Studio [{0}/{1}] found. {2}", studio, _studio, sFile);
+              string _studio = Utils.GetStudio(studio.Trim());
+              sFile = Utils.GetThemedSkinFile(Utils.FAHStudios + MediaPortal.Util.Utils.MakeFileName(_studio) + ".png") ; 
+              if (!string.IsNullOrEmpty(sFile) && File.Exists(sFile))
+              {
+                if (!sFileNames.Contains(sFile))
+                {
+                  sFileNames.Add(sFile) ;
+                }
+                // logger.Debug("- Studio [{0}/{1}] found. {2}", studio, _studio, sFile);
+              }
+              else if (!string.IsNullOrEmpty(sFile) && !File.Exists(sFile))
+              {
+                logger.Debug("- Studio [{0}/{1}] not found. Skipped.", studio, _studio);
+              }
             }
-            else if (!string.IsNullOrEmpty(sFile) && !File.Exists(sFile))
-            {
-              logger.Debug("- Studio [{0}/{1}] not found. Skipped.", studio, _studio);
-            }
+            picFound = sFileNames.Count > 0;
           }
+          */
+        }
 
+        if (Utils.ContainsID(WindowsUsingFanartSelectedStudioMovie, Utils.Logo.Single))
+        {
           if (sFileNames.Count == 0)
-            sFile = string.Empty ;
+            sFile = string.Empty;
           else if (sFileNames.Count == 1)
             sFile = sFileNames[0].Trim();
           else if (sFileNames.Count == 2)
@@ -411,122 +432,57 @@ namespace FanartHandler
             var rand = new Random();
             sFile = sFileNames[rand.Next(sFileNames.Count-1)].Trim();
           }
+
+          Utils.SetProperty("movie.studios.selected.single", sFile);
         }
 
-        Utils.SetProperty("movie.studios.selected", sFile);
+        if ((Utils.MaxViewStudiosImages > 0) && (sFileNames.Count > Utils.MaxViewStudiosImages))
+        {
+          sFileNames.RemoveRange(Utils.MaxViewStudiosImages, sFileNames.Count - Utils.MaxViewStudiosImages);
+        }
+
         if (Utils.ContainsID(WindowsUsingFanartSelectedStudioMovie, Utils.Logo.Horizontal))
         {
-          Utils.SetProperty("movie.studios.selected.all", Logos.BuildConcatImage("Studios", sFileNames));
+          picFound = Utils.SetPropertyCache("movie.studios.selected.all", "Studios", Studios, Utils.Logo.Horizontal, ref sFileNames, ref PicturesCache);
         }
         if (Utils.ContainsID(WindowsUsingFanartSelectedStudioMovie, Utils.Logo.Vertical))
         {
-          Utils.SetProperty("movie.studios.selected.verticalall", Logos.BuildConcatImage("VerticalStudios", sFileNames, true));
+          picFound = Utils.SetPropertyCache("movie.studios.selected.verticalall", "VerticalStudios", Studios, Utils.Logo.Vertical, ref sFileNames, ref PicturesCache);
         }
-        FanartAvailable = FanartAvailable || !string.IsNullOrEmpty(sFile);
       }
       catch (Exception ex)
       {
         logger.Error("AddSelectedStudioProperty: " + ex);
       }
+      FanartAvailable = FanartAvailable || picFound;
     }
 
     public void AddSelectedAwardProperty()
     {
       if (!Utils.ContainsID(WindowsUsingFanartSelectedAwardMovie))
       {
-        Utils.SetProperty("movie.awards.selected", string.Empty);
+        Utils.SetProperty("movie.awards.selected.single", string.Empty);
         Utils.SetProperty("movie.awards.selected.all", string.Empty);
         Utils.SetProperty("movie.awards.selected.verticalall", string.Empty);
         return;
       }
 
+      var picFound = false;
       var sFile = string.Empty;
       var sFileNames = new List<string>() ;  
       try
       {
         // Get Awards name
-        string sAwards = Utils.GetAwards(false);
+        string sAwards = Utils.GetAwards();
         if (!string.IsNullOrEmpty(sAwards))
         {
-          var awards = sAwards.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
-          if (awards != null)
+          if ((Utils.ContainsID(WindowsUsingFanartSelectedAwardMovie, Utils.Logo.Single)) ||
+              (Utils.ContainsID(WindowsUsingFanartSelectedAwardMovie, Utils.Logo.Horizontal) && !Utils.ContainsID(PicturesCache, sAwards + Utils.Logo.Horizontal)) ||
+              (Utils.ContainsID(WindowsUsingFanartSelectedAwardMovie, Utils.Logo.Vertical) && !Utils.ContainsID(PicturesCache, sAwards + Utils.Logo.Vertical)))
           {
-            foreach (string award in awards)
-            {
-              sFile = Utils.GetThemedSkinFile(Utils.FAHAwards + MediaPortal.Util.Utils.MakeFileName(award) + ".png") ; 
-              if (!string.IsNullOrEmpty(sFile) && File.Exists(sFile))
-              {
-                sFileNames.Add(sFile) ;
-                logger.Debug("- Award [{0}] found. {1}", award, sFile);
-              }
-            }
-          }
-
-          if (sFileNames.Count == 0)
-            sFile = string.Empty ;
-          else if (sFileNames.Count == 1)
-            sFile = sFileNames[0].Trim();
-          else if (sFileNames.Count == 2)
-            sFile = sFileNames[(DoShowImageOne ? 0 : 1)].Trim();
-          else
-          {
-            var rand = new Random();
-            sFile = sFileNames[rand.Next(sFileNames.Count-1)].Trim();
-          }
-        }
-
-        Utils.SetProperty("movie.awards.selected", sFile);
-        if (Utils.ContainsID(WindowsUsingFanartSelectedAwardMovie, Utils.Logo.Horizontal))
-        {
-          Utils.SetProperty("movie.awards.selected.all", Logos.BuildConcatImage("Awards", sFileNames));
-        }
-        if (Utils.ContainsID(WindowsUsingFanartSelectedAwardMovie, Utils.Logo.Vertical))
-        {
-          Utils.SetProperty("movie.awards.selected.verticalall", Logos.BuildConcatImage("VerticalAwards", sFileNames, true));
-        }
-        FanartAvailable = FanartAvailable || !string.IsNullOrEmpty(sFile);
-      }
-      catch (Exception ex)
-      {
-        logger.Error("AddSelectedAwardProperty: " + ex);
-      }
-    }
-
-    public void AddSelectedGenreProperty(string Genres, string sTitle, string mode)
-    {
-      if (string.IsNullOrEmpty(Genres))
-      {
-        Utils.SetProperty(mode + ".genres.selected", string.Empty);
-        Utils.SetProperty(mode + ".genres.selected.all", string.Empty);
-        Utils.SetProperty(mode + ".genres.selected.verticalall", string.Empty);
-        return;
-      }
-      var isMusic = (mode.Equals("music", StringComparison.CurrentCulture));
-      if (isMusic)
-      {
-        if (!Utils.ContainsID(WindowsUsingFanartSelectedGenreMusic))
-        {
-          return;
-        }
-      }
-      else
-      {
-        if (!Utils.ContainsID(WindowsUsingFanartSelectedGenreMovie))
-        {
-          return;
-        }
-      }
-
-      var sFile = string.Empty;
-      var sFileNames = new List<string>() ;  
-      try
-      {
-        if (!isMusic)
-        {
-          // Get Awards and add to Genre
-          string sAwards = Utils.GetAwards(true);
-          if (!string.IsNullOrEmpty(sAwards))
-          {
+            Utils.FillFilesList(ref sFileNames, sAwards, Utils.OtherPictures.Awards);
+            picFound = sFileNames.Count > 0;
+            /*
             var awards = sAwards.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
             if (awards != null)
             {
@@ -535,20 +491,133 @@ namespace FanartHandler
                 sFile = Utils.GetThemedSkinFile(Utils.FAHAwards + MediaPortal.Util.Utils.MakeFileName(award) + ".png") ; 
                 if (!string.IsNullOrEmpty(sFile) && File.Exists(sFile))
                 {
-                  sFileNames.Add(sFile) ;
+                  if (!sFileNames.Contains(sFile))
+                  {
+                    sFileNames.Add(sFile) ;
+                  }
+                  logger.Debug("- Award [{0}] found. {1}", award, sFile);
+                }
+              }
+              picFound = sFileNames.Count > 0;
+            }
+            */
+          }
+        }
+
+        // Single
+        if (Utils.ContainsID(WindowsUsingFanartSelectedAwardMovie, Utils.Logo.Single))
+        {
+          if (sFileNames.Count == 0)
+            sFile = string.Empty;
+          else if (sFileNames.Count == 1)
+            sFile = sFileNames[0].Trim();
+          else if (sFileNames.Count == 2)
+            sFile = sFileNames[(DoShowImageOne ? 0 : 1)].Trim();
+          else
+          {
+            var rand = new Random();
+            sFile = sFileNames[rand.Next(sFileNames.Count-1)].Trim();
+          }
+
+          Utils.SetProperty("movie.awards.selected.single", sFile);
+        }
+
+        if ((Utils.MaxViewAwardsImages > 0) && (sFileNames.Count > Utils.MaxViewAwardsImages))
+        {
+          sFileNames.RemoveRange(Utils.MaxViewAwardsImages, sFileNames.Count - Utils.MaxViewAwardsImages);
+        }
+
+        // Horizontal
+        if (Utils.ContainsID(WindowsUsingFanartSelectedAwardMovie, Utils.Logo.Horizontal))
+        {
+          picFound = Utils.SetPropertyCache("movie.awards.selected.all", "Awards", sAwards, Utils.Logo.Horizontal, ref sFileNames, ref PicturesCache);
+        }
+
+        // Vertical
+        if (Utils.ContainsID(WindowsUsingFanartSelectedAwardMovie, Utils.Logo.Vertical))
+        {
+          picFound = Utils.SetPropertyCache("movie.awards.selected.all", "VerticalAwards", sAwards, Utils.Logo.Vertical, ref sFileNames, ref PicturesCache);
+        }
+      }
+      catch (Exception ex)
+      {
+        logger.Error("AddSelectedAwardProperty: " + ex);
+      }
+      FanartAvailable = FanartAvailable || picFound;
+    }
+
+    public void AddSelectedGenreProperty(string Genres, string sTitle, string mode)
+    {
+      if (string.IsNullOrEmpty(Genres))
+      {
+        Utils.SetProperty(mode + ".genres.selected.single", string.Empty);
+        Utils.SetProperty(mode + ".genres.selected.all", string.Empty);
+        Utils.SetProperty(mode + ".genres.selected.verticalall", string.Empty);
+        return;
+      }
+      var isMusic = (mode.Equals("music", StringComparison.CurrentCulture));
+      if ((isMusic && !Utils.ContainsID(WindowsUsingFanartSelectedGenreMusic)) || 
+          (!isMusic && !Utils.ContainsID(WindowsUsingFanartSelectedGenreMovie)))
+      {
+        return;
+      }
+
+      var picFound = false;
+      var sFile = string.Empty;
+      var sFileNames = new List<string>();  
+      try
+      {
+        string sAwards = string.Empty;
+        if (!isMusic && Utils.AddAwardsToGenre)
+        {
+          // Get Awards for Active window
+          sAwards = Utils.GetAwards();
+        }
+
+        string sChars = string.Empty;
+        if (!string.IsNullOrEmpty(sTitle))
+        {
+          // Get Characters from selected
+          sChars = Utils.GetCharacters(sTitle);
+        }
+
+        var picKey = mode + sAwards + sChars + Genres;
+        if ((isMusic && ((Utils.ContainsID(WindowsUsingFanartSelectedGenreMusic, Utils.Logo.Single)) ||
+                         (Utils.ContainsID(WindowsUsingFanartSelectedGenreMusic, Utils.Logo.Horizontal) && !Utils.ContainsID(PicturesCache, picKey + Utils.Logo.Horizontal)) ||
+                         (Utils.ContainsID(WindowsUsingFanartSelectedGenreMusic, Utils.Logo.Vertical) && !Utils.ContainsID(PicturesCache, picKey + Utils.Logo.Vertical)))) ||
+            (!isMusic && ((Utils.ContainsID(WindowsUsingFanartSelectedGenreMovie, Utils.Logo.Single)) ||
+                          (Utils.ContainsID(WindowsUsingFanartSelectedGenreMovie, Utils.Logo.Horizontal) && !Utils.ContainsID(PicturesCache, picKey + Utils.Logo.Horizontal)) ||
+                          (Utils.ContainsID(WindowsUsingFanartSelectedGenreMovie, Utils.Logo.Vertical) && !Utils.ContainsID(PicturesCache, picKey + Utils.Logo.Vertical)))))
+        {
+          // Get Awards pictures
+          if (!string.IsNullOrEmpty(sAwards))
+          {
+            Utils.FillFilesList(ref sFileNames, sAwards, Utils.OtherPictures.Awards);
+            /*
+            var awards = sAwards.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
+            if (awards != null)
+            {
+              foreach (string award in awards)
+              {
+                sFile = Utils.GetThemedSkinFile(Utils.FAHAwards + MediaPortal.Util.Utils.MakeFileName(award) + ".png") ; 
+                if (!string.IsNullOrEmpty(sFile) && File.Exists(sFile))
+                {
+                  if (!sFileNames.Contains(sFile))
+                  {
+                    sFileNames.Add(sFile) ;
+                  }
                   logger.Debug("- Award [{0}] found. {1}", award, sFile);
                 }
               }
             }
+            */
           }
-        }
 
-        if (!string.IsNullOrEmpty(sTitle))
-        {
-          // Get Characters from selected and add to Genre
-          string sChars = Utils.GetCharacters(sTitle);
+          // Get Characters pictures
           if (!string.IsNullOrEmpty(sChars))
           {
+            Utils.FillFilesList(ref sFileNames, sChars, Utils.OtherPictures.Characters);
+            /*
             var characters = sChars.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
             if (characters != null)
             {
@@ -558,76 +627,102 @@ namespace FanartHandler
                 sFile = Utils.GetThemedSkinFile(Utils.FAHCharacters + MediaPortal.Util.Utils.MakeFileName(_character) + ".png") ; 
                 if (!string.IsNullOrEmpty(sFile) && File.Exists(sFile))
                 {
-                  sFileNames.Add(sFile) ;
+                  if (!sFileNames.Contains(sFile))
+                  {
+                    sFileNames.Add(sFile) ;
+                  }
                   logger.Debug("- Character [{0}/{1}] found. {2}", character, _character, sFile);
                 }
               }
             }
+            */
           }
-        }
 
-        // Get Genre name
-        var genres = Genres.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
-        if (genres != null)
-        {
-          // logger.Debug("*** Genres: > "+Genres) ;
-          foreach (string genre in genres)
+          // Get Genres name
+          Utils.FillFilesList(ref sFileNames, Genres, Utils.OtherPictures.Genres);
+          /*
+          var genres = Genres.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
+          if (genres != null)
           {
-            string _genre = Utils.GetGenre(genre.Trim());
-            sFile = Utils.GetThemedSkinFile(Utils.FAHGenres + MediaPortal.Util.Utils.MakeFileName(_genre) + ".png") ; 
-            if (!string.IsNullOrEmpty(sFile) && File.Exists(sFile))
+            // logger.Debug("*** Genres: > "+Genres) ;
+            foreach (string genre in genres)
             {
-              sFileNames.Add(sFile) ;
-              // logger.Debug("- Genre [{0}/{1}] found. {2}", genre, _genre, sFile);
-            }
-            else if (!string.IsNullOrEmpty(sFile) && !File.Exists(sFile))
-            {
-              logger.Debug("- Genre [{0}/{1}] not found. Skipped.", genre, _genre);
+              string _genre = Utils.GetGenre(genre.Trim());
+              sFile = Utils.GetThemedSkinFile(Utils.FAHGenres + MediaPortal.Util.Utils.MakeFileName(_genre) + ".png") ; 
+              if (!string.IsNullOrEmpty(sFile) && File.Exists(sFile))
+              {
+                if (!sFileNames.Contains(sFile))
+                {
+                  sFileNames.Add(sFile) ;
+                }
+                // logger.Debug("- Genre [{0}/{1}] found. {2}", genre, _genre, sFile);
+              }
+              else if (!string.IsNullOrEmpty(sFile) && !File.Exists(sFile))
+              {
+                logger.Debug("- Genre [{0}/{1}] not found. Skipped.", genre, _genre);
+              }
             }
           }
+          */
+          picFound = sFileNames.Count > 0;
         }
 
-        if (sFileNames.Count == 0)
-          sFile = string.Empty ;
-        else if (sFileNames.Count == 1)
-          sFile = sFileNames[0].Trim();
-        else if (sFileNames.Count == 2)
-          sFile = sFileNames[(DoShowImageOne ? 0 : 1)].Trim();
-        else
+        // Single
+        if ((isMusic && Utils.ContainsID(WindowsUsingFanartSelectedGenreMusic, Utils.Logo.Single)) || 
+            (!isMusic && Utils.ContainsID(WindowsUsingFanartSelectedGenreMovie, Utils.Logo.Single)))
         {
-          var rand = new Random();
-          sFile = sFileNames[rand.Next(sFileNames.Count-1)].Trim();
+          if (sFileNames.Count == 0)
+            sFile = string.Empty;
+          else if (sFileNames.Count == 1)
+            sFile = sFileNames[0].Trim();
+          else if (sFileNames.Count == 2)
+            sFile = sFileNames[(DoShowImageOne ? 0 : 1)].Trim();
+          else
+          {
+            var rand = new Random();
+            sFile = sFileNames[rand.Next(sFileNames.Count-1)].Trim();
+          }
+
+          Utils.SetProperty(mode + ".genres.selected.single", sFile);
         }
 
-        Utils.SetProperty(mode + ".genres.selected", sFile);
+        if ((Utils.MaxViewGenresImages > 0) && (sFileNames.Count > Utils.MaxViewGenresImages))
+        {
+          sFileNames.RemoveRange(Utils.MaxViewGenresImages, sFileNames.Count - Utils.MaxViewGenresImages);
+        }
+
         if (isMusic)
         {
+          // Horizontal
           if (Utils.ContainsID(WindowsUsingFanartSelectedGenreMusic, Utils.Logo.Horizontal))
           {
-            Utils.SetProperty(mode + ".genres.selected.all", Logos.BuildConcatImage("Genres", sFileNames));
+            picFound = Utils.SetPropertyCache(mode + ".genres.selected.all", "Genres", picKey, Utils.Logo.Horizontal, ref sFileNames, ref PicturesCache);
           }
+          // Vertical
           if (Utils.ContainsID(WindowsUsingFanartSelectedGenreMusic, Utils.Logo.Vertical))
           {
-            Utils.SetProperty(mode + ".genres.selected.verticalall", Logos.BuildConcatImage("VerticalGenres", sFileNames, true));
+            picFound = Utils.SetPropertyCache(mode + ".genres.selected.verticalall", "VerticalGenres", picKey, Utils.Logo.Vertical, ref sFileNames, ref PicturesCache);
           }
         }
         else
         {
+          // Horizontal
           if (Utils.ContainsID(WindowsUsingFanartSelectedGenreMovie, Utils.Logo.Horizontal))
           {
-            Utils.SetProperty(mode + ".genres.selected.all", Logos.BuildConcatImage("Genres", sFileNames));
+            picFound = Utils.SetPropertyCache(mode + ".genres.selected.all", "Genres", picKey, Utils.Logo.Horizontal, ref sFileNames, ref PicturesCache);
           }
+          // Vertical
           if (Utils.ContainsID(WindowsUsingFanartSelectedGenreMovie, Utils.Logo.Vertical))
           {
-            Utils.SetProperty(mode + ".genres.selected.verticalall", Logos.BuildConcatImage("VerticalGenres", sFileNames, true));
+            picFound = Utils.SetPropertyCache(mode + ".genres.selected.verticalall", "VerticalGenres", picKey, Utils.Logo.Vertical, ref sFileNames, ref PicturesCache);
           }
         }
-        FanartAvailable = FanartAvailable || !string.IsNullOrEmpty(sFile);
       }
       catch (Exception ex)
       {
         logger.Error("AddSelectedGenreProperty: " + ex);
       }
+      FanartAvailable = FanartAvailable || picFound;
     }
 
     private void EmptyMusicProperties(bool currClean = true)
@@ -687,22 +782,22 @@ namespace FanartHandler
       Utils.SetProperty("music.artistclearart.selected", string.Empty);
       Utils.SetProperty("music.artistbanner.selected", string.Empty);
 
-      Utils.SetProperty("music.genres.selected", string.Empty);
+      Utils.SetProperty("music.genres.selected.single", string.Empty);
       Utils.SetProperty("music.genres.selected.all", string.Empty);
       Utils.SetProperty("music.genres.selected.verticalall", string.Empty);
     }
 
     public void EmptySelectedMoviesProperties()
     {
-      Utils.SetProperty("movie.studios.selected", string.Empty);
+      Utils.SetProperty("movie.studios.selected.single", string.Empty);
       Utils.SetProperty("movie.studios.selected.all", string.Empty);
       Utils.SetProperty("movie.studios.selected.verticalall", string.Empty);
 
-      Utils.SetProperty("movie.genres.selected", string.Empty);
+      Utils.SetProperty("movie.genres.selected.single", string.Empty);
       Utils.SetProperty("movie.genres.selected.all", string.Empty);
       Utils.SetProperty("movie.genres.selected.verticalall", string.Empty);
 
-      Utils.SetProperty("movie.awards.selected", string.Empty);
+      Utils.SetProperty("movie.awards.selected.single", string.Empty);
       Utils.SetProperty("movie.awards.selected.all", string.Empty);
       Utils.SetProperty("movie.awards.selected.verticalall", string.Empty);
     }

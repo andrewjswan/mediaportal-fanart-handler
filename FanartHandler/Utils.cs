@@ -59,7 +59,7 @@ namespace FanartHandler
 
     private static int activeWindow = (int)GUIWindow.Window.WINDOW_INVALID;
 
-    private static bool AddAwardsToGenre = false;
+    public static bool AddAwardsToGenre = false;
 
     public static DateTime LastRefreshRecording { get; set; }
     public static bool Used4TRTV { get; set; }
@@ -72,6 +72,10 @@ namespace FanartHandler
     public static Hashtable Characters;
     public static Hashtable Studios;
     public static List<KeyValuePair<string, object>> AwardsList;
+
+    public static int MaxViewAwardsImages;
+    public static int MaxViewGenresImages;
+    public static int MaxViewStudiosImages;
 
     #region Settings
     public static bool UseFanart { get; set; }
@@ -112,6 +116,7 @@ namespace FanartHandler
     public static bool UseMyPicturesSlideShow { get; set; }
     public static bool FastScanMyPicturesSlideShow { get; set; }
     public static int LimitNumberFanart { get; set; }
+    public static bool AddOtherPicturesToCache { get; set; }
     #endregion
 
     #region Providers
@@ -808,7 +813,8 @@ namespace FanartHandler
         return string.Empty;
 
       key = key.Trim();
-      if (key.IndexOfAny(Path.GetInvalidFileNameChars()) < 0)
+      // if (key.IndexOfAny(Path.GetInvalidFileNameChars()) < 0)
+      if (key.IndexOfAny(Path.GetInvalidPathChars()) < 0)
       {
         key = GetFileName(key);
       }
@@ -858,7 +864,7 @@ namespace FanartHandler
       return key;
     }
 
-    public static string GetAlbum(string key, Category category, bool isFile = false)
+    public static string GetAlbum(string key, Category category)
     {
       if (string.IsNullOrWhiteSpace(key))
         return string.Empty;
@@ -930,29 +936,31 @@ namespace FanartHandler
       return GetArtistAlbumFromFolder(FileName, ArtistAlbumRegex, "album") ;
     }
 
-    public static string HandleMultipleArtistNamesForDBQuery(string inputName)
+    public static string HandleMultipleKeysForDBQuery(string inputKey)
     {
-      if (string.IsNullOrWhiteSpace(inputName))
+      if (string.IsNullOrWhiteSpace(inputKey))
         return string.Empty;
 
-      var artists = "'" + inputName.Trim() + "'";
-      var strArray = inputName.ToLower().
-                     //  Replace(";", "|").
-                     //  Replace(" ft ", "|").
-                     //  Replace(" feat ", "|").
-                     //  Replace(" and ", "|").
-                     //  Replace(" & ", "|").
-                     //  Replace(" и ", "|").
-                     //  Replace(",", "|").
-                     Trim().
-                     Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
+      var keys = "'" + inputKey.Trim() + "'";
+      var strArray = inputKey.ToLower().
+                              Trim().
+                              Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
+      var htUnique = new Hashtable();
 
-      foreach (var artist in strArray)
+      foreach (var _key in strArray)
       {
-        if (!string.IsNullOrWhiteSpace(artist))
-          artists = artists + "," + "'" + artist.Trim() + "'";
+        if (!string.IsNullOrWhiteSpace(_key))
+        {
+          if (!htUnique.Contains(_key))
+          {
+            keys = keys + "," + "'" + _key.Trim() + "'";
+            htUnique.Add(_key, _key);
+          }
+        }
       }
-      return artists;
+      htUnique = null;
+
+      return keys;
     }
 
     public static string RemoveMPArtistPipes(string s) // ajs: WTF? That this procedure does? And why should she?
@@ -2002,25 +2010,28 @@ namespace FanartHandler
             {
               var i = 0;
               var found = false;
-              foreach (FanartImage fanartImage in htValues)
+
+              lock (htValues)
               {
-                if (i <= iFilePrev)
+                foreach (FanartImage fanartImage in htValues)
                 {
+                  if (i > iFilePrev)
+                  {
+                    if (fanartImage != null)
+                    {
+                      if (CheckImageResolution(fanartImage.DiskImage, category, UseAspectRatio))
+                      {
+                        result = fanartImage.DiskImage;
+                        iFilePrev = i;
+                        sFileNamePrev = result;
+                        found = true;
+                        break;
+                      }
+                    }
+                  }
                   checked { ++i; }
-                  continue;
                 }
-
-                if (CheckImageResolution(fanartImage.DiskImage, category, UseAspectRatio))
-                {
-                  result = fanartImage.DiskImage;
-                  iFilePrev = i;
-                  sFileNamePrev = result;
-                  found = true;
-                  break;
-                }
-                checked { ++i; }
               }
-
               if (!recursion && !found)
               {
                 iFilePrev = -1;
@@ -2355,6 +2366,41 @@ namespace FanartHandler
       }
     }
 
+    internal static bool SetPropertyCache(string property, string cat, string key, Utils.Logo logoType, ref List<string> sFileNames, ref Hashtable PicturesCache)
+    {
+      if (string.IsNullOrWhiteSpace(property))
+        return false;
+
+      bool flag = false;
+      string _key = key + logoType;
+      try
+      {
+        var _picname = string.Empty;
+        if (ContainsID(PicturesCache, _key))
+        {
+          _picname = (string)PicturesCache[_key];
+          // logger.Debug("*** Picture " + cat + ": " + _key + ", load from cache ..." + _picname);
+          flag = true;
+        }
+        else if (sFileNames.Count > 0)
+        {
+          _picname = Logos.BuildConcatImage(cat, sFileNames, logoType == Utils.Logo.Vertical);
+          if (!string.IsNullOrEmpty(_picname) && AddOtherPicturesToCache)
+          {
+            PicturesCache.Add(_key, _picname);
+            flag = true;
+          }
+        }
+        SetProperty(property, _picname);
+        return flag;
+      }
+      catch (Exception ex)
+      {
+        logger.Error("SetPropertyCache: " + ex);
+      }
+      return false;
+    }
+
     internal static string GetProperty(string property)
     {
       string result = string.Empty;
@@ -2473,15 +2519,87 @@ namespace FanartHandler
     }
     #endregion
 
+    #region Fill File lists for other Pictures
+    public static void FillFilesList(ref List<string> sFileNames, string Pictures, Utils.OtherPictures PicturesType)
+    {
+      string _picType = string.Empty;                                                                               
+      string _picFolders = string.Empty;
+
+      try
+      {
+        var pictures = Pictures.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
+        if (pictures != null)
+        {
+          string _pictures = string.Empty;
+          if (PicturesType == Utils.OtherPictures.Awards) // No multi values
+          {
+            _picType = "Award";
+            _picFolders = FAHAwards;
+          }
+          else // Possible multi-value ... like Disney|Sony ...
+          {
+            foreach (string picture in pictures)
+            {
+              if (PicturesType == Utils.OtherPictures.Characters)
+              {
+                _picType = "Character";
+                _picFolders = FAHCharacters;
+                _pictures = _pictures + (string.IsNullOrWhiteSpace(_pictures) ? "" : "|") + Utils.GetCharacter(picture.Trim());
+              }
+              if (PicturesType == Utils.OtherPictures.Genres)
+              {
+                _picType = "Genre";
+                _picFolders = FAHGenres;
+                _pictures = _pictures + (string.IsNullOrWhiteSpace(_pictures) ? "" : "|") + Utils.GetGenre(picture.Trim());
+              }
+              if (PicturesType == Utils.OtherPictures.Studios)
+              {
+                _picType = "Studio";
+                _picFolders = FAHStudios;
+                _pictures = _pictures + (string.IsNullOrWhiteSpace(_pictures) ? "" : "|") + Utils.GetStudio(picture.Trim());
+              }
+            }
+
+            if (!string.IsNullOrWhiteSpace(_pictures))
+            {
+              pictures = _pictures.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
+            }
+          }
+        }
+
+        if (pictures != null)
+        {
+          var sFile = string.Empty;
+
+          foreach (string picture in pictures)
+          {
+            sFile = Utils.GetThemedSkinFile(_picFolders + MediaPortal.Util.Utils.MakeFileName(picture) + ".png");
+            if (!string.IsNullOrEmpty(sFile) && File.Exists(sFile))
+            {
+              if (!sFileNames.Contains(sFile))
+              {
+                sFileNames.Add(sFile) ;
+              }
+              // logger.Debug("- {0} [{1}] found. {2}", _picType, picture, sFile);
+            }
+            else if (!string.IsNullOrEmpty(sFile) && !File.Exists(sFile))
+            {
+              logger.Debug("- {0} [{1}] not found. Skipped.", _picType, picture);
+            }
+          }
+        }
+      }
+      catch (Exception ex)
+      {
+        Log.Error("FillFilesList: Error filling files lists for: {0} - {1} ", PicturesType, ex.Message);
+      }
+    }
+    #endregion
+
     #region Get Awards
-    public static string GetAwards(bool fromGenre)
+    public static string GetAwards()
     {
       string sAwardsValue = string.Empty;
-
-      if (fromGenre && !AddAwardsToGenre)
-      {
-        return sAwardsValue; 
-      }
 
       if (AwardsList != null)
       {
@@ -2527,6 +2645,25 @@ namespace FanartHandler
         }
       }
       return sGenre;
+    }
+
+    public static string GetGenres(string sGenre)
+    {
+      if (!string.IsNullOrWhiteSpace(sGenre))
+      {
+        var genres = sGenre.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
+        if (genres != null)
+        {
+          string _genres = sGenre;
+          foreach (string _genre in genres)
+          {
+            _genres = _genres + "|" + Utils.GetGenre(_genre.Trim());
+          }
+          return _genres;
+        }
+      }
+
+      return string.Empty;
     }
 
     public static string GetCharacters(string sLine)
@@ -3115,6 +3252,7 @@ namespace FanartHandler
       UseMyPicturesSlideShow = false;
       FastScanMyPicturesSlideShow = false;
       LimitNumberFanart = 10;
+      AddOtherPicturesToCache = true;
       #endregion
       #region Init Providers
       UseFanartTV = true;
@@ -3141,6 +3279,10 @@ namespace FanartHandler
       #region Internal
       MinWResolution = 0.0;
       MinHResolution = 0.0;
+
+      MaxViewAwardsImages = 0;
+      MaxViewGenresImages = 0;
+      MaxViewStudiosImages = 0;
       #endregion
 
       try
@@ -3187,6 +3329,8 @@ namespace FanartHandler
           ShowDummyItems = settings.GetValueAsBool("FanartHandler", "ShowDummyItems", ShowDummyItems);
           UseMyPicturesSlideShow = settings.GetValueAsBool("FanartHandler", "UseMyPicturesSlideShow", UseMyPicturesSlideShow);
           FastScanMyPicturesSlideShow = settings.GetValueAsBool("FanartHandler", "FastScanMyPicturesSlideShow", FastScanMyPicturesSlideShow);
+          LimitNumberFanart = settings.GetValueAsInt("FanartHandler", "LimitNumberFanart", LimitNumberFanart);
+          AddOtherPicturesToCache = settings.GetValueAsBool("FanartHandler", "AddOtherPicturesToCache", AddOtherPicturesToCache);
           //
           UseFanartTV = settings.GetValueAsBool("Providers", "UseFanartTV", UseFanartTV);
           UseHtBackdrops = settings.GetValueAsBool("Providers", "UseHtBackdrops", UseHtBackdrops);
@@ -3207,6 +3351,10 @@ namespace FanartHandler
           FanartTVLanguage = settings.GetValueAsString("FanartTV", "FanartTVLanguage", FanartTVLanguage);
           FanartTVLanguageToAny = settings.GetValueAsBool("FanartTV", "FanartTVLanguageToAny", FanartTVLanguageToAny);
           //
+          Int32.TryParse(settings.GetValueAsString("OtherPicturesView", "MaxAwards", "0"), out MaxViewAwardsImages);
+          Int32.TryParse(settings.GetValueAsString("OtherPicturesView", "MaxGenres", "0"), out MaxViewGenresImages);
+          Int32.TryParse(settings.GetValueAsString("OtherPicturesView", "MaxStudios", "0"), out MaxViewStudiosImages);
+          //
           if (AddAdditionalSeparators)
           {
             LoadSeparators(settings) ;
@@ -3220,10 +3368,16 @@ namespace FanartHandler
         logger.Error("LoadSettings: "+ex);
       }
       //
+      System.Threading.ThreadPool.QueueUserWorkItem(delegate { LoadAwardsNames(); }, null);
+      System.Threading.ThreadPool.QueueUserWorkItem(delegate { LoadGenresNames(); }, null);
+      System.Threading.ThreadPool.QueueUserWorkItem(delegate { LoadStudiosNames(); }, null);
+      System.Threading.ThreadPool.QueueUserWorkItem(delegate { LoadCharactersNames(); }, null);
+      /*
       LoadAwardsNames();
       LoadGenresNames();
       LoadStudiosNames();
       LoadCharactersNames();
+      */
       LoadBadArtists();
       LoadMyPicturesSlideShowFolders();
       //
@@ -3597,6 +3751,14 @@ namespace FanartHandler
       Single, 
       Horizontal,
       Vertical,
+    }
+
+    public enum OtherPictures
+    {
+      Awards,
+      Characters,
+      Genres,
+      Studios,
     }
   }
 

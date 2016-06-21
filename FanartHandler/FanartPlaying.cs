@@ -259,7 +259,7 @@ namespace FanartHandler
             {
               // Genre
               if (!string.IsNullOrEmpty(CurrentGenreTag) && Utils.UseGenreFanart)
-                FileName = GetFilename(CurrentGenreTag, null,  ref CurrPlayFanart, ref PrevPlayMusic, Utils.Category.MusicFanartScraped, NewArtist, true);
+                FileName = GetFilename(Utils.GetGenres(CurrentGenreTag), null,  ref CurrPlayFanart, ref PrevPlayMusic, Utils.Category.MusicFanartScraped, NewArtist, true);
               if (string.IsNullOrEmpty(FileName))
               {
                 // Random

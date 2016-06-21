@@ -306,7 +306,7 @@ namespace FanartHandler
       fileTarget.FileName = Config.GetFile((Config.Dir) 1, LogFileName);
       fileTarget.Encoding = "utf-8";
       fileTarget.Layout = "${date:format=dd-MMM-yyyy HH\\:mm\\:ss} ${level:fixedLength=true:padding=5} [${logger:fixedLength=true:padding=20:shortName=true}]: ${message} ${exception:format=tostring}";
-      loggingConfiguration.AddTarget("file", fileTarget);
+      loggingConfiguration.AddTarget("fanart-handler", fileTarget);
       LogLevel minLevel;
       switch ((int) (Level) new Settings(Config.GetFile((Config.Dir) 10, "MediaPortal.xml")).GetValueAsInt("general", "loglevel", 0))
       {

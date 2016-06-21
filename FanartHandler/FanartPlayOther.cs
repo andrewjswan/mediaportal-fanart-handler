@@ -35,6 +35,8 @@ namespace FanartHandler
     private string LastAlbumArtistTrack;
 
     // Public
+    public Hashtable PicturesCache;
+
     public bool FanartAvailable { get; set; }
 
     public int RefreshTickCount { get; set; }
@@ -67,6 +69,8 @@ namespace FanartHandler
 
       WindowsUsingFanartPlayGenre = new Hashtable();
       WindowsUsingFanartPlayClearArt = new Hashtable();
+
+      PicturesCache = new Hashtable();
 
       IsPlaying = false;
 
@@ -286,7 +290,7 @@ namespace FanartHandler
 
       if (string.IsNullOrEmpty(Genres))
       {
-        Utils.SetProperty(mode + ".genres.play", string.Empty);
+        Utils.SetProperty(mode + ".genres.play.single", string.Empty);
         Utils.SetProperty(mode + ".genres.play.all", string.Empty);
         Utils.SetProperty(mode + ".genres.play.verticalall", string.Empty);
         return;
@@ -296,30 +300,43 @@ namespace FanartHandler
         return;
       }
 
+      var picFound = false;
       var sFile = string.Empty;
       var sFileNames = new List<string>() ;  
       try
       {
-        // logger.Debug("*** PlayGenres: "+Genres) ;
-        // Get Genre name
-        var genres = Genres.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
-        if (genres != null)
+        if ((Utils.ContainsID(WindowsUsingFanartPlayGenre, Utils.Logo.Single)) ||
+            (Utils.ContainsID(WindowsUsingFanartPlayGenre, Utils.Logo.Horizontal) && !Utils.ContainsID(PicturesCache, Genres + Utils.Logo.Horizontal)) ||
+            (Utils.ContainsID(WindowsUsingFanartPlayGenre, Utils.Logo.Vertical) && !Utils.ContainsID(PicturesCache, Genres + Utils.Logo.Vertical)))
         {
-          // logger.Debug("*** PlayGenres: > "+Genres) ;
-          foreach (string genre in genres)
+          // logger.Debug("*** PlayGenres: "+Genres) ;
+          // Get Genre name
+          var genres = Genres.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
+          if (genres != null)
           {
-            sFile = Utils.GetThemedSkinFile(Utils.FAHGenres + MediaPortal.Util.Utils.MakeFileName(Utils.GetGenre(genre))+".png") ; 
-            if (!string.IsNullOrEmpty(sFile) && File.Exists(sFile))
+            // logger.Debug("*** PlayGenres: > "+Genres) ;
+            foreach (string genre in genres)
             {
-              sFileNames.Add(sFile) ;
-              // logger.Debug("- Genre [{0}/{1}] found. {2}", genre, Utils.GetGenre(genre), sFile);
+              sFile = Utils.GetThemedSkinFile(Utils.FAHGenres + MediaPortal.Util.Utils.MakeFileName(Utils.GetGenre(genre))+".png") ; 
+              if (!string.IsNullOrEmpty(sFile) && File.Exists(sFile))
+              {
+                if (!sFileNames.Contains(sFile))
+                {
+                  sFileNames.Add(sFile) ;
+                }
+                // logger.Debug("- Genre [{0}/{1}] found. {2}", genre, Utils.GetGenre(genre), sFile);
+              }
+              else if (!string.IsNullOrEmpty(sFile) && !File.Exists(sFile))
+              {
+                logger.Debug("- Genre [{0}/{1}] not found. Skipped.", genre, Utils.GetGenre(genre));
+              }
             }
-            else if (!string.IsNullOrEmpty(sFile) && !File.Exists(sFile))
-            {
-              logger.Debug("- Genre [{0}/{1}] not found. Skipped.", genre, Utils.GetGenre(genre));
-            }
+            picFound = sFileNames.Count > 0; 
           }
+        }
 
+        if (Utils.ContainsID(WindowsUsingFanartPlayGenre, Utils.Logo.Single))
+        {
           if (sFileNames.Count == 0)
             sFile = string.Empty ;
           else if (sFileNames.Count == 1)
@@ -331,23 +348,24 @@ namespace FanartHandler
             var rand = new Random();
             sFile = sFileNames[rand.Next(sFileNames.Count-1)].Trim();
           }
+
+          Utils.SetProperty(mode + ".genres.play.single", sFile);
         }
 
-        Utils.SetProperty(mode + ".genres.play", sFile);
         if (Utils.ContainsID(WindowsUsingFanartPlayGenre, Utils.Logo.Horizontal))
         {
-          Utils.SetProperty(mode + ".genres.play.all", Logos.BuildConcatImage("PlayGenres", sFileNames));
+          picFound = Utils.SetPropertyCache(mode + ".genres.play.all", "PlayGenres", Genres, Utils.Logo.Horizontal, ref sFileNames, ref PicturesCache);
         }
         if (Utils.ContainsID(WindowsUsingFanartPlayGenre, Utils.Logo.Vertical))
         {
-          Utils.SetProperty(mode + ".genres.play.verticalall", Logos.BuildConcatImage("PlayVerticalGenres", sFileNames, true));
+          picFound = Utils.SetPropertyCache(mode + ".genres.play.verticalall", "PlayVerticalGenres", Genres, Utils.Logo.Vertical, ref sFileNames, ref PicturesCache);
         }
-        FanartAvailable = FanartAvailable || !string.IsNullOrEmpty(sFile);
       }
       catch (Exception ex)
       {
         logger.Error("AddPlayingGenreProperty: " + ex);
       }
+      FanartAvailable = FanartAvailable || picFound;
     }
 
     public void RefreshMusicPlayingProperties()
@@ -468,7 +486,7 @@ namespace FanartHandler
       Utils.SetProperty("music.artistbanner.play", string.Empty);
       Utils.SetProperty("music.albumcd.play", string.Empty);
 
-      Utils.SetProperty("music.genres.play", string.Empty);
+      Utils.SetProperty("music.genres.play.single", string.Empty);
       Utils.SetProperty("music.genres.play.all", string.Empty);
       Utils.SetProperty("music.genres.play.verticalall", string.Empty);
     }

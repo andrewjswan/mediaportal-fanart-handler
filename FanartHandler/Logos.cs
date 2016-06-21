@@ -49,13 +49,12 @@ namespace FanartHandler
 
           return BuildImages(logosForBuilding, tmpFile, bVertical);
         }
-        else return string.Empty;
       }
       catch (Exception ex)
       {
         logger.Error("BuildConcatImage: The Logo Building Engine generated an error: " + ex.Message);
-        return string.Empty;
       }
+      return string.Empty;
     }
 
     static string BuildImages(List<string> logosForBuilding, string sFileName, bool bVertical = false)
@@ -75,7 +74,12 @@ namespace FanartHandler
       {
         try
         {
+          // single = GUITextureManager.GetCachedTexture(logosForBuilding[i]).Texture.Image;
           single = Utils.LoadImageFastFromFile(logosForBuilding[i]);
+          if (single == null)
+          {
+            continue;
+          }
 
           equal = false;
           for (int j = 0; j < imgs.Count; j++)

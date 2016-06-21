@@ -187,14 +187,21 @@ namespace FanartHandler
             {
               newFanart = Utils.GetProperty("#myvideosuserfanart");
               if (string.IsNullOrEmpty(newFanart))
+              {
                 newFanart = GetFilename(Utils.iActiveWindow != 2003 ? Utils.GetProperty("#selecteditem") : Utils.GetProperty("#title"), null, ref currSelectedGeneric, ref prevSelectedGeneric, category, flag, isMusic);
+              }
             }
             // Genre
             if (string.IsNullOrEmpty(newFanart) && !string.IsNullOrEmpty(SelectedGenre) && Utils.UseGenreFanart)
-              newFanart = GetFilename(SelectedGenre, null, ref currSelectedGeneric, ref prevSelectedGeneric, category, flag, isMusic);
+            {
+              newFanart = GetFilename(Utils.GetGenres(SelectedGenre), null, ref currSelectedGeneric, ref prevSelectedGeneric, category, flag, isMusic);
+              // logger.Debug("*** Genres: " + SelectedGenre + " - " + Utils.GetGenres(SelectedGenre) + " - " + newFanart);
+            }
             // Random
             if (string.IsNullOrEmpty(newFanart) && isMusic)
+            {
               newFanart = Utils.GetRandomDefaultBackdrop(ref currSelectedGeneric, ref prevSelectedGeneric);
+            }
 
             if (isMusic || isMusicVideo)
               PrevSelectedMusic = prevSelectedGeneric;
@@ -295,15 +302,17 @@ namespace FanartHandler
             }
 
             newFanart = GetFilename(SelectedItem, album, ref CurrSelectedMusic, ref PrevSelectedMusic, Utils.Category.MusicFanartScraped, flag, true);
-            // logger.Info("*** GMAFLC: FS - ["+newFanart+"]");
             // Genre
             if (newFanart.Length == 0 && !string.IsNullOrEmpty(genre) && Utils.UseGenreFanart)
-              newFanart = GetFilename(genre, null, ref CurrSelectedMusic, ref PrevSelectedMusic, Utils.Category.MusicFanartScraped, flag, true);
-            // logger.Info("*** GMAFLC: FG - ["+newFanart+"]");
+            {
+              newFanart = GetFilename(Utils.GetGenres(genre), null, ref CurrSelectedMusic, ref PrevSelectedMusic, Utils.Category.MusicFanartScraped, flag, true);
+              // logger.Debug("*** Genres: " + genre + " - " + Utils.GetGenres(genre) + " - " + newFanart);
+            }
             // Random
             if (newFanart.Length == 0)
+            {
               newFanart = Utils.GetRandomDefaultBackdrop(ref CurrSelectedMusic, ref PrevSelectedMusic);
-            // logger.Info("*** GMAFLC: FR - ["+newFanart+"]");
+            }
 
             if (!string.IsNullOrEmpty(newFanart))
             {

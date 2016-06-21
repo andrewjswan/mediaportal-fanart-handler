@@ -2355,7 +2355,7 @@ namespace FanartHandler
             var filenames = new Hashtable();
             var flag = false;
             // logger.Debug("*** Key1: "+artist+" Key2: "+album);
-            // logger.Debug("*** For DB Query ["+Utils.HandleMultipleArtistNamesForDBQuery(Utils.PatchSql(artist))+"]");
+            // logger.Debug("*** For DB Query ["+Utils.HandleMultipleKeysForDBQuery(Utils.PatchSql(artist))+"]");
             try
             {
                 string SQL;
@@ -2363,7 +2363,7 @@ namespace FanartHandler
 
                 SQL = "SELECT Id, Key1, FullPath, SourcePath, Category, Provider "+
                       "FROM Image "+
-                      "WHERE Key1 IN (" + Utils.HandleMultipleArtistNamesForDBQuery(Utils.PatchSql(artist)) + ") AND "+
+                      "WHERE Key1 IN (" + Utils.HandleMultipleKeysForDBQuery(Utils.PatchSql(artist)) + ") AND "+
                             (album == null ? string.Empty : "Key2 = '"+Utils.PatchSql(album)+"' AND ")+
                             "Enabled = 'True' AND "+
                             "DummyItem = 'False'"+
@@ -2378,7 +2378,7 @@ namespace FanartHandler
                   flag = true ;
                   SQL = "SELECT Id, Key1, FullPath, SourcePath, Category, Provider "+
                         "FROM Image "+
-                        "WHERE Key1 IN (" + Utils.HandleMultipleArtistNamesForDBQuery(Utils.PatchSql(artist)) + ") AND "+
+                        "WHERE Key1 IN (" + Utils.HandleMultipleKeysForDBQuery(Utils.PatchSql(artist)) + ") AND "+
                               "Enabled = 'True' AND "+
                               "DummyItem = 'False'"+ 
                               // 3.5 " AND ((iWidth > " + Utils.MinWResolution + " AND iHeight > " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth = null AND iHeight = null))"+
@@ -2412,7 +2412,7 @@ namespace FanartHandler
                   {
                     if (category == Utils.Category.MusicFanartScraped)
                       SQL = "UPDATE Image SET Last_Access = '"+DateTime.Today.ToString("yyyyMMdd", CultureInfo.CurrentCulture)+"' "+
-                              "WHERE Key1 IN (" + Utils.HandleMultipleArtistNamesForDBQuery(Utils.PatchSql(artist)) + ") AND "+
+                              "WHERE Key1 IN (" + Utils.HandleMultipleKeysForDBQuery(Utils.PatchSql(artist)) + ") AND "+
                                     (album == null || flag ? string.Empty : "Key2 = '"+Utils.PatchSql(album)+"' AND ")+
                                     "Enabled = 'True' AND "+
                                     "DummyItem = 'False' AND "+
