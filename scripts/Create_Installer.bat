@@ -3,14 +3,14 @@ cls
 Title Creating MediaPortal FanartHandler Installer
 
 :: Check for modification
-svn status ..\source | findstr "^M"
-if ERRORLEVEL 1 (
-    echo No modifications in source folder.
-) else (
-    echo There are modifications in source folder. Aborting.
-    pause
-    exit 1
-)
+REM svn status ..\source | findstr "^M"
+REM if ERRORLEVEL 1 (
+REM    echo No modifications in source folder.
+REM ) else (
+REM    echo There are modifications in source folder. Aborting.
+REM    pause
+REM    exit 1
+REM )
 
 if "%programfiles(x86)%XXX"=="XXX" goto 32BIT
     :: 64-bit
@@ -33,8 +33,9 @@ copy fanarthandler.xmp2 fanarthandlerTemp.xmp2
 Tools\sed.exe -i "s/fanarthandler-{VERSION}.xml/fanarthandler-%version%.xml/g" fanarthandlerTemp.xmp2
 
 :: Build MPE1
-"%PROGS%\Team MediaPortal\MediaPortal\MPEMaker.exe" fanarthandlerTemp.xmp2 /B /V=%version% /UpdateXML
+REM "%PROGS%\Team MediaPortal\MediaPortal\MPEMaker.exe" fanarthandlerTemp.xmp2 /B /V=%version% /UpdateXML
 REM "D:\MediaPortal\MPEMaker.exe" fanarthandlerTemp.xmp2 /B /V=%version% /UpdateXML
+"C:\Team MediaPortal\MediaPortal\MPEMaker.exe" fanarthandlerTemp.xmp2 /B /V=%version% /UpdateXML
 
 :: Cleanup
 del fanarthandlerTemp.xmp2

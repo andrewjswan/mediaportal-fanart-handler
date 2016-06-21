@@ -45,10 +45,9 @@ push cycling fanart from the following folders for use anywhere in a skin for<br
 - A skin that supports the Fanart Handler.
 NOTE! This plugin only supports JPG images.
 
-#Additional packages for Skin
-- Awards https://github.com/andrewjswan/mediaportal.images.awards
-- Genres https://github.com/andrewjswan/mediaportal.images.genres
-- Studios https://github.com/andrewjswan/mediaportal.images.studios
+#Additional for Skin
+Studios - https://github.com/andrewjswan/mediaportal.images.studios
+Genres - https://github.com/andrewjswan/mediaportal.images.genres
 
 #Supported Skins
 Titan ( full support in ajs Theme for Titan - https://github.com/andrewjswan/mediaportal-skin-themes )
@@ -81,13 +80,13 @@ To the team behind the MP Moving Picture plugin. From who I have used some of th
 #fanarthandler.movie.scraper.backdrop2.any
 #fanarthandler.movie.backdrop1.selected
 #fanarthandler.movie.backdrop2.selected
-#fanarthandler.movie.studios.selected
+#fanarthandler.movie.studios.selected.single
 #fanarthandler.movie.studios.selected.all
 #fanarthandler.movie.studios.selected.verticalall
-#fanarthandler.movie.genres.selected
+#fanarthandler.movie.genres.selected.single
 #fanarthandler.movie.genres.selected.all
 #fanarthandler.movie.genres.selected.verticalall
-#fanarthandler.movie.awards.selected
+#fanarthandler.movie.awards.selected.single
 #fanarthandler.movie.awards.selected.all
 #fanarthandler.movie.awards.selected.verticalall
 
@@ -109,10 +108,10 @@ To the team behind the MP Moving Picture plugin. From who I have used some of th
 #fanarthandler.music.backdrop2.selected
 #fanarthandler.music.artistclearart.selected
 #fanarthandler.music.artistbanner.selected
-#fanarthandler.music.genres.play
+#fanarthandler.music.genres.play.single
 #fanarthandler.music.genres.play.all
 #fanarthandler.music.genres.play.verticalall
-#fanarthandler.music.genres.selected
+#fanarthandler.music.genres.selected.single
 #fanarthandler.music.genres.selected.all
 #fanarthandler.music.genres.selected.verticalall
 
