@@ -53,6 +53,7 @@
   <studio name="Abandon Pictures">Abandon</studio>
   <studio name="ABC (US)">ABC</studio>
   <studio name="ABC (Australia)">ABC Australia</studio>
+  <studio name="ABC (AU)">ABC Australia</studio>
   <studio name="ABC_hd">ABC HD</studio>
   <studio name="ABC1 (Australia)">ABC1</studio>
   <studio name="ABCFamily">ABC Family</studio>
@@ -171,8 +172,6 @@
   <studio name="Bazmark Films">Bazmark</studio>
   <studio name="BBC America">BBC</studio>
   <studio name="BBC Films">BBC</studio>
-  <studio name="BBC Four">BBC</studio>
-  <studio name="BBC Four (United Kingdom)">BBC</studio>
   <studio name="BBC Gb Euro">BBC</studio>
   <studio name="BBC Natural History">BBC</studio>
   <studio name="BBC Prime">BBC</studio>
@@ -187,6 +186,7 @@
   <studio name="BBC Two (United Kingdom)">BBC Two</studio>
   <studio name="BBC3">BBC Three</studio>
   <studio name="BBC Three (United Kingdom)">BBC Three</studio>
+  <studio name="BBC Four (United Kingdom)">BBC Four</studio>
   <studio name="Beacon Communications">Beacon</studio>
   <studio name="Beacon Films Inc.">Beacon</studio>
   <studio name="Beacon Pictures">Beacon</studio>
@@ -344,6 +344,7 @@
   <studio name="Comedy (CA)">Comedy</studio>
   <studio name="Comedy Central Films">Comedy Central</studio>
   <studio name="comedycentral">Comedy Central</studio>
+  <studio name="Comedy Central (US)">Comedy Central</studio>
   <studio name="Comedy Central_hd">Comedy Central HD</studio>
   <studio name="CoMix Wave Films">CoMix Wave</studio>
   <studio name="Compass International Pictures">Compass Films</studio>
@@ -987,6 +988,7 @@
   <studio name="RT+">RTE</studio>
   <studio name="RTÉ">RTE</studio>
   <studio name="RTР">RTE</studio>
+  <studio name="RTÉ One">RTE One</studio>
   <studio name="RTL Television">RTL</studio>
   <studio name="RTL4">RTL 4</studio>
   <studio name="RTL5">RTL 5</studio>
@@ -1054,6 +1056,7 @@
   <studio name="Shochiku Kinema Kenkyujo">Shochiku Company</studio>
   <studio name="Shochiku Kyoto">Shochiku Company</studio>
   <studio name="Shochiku Ofuna">Shochiku Company</studio>
+  <studio name="Showcase (AU)">Showcase</studio>
   <studio name="Showcase (CA)">Showcase</studio>
   <studio name="Showtime DVD">Showtime</studio>
   <studio name="Showtime Entertainment">Showtime</studio>
@@ -1147,6 +1150,7 @@
   <studio name="Summit Entertainment">Summit</studio>
   <studio name="Summit International">Summit</studio>
   <studio name="Summit Media">Summit</studio>
+  <studio name="SundanceTV">Sundance TV</studio>
   <studio name="Nippon Sunrise">Sunrise</studio>
   <studio name="Nippon Television Network">NTV</studio>
   <studio name="Nippon Television Network Corporation">NTV</studio>
@@ -1445,6 +1449,7 @@
   <studio name="Yari Film Group">Yari</studio>
   <studio name="Yari Film Group (YFG)">Yari</studio>
   <studio name="YFG">Yari</studio>
+  <studio name="Yahoo! Screen">Yahoo Screen</studio>
   <studio name="Yash-Raj-Films">Yash Raj Films</studio>
   <studio name="Yash Raj Films Design Cell">Yash Raj Films</studio>
   <studio name="Yash Raj Films International">Yash Raj Films</studio>
