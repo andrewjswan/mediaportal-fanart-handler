@@ -14,6 +14,8 @@ if "%programfiles(x86)%XXX"=="XXX" goto 32BIT
 :32BIT
 	set PROGS=%ProgramFiles%
 :CONT
+IF NOT EXIST "%PROGS%\Team MediaPortal\MediaPortal\" SET PROGS=C:
+
 echo PROGS=%PROGS% >> %LOG%
 
 :: Predefined folders
