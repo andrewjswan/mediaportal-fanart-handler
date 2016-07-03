@@ -20,6 +20,8 @@ if "%programfiles(x86)%XXX"=="XXX" goto 32BIT
     set PROGS=%ProgramFiles%
 :CONT
 
+IF NOT EXIST "%PROGS%\Team MediaPortal\MediaPortal\" SET PROGS=C:
+
 :: Get version from DLL
 FOR /F "tokens=1-3" %%i IN ('Tools\sigcheck.exe "..\FanartHandler\bin\Release\FanartHandler.dll"') DO ( IF "%%i %%j"=="File version:" SET version=%%k )
 
@@ -33,9 +35,7 @@ copy fanarthandler.xmp2 fanarthandlerTemp.xmp2
 Tools\sed.exe -i "s/fanarthandler-{VERSION}.xml/fanarthandler-%version%.xml/g" fanarthandlerTemp.xmp2
 
 :: Build MPE1
-REM "%PROGS%\Team MediaPortal\MediaPortal\MPEMaker.exe" fanarthandlerTemp.xmp2 /B /V=%version% /UpdateXML
-REM "D:\MediaPortal\MPEMaker.exe" fanarthandlerTemp.xmp2 /B /V=%version% /UpdateXML
-"C:\Team MediaPortal\MediaPortal\MPEMaker.exe" fanarthandlerTemp.xmp2 /B /V=%version% /UpdateXML
+"%PROGS%\Team MediaPortal\MediaPortal\MPEMaker.exe" fanarthandlerTemp.xmp2 /B /V=%version% /UpdateXML
 
 :: Cleanup
 del fanarthandlerTemp.xmp2
