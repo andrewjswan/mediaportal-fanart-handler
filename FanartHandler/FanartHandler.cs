@@ -448,7 +448,7 @@ namespace FanartHandler
       fileTarget.FileName = Config.GetFile((Config.Dir) 1, LogFileName);
       fileTarget.Encoding = "utf-8";
       fileTarget.Layout = "${date:format=dd-MMM-yyyy HH\\:mm\\:ss} ${level:fixedLength=true:padding=5} [${logger:fixedLength=true:padding=20:shortName=true}]: ${message} ${exception:format=tostring}";
-      loggingConfiguration.AddTarget("file", fileTarget);
+      loggingConfiguration.AddTarget("fanart-handler", fileTarget);
       var settings = new Settings(Config.GetFile((Config.Dir) 10, "MediaPortal.xml"));
       var str = settings.GetValue("general", "ThreadPriority");
       FHThreadPriority = str == null || !str.Equals("Normal", StringComparison.CurrentCulture) ? (str == null || !str.Equals("BelowNormal", StringComparison.CurrentCulture) ? "BelowNormal" : "Lowest") : "Lowest";
