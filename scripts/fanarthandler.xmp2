@@ -724,18 +724,10 @@ ajs</Value>
        * push random images from selected folders
 
 </ExtensionDescription>
-    <VersionDescription>Fix fanart for Multiartists
-Optimisation
-Studios XML update
-Add extra cache for pictures ...
-
-Skeeners! Properties changed:
-#fanarthandler.movie.studios.selected -&gt; #fanarthandler.movie.studios.selected.single
-#fanarthandler.movie.genres.selected -&gt; #fanarthandler.movie.genres.selected.single
-#fanarthandler.movie.awards.selected -&gt; #fanarthandler.movie.awards.selected.single</VersionDescription>
+    <VersionDescription>Fix Fanart due HtBackdrops site down</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-{VERSION}.MPE1</OnlineLocation>
-    <ReleaseDate>2016-06-21T15:04:24</ReleaseDate>
+    <ReleaseDate>2016-07-12T15:04:24</ReleaseDate>
     <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios</Tags>
     <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
     <Params>
