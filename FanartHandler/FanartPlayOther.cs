@@ -311,6 +311,8 @@ namespace FanartHandler
         {
           // logger.Debug("*** PlayGenres: "+Genres) ;
           // Get Genre name
+          Utils.FillFilesList(ref sFileNames, Genres, Utils.OtherPictures.GenresMusic);
+          /*
           var genres = Genres.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
           if (genres != null)
           {
@@ -331,8 +333,9 @@ namespace FanartHandler
                 logger.Debug("- Genre [{0}/{1}] not found. Skipped.", genre, Utils.GetGenre(genre));
               }
             }
-            picFound = sFileNames.Count > 0; 
           }
+          */
+          picFound = sFileNames.Count > 0; 
         }
 
         if (Utils.ContainsID(WindowsUsingFanartPlayGenre, Utils.Logo.Single))

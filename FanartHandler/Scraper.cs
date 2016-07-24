@@ -1927,7 +1927,7 @@ namespace FanartHandler
       }
       catch (Exception ex)
       {
-        logger.Error("HTML: Error retrieving html for: {0}", strURL.Replace(ApiKeyhtBackdrops, "***").Replace(ApiKeyLastFM,"***").Replace(ApiKeyFanartTV,"***"));
+        logger.Error("HTML: Error retrieving html for: {0}", strURL.Replace(ApiKeyhtBackdrops, "<apikey>").Replace(ApiKeyLastFM,"<apikey>").Replace(ApiKeyFanartTV,"<apikey>"));
         logger.Error(ex);
         return false;
       }

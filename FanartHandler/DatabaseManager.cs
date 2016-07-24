@@ -2354,8 +2354,14 @@ namespace FanartHandler
         {
             var filenames = new Hashtable();
             var flag = false;
-            // logger.Debug("*** Key1: "+artist+" Key2: "+album);
-            // logger.Debug("*** For DB Query ["+Utils.HandleMultipleKeysForDBQuery(Utils.PatchSql(artist))+"]");
+
+            if (string.IsNullOrEmpty(album))
+            {
+              album = null;
+            }
+            // logger.Debug("*** Key1: ["+artist+"] For DB Query ["+Utils.HandleMultipleKeysForDBQuery(Utils.PatchSql(artist))+"]");
+            // logger.Debug("*** Key2: ["+album+"] For DB Query ["+Utils.HandleMultipleKeysForDBQuery(Utils.PatchSql(album))+"]");
+
             try
             {
                 string SQL;
@@ -2364,7 +2370,7 @@ namespace FanartHandler
                 SQL = "SELECT Id, Key1, FullPath, SourcePath, Category, Provider "+
                       "FROM Image "+
                       "WHERE Key1 IN (" + Utils.HandleMultipleKeysForDBQuery(Utils.PatchSql(artist)) + ") AND "+
-                            (album == null ? string.Empty : "Key2 = '"+Utils.PatchSql(album)+"' AND ")+
+                            (album == null ? string.Empty : "Key2 IN ("+Utils.HandleMultipleKeysForDBQuery(Utils.PatchSql(album))+") AND ")+
                             "Enabled = 'True' AND "+
                             "DummyItem = 'False'"+
                             // 3.5 " AND ((iWidth > " + Utils.MinWResolution + " AND iHeight > " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth = null AND iHeight = null))"+
@@ -2403,28 +2409,18 @@ namespace FanartHandler
                     checked { ++index; }
                 }
 
-                // Utils.Shuffle(ref filenames);
-
                 // TODO: ... Then create procedure for Delete Old Music Fanart files from Disk (Artist not in MP DB and Last_Access < NOW-100)
                 if (sqLiteResultSet.Rows.Count > 0) 
                 {
                   try
                   {
-                    if (category == Utils.Category.MusicFanartScraped)
-                      SQL = "UPDATE Image SET Last_Access = '"+DateTime.Today.ToString("yyyyMMdd", CultureInfo.CurrentCulture)+"' "+
-                              "WHERE Key1 IN (" + Utils.HandleMultipleKeysForDBQuery(Utils.PatchSql(artist)) + ") AND "+
-                                    (album == null || flag ? string.Empty : "Key2 = '"+Utils.PatchSql(album)+"' AND ")+
-                                    "Enabled = 'True' AND "+
-                                    "DummyItem = 'False' AND "+
-                                    // 3.5 "((iWidth > " + Utils.MinWResolution + " AND iHeight > " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth = null AND iHeight = null)) AND "+
-                                    "Category in (" + Utils.GetMusicFanartCategoriesInStatement(highDef) + ");";
-                    else
-                      SQL = "UPDATE Image SET Last_Access = '"+DateTime.Today.ToString("yyyyMMdd", CultureInfo.CurrentCulture)+"' "+
-                              "WHERE Key1 IN ('" + Utils.PatchSql(artist) + "') AND "+
-                                    (album == null || flag ? string.Empty : "Key2 = '"+Utils.PatchSql(album)+"' AND ")+
-                                    "DummyItem = 'False' AND "+
-                                    // 3.5 "((iWidth > " + Utils.MinWResolution + " AND iHeight > " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth = null AND iHeight = null)) AND "+
-                                    "Enabled = 'True';";
+                    SQL = "UPDATE Image SET Last_Access = '"+DateTime.Today.ToString("yyyyMMdd", CultureInfo.CurrentCulture)+"' "+
+                            "WHERE Key1 IN (" + Utils.HandleMultipleKeysForDBQuery(Utils.PatchSql(artist)) + ") AND "+
+                                  (album == null || flag ? string.Empty : "Key2 IN ("+Utils.HandleMultipleKeysForDBQuery(Utils.PatchSql(album))+") AND ")+
+                                  "Enabled = 'True' AND "+
+                                  "DummyItem = 'False'"+
+                                  // 3.5 " AND ((iWidth > " + Utils.MinWResolution + " AND iHeight > " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth = null AND iHeight = null))"+
+                                  (category == Utils.Category.MusicFanartScraped ? " AND Category in (" + Utils.GetMusicFanartCategoriesInStatement(highDef) + ");" : ";") ;
                     lock (lockObject)
                         dbClient.Execute(SQL);
                   }
@@ -2439,6 +2435,7 @@ namespace FanartHandler
             {
                 logger.Error("getFanart: " + ex);
             }
+            // logger.Debug("*** Fanarts: "+filenames.Count);
             return filenames;
         }
 
@@ -2818,20 +2815,26 @@ namespace FanartHandler
               }
 
               int index = 0;
-              foreach (DictionaryEntry fn in hashfilenames)
+              lock (hashfilenames)
               {
-                if ((int)fn.Key > index)
+                foreach (DictionaryEntry fn in hashfilenames)
                 {
-                  index = (int)fn.Key;
+                  if ((int)fn.Key > index)
+                  {
+                    index = (int)fn.Key;
+                  }
                 }
               }
 
-              foreach (DictionaryEntry fn in dbfilenames)
+              lock (dbfilenames)
               {
-                if (!hashfilenames.ContainsValue(fn.Value))
+                foreach (DictionaryEntry fn in dbfilenames)
                 {
-                  index++;
-                  hashfilenames.Add(index, fn.Value);
+                  if (!hashfilenames.ContainsValue(fn.Value))
+                  {
+                    index++;
+                    hashfilenames.Add(index, fn.Value);
+                  }
                 }
               }
               AddToAnyHashtable(category, hashfilenames);

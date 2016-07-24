@@ -175,26 +175,27 @@ namespace FanartHandler
         if (Utils.GetIsStopping())
           return;
 
-        var SelectedItem = (string) null;
-        // AddSelectedArtistProperty(string.Empty) ;
         // logger.Debug("Album Artist: "+Utils.GetProperty("#music.albumArtist")+ " Artist: "+Utils.GetProperty("#music.Artist")+ "Album: "+Utils.GetProperty("#music.album"));
+        var SelectedItem = string.Empty + Utils.GetMusicArtistFromListControl(ref CurrSelectedMusicAlbum);
         var SaveAlbum = CurrSelectedMusicAlbum;
-        SelectedItem = Utils.GetMusicArtistFromListControl(ref CurrSelectedMusicAlbum);
         var album = string.Empty + CurrSelectedMusicAlbum;
         CurrSelectedMusicAlbum = SaveAlbum;
         var genre = string.Empty + Utils.GetProperty("#music.genre").Replace(" / ", "|").Replace(", ", "|");
-        //
-        // logger.Debug("*** GMAFLC: R - ["+SelectedItem+"]");
-        // if (SelectedItem == null || SelectedItem.Length <= 0)
-        //   SelectedItem = Utils.GetProperty("#selecteditem");
 
+        // logger.Debug("*** SelectedItem/CurrSelectedMusicArtist: "+SelectedItem+ "/"+CurrSelectedMusicArtist+ " Album/CurrSelectedMusicAlbum: "+album+"/"+CurrSelectedMusicAlbum);
         if (SelectedItem != null && !SelectedItem.Equals("..", StringComparison.CurrentCulture) && SelectedItem.Trim().Length > 0)
         {
-          CurrSelectedMusicArtist = SelectedItem;
-          CurrSelectedMusicAlbum = album;
+          var flag = (!CurrSelectedMusicArtist.Equals(SelectedItem, StringComparison.CurrentCulture) || !CurrSelectedMusicAlbum.Equals(album, StringComparison.CurrentCulture));
 
-          AddSelectedArtistProperty(CurrSelectedMusicArtist) ;
-          AddSelectedGenreProperty(genre, CurrSelectedMusicArtist, "music") ;
+          if (flag || (RefreshTickCount >= Utils.MaxRefreshTickCount))
+          {
+            CurrSelectedMusicArtist = SelectedItem;
+            CurrSelectedMusicAlbum = album;
+            ResetRefreshTickCount();
+
+            AddSelectedArtistProperty(CurrSelectedMusicArtist) ;
+            AddSelectedGenreProperty(genre, CurrSelectedMusicArtist, "music") ;
+          }
         }
         else
         {
@@ -639,7 +640,7 @@ namespace FanartHandler
           }
 
           // Get Genres name
-          Utils.FillFilesList(ref sFileNames, Genres, Utils.OtherPictures.Genres);
+          Utils.FillFilesList(ref sFileNames, Genres, (!isMusic ? Utils.OtherPictures.Genres : Utils.OtherPictures.GenresMusic));
           /*
           var genres = Genres.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
           if (genres != null)

@@ -184,6 +184,7 @@ namespace FanartHandler
 
     #region Genres, Awards and Studios folders
     public static string FAHGenres { get; set; }
+    public static string FAHGenresMusic { get; set; }
     public static string FAHCharacters { get; set; }
     public static string FAHStudios { get; set; }
     public static string FAHAwards { get; set; }
@@ -313,6 +314,7 @@ namespace FanartHandler
       JunctionTarget = string.Empty;
 
       FAHGenres = string.Empty;
+      FAHGenresMusic = string.Empty;
       FAHCharacters = string.Empty;
       FAHStudios = string.Empty;
       FAHAwards = string.Empty;
@@ -446,6 +448,8 @@ namespace FanartHandler
       #region Genres and Studios folders
       FAHGenres = @"\Media\Logos\Genres\";
       logger.Debug("Fanart Handler Genres folder: Theme|Skin|Thumb "+FAHGenres);
+      FAHGenresMusic = FAHGenres + @"Music\";
+      logger.Debug("Fanart Handler Music Genres folder: Theme|Skin|Thumb "+FAHGenresMusic);
       FAHCharacters = FAHGenres + @"Characters\";
       logger.Debug("Fanart Handler Characters folder: Theme|Skin|Thumb "+FAHCharacters);
       FAHStudios = @"\Media\Logos\Studios\";
@@ -846,6 +850,9 @@ namespace FanartHandler
     {
       if (string.IsNullOrWhiteSpace(key))
         return string.Empty;
+      
+      if (key.Equals("AC/DC", StringComparison.InvariantCultureIgnoreCase)) // Workaround for AC/DC
+        key = Regex.Replace(key, "AC/DC", "ACDC", RegexOptions.IgnoreCase);
 
       key = PrepareArtistAlbum(key, category);
       if ((category == Category.MusicAlbumThumbScraped || category == Category.MusicFanartAlbum) && key.IndexOf("-", StringComparison.CurrentCulture) > 0)
@@ -934,6 +941,14 @@ namespace FanartHandler
         return string.Empty;
 
       return GetArtistAlbumFromFolder(FileName, ArtistAlbumRegex, "album") ;
+    }
+
+    public static string PatchSql(string s)
+    {
+      if (string.IsNullOrWhiteSpace(s))
+        return string.Empty;
+      
+      return s.Replace("'", "''");
     }
 
     public static string HandleMultipleKeysForDBQuery(string inputKey)
@@ -1144,14 +1159,6 @@ namespace FanartHandler
         return string.Empty;
 
       return Regex.Replace(key, @"\d", string.Empty);
-    }
-
-    public static string PatchSql(string s)
-    {
-      if (string.IsNullOrWhiteSpace(s))
-        return string.Empty;
-      
-      return s.Replace("'", "''");
     }
 
     public static string RemoveResolutionFromFileName(string s, bool flag = false)
@@ -1758,7 +1765,7 @@ namespace FanartHandler
         if (!string.IsNullOrWhiteSpace(selAlbum))
           currSelectedMusicAlbum = selAlbum ;
 
-        // logger.Debug("*** GMAFLC: 1 - ["+selArtist+"] ["+selAlbumArtist+"] ["+selAlbum+"] ["+selItem+"]");
+        // logger.Debug("*** GMAFLC: ["+selArtist+"] ["+selAlbumArtist+"] ["+selAlbum+"] ["+selItem+"]");
         if (!string.IsNullOrWhiteSpace(selArtist))
           if (!string.IsNullOrWhiteSpace(selAlbumArtist))
             if (selArtist.Equals(selAlbumArtist, StringComparison.InvariantCultureIgnoreCase))
@@ -1773,6 +1780,7 @@ namespace FanartHandler
 
         if (selectedListItem.MusicTag == null)
         {
+          #region Artists / Albums in folder
           var musicDB = MusicDatabase.Instance;
           var list = new List<SongMap>();
           musicDB.GetSongsByPath(selectedListItem.Path, ref list);
@@ -1780,19 +1788,60 @@ namespace FanartHandler
           {
             using (var enumerator = list.GetEnumerator())
             {
-              if (enumerator.MoveNext())
+              var htArtists = new Hashtable();
+              var htAlbums = new Hashtable();
+
+              // if (enumerator.MoveNext())
+              while (enumerator.MoveNext())
               {
-                currSelectedMusicAlbum = enumerator.Current.m_song.Album.Trim() ;
-                // return Utils.MovePrefixToBack(Utils.RemoveMPArtistPipes(enumerator.Current.m_song.Artist))+"|"+enumerator.Current.m_song.Artist+"|"+enumerator.Current.m_song.AlbumArtist;
-                // logger.Debug("*** GMAFLC: 2 - ["+enumerator.Current.m_song.Artist+"] ["+enumerator.Current.m_song.AlbumArtist+"]");
-                return Utils.RemoveMPArtistPipes(enumerator.Current.m_song.Artist)+"|"+enumerator.Current.m_song.Artist+"|"+enumerator.Current.m_song.AlbumArtist;
+                // currSelectedMusicAlbum = enumerator.Current.m_song.Album.Trim() ;
+                // return Utils.RemoveMPArtistPipes(enumerator.Current.m_song.Artist)+"|"+enumerator.Current.m_song.Artist+"|"+enumerator.Current.m_song.AlbumArtist;
+                var _artists = Utils.RemoveMPArtistPipes(enumerator.Current.m_song.Artist).Trim();
+                if (!string.IsNullOrEmpty(_artists) && !htArtists.Contains(_artists))
+                  htArtists.Add(_artists, _artists);
+                _artists = enumerator.Current.m_song.Artist.Trim();
+                if (!string.IsNullOrEmpty(_artists) && !htArtists.Contains(_artists))
+                  htArtists.Add(_artists, _artists);
+                _artists = enumerator.Current.m_song.AlbumArtist.Trim();
+                if (!string.IsNullOrEmpty(_artists) && !htArtists.Contains(_artists))
+                  htArtists.Add(_artists, _artists);
+
+                var _album = enumerator.Current.m_song.Album.Trim();
+                if (!string.IsNullOrEmpty(_album) && !htAlbums.Contains(_album))
+                  htAlbums.Add(_album, _album);
+              }
+              if (htAlbums.Count > 0)
+              {
+                currSelectedMusicAlbum = string.Empty;
+                foreach (string _album in htAlbums.Values)
+                {
+                  currSelectedMusicAlbum = currSelectedMusicAlbum + (string.IsNullOrEmpty(currSelectedMusicAlbum) ? "" : "|") + _album;
+                }
+                htAlbums.Clear();
+                htAlbums = null;
+              }
+              if (htArtists.Count > 0)
+              {
+                if (!htArtists.Contains(selItem))
+                  htArtists.Add(selItem, selItem);
+
+                var _artists = string.Empty ;
+                foreach (string _artist in htArtists.Values)
+                {
+                  _artists = _artists + (string.IsNullOrEmpty(_artists) ? "" : "|") + _artist;
+                }
+                htArtists.Clear();
+                htArtists = null;
+                // logger.Debug("*** GMAFLC: ["+_artists+"] ["+currSelectedMusicAlbum+"] ["+selItem+"]");
+                return _artists;
               }
             }
           }
-
+          #endregion
+          //
           if (selItem.Equals("..", StringComparison.CurrentCulture))
             return selItem;
-
+          //
           var FoundArtist = (string) null;
           //
           var SelArtist = Utils.MovePrefixToBack(Utils.RemoveMPArtistPipes(Utils.GetArtistLeftOfMinusSign(selItem)));
@@ -1812,7 +1861,6 @@ namespace FanartHandler
           if (arrayList != null)
             arrayList.Clear();
           arrayList = null;
-          // logger.Debug("*** GMAFLC: 3 - ["+FoundArtist+"]");
           if (!string.IsNullOrWhiteSpace(FoundArtist))
             return FoundArtist;
           //
@@ -1831,12 +1879,9 @@ namespace FanartHandler
           if (arrayList != null)
             arrayList.Clear();
           arrayList = null;
-          // logger.Debug("*** GMAFLC: 4 - ["+FoundArtist+"]");
           if (!string.IsNullOrWhiteSpace(FoundArtist))
             return FoundArtist;
           //
-          // var str3 = Utils.MovePrefixToBack(Utils.RemoveMPArtistPipes(Utils.GetArtistLeftOfMinusSign(artistLeftOfMinusSign)));
-          // var SelArtistWithoutPipes = Utils.RemoveMPArtistPipes(Utils.GetArtistLeftOfMinusSign(SelArtist));
           var SelArtistWithoutPipes = Utils.RemoveMPArtistPipes(SelArtist);
           arrayList = new ArrayList();
           if (musicDB.GetAlbums(3, SelArtistWithoutPipes, ref arrayList))
@@ -1852,10 +1897,10 @@ namespace FanartHandler
           if (arrayList != null)
             arrayList.Clear();
           arrayList = null;
-          // return Utils.MovePrefixToBack(Utils.RemoveMPArtistPipes(s));
-          // logger.Debug("*** GMAFLC: 5 - ["+FoundArtist+"]");
           if (!string.IsNullOrWhiteSpace(FoundArtist))
             return FoundArtist;
+          //
+          return selItem;
         }
         else
         {
@@ -1876,7 +1921,6 @@ namespace FanartHandler
             // selAlbumArtist = Utils.MovePrefixToBack(Utils.RemoveMPArtistPipes(musicTag.AlbumArtist)).Trim();
             selAlbumArtist = Utils.RemoveMPArtistPipes(musicTag.AlbumArtist).Trim()+"|"+musicTag.AlbumArtist.Trim();
 
-          // logger.Debug("*** GMAFLC: 6 - ["+selArtist+"] ["+selAlbumArtist+"]");
           if (!string.IsNullOrWhiteSpace(selArtist))
             if (!string.IsNullOrWhiteSpace(selAlbumArtist))
               if (selArtist.Equals(selAlbumArtist, StringComparison.InvariantCultureIgnoreCase))
@@ -1889,7 +1933,7 @@ namespace FanartHandler
             if (!string.IsNullOrWhiteSpace(selAlbumArtist))
               return selAlbumArtist;
         }
-        // logger.Debug("*** GMAFLC: 7 - ["+selItem+"]");
+        //
         return selItem;
       }
       catch (Exception ex)
@@ -2550,6 +2594,12 @@ namespace FanartHandler
               {
                 _picType = "Genre";
                 _picFolders = FAHGenres;
+                _pictures = _pictures + (string.IsNullOrWhiteSpace(_pictures) ? "" : "|") + Utils.GetGenre(picture.Trim());
+              }
+              if (PicturesType == Utils.OtherPictures.GenresMusic)
+              {
+                _picType = "GenreMusic";
+                _picFolders = FAHGenresMusic;
                 _pictures = _pictures + (string.IsNullOrWhiteSpace(_pictures) ? "" : "|") + Utils.GetGenre(picture.Trim());
               }
               if (PicturesType == Utils.OtherPictures.Studios)
@@ -3758,6 +3808,7 @@ namespace FanartHandler
       Awards,
       Characters,
       Genres,
+      GenresMusic,
       Studios,
     }
   }

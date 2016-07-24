@@ -724,7 +724,7 @@ ajs</Value>
        * push random images from selected folders
 
 </ExtensionDescription>
-    <VersionDescription>Fix Fanart due HtBackdrops site down</VersionDescription>
+    <VersionDescription>Cosmetic Fix for MultiArtists shared view Music Fanart</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-{VERSION}.MPE1</OnlineLocation>
     <ReleaseDate>2016-07-12T15:04:24</ReleaseDate>
