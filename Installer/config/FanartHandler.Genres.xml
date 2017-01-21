@@ -6,6 +6,7 @@
 	<genre name="science-fiction">sci-fi</genre>
     <genre name="mini-series">mini series</genre>
 	<genre name="foreign">world</genre>
+    <genre name="special interest">special interests</genre>
 	<!-- Russian -->
 	<genre name="аниме">anime</genre>
 	<genre name="биография">biography</genre>
@@ -168,4 +169,20 @@
 	<genre name="erotique">adult</genre>
 	<genre name="peplum">peplum</genre>
 	<genre name="espionnage">mystery</genre>
+    <!-- Music -->
+    <genre name="classical">classic</genre>
+    <genre name="dancing">dance</genre>
+    <genre name="synthpop">dj</genre>
+    <genre name="soundtracks">soundtrack</genre>
+    <genre name="drum &amp; bass">drum&amp;bass</genre>
+    <genre name="drum and bass">drum&amp;bass</genre>
+    <genre name="r &amp; b">r&amp;b</genre>
+    <genre name="r and b">r&amp;b</genre>
+    <genre name="cumbia">latin</genre>
+    <genre name="merengue">latin</genre>
+    <genre name="salsa">latin</genre>
+    <genre name="melodic">vocal</genre>
+    <genre name="international">world</genre>
+    <!-- Russian -->
+    <genre name="легкая музыка">relax</genre>
 </genres>

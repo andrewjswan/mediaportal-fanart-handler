@@ -2,10 +2,12 @@
 // Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 
+extern alias FHNLog;
+
 using MediaPortal.GUI.Library;
 using MediaPortal.Player;
 
-using NLog;
+using FHNLog.NLog;
 
 using System;
 using System.Collections;
@@ -118,7 +120,7 @@ namespace FanartHandler
 
     public void AddPlayingArtistPropertys(string artist, string album, string genres)
     {
-      AddPlayingArtistThumbProperty(artist, album) ;
+      AddPlayingArtistThumbProperty(artist, album);
     }
 
     public void AddPlayingArtistThumbProperty(string artist, string album)
@@ -129,7 +131,7 @@ namespace FanartHandler
         return;
       }
 
-      var PictureList = new List<string>() ;
+      var PictureList = new List<string>();
       var FileName = (string) null;
       var flag = false;
 
@@ -146,7 +148,7 @@ namespace FanartHandler
             FileName = MediaPortal.Util.Utils.ConvertToLargeCoverArt(FileName);
             if (File.Exists(FileName))
               if (!PictureList.Contains(FileName))
-                PictureList.Add(FileName) ;
+                PictureList.Add(FileName);
           }
 
           // Get Artist name
@@ -160,7 +162,7 @@ namespace FanartHandler
                 FileName = MediaPortal.Util.Utils.ConvertToLargeCoverArt(FileName);
                 if (File.Exists(FileName))
                   if (!PictureList.Contains(FileName))
-                    PictureList.Add(FileName) ;
+                    PictureList.Add(FileName);
               }
             }
         }
@@ -171,7 +173,7 @@ namespace FanartHandler
           FileName = Path.Combine(Utils.FAHMusicArtists, MediaPortal.Util.Utils.MakeFileName(artist) + "L.jpg");
           if (File.Exists(FileName))
             if (!PictureList.Contains(FileName))
-              PictureList.Add(FileName) ;
+              PictureList.Add(FileName);
 
           if (strArray != null)
             foreach (string sartist in strArray)
@@ -180,7 +182,7 @@ namespace FanartHandler
               FileName = Path.Combine(Utils.FAHMusicArtists, MediaPortal.Util.Utils.MakeFileName(sartist) + "L.jpg");
               if (File.Exists(FileName))
                 if (!PictureList.Contains(FileName))
-                  PictureList.Add(FileName) ;
+                  PictureList.Add(FileName);
             }
         }
         
@@ -195,7 +197,7 @@ namespace FanartHandler
             var rand = new Random();
             FileName = PictureList[rand.Next(PictureList.Count-1)].Trim();
           }
-          flag = true ;
+          flag = true;
         }
 
         if (PictureList != null)
@@ -241,7 +243,7 @@ namespace FanartHandler
             SetCurrentArtistsImageNames(null);
           }
 
-          var FileName = string.Empty ;
+          var FileName = string.Empty;
           // My Pictures SlideShow
           if (Utils.UseMyPicturesSlideShow)
           {
@@ -399,7 +401,7 @@ namespace FanartHandler
             if (filenames.Count > 0)
             {
               var htValues = filenames.Values;
-              result = Utils.GetFanartFilename(ref iFilePrev, ref currFile, ref htValues, category);
+              result = Utils.GetFanartFilename(ref iFilePrev, ref currFile, ref htValues);
             }
           }
         }

@@ -3,13 +3,15 @@
 #Introduction
 Fanart Handler is a plugin for MediaPortal (MP). The plugin has two main purposes;
 
-Search and download music fanart (scrape) from the htbackdrops site.
+Search and download music fanart (scrape) from the htbackdrops/last.fm/fanart.tv site.
 for all artists stored in your MP music database.<br/>
 for any artist currently being played (on the fly).<br/>
 Push fanart that you store on your local harddrive to the current used MP skin.<br/>
 push fanart for now played music<br/>
 push fanart for selected music or movie<br/>
 push random images from selected folders<br/>
+push random images for Latests media<br/>
+push weather images for current weather<br/>
 
 #Scope
 The scope of this plugin is to:
@@ -25,15 +27,17 @@ push music fanart for browsed music artist in mVidsplugin<br/>
 push music fanart for browsed music artist in YouTube.FM plugin<br/>
 push movie fanart for browsed video title in myVideo plugin<br/>
 push scorecenter fanart for browsed category in myScoreCenter plugin<br/>
+push weather fanart for current weather from World Weather / World Weather Lite<br/>
 push cycling fanart from the following folders for use anywhere in a skin for<br/>
-- thumbs\MovingPictures\Backdrops\FullSize
-- thumbs\Fan Art\fanart\original
 - thumbs\Skin Fanart\games
 - thumbs\Skin Fanart\movies
 - thumbs\Skin Fanart\music
 - thumbs\Skin Fanart\pictures
 - thumbs\Skin Fanart\plugins
 - thumbs\Skin Fanart\tv
+- thumbs\MovingPictures\Backdrops\FullSize
+- thumbs\MyFilms\Fanart
+- thumbs\Fan Art\fanart\original
 
 #Guides
 - Installation Guide http://code.google.com/p/fanart-handler/wiki/InstallationGuide
@@ -48,6 +52,8 @@ NOTE! This plugin only supports JPG images.
 #Additional for Skin
 Studios - https://github.com/andrewjswan/mediaportal.images.studios
 Genres - https://github.com/andrewjswan/mediaportal.images.genres
+Awards - https://github.com/andrewjswan/mediaportal.images.awards
+Weather - https://github.com/andrewjswan/mediaportal.images.weather
 
 #Supported Skins
 Titan ( full support in ajs Theme for Titan - https://github.com/andrewjswan/mediaportal-skin-themes )
@@ -61,6 +67,7 @@ Please see the installation guide (link).
 
 #Forum
 A sub-forum is located on the MediaPortal website. For up-to-date information and community support please use this forum.
+Link: http://forum.team-mediaportal.com/forums/fanart-handler.535/
 
 #Credits
 To the team behind the MP Moving Picture plugin. From who I have used some of the utils code and also got the idea for using two images for smoth image transitions.
@@ -71,13 +78,19 @@ To the team behind the MP Moving Picture plugin. From who I have used some of th
 #fanarthandler.scraper.percent.completed
 #fanarthandler.scraper.percent.sign
 
+#fanarthandler.games.userdef.available
 #fanarthandler.games.userdef.backdrop1.any
 #fanarthandler.games.userdef.backdrop2.any
 
+#fanarthandler.movie.latests.available
+#fanarthandler.movie.userdef.available
+#fanarthandler.movie.scraper.available
 #fanarthandler.movie.userdef.backdrop1.any
 #fanarthandler.movie.userdef.backdrop2.any
 #fanarthandler.movie.scraper.backdrop1.any
 #fanarthandler.movie.scraper.backdrop2.any
+#fanarthandler.movie.latests.backdrop1.any
+#fanarthandler.movie.latests.backdrop2.any
 #fanarthandler.movie.backdrop1.selected
 #fanarthandler.movie.backdrop2.selected
 #fanarthandler.movie.studios.selected.single
@@ -90,13 +103,22 @@ To the team behind the MP Moving Picture plugin. From who I have used some of th
 #fanarthandler.movie.awards.selected.all
 #fanarthandler.movie.awards.selected.verticalall
 
+#fanarthandler.movingpicture.latests.available
+#fanarthandler.movingpicture.random.available
 #fanarthandler.movingpicture.backdrop1.any
 #fanarthandler.movingpicture.backdrop2.any
+#fanarthandler.movingpicture.latests.backdrop1.any
+#fanarthandler.movingpicture.latests.backdrop2.any
 
+#fanarthandler.music.latests.available
+#fanarthandler.music.userdef.available
+#fanarthandler.music.scraper.available
 #fanarthandler.music.userdef.backdrop1.any
 #fanarthandler.music.userdef.backdrop2.any
 #fanarthandler.music.scraper.backdrop1.any
 #fanarthandler.music.scraper.backdrop2.any
+#fanarthandler.music.latests.backdrop1.any
+#fanarthandler.music.latests.backdrop2.any
 #fanarthandler.music.overlay.play
 #fanarthandler.music.artisthumb.play
 #fanarthandler.music.artistclearart.play
@@ -115,25 +137,93 @@ To the team behind the MP Moving Picture plugin. From who I have used some of th
 #fanarthandler.music.genres.selected.all
 #fanarthandler.music.genres.selected.verticalall
 
+#fanarthandler.mvcentral.latests.available
+#fanarthandler.mvcentral.latests.backdrop1.any
+#fanarthandler.mvcentral.latests.backdrop2.any
+
 #fanarthandler.pictures.slideshow.translation
 #fanarthandler.pictures.slideshow.enabled
 
+#fanarthandler.picture.userdef.available
 #fanarthandler.picture.backdrop1.selected
 #fanarthandler.picture.backdrop2.selected
 #fanarthandler.picture.userdef.backdrop1.any
 #fanarthandler.picture.userdef.backdrop2.any
 
+#fanarthandler.scorecenter.userdef.available
 #fanarthandler.scorecenter.backdrop1.selected
 #fanarthandler.scorecenter.backdrop2.selected
 #fanarthandler.scorecenter.userdef.backdrop1.any
 #fanarthandler.scorecenter.userdef.backdrop2.any
 
+#fanarthandler.tvseries.latests.available
+#fanarthandler.tvseries.random.available
 #fanarthandler.tvseries.backdrop1.any
 #fanarthandler.tvseries.backdrop2.any
+#fanarthandler.tvseries.latests.backdrop1.any
+#fanarthandler.tvseries.latests.backdrop2.any
+
+#fanarthandler.tv.userdef.available
 #fanarthandler.tv.userdef.backdrop1.any
 #fanarthandler.tv.userdef.backdrop2.any
 
+#fanarthandler.myfilms.latests.available
+#fanarthandler.myfilms.random.available
+#fanarthandler.myfilms.backdrop1.any
+#fanarthandler.myfilms.backdrop2.any
+#fanarthandler.myfilms.latests.backdrop1.any
+#fanarthandler.myfilms.latests.backdrop2.any
+
+#fanarthandler.plugins.userdef.available
 #fanarthandler.plugins.userdef.backdrop1.any
 #fanarthandler.plugins.userdef.backdrop2.any
+
+#fanarthandler.weather.backdrop1
+#fanarthandler.weather.backdrop2
 </pre>
+
+#Defines
+<pre>
+#useRandomGamesUserFanart:Yes
+#useRandomMoviesUserFanart:Yes
+#useRandomMoviesScraperFanart:Yes
+#useRandomMovingPicturesFanart:Yes
+#useRandomMusicUserFanart:Yes
+#useRandomMusicScraperFanart:Yes
+#useRandomPicturesUserFanart:Yes
+#useRandomPluginsUserFanart:Yes
+#useRandomScoreCenterUserFanart:Yes 
+#useRandomTVUserFanart:Yes
+#useRandomTVSeriesFanart:Yes
+#useRandomMyFilmsFanart:Yes
+
+#usePlayFanart:Yes
+
+#useRandomLatestsMusicFanart:Yes
+#useRandomLatestsMvCentralFanart:Yes
+#useRandomLatestsMovieFanart:Yes
+#useRandomLatestsMovingPicturesFanart:Yes
+#useRandomLatestsTVSeriesFanart:Yes
+#useRandomLatestsMyFilmsFanart:Yes
+</pre>
+
+#Window Control IDs
+<pre>
+91919297 - Random/Random Latests Fanart 1 Showed
+91919298 - Random/Random Latests Fanart 2 Showed
+91919299 - Random/Random Latests Fanart Available
+
+91919291 - Selected Fanart 1 Showed
+91919292 - Selected Fanart 2 Showed
+91919293 - Selected Fanart Available
+
+91919295 - Playing Fanart 1 Showed
+91919296 - Playing Fanart 2 Showed
+91919294 - Playing Fanart Available
+
+91919283 - Current Weather Fanart 1 Showed 
+91919281 - Current Weather Fanart 2 Showed 
+91919282 - Current Weather Fanart Available
+</pre>
+
 Automatically exported from code.google.com/p/mediaportal-fanart-handler

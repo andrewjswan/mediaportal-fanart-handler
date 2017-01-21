@@ -2,10 +2,12 @@
 // Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 
+extern alias FHNLog;
+
 using MediaPortal.Configuration;
 using MediaPortal.Profile;
 
-using NLog;
+using FHNLog.NLog;
 
 using System;
 using System.ComponentModel;
@@ -116,10 +118,10 @@ namespace FanartHandler
 		{
 		  if (!string.IsNullOrEmpty(folder) && Directory.Exists(folder))
 		  {
-            logger.Debug("MyPictures FanartHandler folder: "+folder) ;
-            SetupSlideShowImages(folder, ref i) ;
+            logger.Debug("MyPictures FanartHandler folder: "+folder);
+            SetupSlideShowImages(folder, ref i);
             if (Utils.GetIsStopping())
-              return ;
+              return;
 		  }
 		}
       }
@@ -136,10 +138,10 @@ namespace FanartHandler
             string sharePinData = xmlreader.GetValueAsString("pictures", sharePin, string.Empty);
             if (!MediaPortal.Util.Utils.IsDVD(sharePathData) && sharePathData != string.Empty && string.IsNullOrEmpty(sharePinData))
             {
-              logger.Debug("MyPictures Mediaportal folder: "+sharePathData) ;
-              SetupSlideShowImages(sharePathData, ref i) ;
+              logger.Debug("MyPictures Mediaportal folder: "+sharePathData);
+              SetupSlideShowImages(sharePathData, ref i);
               if (Utils.GetIsStopping())
-                return ;
+                return;
             }
           }
         }
@@ -162,7 +164,7 @@ namespace FanartHandler
               bool flag = Utils.FastScanMyPicturesSlideShow;
               if (!flag)
               {
-                flag = (Utils.CheckImageResolution(file, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio));
+                flag = (Utils.CheckImageResolution(file, Utils.UseAspectRatio));
               }
               
               if (flag)
@@ -176,7 +178,7 @@ namespace FanartHandler
             logger.Error("SetupSlideShowImages: " + ex);
           }
           if (Utils.GetIsStopping())
-            return ;
+            return;
         }
         // Include SubFolders
         foreach (var SubDir in Directory.GetDirectories(StartDir))

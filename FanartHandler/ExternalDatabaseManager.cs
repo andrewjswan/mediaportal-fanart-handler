@@ -3,9 +3,11 @@
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 // Assembly location: D:\Mes documents\Desktop\FanartHandler.dll
 
+extern alias FHNLog;
+
 using MediaPortal.Configuration;
 
-using NLog;
+using FHNLog.NLog;
 
 using SQLite.NET;
 
@@ -65,7 +67,7 @@ namespace FanartHandler
       {
         var SQL = string.Empty; 
         if (category == Utils.Category.TvSeriesScraped)
-          SQL = "SELECT SortName, id FROM online_series;" ;
+          SQL = "SELECT SortName, id FROM online_series;";
         else if (category == Utils.Category.MusicAlbumThumbScraped)
           SQL = "SELECT DISTINCT c.[artist] as Artist, b.[album] as Album, b.[yearreleased] as Year "+
                  "FROM album_info b, album_info__track_info t, artist_info__track_info a, artist_info c "+

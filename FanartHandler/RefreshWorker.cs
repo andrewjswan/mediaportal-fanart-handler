@@ -2,9 +2,11 @@
 // Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 
+extern alias FHNLog;
+
 using MediaPortal.GUI.Library;
 
-using NLog;
+using FHNLog.NLog;
 
 using System;
 using System.ComponentModel;
@@ -56,6 +58,7 @@ namespace FanartHandler
         FanartHandlerSetup.Fh.FPlayOther.RefreshMusicPlaying(this, e);
         FanartHandlerSetup.Fh.FSelected.RefreshSelected(this, e);
         FanartHandlerSetup.Fh.FSelectedOther.RefreshSelected(this, e);
+        FanartHandlerSetup.Fh.FWeather.RefreshWeather(this, e);
         FanartHandlerSetup.Fh.FRandom.RefreshRandom(this, e);
 
         Report(e);

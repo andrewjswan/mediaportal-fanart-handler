@@ -2,9 +2,11 @@
 // Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 
+extern alias FHNLog;
+
 using MediaPortal.Configuration;
 
-using NLog;
+using FHNLog.NLog;
 
 using System;
 using System.ComponentModel;
@@ -58,12 +60,21 @@ namespace FanartHandler
             {
               if (strArray[0].Contains(Utils.JunctionTarget, StringComparison.OrdinalIgnoreCase))
               {
-                var str = strArray[0].Replace(Utils.JunctionTarget, Utils.JunctionSource) ;
+                var str = strArray[0].Replace(Utils.JunctionTarget, Utils.JunctionSource);
                 logger.Debug("Revert junction: "+strArray[0]+" -> "+str);
-                strArray[0] = str ;
+                strArray[0] = str;
               }
             }
             //
+            ReportProgress(0, "Importing local fanart for Weather...");
+            if (All || strArray[0].Contains(Utils.FAHUDWeather, StringComparison.OrdinalIgnoreCase))
+            {
+              logger.Info("Refreshing local fanart for Weather is starting.");
+              Utils.SetupFilenames(Utils.FAHUDWeather, "*.jpg", Utils.Category.Weather, null, Utils.Provider.Local);
+              // Utils.GetDbm().RemoveFromAnyHashtable(Utils.Category.Weather);
+              Utils.GetDbm().RefreshAnyFanart(Utils.Category.Weather, false);
+              logger.Info("Refreshing local fanart for Weather is done.");
+            }
             ReportProgress(4, "Importing local fanart for Pictures...");
             if (All || strArray[0].Contains(Utils.FAHUDPictures, StringComparison.OrdinalIgnoreCase))
             {
@@ -189,8 +200,9 @@ namespace FanartHandler
               logger.Info("Refreshing local fanart for Plugins is done.");
             }
             ReportProgress(88, "Importing local fanart for TVSeries...");
-            if (FanartHandlerHelper.IsAssemblyAvailable("MP-TVSeries", new Version(2, 6, 5, 1265), Path.Combine(Path.Combine(Config.GetFolder((Config.Dir) 5), "windows"), "MP-TVSeries.dll")) && 
-               (All || strArray[0].Equals("TVSeries") || strArray[0].Contains(Utils.FAHTVSeries, StringComparison.OrdinalIgnoreCase)))
+            if (Utils.TVSeriesEnabled && 
+                (FanartHandlerHelper.IsAssemblyAvailable("MP-TVSeries", new Version(4, 0, 0, 0), Path.Combine(Path.Combine(Config.GetFolder((Config.Dir) 5), "windows"), "MP-TVSeries.dll")) && 
+                (All || strArray[0].Equals("TVSeries") || strArray[0].Contains(Utils.FAHTVSeries, StringComparison.OrdinalIgnoreCase))))
             {
               logger.Info("Refreshing local fanart for TVSeries is starting.");
               try
@@ -209,8 +221,9 @@ namespace FanartHandler
               logger.Info("Refreshing local fanart for TVSeries is done.");
             }
             ReportProgress(94, "Importing loacal fanart for MovingPictures...");
-            if (FanartHandlerHelper.IsAssemblyAvailable("MovingPictures", new Version(1, 1, 0, 0), Path.Combine(Path.Combine(Config.GetFolder((Config.Dir) 5), "windows"), "MovingPictures.dll")) &&
-               (All || strArray[0].Equals("MovingPictures") || strArray[0].Contains(Utils.FAHMovingPictures, StringComparison.OrdinalIgnoreCase)))
+            if (Utils.MovingPicturesEnabled && 
+                (FanartHandlerHelper.IsAssemblyAvailable("MovingPictures", new Version(1, 0, 0, 0), Path.Combine(Path.Combine(Config.GetFolder((Config.Dir) 5), "windows"), "MovingPictures.dll")) &&
+                (All || strArray[0].Equals("MovingPictures") || strArray[0].Contains(Utils.FAHMovingPictures, StringComparison.OrdinalIgnoreCase))))
             {
               logger.Info("Refreshing local fanart for MovingPictures is starting.");
               try
@@ -221,6 +234,21 @@ namespace FanartHandler
               }
               catch { }
               logger.Info("Refreshing local fanart for MovingPictures is done.");
+            }
+            ReportProgress(98, "Importing loacal fanart for MyFilms...");
+            if (Utils.MyFilmsEnabled && 
+                (FanartHandlerHelper.IsAssemblyAvailable("MyFilms", new Version(6, 0, 0, 0), Path.Combine(Path.Combine(Config.GetFolder((Config.Dir) 5), "windows"), "MyFilms.dll")) &&
+                (All || strArray[0].Equals("MyFilms") || strArray[0].Contains(Utils.FAHMyFilms, StringComparison.OrdinalIgnoreCase))))
+            {
+              logger.Info("Refreshing local fanart for MyFilms is starting.");
+              try
+              {
+                UtilsMyFilms.GetMyFilmsBackdrops();
+                // Utils.GetDbm().RemoveFromAnyHashtable(Utils.Category.MyFilmsManual);
+                Utils.GetDbm().RefreshAnyFanart(Utils.Category.MyFilmsManual, false);
+              }
+              catch { }
+              logger.Info("Refreshing local fanart for MyFilms is done.");
             }
           }
         }
@@ -288,6 +316,11 @@ namespace FanartHandler
             Utils.Category.MusicAlbumThumbScraped,
             Utils.Category.MusicArtistThumbScraped
           }, 0);
+          flag = true;
+        }
+        if (type.Equals("All") || type.Equals("UserManaged"))
+        {
+          FanartHandlerSetup.FhC.UpdateFanartUserManagedTable();
           flag = true;
         }
         if (type.Equals("All") || type.Equals("External"))

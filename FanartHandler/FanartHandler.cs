@@ -2,6 +2,8 @@
 // Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
  
+extern alias FHNLog;
+
 using MediaPortal.Configuration;
 using MediaPortal.GUI.Library;
 using MediaPortal.Music.Database;
@@ -11,9 +13,9 @@ using MediaPortal.Services;
 
 using Microsoft.Win32;
 
-using NLog;
-using NLog.Config;
-using NLog.Targets;
+using FHNLog.NLog;
+using FHNLog.NLog.Config;
+using FHNLog.NLog.Targets;
 
 using System;
 using System.Collections;
@@ -56,6 +58,7 @@ namespace FanartHandler
     internal FanartSelected FSelected;
     internal FanartSelectedOther FSelectedOther;
     internal FanartRandom FRandom;
+    internal FanartWeather FWeather;
 
     private DirectoryWorker MyDirectoryWorker;
     private RefreshWorker MyRefreshWorker;
@@ -74,15 +77,15 @@ namespace FanartHandler
 
     private void MyFileWatcher_Created(object sender, FileSystemEventArgs e)
     {
-      var FileName = e.FullPath ;
+      var FileName = e.FullPath;
 
       if (Utils.IsJunction)
       {
         if (FileName.Contains(Utils.JunctionTarget, StringComparison.OrdinalIgnoreCase))
         {
-          var str = FileName.Replace(Utils.JunctionTarget, Utils.JunctionSource) ;
+          var str = FileName.Replace(Utils.JunctionTarget, Utils.JunctionSource);
           // logger.Debug("MyFileWatcher: Revert junction: "+FileName+" -> "+str);
-          FileName = str ;
+          FileName = str;
         }
       }
 
@@ -90,7 +93,8 @@ namespace FanartHandler
           !FileName.Contains(Utils.FAHMusicAlbums, StringComparison.OrdinalIgnoreCase) &&
           !FileName.Contains(Utils.FAHFolder, StringComparison.OrdinalIgnoreCase) &&
           !FileName.Contains(Utils.FAHTVSeries, StringComparison.OrdinalIgnoreCase) &&
-          !FileName.Contains(Utils.FAHMovingPictures, StringComparison.OrdinalIgnoreCase))
+          !FileName.Contains(Utils.FAHMovingPictures, StringComparison.OrdinalIgnoreCase) &&
+          !FileName.Contains(Utils.FAHMyFilms, StringComparison.OrdinalIgnoreCase))
         return;
 
       if (FileName.Contains(Utils.FAHSMusic, StringComparison.OrdinalIgnoreCase) || 
@@ -108,7 +112,7 @@ namespace FanartHandler
 
     internal bool CheckValidWindowIDForFanart()
     {
-      return (FPlay.CheckValidWindowIDForFanart() || FPlayOther.CheckValidWindowIDForFanart() || FSelected.CheckValidWindowIDForFanart() || FSelectedOther.CheckValidWindowIDForFanart() || FRandom.CheckValidWindowIDForFanart());
+      return (FPlay.CheckValidWindowIDForFanart() || FPlayOther.CheckValidWindowIDForFanart() || FSelected.CheckValidWindowIDForFanart() || FSelectedOther.CheckValidWindowIDForFanart() || FRandom.CheckValidWindowIDForFanart() || FWeather.CheckValidWindowIDForFanart());
     }
 
     internal bool CheckValidWindowsForDirectoryTimerQueue()
@@ -278,6 +282,11 @@ namespace FanartHandler
       {
         FRandom.RefreshTickCount = 0;
       }
+
+      if (FWeather.RefreshTickCount > Utils.MaxRefreshTickCount)
+      {
+        FWeather.RefreshTickCount = 0;
+      }
     }
 
     internal void UpdateDummyControls()
@@ -287,46 +296,77 @@ namespace FanartHandler
         CheckRefreshCounters();
         int needClean = Utils.MaxRefreshTickCount / 2;
 
-        // Playing
-        if (FPlay.RefreshTickCount == 2)
+        if (FPlay != null)
         {
-          FPlay.UpdateProperties();
-          FPlay.ShowImagePlay();
+          // Playing
+          if (FPlay.RefreshTickCount == 2)
+          {
+            FPlay.UpdateProperties();
+            FPlay.ShowImagePlay();
+          }
+          else if (FPlay.RefreshTickCount == needClean)
+          {
+            FPlay.EmptyAllPlayImages();
+          }
         }
-        else if (FPlay.RefreshTickCount == needClean)
+        if (FPlayOther != null)
         {
-          FPlay.EmptyAllPlayImages();
-        }
-        if (FPlayOther.RefreshTickCount == 2)
-        {
-          FPlayOther.ShowImagePlay();
-        }
-
-        // Select
-        if (FSelected.RefreshTickCount == 2)
-        {
-          FSelected.UpdateProperties();
-          FSelected.ShowImageSelected();
-        }
-        else if (FSelected.RefreshTickCount == needClean)
-        {
-          FSelected.EmptyAllSelectedImages();
-        }
-        if (FSelectedOther.RefreshTickCount == 2)
-        {
-          FSelectedOther.ShowImageSelected();
+          if (FPlayOther.RefreshTickCount == 2)
+          {
+            FPlayOther.ShowImagePlay();
+          }
         }
 
-        // Random
-        if (FRandom.RefreshTickCount == 2)
+        if (FSelected != null)
         {
-          FRandom.UpdateProperties();
-          FRandom.ShowImageRandom();
+          // Select
+          if (FSelected.RefreshTickCount == 2)
+          {
+            FSelected.UpdateProperties();
+            FSelected.ShowImageSelected();
+          }
+          else if (FSelected.RefreshTickCount == needClean)
+          {
+            FSelected.EmptyAllSelectedImages();
+          }
         }
-        else if (FRandom.RefreshTickCount == needClean)
+        if (FSelectedOther != null)
         {
-          FRandom.EmptyAllRandomImages();
+          if (FSelectedOther.RefreshTickCount == 2)
+          {
+            FSelectedOther.ShowImageSelected();
+          }
         }
+
+        if (FRandom != null)
+        {
+          // Random
+          if (FRandom.RefreshTickCount == 2)
+          {
+            FRandom.UpdateProperties();
+            FRandom.ShowImageRandom();
+          }
+          else if (FRandom.RefreshTickCount == needClean)
+          {
+            FRandom.EmptyAllRandomImages();
+            FRandom.EmptyAllRandomLatestsImages();
+          }
+        }
+
+        if (FWeather != null)
+        {
+          // Weather
+          if (FWeather.RefreshTickCount == 2)
+          {
+            FWeather.UpdateProperties();
+            FWeather.ShowImageSelected();
+          }
+          else if (FWeather.RefreshTickCount == needClean)
+          {
+            FWeather.EmptyAllSelectedImages();
+          }
+        }
+
       }
       catch (Exception ex)
       {
@@ -350,6 +390,9 @@ namespace FanartHandler
 
         FRandom.FanartIsNotAvailableRandom();
         FRandom.HideImageRandom();
+
+        FWeather.FanartIsNotAvailable();
+        FWeather.HideImageSelected();
       }
       catch (Exception ex)
       {
@@ -368,6 +411,12 @@ namespace FanartHandler
         {
           FRandom.RefreshRandomFilenames();
         }
+        /* No latests on start
+        if (Utils.ContainsID(FRandom.WindowsUsingFanartLatestsRandom, (int)GUIWindow.Window.WINDOW_SECOND_HOME)) // If latests random used in Basic Home ...
+        {
+          FRandom.RefreshRandomLatestsFilenames();
+        }
+        */
       }
       catch (Exception ex)
       {
@@ -392,6 +441,7 @@ namespace FanartHandler
       FSelected.EmptyAllSelectedProperties();
       FSelectedOther.EmptyAllSelectedProperties();
       FRandom.EmptyAllRandomProperties();
+      FWeather.EmptyAllSelectedProperties();
     }
 
     public void ClearCurrProperties()
@@ -401,6 +451,7 @@ namespace FanartHandler
       FSelected.ClearCurrProperties();
       FSelectedOther.ClearCurrProperties();
       FRandom.ClearCurrProperties();
+      FWeather.ClearCurrProperties();
     }
 
     public void RefreshRefreshTickCount()
@@ -410,6 +461,7 @@ namespace FanartHandler
       FSelected.RefreshRefreshTickCount();
       FSelectedOther.RefreshRefreshTickCount();
       FRandom.RefreshRefreshTickCount();
+      FWeather.RefreshRefreshTickCount();
     }
 
     private void SetupVariables()
@@ -495,6 +547,7 @@ namespace FanartHandler
         FSelected = new FanartSelected();
         FSelectedOther = new FanartSelectedOther();
         FRandom = new FanartRandom();
+        FWeather = new FanartWeather();
         //
         SetupWindowsUsingFanartHandlerVisibility();
         SetupVariables();
@@ -530,6 +583,29 @@ namespace FanartHandler
           }
         }
         //
+        Utils.LatestMediaHandlerEnabled = Utils.PluginIsEnabled("LatestMediaHandler") || Utils.PluginIsEnabled("Latest Media Handler");
+        Utils.TVSeriesEnabled = Utils.PluginIsEnabled("MP-TV Series");
+        Utils.MovingPicturesEnabled = Utils.PluginIsEnabled("Moving Pictures");
+        Utils.MyFilmsEnabled = Utils.PluginIsEnabled("MyFilms");
+        logger.Debug("Plugin enabled: " + Utils.Check(Utils.PluginIsEnabled("Music")) + " Music, " +
+                                          Utils.Check(Utils.PluginIsEnabled("Pictures")) + " Pictures, " +
+                                          Utils.Check(Utils.PluginIsEnabled("Videos")) + " MyVideo, " +
+                                          Utils.Check(Utils.TVSeriesEnabled) + " TVSeries, " +
+                                          Utils.Check(Utils.MovingPicturesEnabled) + " MovingPictures, " +
+                                          Utils.Check(Utils.MyFilmsEnabled) + " MyFilms, " +
+                                          Utils.Check(Utils.PluginIsEnabled(Utils.GetProperty("#mvCentral.Settings.HomeScreenName"))) + " MvCentral, " + 
+                                          Utils.Check(Utils.LatestMediaHandlerEnabled) + " LatestMediaHandler");
+        //
+        if (Utils.LatestMediaHandlerEnabled && !FanartHandlerHelper.IsAssemblyAvailable("LatestMediaHandler", new Version(2, 3, 0, 62), Path.Combine(Path.Combine(Config.GetFolder((Config.Dir) 5), "process"), "LatestMediaHandler.dll")))
+        {
+          Utils.LatestMediaHandlerEnabled = false;
+          if (FRandom.WindowsUsingFanartLatestsRandom != null)
+          {
+            FRandom.WindowsUsingFanartLatestsRandom.Clear();
+          }
+          logger.Warn("LatestMediaHandler: Old version found, please update. Fanart for latests disabled.");
+        }
+        //
         logger.Debug("FanartHandler skin use: ");
         logger.Debug(" Play: " + Utils.Check(FPlay.WindowsUsingFanartPlay.Count > 0) + " Fanart");
         logger.Debug("       " + Utils.Check(FPlayOther.WindowsUsingFanartPlayClearArt.Count > 0) + " ClearArt, " + 
@@ -544,6 +620,8 @@ namespace FanartHandler
                                      Utils.Check(FSelectedOther.WindowsUsingFanartSelectedGenreMovie.Count > 0) + " Movie Genres, " +
                                      Utils.Check(FSelectedOther.WindowsUsingFanartSelectedAwardMovie.Count > 0) + " Movie Awards");
         logger.Debug(" Random: " + Utils.Check(FRandom.WindowsUsingFanartRandom.Count > 0) + " Fanart");
+        logger.Debug(" Random Latests: " + Utils.Check(FRandom.WindowsUsingFanartLatestsRandom.Count > 0) + " Fanart");
+        logger.Debug(" Weather: " + Utils.Check(FWeather.WindowsUsingFanartWeather.Count > 0) + " Fanart, Season: " + Utils.GetWeatherCurrentSeason().ToString());
         //
         Utils.InitiateDbm("mediaportal");
         Utils.StopScraper = false;
@@ -595,6 +673,7 @@ namespace FanartHandler
         logger.Error("Start: " + ex);
       }
       Utils.iActiveWindow = GUIWindowManager.ActiveWindow;
+      GuiWindowManagerOnActivateWindow(Utils.iActiveWindow);
     }
 
     private void SetupConfigFile()
@@ -629,11 +708,18 @@ namespace FanartHandler
           AddToDirectoryTimerQueue(Utils.FAHSMovies);
           break;
         }
+        /*
+        case GUIMessage.MessageType.GUI_MSG_PLAYBACK_STARTED:
+        {
+          logger.Debug("Start playback message recieved. Player: " + Utils.Check(g_Player.IsCDA) + " CD, " + Utils.Check(g_Player.IsMusic) + " Music, " + Utils.Check(g_Player.IsRadio) + " Radio.");
+          break;
+        }
+        */
         case GUIMessage.MessageType.GUI_MSG_PLAYBACK_STOPPED:
         case GUIMessage.MessageType.GUI_MSG_PLAYBACK_ENDED:
         case GUIMessage.MessageType.GUI_MSG_STOP_FILE:
         {
-          logger.Debug("Stop playback message recieved: "+message.Message.ToString());
+          logger.Debug("Stop playback message recieved: " + message.Message.ToString());
           FPlay.EmptyAllPlayProperties();
           FPlayOther.EmptyAllPlayProperties();
           break;
@@ -682,6 +768,12 @@ namespace FanartHandler
         {
           return;
         }
+        logger.Debug("Active Window: " + Utils.sActiveWindow + " " + Utils.Check(CheckValidWindowIDForFanart()) + " " + Utils.Check(Utils.UseOverlayFanart) + " " + Utils.Check(Utils.AllowFanartInActiveWindow()) +
+                     " Play: " + Utils.Check(FPlay.CheckValidWindowIDForFanart()) + " " + Utils.Check(FPlayOther.CheckValidWindowIDForFanart()) +
+                     " Player: " + Utils.Check((g_Player.Playing || g_Player.Paused) && (g_Player.IsCDA || g_Player.IsMusic || g_Player.IsRadio)) + 
+                     " Selected: " + Utils.Check(FSelected.CheckValidWindowIDForFanart()) + " " + Utils.Check(FSelectedOther.CheckValidWindowIDForFanart()) + 
+                     " Random: " + Utils.Check(FRandom.CheckValidWindowIDForFanart()) + 
+                     " Weather: " + Utils.Check(FWeather.CheckValidWindowIDForFanart()));
 
         if (Utils.IsScraping)
         {
@@ -702,7 +794,7 @@ namespace FanartHandler
           if (FSelected.CheckValidWindowIDForFanart() && Utils.AllowFanartInActiveWindow())
           {
             // logger.Debug("*** Activate Window:" + Utils.sActiveWindow + " - Selected");
-            refreshStart = true ;
+            refreshStart = true;
           }
           else
           {
@@ -712,7 +804,7 @@ namespace FanartHandler
           if (FSelectedOther.CheckValidWindowIDForFanart())
           {
             // logger.Debug("*** Activate Window:" + Utils.sActiveWindow + " - Selected (Other)");
-            refreshStart = true ;
+            refreshStart = true;
           }
           else
           {
@@ -725,7 +817,7 @@ namespace FanartHandler
               Utils.AllowFanartInActiveWindow())
           {
             // logger.Debug("*** Activate Window:" + Utils.sActiveWindow + " - Play");
-            refreshStart = true ;
+            refreshStart = true;
           }
           else
           {
@@ -739,7 +831,7 @@ namespace FanartHandler
           if (FPlayOther.CheckValidWindowIDForFanart())
           {
             // logger.Debug("*** Activate Window:" + Utils.sActiveWindow + " - Play (Other)");
-            refreshStart = true ;
+            refreshStart = true;
           }
           else
           {
@@ -750,11 +842,22 @@ namespace FanartHandler
           if (FRandom.CheckValidWindowIDForFanart() && Utils.AllowFanartInActiveWindow())
           {
             // logger.Debug("*** Activate Window:" + Utils.sActiveWindow + " - Random");
-            refreshStart = true ;
+            refreshStart = true;
           }
           else
           {
             FRandom.EmptyAllProperties();
+          }
+
+          // Weather
+          if (FWeather.CheckValidWindowIDForFanart() && Utils.AllowFanartInActiveWindow())
+          {
+            // logger.Debug("*** Activate Window:" + Utils.sActiveWindow + " - Weather");
+            refreshStart = true;
+          }
+          else
+          {
+            FWeather.EmptyAllProperties();
           }
         }
 
@@ -796,8 +899,15 @@ namespace FanartHandler
 
       EmptyAllProperties();
       HideDummyControls();
+      
+      Logos.ClearDynLogos();
 
-      System.Threading.ThreadPool.QueueUserWorkItem(delegate { FRandom.RefreshRandomFilenames(); }, null);
+      try
+      {
+        System.Threading.ThreadPool.QueueUserWorkItem(delegate { FRandom.RefreshRandomFilenames(); }, null);
+        System.Threading.ThreadPool.QueueUserWorkItem(delegate { FRandom.RefreshRandomLatestsFilenames(); }, null);
+      }
+      catch { }
     }
 
     internal void GuiWindowManagerOnActivateWindow(int activeWindowId)
@@ -824,6 +934,7 @@ namespace FanartHandler
         FPlay.IsPlaying = true;
         FPlay.AddPlayingArtistPropertys(string.Empty, string.Empty, string.Empty);
         FPlayOther.AddPlayingArtistPropertys(string.Empty, string.Empty, string.Empty);
+        logger.Debug("OnPlayBackStarted: Window: " + Utils.sActiveWindow + " MediaType: " + type.ToString() + " LastFM: " + MediaPortal.Util.Utils.IsLastFMStream(filename).ToString() + " - " + filename);
         if (type == g_Player.MediaType.Music || type == g_Player.MediaType.Radio || MediaPortal.Util.Utils.IsLastFMStream(filename))
         {
           if ((Utils.ContainsID(FPlay.WindowsUsingFanartPlay) || 
@@ -833,6 +944,19 @@ namespace FanartHandler
           {
             StartRefreshTimer();
           }
+          else
+          {
+            logger.Debug("OnPlayBackStarted: Window: " + Utils.sActiveWindow + 
+                                           " Skip due: " + Utils.Check(Utils.ContainsID(FPlay.WindowsUsingFanartPlay)) + " WPlay, "+
+                                                           Utils.Check(Utils.ContainsID(FPlayOther.WindowsUsingFanartPlayGenre)) + " WPlayGenre, "+
+                                                           Utils.Check(Utils.ContainsID(FPlayOther.WindowsUsingFanartPlayClearArt)) + " WPlayClearArt, "+
+                                                           Utils.Check(Utils.UseOverlayFanart) + " WPlayOverlay, "+
+                                                           Utils.Check(Utils.AllowFanartInActiveWindow()) + " WPlayActive.");
+          }
+        }
+        else
+        {
+          logger.Debug("OnPlayBackStarted: Skip: Window: " + Utils.sActiveWindow + " MediaType: " + type.ToString() + " LastFM: " + MediaPortal.Util.Utils.IsLastFMStream(filename).ToString() + " - " + filename);
         }
       }
       catch (Exception ex)
@@ -1025,8 +1149,11 @@ namespace FanartHandler
         if (FRandom != null)
         {
           FRandom.EmptyAllRandomImages();
+          FRandom.EmptyAllRandomLatestsImages();
           FRandom.ClearPropertiesRandom();
         }
+        if (FWeather != null)
+          FWeather.EmptyAllSelectedImages();
         Logos.ClearDynLogos();
         //
         if (!suspending)
@@ -1046,6 +1173,7 @@ namespace FanartHandler
         FSelected = null;
         FSelectedOther = null;
         FRandom = null;
+        FWeather = null;
         //
         Utils.DelayStop = new Hashtable();
       }
@@ -1098,12 +1226,12 @@ namespace FanartHandler
       {
         path = GUIGraphicsContext.Skin + @"\";
         theme = Utils.GetThemeFolder(path);
-        logger.Debug("Scan Skin folder for XML: "+path) ;
+        logger.Debug("Scan Skin folder for XML: "+path);
       }
       else
       {
         path = ThemeDir;
-        logger.Debug("Scan Skin Theme folder for XML: "+path) ;
+        logger.Debug("Scan Skin Theme folder for XML: "+path);
       }
 
       var files = new DirectoryInfo(path).GetFiles("*.xml");
@@ -1115,6 +1243,7 @@ namespace FanartHandler
         {
           XMLName = fileInfo.Name;
 
+          #region Define var
           var _flag1Music = false;
           var _flag2Music = false;
 
@@ -1157,10 +1286,15 @@ namespace FanartHandler
           var _flagClearArt = false;
           var _flagClearArtPlay = false;
 
+          var _flagWeather = false;
+
+          var skinFile = new FanartRandom.SkinFile();
+          #endregion
+
           var XMLFolder = fileInfo.FullName.Substring(0, fileInfo.FullName.LastIndexOf("\\"));
           var navigator = new XPathDocument(fileInfo.FullName).CreateNavigator();
-          var nodeValue = GetNodeValue(navigator.Select("/window/id"));
 
+          var nodeValue = GetNodeValue(navigator.Select("/window/id"));
           if (!string.IsNullOrEmpty(nodeValue))
           {
             HandleXmlImports(fileInfo.FullName, nodeValue, ref _flag1Music, ref _flag2Music, 
@@ -1173,8 +1307,11 @@ namespace FanartHandler
                                                            ref _flagGenreMusic, ref _flagGenreMusicSingle, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
                                                            ref _flagGenreMovie, ref _flagGenreMovieSingle, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
                                                            ref _flagStudioMovie, ref _flagStudioMovieSingle, ref _flagStudioMovieAll, ref _flagStudioMovieVertical,
-                                                           ref _flagAwardMovie, ref _flagAwardMovieSingle, ref _flagAwardMovieAll, ref _flagAwardMovieVertical
+                                                           ref _flagAwardMovie, ref _flagAwardMovieSingle, ref _flagAwardMovieAll, ref _flagAwardMovieVertical, 
+                                                           ref _flagWeather, 
+                                                           ref skinFile
                                                            );
+            #region Skin import
             var xpathNodeIterator = navigator.Select("/window/controls/import");
             if (xpathNodeIterator.Count > 0)
             {
@@ -1193,7 +1330,9 @@ namespace FanartHandler
                                                            ref _flagGenreMusic, ref _flagGenreMusicSingle, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
                                                            ref _flagGenreMovie, ref _flagGenreMovieSingle, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
                                                            ref _flagStudioMovie, ref _flagStudioMovieSingle, ref _flagStudioMovieAll, ref _flagStudioMovieVertical,
-                                                           ref _flagAwardMovie, ref _flagAwardMovieSingle, ref _flagAwardMovieAll, ref _flagAwardMovieVertical
+                                                           ref _flagAwardMovie, ref _flagAwardMovieSingle, ref _flagAwardMovieAll, ref _flagAwardMovieVertical, 
+                                                           ref _flagWeather, 
+                                                           ref skinFile
                                                            );
                   if (!string.IsNullOrEmpty(theme))
                   {
@@ -1209,7 +1348,9 @@ namespace FanartHandler
                                                                ref _flagGenreMusic, ref _flagGenreMusicSingle, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
                                                                ref _flagGenreMovie, ref _flagGenreMovieSingle, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
                                                                ref _flagStudioMovie, ref _flagStudioMovieSingle, ref _flagStudioMovieAll, ref _flagStudioMovieVertical,
-                                                               ref _flagAwardMovie, ref _flagAwardMovieSingle, ref _flagAwardMovieAll, ref _flagAwardMovieVertical
+                                                               ref _flagAwardMovie, ref _flagAwardMovieSingle, ref _flagAwardMovieAll, ref _flagAwardMovieVertical, 
+                                                               ref _flagWeather, 
+                                                               ref skinFile
                                                                );
                   }
                 }
@@ -1227,11 +1368,16 @@ namespace FanartHandler
                                                              ref _flagGenreMusic, ref _flagGenreMusicSingle, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
                                                              ref _flagGenreMovie, ref _flagGenreMovieSingle, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
                                                              ref _flagStudioMovie, ref _flagStudioMovieSingle, ref _flagStudioMovieAll, ref _flagStudioMovieVertical,
-                                                             ref _flagAwardMovie, ref _flagAwardMovieSingle, ref _flagAwardMovieAll, ref _flagAwardMovieVertical
+                                                             ref _flagAwardMovie, ref _flagAwardMovieSingle, ref _flagAwardMovieAll, ref _flagAwardMovieVertical, 
+                                                             ref _flagWeather, 
+                                                             ref skinFile
                                                              );
                 }
               }
             }
+            #endregion
+
+            #region Skin include
             xpathNodeIterator = navigator.Select("/window/controls/include");
             if (xpathNodeIterator.Count > 0)
             {
@@ -1250,7 +1396,9 @@ namespace FanartHandler
                                                            ref _flagGenreMusic, ref _flagGenreMusicSingle, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
                                                            ref _flagGenreMovie, ref _flagGenreMovieSingle, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
                                                            ref _flagStudioMovie, ref _flagStudioMovieSingle, ref _flagStudioMovieAll, ref _flagStudioMovieVertical,
-                                                           ref _flagAwardMovie, ref _flagAwardMovieSingle, ref _flagAwardMovieAll, ref _flagAwardMovieVertical
+                                                           ref _flagAwardMovie, ref _flagAwardMovieSingle, ref _flagAwardMovieAll, ref _flagAwardMovieVertical, 
+                                                           ref _flagWeather, 
+                                                           ref skinFile
                                                            );
                   if (!string.IsNullOrEmpty(theme))
                   {
@@ -1266,7 +1414,9 @@ namespace FanartHandler
                                                                ref _flagGenreMusic, ref _flagGenreMusicSingle, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
                                                                ref _flagGenreMovie, ref _flagGenreMovieSingle, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
                                                                ref _flagStudioMovie, ref _flagStudioMovieSingle, ref _flagStudioMovieAll, ref _flagStudioMovieVertical,
-                                                               ref _flagAwardMovie, ref _flagAwardMovieSingle, ref _flagAwardMovieAll, ref _flagAwardMovieVertical
+                                                               ref _flagAwardMovie, ref _flagAwardMovieSingle, ref _flagAwardMovieAll, ref _flagAwardMovieVertical, 
+                                                               ref _flagWeather, 
+                                                               ref skinFile
                                                                );
                   }
                 }
@@ -1284,12 +1434,16 @@ namespace FanartHandler
                                                              ref _flagGenreMusic, ref _flagGenreMusicSingle, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
                                                              ref _flagGenreMovie, ref _flagGenreMovieSingle, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
                                                              ref _flagStudioMovie, ref _flagStudioMovieSingle, ref _flagStudioMovieAll, ref _flagStudioMovieVertical,
-                                                             ref _flagAwardMovie, ref _flagAwardMovieSingle, ref _flagAwardMovieAll, ref _flagAwardMovieVertical
+                                                             ref _flagAwardMovie, ref _flagAwardMovieSingle, ref _flagAwardMovieAll, ref _flagAwardMovieVertical, 
+                                                             ref _flagWeather, 
+                                                             ref skinFile
                                                              );
                 }
               }
             }
+            #endregion
 
+            #region Selected fanart
             if (_flag1Music && _flag2Music && !Utils.ContainsID(FSelected.WindowsUsingFanartSelectedMusic, nodeValue))
             {
               FSelected.WindowsUsingFanartSelectedMusic.Add(nodeValue, nodeValue);
@@ -1310,6 +1464,7 @@ namespace FanartHandler
             {
               FPlay.WindowsUsingFanartPlay.Add(nodeValue, nodeValue);
             }
+            #endregion
 
             #region ClearArt
             // Play Music ClearArt
@@ -1412,45 +1567,22 @@ namespace FanartHandler
             }
             #endregion
 
-            #region Random
-            var skinFile = new FanartRandom.SkinFile();
-            xpathNodeIterator = navigator.Select("/window/define");
-            if (xpathNodeIterator.Count > 0)
+            #region Weather
+            if (_flagWeather && !Utils.ContainsID(FWeather.WindowsUsingFanartWeather, nodeValue))
             {
-              while (xpathNodeIterator.MoveNext())
-              {
-                var s = xpathNodeIterator.Current.Value;
-                if (s.StartsWith("#useRandomGamesUserFanart", StringComparison.CurrentCulture))
-                  skinFile.UseRandomGamesFanartUser = Utils.GetBool(ParseNodeValue(s));
-                if (s.StartsWith("#useRandomMoviesUserFanart", StringComparison.CurrentCulture))
-                  skinFile.UseRandomMoviesFanartUser = Utils.GetBool(ParseNodeValue(s));
-                if (s.StartsWith("#useRandomMoviesScraperFanart", StringComparison.CurrentCulture))
-                  skinFile.UseRandomMoviesFanartScraper = Utils.GetBool(ParseNodeValue(s));
-                if (s.StartsWith("#useRandomMovingPicturesFanart", StringComparison.CurrentCulture))
-                  skinFile.UseRandomMovingPicturesFanart = Utils.GetBool(ParseNodeValue(s));
-                if (s.StartsWith("#useRandomMusicUserFanart", StringComparison.CurrentCulture))
-                  skinFile.UseRandomMusicFanartUser = Utils.GetBool(ParseNodeValue(s));
-                if (s.StartsWith("#useRandomMusicScraperFanart", StringComparison.CurrentCulture))
-                  skinFile.UseRandomMusicFanartScraper = Utils.GetBool(ParseNodeValue(s));
-                if (s.StartsWith("#useRandomPicturesUserFanart", StringComparison.CurrentCulture))
-                  skinFile.UseRandomPicturesFanartUser = Utils.GetBool(ParseNodeValue(s));
-                if (s.StartsWith("#useRandomScoreCenterUserFanart", StringComparison.CurrentCulture))
-                  skinFile.UseRandomScoreCenterFanartUser = Utils.GetBool(ParseNodeValue(s));
-                if (s.StartsWith("#useRandomTVSeriesFanart", StringComparison.CurrentCulture))
-                  skinFile.UseRandomTVSeriesFanart = Utils.GetBool(ParseNodeValue(s));
-                if (s.StartsWith("#useRandomTVUserFanart", StringComparison.CurrentCulture))
-                  skinFile.UseRandomTVFanartUser = Utils.GetBool(ParseNodeValue(s));
-                if (s.StartsWith("#useRandomPluginsUserFanart", StringComparison.CurrentCulture))
-                  skinFile.UseRandomPluginsFanartUser = Utils.GetBool(ParseNodeValue(s));
-                // logger.Debug("*** Random check: " + s + " - " + nodeValue);
-              }
+              FWeather.WindowsUsingFanartWeather.Add(nodeValue, nodeValue);
             }
+            #endregion
+
+            #region Random
             try
             {
+              // Random
               if (skinFile.UseRandomGamesFanartUser || 
                   skinFile.UseRandomMoviesFanartUser || 
                   skinFile.UseRandomMoviesFanartScraper || 
                   skinFile.UseRandomMovingPicturesFanart || 
+                  skinFile.UseRandomMyFilmsFanart || 
                   skinFile.UseRandomMusicFanartUser || 
                   skinFile.UseRandomMusicFanartScraper || 
                   skinFile.UseRandomPicturesFanartUser || 
@@ -1461,13 +1593,33 @@ namespace FanartHandler
               {
                 if (Utils.ContainsID(FRandom.WindowsUsingFanartRandom, nodeValue))
                 {
-                  FRandom.WindowsUsingFanartRandom[nodeValue] = skinFile ; 
+                  FRandom.WindowsUsingFanartRandom[nodeValue] = skinFile; 
                   // logger.Debug("*** Random update: " + nodeValue + " - " + (string.IsNullOrEmpty(ThemeDir) ? string.Empty : "Theme: "+ThemeDir+" ")+" Filename:" + XMLName);
                 }
                 else
                 {
                   FRandom.WindowsUsingFanartRandom.Add(nodeValue, skinFile);
                   // logger.Debug("*** Random add: " + nodeValue + " - " + (string.IsNullOrEmpty(ThemeDir) ? string.Empty : "Theme: "+ThemeDir+" ")+" Filename:" + XMLName);
+                }
+              }
+
+              // Latests Random
+              if (skinFile.UseRandomMusicLatestsFanart ||
+                  skinFile.UseRandomMvCentralLatestsFanart ||
+                  skinFile.UseRandomMovieLatestsFanart ||
+                  skinFile.UseRandomMovingPicturesLatestsFanart ||
+                  skinFile.UseRandomTVSeriesLatestsFanart ||
+                  skinFile.UseRandomMyFilmsLatestsFanart)
+              {
+                if (Utils.ContainsID(FRandom.WindowsUsingFanartLatestsRandom, nodeValue))
+                {
+                  FRandom.WindowsUsingFanartLatestsRandom[nodeValue] = skinFile; 
+                  // logger.Debug("*** Random Latest update: " + nodeValue + " - " + (string.IsNullOrEmpty(ThemeDir) ? string.Empty : "Theme: "+ThemeDir+" ")+" Filename:" + XMLName);
+                }
+                else
+                {
+                  FRandom.WindowsUsingFanartLatestsRandom.Add(nodeValue, skinFile);
+                  // logger.Debug("*** Random Latest add: " + nodeValue + " - " + (string.IsNullOrEmpty(ThemeDir) ? string.Empty : "Theme: "+ThemeDir+" ")+" Filename:" + XMLName);
                 }
               }
             }
@@ -1478,7 +1630,7 @@ namespace FanartHandler
         catch (Exception ex)
         {
           logger.Error("SetupWindowsUsingFanartHandlerVisibility: " + (string.IsNullOrEmpty(ThemeDir) ? string.Empty : "Theme: "+ThemeDir+" ")+" Filename:" + XMLName);
-          logger.Error(ex) ;
+          logger.Error(ex);
         }
       }
 
@@ -1503,8 +1655,9 @@ namespace FanartHandler
                                   ref bool _flagGenreMusic, ref bool _flagGenreMusicSingle, ref bool _flagGenreMusicAll, ref bool _flagGenreMusicVertical, 
                                   ref bool _flagGenreMovie, ref bool _flagGenreMovieSingle, ref bool _flagGenreMovieAll, ref bool _flagGenreMovieVertical, 
                                   ref bool _flagStudioMovie, ref bool _flagStudioMovieSingle, ref bool _flagStudioMovieAll, ref bool _flagStudioMovieVertical, 
-                                  ref bool _flagAwardMovie, ref bool _flagAwardMovieSingle, ref bool _flagAwardMovieAll, ref bool _flagAwardMovieVertical
-                                  )
+                                  ref bool _flagAwardMovie, ref bool _flagAwardMovieSingle, ref bool _flagAwardMovieAll, ref bool _flagAwardMovieVertical, 
+                                  ref bool _flagWeather, 
+                                  ref FanartRandom.SkinFile _skinFile)
     {
       var xpathDocument = new XPathDocument(filename);
       var output = new StringBuilder();
@@ -1518,7 +1671,7 @@ namespace FanartHandler
       // Play
       if (_xml.Contains("#usePlayFanart:Yes", StringComparison.OrdinalIgnoreCase))
       {
-        _flagPlay         = true;
+        _flagPlay = true;
       }
       // Genres
       if (_xml.Contains("#fanarthandler.movie.genres.play") || _xml.Contains("#fanarthandler.music.genres.play"))
@@ -1658,6 +1811,64 @@ namespace FanartHandler
           {
             _flagGenreMusicVertical = true;
           }
+        }
+      }
+      #endregion
+
+      #region Weather fanart
+      // Weather Backdrop
+      if (_xml.Contains("#fanarthandler.weather.backdrop") )
+      {
+        _flagWeather = true;
+      }
+      #endregion
+
+      #region Random fanart
+      var navigator = xpathDocument.CreateNavigator();
+      var xpathNodeIterator = navigator.Select("/window/define");
+      if (xpathNodeIterator.Count > 0)
+      {
+        while (xpathNodeIterator.MoveNext())
+        {
+          var s = xpathNodeIterator.Current.Value;
+          // Random
+          if (s.StartsWith("#useRandomGamesUserFanart", StringComparison.CurrentCulture))
+            _skinFile.UseRandomGamesFanartUser = Utils.GetBool(ParseNodeValue(s));
+          if (s.StartsWith("#useRandomMoviesUserFanart", StringComparison.CurrentCulture))
+            _skinFile.UseRandomMoviesFanartUser = Utils.GetBool(ParseNodeValue(s));
+          if (s.StartsWith("#useRandomMoviesScraperFanart", StringComparison.CurrentCulture))
+            _skinFile.UseRandomMoviesFanartScraper = Utils.GetBool(ParseNodeValue(s));
+          if (s.StartsWith("#useRandomMovingPicturesFanart", StringComparison.CurrentCulture))
+            _skinFile.UseRandomMovingPicturesFanart = Utils.GetBool(ParseNodeValue(s));
+          if (s.StartsWith("#useRandomMusicUserFanart", StringComparison.CurrentCulture))
+            _skinFile.UseRandomMusicFanartUser = Utils.GetBool(ParseNodeValue(s));
+          if (s.StartsWith("#useRandomMusicScraperFanart", StringComparison.CurrentCulture))
+            _skinFile.UseRandomMusicFanartScraper = Utils.GetBool(ParseNodeValue(s));
+          if (s.StartsWith("#useRandomPicturesUserFanart", StringComparison.CurrentCulture))
+            _skinFile.UseRandomPicturesFanartUser = Utils.GetBool(ParseNodeValue(s));
+          if (s.StartsWith("#useRandomScoreCenterUserFanart", StringComparison.CurrentCulture))
+            _skinFile.UseRandomScoreCenterFanartUser = Utils.GetBool(ParseNodeValue(s));
+          if (s.StartsWith("#useRandomTVSeriesFanart", StringComparison.CurrentCulture))
+            _skinFile.UseRandomTVSeriesFanart = Utils.GetBool(ParseNodeValue(s));
+          if (s.StartsWith("#useRandomTVUserFanart", StringComparison.CurrentCulture))
+            _skinFile.UseRandomTVFanartUser = Utils.GetBool(ParseNodeValue(s));
+          if (s.StartsWith("#useRandomPluginsUserFanart", StringComparison.CurrentCulture))
+            _skinFile.UseRandomPluginsFanartUser = Utils.GetBool(ParseNodeValue(s));
+          if (s.StartsWith("#useRandomMyFilmsFanart", StringComparison.CurrentCulture))
+            _skinFile.UseRandomMyFilmsFanart = Utils.GetBool(ParseNodeValue(s));
+          // Latest Random
+          if (s.StartsWith("#useRandomLatestsMusicFanart", StringComparison.CurrentCulture))
+            _skinFile.UseRandomMusicLatestsFanart = Utils.GetBool(ParseNodeValue(s));
+          if (s.StartsWith("#useRandomLatestsMvCentralFanart", StringComparison.CurrentCulture))
+            _skinFile.UseRandomMvCentralLatestsFanart = Utils.GetBool(ParseNodeValue(s));
+          if (s.StartsWith("#useRandomLatestsMovieFanart", StringComparison.CurrentCulture))
+            _skinFile.UseRandomMovieLatestsFanart = Utils.GetBool(ParseNodeValue(s));
+          if (s.StartsWith("#useRandomLatestsMovingPicturesFanart", StringComparison.CurrentCulture))
+            _skinFile.UseRandomMovingPicturesLatestsFanart = Utils.GetBool(ParseNodeValue(s));
+          if (s.StartsWith("#useRandomLatestsTVSeriesFanart", StringComparison.CurrentCulture))
+            _skinFile.UseRandomTVSeriesLatestsFanart = Utils.GetBool(ParseNodeValue(s));
+          if (s.StartsWith("#useRandomLatestsMyFilmsFanart", StringComparison.CurrentCulture))
+            _skinFile.UseRandomMyFilmsLatestsFanart = Utils.GetBool(ParseNodeValue(s));
         }
       }
       #endregion

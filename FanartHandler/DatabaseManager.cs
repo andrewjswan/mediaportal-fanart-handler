@@ -2,12 +2,14 @@
 // Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 
+extern alias FHNLog;
+
 using MediaPortal.Configuration;
 using MediaPortal.Database;
 using MediaPortal.Music.Database;
 using MediaPortal.Video.Database;
 
-using NLog;
+using FHNLog.NLog;
 
 using SQLite.NET;
 
@@ -28,6 +30,7 @@ namespace FanartHandler
         private SQLiteClient dbClient;
 
         private Hashtable htAnyFanart;
+        private Hashtable htAnyLatestsFanart;
         // private bool HtAnyFanartUpdate;
 
         private MusicDatabase m_db;
@@ -52,6 +55,12 @@ namespace FanartHandler
         {
             get { return htAnyFanart; }
             set { htAnyFanart = value; }
+        }
+
+        public Hashtable HtAnyLatestsFanart
+        {
+            get { return htAnyLatestsFanart; }
+            set { htAnyLatestsFanart = value; }
         }
 
         public bool isDBInit
@@ -89,7 +98,7 @@ namespace FanartHandler
                 dbClient.Execute("PRAGMA temp_store = MEMORY;");
 
                 if (flag)
-                  CreateDBMain() ;
+                  CreateDBMain();
 
                 logger.Info("Successfully Opened Database: "+dbFilename);
 
@@ -101,6 +110,11 @@ namespace FanartHandler
                 if (HtAnyFanart == null)
                 {
                   HtAnyFanart = new Hashtable();
+                }
+                 
+                if (HtAnyLatestsFanart == null)
+                {
+                  HtAnyLatestsFanart = new Hashtable();
                 }
                  
                 DBIsInit = true;
@@ -165,13 +179,13 @@ namespace FanartHandler
                                                            "[Time_Stamp] TEXT, "+
                                                            "[Last_Access] TEXT, "+
                                                            "[Protected] TEXT, "+
-                                                           // "[Ratio] REAL, "+  // 3.5
-                                                           // "[iWidth] INTEGER, "+ // 3.5
-                                                           // "[iHeight] INTEGER, "+ // 3.5
+                                                           // "[Ratio] REAL, "+  // 3.6
+                                                           // "[iWidth] INTEGER, "+ // 3.6
+                                                           // "[iHeight] INTEGER, "+ // 3.6
                                                            "CONSTRAINT [i_IdProviderKey1] PRIMARY KEY ([Id], [Provider], [Key1]) ON CONFLICT REPLACE);");
                 lock (lockObject)
                     dbClient.Execute("CREATE TABLE Version (Id INTEGER PRIMARY KEY, Version TEXT, Time_Stamp TEXT);");
-                logger.Info("Create tables [Step 1] - finished");
+                logger.Info("Create tables: Step [1]: Finished.");
                 #endregion
 
                 #region Indexes
@@ -213,13 +227,17 @@ namespace FanartHandler
                     dbClient.Execute("CREATE INDEX [i_Key1EnabledCategoryLastAccess] ON [Image] ([Key1], [Enabled], [Category], [Last_Access]);");
                 lock (lockObject)                                                               
                     dbClient.Execute("CREATE INDEX [i_FullPathProtected] ON [Image] ([FullPath], [Protected]);");
-                /* 3.5
+                /* 3.6
+                lock (lockObject)                                                               
+                    dbClient.Execute("CREATE INDEX [i_iWidth] ON [Image] ([iWidth]);");
+                lock (lockObject)                                                               
+                    dbClient.Execute("CREATE INDEX [i_iHeight] ON [Image] ([iHeight]);");
                 lock (lockObject)                                                               
                     dbClient.Execute("CREATE INDEX [i_iWidthiHeight] ON [Image] ([iWidth], [iHeight]);");
                 lock (lockObject)                                                               
                     dbClient.Execute("CREATE INDEX [i_iWidthiHeightRatio] ON [Image] ([iWidth], [iHeight], [Ratio]);");
                 */
-                logger.Info("Create indexes [Step 2] - finished");
+                logger.Info("Create indexes: Step [2]: Finished.");
                 #endregion
 
                 lock (lockObject)
@@ -262,7 +280,7 @@ namespace FanartHandler
                     logger.Info("Upgrading Database to version 2.4");
                     lock (lockObject)
                         dbClient.Execute("DELETE FROM Timestamps WHERE Key LIKE 'Directory -%';");
-                    logger.Info("Upgrading Step 1 - finished");
+                    logger.Info("Upgrading: Step [1]: Finished.");
 
                     DBVersion = "2.4";
                     lock (lockObject)
@@ -278,7 +296,7 @@ namespace FanartHandler
                     logger.Info("Upgrading Database to version 2.5");
                     lock (lockObject)
                         dbClient.Execute("DELETE FROM Timestamps WHERE Key LIKE 'Directory -%';");
-                    logger.Info("Upgrading Step 1 - finished");
+                    logger.Info("Upgrading: Step [1]: Finished.");
 
                     DBVersion = "2.5";
                     lock (lockObject)
@@ -294,13 +312,13 @@ namespace FanartHandler
                     logger.Info("Upgrading Database to version 2.6");
                     lock (lockObject)
                         dbClient.Execute("DELETE FROM tvseries_fanart;");
-                    logger.Info("Upgrading Step 1 - finished");
+                    logger.Info("Upgrading: Step [1]: Finished.");
                     lock (lockObject)
                         dbClient.Execute("DELETE FROM Movie_Fanart;");
-                    logger.Info("Upgrading Step 2 - finished");
+                    logger.Info("Upgrading: Step [2]: Finished.");
                     lock (lockObject)
                         dbClient.Execute("DELETE FROM MovingPicture_Fanart;");
-                    logger.Info("Upgrading Step 3 - finished");
+                    logger.Info("Upgrading: Step [3]: Finished.");
 
                     DBVersion = "2.6";
                     lock (lockObject)
@@ -316,7 +334,7 @@ namespace FanartHandler
                     logger.Info("Upgrading Database to version 2.7");
                     lock (lockObject)
                         dbClient.Execute("DELETE FROM Timestamps WHERE Key LIKE 'Directory Ext - %';");
-                    logger.Info("Upgrading Step 1 - finished");
+                    logger.Info("Upgrading: Step [1]: Finished.");
 
                     DBVersion = "2.7";
                     lock (lockObject)
@@ -332,10 +350,10 @@ namespace FanartHandler
                     logger.Info("Upgrading Database to version 2.8");
                     lock (lockObject)
                         dbClient.Execute("UPDATE Music_Artist SET Successful_Scrape = 0 WHERE (Successful_Scrape is null or Successful_Scrape = '')");
-                    logger.Info("Upgrading Step 1 - finished");
+                    logger.Info("Upgrading: Step [1]: Finished.");
                     lock (lockObject)
                         dbClient.Execute("UPDATE Music_Artist SET successful_thumb_scrape = 0 WHERE (successful_thumb_scrape is null or successful_thumb_scrape = '')");
-                    logger.Info("Upgrading Step 2 - finished");
+                    logger.Info("Upgrading: Step [2]: Finished.");
 
                     DBVersion = "2.8";
                     lock (lockObject)
@@ -350,25 +368,25 @@ namespace FanartHandler
                 {
                     logger.Info("Upgrading Database to version 2.9");
                     Close();
-                    logger.Info("Upgrading Step 1 - finished");
+                    logger.Info("Upgrading: Step [1]: Finished.");
                     var dbFile = Config.GetFile((Config.Dir) 4, dbFilename);
                     if (File.Exists(dbFile))
                     {
                         var backupdate = DateTime.Today.ToString("yyyyMMdd", CultureInfo.CurrentCulture);
                         File.Move(dbFile, dbFile + "_old_" + ((DBVersion != null) ? "v" + DBVersion + "_" : string.Empty) + backupdate);
-                        logger.Info("Upgrading Step 2 - finished");
+                        logger.Info("Upgrading: Step [2]: Finished.");
                     }
                     var musicPath = Utils.FAHSMusic;
                     var backupPath = Path.Combine(Utils.FAHFolder, "Scraper_Backup_" + date);
                     if (Directory.Exists(musicPath) && !Directory.Exists(backupPath))
                     {
                         Directory.Move(musicPath, backupPath);
-                        logger.Info("Upgrading Step 3 - finished");
+                        logger.Info("Upgrading: Step [3]: Finished.");
                     }
                     if (!Directory.Exists(musicPath))
                     {
                         Directory.CreateDirectory(musicPath);
-                        logger.Info("Upgrading Step 4 - finished");
+                        logger.Info("Upgrading: Step [4]: Finished.");
                     }
                     try
                     {
@@ -390,10 +408,10 @@ namespace FanartHandler
                         File.Copy(backupPath + "\\default3.jpg", musicPath + "\\default3.jpg");
                     }
                     catch {  }
-                    logger.Info("Upgrading Step 5 - finished");
+                    logger.Info("Upgrading: Step [5]: Finished.");
                     // Create New Empty DB ...
                     InitDB("upgrade");
-                    logger.Info("Upgrading Step 6 - finished");
+                    logger.Info("Upgrading: Step [6]: Finished.");
                     // Check for New DB Version ...
                     lock (lockObject)
                         sqLiteResultSet = dbClient.Execute("SELECT Version FROM Version;");
@@ -417,9 +435,9 @@ namespace FanartHandler
                     {
                         logger.Info("Upgraded Database to version "+DBVersion);
                     }
-                    logger.Debug("Upgrading Step 7 - Fill tables ...");
+                    logger.Debug("Upgrading: Step [7]: fill tables ...");
                     FanartHandlerSetup.Fh.UpdateDirectoryTimer("All", "Upgrade");
-                    logger.Info("Upgrading Step 7 - finished");
+                    logger.Info("Upgrading: Step [7]: Finished.");
                 }
                 #endregion
                 #region 3.0
@@ -430,21 +448,21 @@ namespace FanartHandler
                     {
                         lock (lockObject)
                             dbClient.Execute("CREATE INDEX iKey1Key2Category ON Image (Key1,Key2, Category)");
-                        logger.Info("Upgrading Step 1 - finished");
+                        logger.Info("Upgrading: Step [1]: Finished.");
                     }
                     catch { }
                     try
                     {
                         lock (lockObject)
                             dbClient.Execute("CREATE INDEX iKey1CategoryDummyItem ON Image (Key1,Category,DummyItem)");
-                        logger.Info("Upgrading Step 2 - finished");
+                        logger.Info("Upgrading: Step [2]: Finished.");
                     }
                     catch { }
                     try
                     {
                         lock (lockObject)
                             dbClient.Execute("CREATE INDEX iCategoryTimeStamp ON Image (Category,Time_Stamp)");
-                        logger.Info("Upgrading Step 3 - finished");
+                        logger.Info("Upgrading: Step [3]: Finished.");
                     }
                     catch { }
 
@@ -464,14 +482,14 @@ namespace FanartHandler
                     {
                         lock (lockObject)
                             dbClient.Execute("ALTER TABLE [Image] ADD COLUMN [MBID] TEXT;");
-                        logger.Info("Upgrading Step 1 - finished");
+                        logger.Info("Upgrading: Step [1]: Finished.");
                     }
                     catch { }
                     try
                     {
                         lock (lockObject)
                             dbClient.Execute("CREATE INDEX [MBID] ON [Image] ([MBID] COLLATE NOCASE);");
-                        logger.Info("Upgrading Step 2 - finished");
+                        logger.Info("Upgrading: Step [2]: Finished.");
                     }
                     catch { }
                     
@@ -495,11 +513,11 @@ namespace FanartHandler
                     #region Dummy
                     try
                     {
-                        logger.Debug("Delete Dummy items...");
+                        logger.Debug("Upgrading: Step [1]: Delete Dummy items...");
                         lock (lockObject)
                             dbClient.Execute("DELETE FROM Image WHERE DummyItem = 'True';");
 
-                        logger.Info("Upgrading [Step 1] - finished.");
+                        logger.Info("Upgrading: Step [1]: Finished.");
                     }
                     catch (Exception ex)
                     {
@@ -510,15 +528,15 @@ namespace FanartHandler
                     try
                     {
                     lock (lockObject)
-                        logger.Debug("Try to Delete Temp tables...");
+                        logger.Debug("Upgrading: Step [2.1]: Try to Delete Temp tables...");
                         dbClient.Execute("DROP TABLE ImageN;");
-                        logger.Debug("Upgrading [Step 2.1] - finished.");
+                        logger.Debug("Upgrading: Step [2.1]: Finished.");
                     }
                     catch { }
                     #endregion
 
                     #region Create Table
-                    logger.Debug("Create New Table...");
+                    logger.Debug("Upgrading: Step [2.2]: Create New Table...");
                     lock (lockObject)
                         dbClient.Execute("CREATE TABLE [ImageN] ([Id] TEXT, "+
                                                                 "[Category] TEXT, "+
@@ -533,80 +551,80 @@ namespace FanartHandler
                                                                 "[MBID] TEXT, "+
                                                                 "[Time_Stamp] TEXT, "+
                                                                 "CONSTRAINT [iIdProvider] PRIMARY KEY ([Id], [Provider]) ON CONFLICT ROLLBACK);");
-                    logger.Info("Create tables [Step 2] - finished");
+                    logger.Info("Upgrading: Step [2.2]: Finished.");
                     #endregion
 
                     #region Indexes
-                    logger.Debug("Create Indexes...");
+                    logger.Debug("Upgrading: Step [3]: Create Indexes...");
                     try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [iCategory] ON [ImageN] ([Category]);");
-                    logger.Debug("Create Indexes [Step 3.1] - finished");
+                    logger.Debug("Create Indexes: Step [3.1]: Finished.");
                     } catch (Exception ex) {logger.Error(ex);}
                     try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [iCategoryTimeStamp] ON [ImageN] ([Category], [Time_Stamp]);");
-                    logger.Debug("Create Indexes [Step 3.2] - finished");
+                    logger.Debug("Create Indexes: Step [3.2]: Finished.");
                     } catch (Exception ex) {logger.Error(ex);}
                     try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [iEnabledAvailableRandomCategory] ON [ImageN] ([Enabled], [AvailableRandom], [Category]);");
-                    logger.Debug("Create Indexes [Step 3.3] - finished");
+                    logger.Debug("Create Indexes: Step [3.3]: Finished.");
                     } catch (Exception ex) {logger.Error(ex);}
                     try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [iKey1CategoryDummyItem] ON [ImageN] ([Key1], [Category], [DummyItem]);");
-                    logger.Debug("Create Indexes [Step 3.4] - finished");
+                    logger.Debug("Create Indexes: Step [3.4]: Finished.");
                     } catch (Exception ex) {logger.Error(ex);}
                     try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [iKey1Enabled] ON [ImageN] ([Key1], [Enabled]);");
-                    logger.Debug("Create Indexes [Step 3.5] - finished");
+                    logger.Debug("Create Indexes: Step [3.5]: Finished.");
                     } catch (Exception ex) {logger.Error(ex);}
                     try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [iKey1EnabledCategory] ON [ImageN] ([Key1], [Enabled], [Category]);");
-                    logger.Debug("Create Indexes [Step 3.6] - finished");
+                    logger.Debug("Create Indexes: Step [3.6]: Finished.");
                     } catch (Exception ex) {logger.Error(ex);}
                     try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [iKey1Key2Category] ON [ImageN] ([Key1], [Key2], [Category]);");
-                    logger.Debug("Create Indexes [Step 3.7] - finished");
+                    logger.Debug("Create Indexes: Step [3.7]: Finished.");
                     } catch (Exception ex) {logger.Error(ex);}
                     try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [iMBID] ON [ImageN] ([MBID] COLLATE NOCASE);");
-                    logger.Debug("Create Indexes [Step 3.8] - finished");
+                    logger.Debug("Create Indexes: Step [3.8]: Finished.");
                     } catch (Exception ex) {logger.Error(ex);}
                     try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [iKey1MBID] ON [ImageN] ([Key1], [MBID]);");
-                    logger.Debug("Create Indexes [Step 3.9] - finished");
+                    logger.Debug("Create Indexes: Step [3.9]: Finished.");
                     } catch (Exception ex) {logger.Error(ex);}
                     try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [iKey1Key2MBID] ON [ImageN] ([Key1], [Key2], [MBID]);");
-                    logger.Debug("Upgrading Indexes [Step 3.10] - finished");
+                    logger.Debug("Upgrading Indexes: Step [3.10]: Finished.");
                     } catch (Exception ex) {logger.Error(ex);}
-                    logger.Info("Upgrading Indexes [Step 3] - finished");
+                    logger.Info("Upgrading Indexes: Step [3]: Finished.");
                     #endregion
 
                     #region Transfer
-                    logger.Debug("Transfer Data to New table...");
+                    logger.Debug("Upgrading: Step [4]: Transfer Data to New table...");
                     lock (lockObject)
                         dbClient.Execute("INSERT INTO [ImageN] ([Id], [Category], [Provider], [Key1], [Key2], [FullPath], [SourcePath], [AvailableRandom], [Enabled], [DummyItem], [MBID], [Time_Stamp])"+
                                                         "SELECT [Id], [Category], [Provider], [Key1], [Key2], [FullPath], [SourcePath], [AvailableRandom], [Enabled], [DummyItem], [MBID], [Time_Stamp] "+
                                                          "FROM [Image];");
-                    logger.Info("Upgrading [Step 4] - finished.");
+                    logger.Info("Upgrading: Step [4]: finished.");
                     #endregion
 
                     #region Rename and Drop
-                    logger.Debug("Rename and Drop Tables...");
+                    logger.Debug("Upgrading: Step [5]: Rename and Drop Tables...");
                     lock (lockObject)
                         dbClient.Execute("DROP TABLE Image;");
                     lock (lockObject)
                         dbClient.Execute("ALTER TABLE ImageN RENAME TO Image;");
-                    logger.Info("Upgrading [Step 5] - finished.");
+                    logger.Info("Upgrading: Step [5]: finished.");
                     #endregion
 
                     DBVersion = "3.2";
@@ -629,14 +647,14 @@ namespace FanartHandler
                     #region Dummy
                     try
                     {
-                        logger.Debug("Delete Dummy items...");
+                        logger.Debug("Upgrading: Step [1]: Delete Dummy items...");
                         lock (lockObject)
                             dbClient.Execute("DELETE FROM Image WHERE DummyItem = 'True';");
-                        logger.Debug("Upgrading [Step 1.1] - finished.");
+                        logger.Debug("Upgrading: Step [1.1]: finished.");
                         lock (lockObject)
                             dbClient.Execute("DELETE FROM Image WHERE Category IN ('MusicAlbumThumbScraped') AND Provider = 'Local';");
-                        logger.Debug("Upgrading [Step 1.2] - finished.");
-                        logger.Info("Upgrading [Step 1] - finished.");
+                        logger.Debug("Upgrading: Step [1.2]: finished.");
+                        logger.Info("Upgrading: Step [1]: finished.");
                     }
                     catch (Exception ex)
                     {
@@ -647,15 +665,15 @@ namespace FanartHandler
                     try
                     {
                     lock (lockObject)
-                        logger.Debug("Try to Delete Temp tables...");
+                        logger.Debug("Upgrading: Step [2.1]: Try to Delete Temp tables...");
                         dbClient.Execute("DROP TABLE ImageN;");
-                        logger.Debug("Upgrading [Step 2.1] - finished.");
+                        logger.Debug("Upgrading: Step [2.1]: finished.");
                     }
                     catch { }
                     #endregion
 
                     #region Create table
-                    logger.Debug("Create New Table...");
+                    logger.Debug("Upgrading: Step [2.2]: Create New Table...");
                     lock (lockObject)
                         dbClient.Execute("CREATE TABLE [ImageN] ([Id] TEXT, "+
                                                                 "[Category] TEXT, "+
@@ -670,114 +688,114 @@ namespace FanartHandler
                                                                 "[MBID] TEXT, "+
                                                                 "[Time_Stamp] TEXT, "+
                                                                 "CONSTRAINT [i_IdProviderKey1] PRIMARY KEY ([Id], [Provider], [Key1]) ON CONFLICT REPLACE);");
-                    logger.Debug("Create tables [Step 2.2] - finished");
-                    logger.Info("Create tables [Step 2] - finished");
+                    logger.Debug("Upgrading: Step [2.2]: Finished.");
+                    logger.Info("Upgrading: Step [2]: Finished.");
                     #endregion
                     
                     #region Transfer
-                    logger.Debug("Transfer Data to New table...");
+                    logger.Debug("Upgrading: Step [3]: Transfer Data to New table...");
                     lock (lockObject)
                         dbClient.Execute("INSERT INTO [ImageN] ([Id], [Category], [Provider], [Key1], [Key2], [FullPath], [SourcePath], [AvailableRandom], [Enabled], [DummyItem], [MBID], [Time_Stamp])"+
                                                         "SELECT [Id], [Category], [Provider], [Key1], [Key2], [FullPath], [SourcePath], [AvailableRandom], [Enabled], [DummyItem], [MBID], [Time_Stamp] "+
                                                          "FROM [Image];");
-                    logger.Info("Upgrading [Step 3] - finished.");
+                    logger.Info("Upgrading: Step [3]: finished.");
                     #endregion
 
                     #region Rename and Drop
-                    logger.Debug("Rename and Drop Tables...");
+                    logger.Debug("Upgrading: Step [4]: Rename and Drop Tables...");
                     lock (lockObject)
                         dbClient.Execute("DROP TABLE Image;");
-                    logger.Info("Upgrading [Step 4.1] - finished.");
+                    logger.Info("Upgrading: Step [4.1]: finished.");
                     lock (lockObject)
                         dbClient.Execute("ALTER TABLE ImageN RENAME TO Image;");
-                    logger.Info("Upgrading [Step 4.2] - finished.");
+                    logger.Info("Upgrading: Step [4.2]: finished.");
                     #endregion
 
                     #region Indexes
-                    logger.Debug("Create Indexes...");
+                    logger.Debug("Upgrading: Step [5]: Create Indexes...");
                     try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [i_Category] ON [Image] ([Category]);");
-                    logger.Debug("Upgrading Indexes [Step 5.1] - finished");
+                    logger.Debug("Upgrading Indexes: Step [5.1]: Finished.");
                     } catch (Exception ex) {logger.Error(ex);}
                     try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [i_CategoryTimeStamp] ON [Image] ([Category], [Time_Stamp]);");
-                    logger.Debug("Upgrading Indexes [Step 5.2] - finished");
+                    logger.Debug("Upgrading Indexes: Step [5.2]: Finished.");
                     } catch (Exception ex) {logger.Error(ex);}
                     try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [i_EnabledAvailableRandomCategory] ON [Image] ([Enabled], [AvailableRandom], [Category]);");
-                    logger.Debug("Upgrading Indexes [Step 5.3] - finished");
+                    logger.Debug("Upgrading Indexes: Step [5.3]: Finished.");
                     } catch (Exception ex) {logger.Error(ex);}
                     try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [i_Key1CategoryDummyItem] ON [Image] ([Key1], [Category], [DummyItem]);");
-                    logger.Debug("Upgrading Indexes [Step 5.4] - finished");
+                    logger.Debug("Upgrading Indexes: Step [5.4]: Finished.");
                     } catch (Exception ex) {logger.Error(ex);}
                     try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [i_Key1Key2CategoryDummyItem] ON [Image] ([Key1], [Key2], [Category], [DummyItem]);");
-                    logger.Debug("Upgrading Indexes [Step 5.5] - finished");
+                    logger.Debug("Upgrading Indexes: Step [5.5]: Finished.");
                     } catch (Exception ex) {logger.Error(ex);}
                     try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [i_Key1Enabled] ON [Image] ([Key1], [Enabled]);");
-                    logger.Debug("Upgrading Indexes [Step 5.6] - finished");
+                    logger.Debug("Upgrading Indexes: Step [5.6]: Finished.");
                     } catch (Exception ex) {logger.Error(ex);}
                     try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [i_Key1Key2Enabled] ON [Image] ([Key1], [Key2], [Enabled]);");
-                    logger.Debug("Upgrading Indexes [Step 5.7] - finished");
+                    logger.Debug("Upgrading Indexes: Step [5.7]: Finished.");
                     } catch (Exception ex) {logger.Error(ex);}
                     try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [i_Key1EnabledCategory] ON [Image] ([Key1], [Enabled], [Category]);");
-                    logger.Debug("Upgrading Indexes [Step 5.8] - finished");
+                    logger.Debug("Upgrading Indexes: Step [5.8]: Finished.");
                     } catch (Exception ex) {logger.Error(ex);}
                     try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [i_Key1Key2EnabledCategory] ON [Image] ([Key1], [Key2], [Enabled], [Category]);");
-                    logger.Debug("Upgrading Indexes [Step 5.9] - finished");
+                    logger.Debug("Upgrading Indexes: Step [5.9]: Finished.");
                     } catch (Exception ex) {logger.Error(ex);}
                     try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [i_Key1Category] ON [Image] ([Key1], [Category]);");
-                    logger.Debug("Upgrading Indexes [Step 5.10] - finished");
+                    logger.Debug("Upgrading Indexes: Step [5.10]: Finished.");
                     } catch (Exception ex) {logger.Error(ex);}
                     try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [i_Key1Key2Category] ON [Image] ([Key1], [Key2], [Category]);");
-                    logger.Debug("Upgrading Indexes [Step 5.11] - finished");
+                    logger.Debug("Upgrading Indexes: Step [5.11]: Finished.");
                     } catch (Exception ex) {logger.Error(ex);}
                     try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [i_MBID] ON [Image] ([MBID] COLLATE NOCASE);");
-                    logger.Debug("Upgrading Indexes [Step 5.12] - finished");
+                    logger.Debug("Upgrading Indexes: Step [5.12]: Finished.");
                     } catch (Exception ex) {logger.Error(ex);}
                     try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [i_Key1MBID] ON [Image] ([Key1], [MBID]);");
-                    logger.Debug("Upgrading Indexes [Step 5.13] - finished");
+                    logger.Debug("Upgrading Indexes: Step [5.13]: Finished.");
                     } catch (Exception ex) {logger.Error(ex);}
                     try {
                     lock (lockObject)
                         dbClient.Execute("CREATE INDEX [i_Key1Key2MBID] ON [Image] ([Key1], [Key2], [MBID]);");
-                    logger.Debug("Upgrading Indexes [Step 5.14] - finished");
+                    logger.Debug("Upgrading Indexes: Step [5.14]: Finished.");
                     } catch (Exception ex) {logger.Error(ex);}
-                    logger.Info("Upgrading Indexes [Step 5] - finished");
+                    logger.Info("Upgrading Indexes: Step [5]: Finished.");
                     #endregion
 
                     #region Integrity check
-                    logger.Debug("Upgrading [Step 6] - Integrity check ...");
+                    logger.Debug("Upgrading: Step [6]: Integrity check ...");
                     lock (lockObject)
                         dbClient.Execute("PRAGMA integrity_check;");
-                    logger.Info("Upgrading [Step 6] - finished");
+                    logger.Info("Upgrading: Step [6]: Finished.");
                     #endregion
 
-                    logger.Debug("Upgrading [Step 7] - Fill tables ...");
+                    logger.Debug("Upgrading: Step [7]: Fill tables ...");
                     FanartHandlerSetup.Fh.UpdateDirectoryTimer("All", "Upgrade");
-                    logger.Info("Upgrading [Step 7] - finished");
+                    logger.Info("Upgrading: Step [7]: Finished.");
 
                     DBVersion = "3.3";
                     lock (lockObject)
@@ -801,13 +819,13 @@ namespace FanartHandler
                         dbClient.Execute("ALTER TABLE [Image] ADD COLUMN [Last_Access] TEXT;");
                     lock (lockObject)
                         dbClient.Execute("ALTER TABLE [Image] ADD COLUMN [Protected] TEXT;");
-                    logger.Info("Upgrading Step 1 - finished");
+                    logger.Info("Upgrading: Step [1]: Finished.");
 
                     lock (lockObject)
                         dbClient.Execute("UPDATE [Image] SET [Last_Access] = '"+date+"';");
                     lock (lockObject)
                         dbClient.Execute("UPDATE [Image] SET [Protected] = 'False';");
-                    logger.Info("Upgrading Step 2 - finished");
+                    logger.Info("Upgrading: Step [2]: Finished.");
 
                     try
                     {
@@ -819,7 +837,7 @@ namespace FanartHandler
                             dbClient.Execute("CREATE INDEX [i_Key1CategoryLastAccess] ON [Image] ([Key1], [Category], [Last_Access]);");
                         lock (lockObject)                                                               
                             dbClient.Execute("CREATE INDEX [i_Key1EnabledCategoryLastAccess] ON [Image] ([Key1], [Enabled], [Category], [Last_Access]);");
-                        logger.Info("Upgrading Step 3 - finished");
+                        logger.Info("Upgrading: Step [3]: Finished.");
                     }
                     catch { }
 
@@ -827,7 +845,7 @@ namespace FanartHandler
                     {
                         lock (lockObject)                                                               
                             dbClient.Execute("CREATE INDEX [i_FullPathProtected] ON [Image] ([FullPath], [Protected]);");
-                        logger.Info("Upgrading Step 4 - finished");
+                        logger.Info("Upgrading: Step [4]: Finished.");
                     }
                     catch { }
 
@@ -835,7 +853,7 @@ namespace FanartHandler
                     {
                         lock (lockObject)
                             dbClient.Execute("PRAGMA integrity_check;");
-                        logger.Info("Upgrading Step 5 - finished");
+                        logger.Info("Upgrading: Step [5]: Finished.");
                     }
                     catch { }
 
@@ -848,10 +866,43 @@ namespace FanartHandler
                 }
                 #endregion
                 #region 3.5
-                /*
                 if (DBVersion != null && DBVersion.Equals("3.4", StringComparison.CurrentCulture))
                 {
                     logger.Info("Upgrading Database to version 3.5");
+
+                    try
+                    {
+                      lock (lockObject)
+                          dbClient.Execute("DELETE FROM Image WHERE Category IN ('TvSeriesScraped') AND Provider = 'TVSeries';");
+                      logger.Info("Upgrading: Step [1]: Finished.");
+                    }
+                    catch { }
+
+                    try
+                    {
+                        lock (lockObject)
+                            dbClient.Execute("PRAGMA integrity_check;");
+                        logger.Info("Upgrading: Step [2]: Finished.");
+                    }
+                    catch { }
+
+                    logger.Debug("Upgrading: Step [3]: fill tables ...");
+                    FanartHandlerSetup.Fh.UpdateDirectoryTimer("All", "Upgrade");
+                    logger.Info("Upgrading: Step [3]: Finished.");
+
+                    DBVersion = "3.5";
+                    lock (lockObject)
+                        dbClient.Execute("UPDATE Version SET Version = '"+DBVersion+"', Time_Stamp = '"+date+"';");
+                    lock (lockObject)
+                        dbClient.Execute("PRAGMA user_version="+DBVersion.Replace(".",string.Empty)+";");
+                    logger.Info("Upgraded Database to version "+DBVersion);
+                }
+                #endregion
+                #region 3.6
+                /*
+                if (DBVersion != null && DBVersion.Equals("3.5", StringComparison.CurrentCulture))
+                {
+                    logger.Info("Upgrading Database to version 3.6");
 
                     #region Backup
                     BackupDBMain(DBVersion);
@@ -863,15 +914,19 @@ namespace FanartHandler
                         dbClient.Execute("ALTER TABLE [Image] ADD COLUMN [iWidth] INTEGER;");
                     lock (lockObject)
                         dbClient.Execute("ALTER TABLE [Image] ADD COLUMN [iHeight] INTEGER;");
-                    logger.Info("Upgrading Step 1 - finished");
+                    logger.Info("Upgrading: Step [1]: Finished.");
 
                     try
                     {
                       lock (lockObject)                                                               
+                          dbClient.Execute("CREATE INDEX [i_iWidth] ON [Image] ([iWidth]);");
+                      lock (lockObject)                                                               
+                          dbClient.Execute("CREATE INDEX [i_iHeight] ON [Image] ([iHeight]);");
+                      lock (lockObject)                                                               
                           dbClient.Execute("CREATE INDEX [i_iWidthiHeight] ON [Image] ([iWidth], [iHeight]);");
                       lock (lockObject)                                                               
                           dbClient.Execute("CREATE INDEX [i_iWidthiHeightRatio] ON [Image] ([iWidth], [iHeight], [Ratio]);");
-                      logger.Info("Upgrading Step 2 - finished");
+                      logger.Info("Upgrading: Step [2]: Finished.");
                     }
                     catch { }
 
@@ -879,11 +934,15 @@ namespace FanartHandler
                     {
                         lock (lockObject)
                             dbClient.Execute("PRAGMA integrity_check;");
-                        logger.Info("Upgrading Step 3 - finished");
+                        logger.Info("Upgrading: Step [3]: Finished.");
                     }
                     catch { }
 
-                    DBVersion = "3.5";
+                    logger.Debug("Upgrading: Step [3]: update images width, height, ratio ...");
+                    UpdateWidthHeightRatio();
+                    logger.Info("Upgrading: Step [3]: Finished.");
+
+                    DBVersion = "3.6";
                     lock (lockObject)
                         dbClient.Execute("UPDATE Version SET Version = '"+DBVersion+"', Time_Stamp = '"+date+"';");
                     lock (lockObject)
@@ -914,19 +973,19 @@ namespace FanartHandler
                       {
                         lock (lockObject)
                             dbClient.Execute("PRAGMA writable_schema=ON;");
-                        logger.Info("Upgrading Indexes [Step 1] - finished");
+                        logger.Info("Upgrading Indexes: Step [1]: Finished.");
                         lock (lockObject)
                             dbClient.Execute("UPDATE sqlite_master SET sql='CREATE TABLE ...' WHERE type='table' AND name='Image';");
-                        logger.Info("Upgrading Indexes [Step 2] - finished");
+                        logger.Info("Upgrading Indexes: Step [2]: Finished.");
                         lock (lockObject)
                             dbClient.Execute("PRAGMA schema_version="+(SchemaVersion+1)+";");
-                        logger.Info("Upgrading Indexes [Step 3] - finished");
+                        logger.Info("Upgrading Indexes: Step [3]: Finished.");
                         lock (lockObject)
                             dbClient.Execute("PRAGMA writable_schema=OFF;");
-                        logger.Info("Upgrading Indexes [Step 4] - finished");
+                        logger.Info("Upgrading Indexes: Step [4]: Finished.");
                         lock (lockObject)
                             dbClient.Execute("PRAGMA integrity_check;");
-                        logger.Info("Upgrading Indexes [Step 5] - finished");
+                        logger.Info("Upgrading Indexes: Step [5]: Finished.");
 
                         DBVersion = "3.X";
                         lock (lockObject)
@@ -967,7 +1026,7 @@ namespace FanartHandler
             if (File.Exists(dbFile))
             {
                 var BackupDate = DateTime.Now.ToString("yyyyMMddHHmmss", CultureInfo.CurrentCulture);
-                var BackupFile = dbFile + "_" + (string.IsNullOrEmpty(ver) ? string.Empty : "v" + ver + "_") + BackupDate ;
+                var BackupFile = dbFile + "_" + (string.IsNullOrEmpty(ver) ? string.Empty : "v" + ver + "_") + BackupDate;
 
                 File.Copy(dbFile, BackupFile);
                 logger.Info("Backup Database "+dbFilename+" - complete - "+BackupFile);
@@ -980,6 +1039,32 @@ namespace FanartHandler
               logger.Error(ex);
           }
         }
+
+        public void UpdateWidthHeightRatio() // 3.6
+        {
+            try
+            {
+                SQLiteResultSet sqLiteResultSet;
+                lock (lockObject)
+                    sqLiteResultSet = dbClient.Execute("SELECT FullPath FROM Image WHERE DummyItem = 'False' AND ((iWidth = null OR iHeight = null OR Ratio = null) OR (iWidth = 0 OR iHeight = 0 OR Ratio = 0.0));");
+
+                var index = 0;
+                while (index < sqLiteResultSet.Rows.Count)
+                {
+                    var field = sqLiteResultSet.GetField(index, 0);
+                    if (File.Exists(field))
+                    {
+                      Utils.CheckImageResolution(field, true);
+                    }
+                    checked { ++index; }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error("UpdateWidthHeightRatio: " + ex);
+            }
+        }
+
         #endregion
 
         #region Scrape
@@ -988,7 +1073,7 @@ namespace FanartHandler
             if (!MediaPortal.Util.Win32API.IsConnectedToInternet())
             {
               logger.Debug("No internet connection detected. Cancelling scrape.");
-              return 0 ;
+              return 0;
             }
 
             if (!StopScraper)
@@ -1006,7 +1091,7 @@ namespace FanartHandler
                         logger.Debug("Artist: " + artist + " images: " + numberOfFanartImages + " from: " + MaxImages);
 
                         if (!doScrapeFanart)
-                          GetImages = 8888 ;
+                          GetImages = 8888;
                         else
                           {
                             scraper = new Scraper();
@@ -1023,7 +1108,7 @@ namespace FanartHandler
                         }
                         if (GetImages == 8888)
                         {
-                            UpdateTimeStamp(dbartist, null, Utils.Category.MusicFanartScraped) ;
+                            UpdateTimeStamp(dbartist, null, Utils.Category.MusicFanartScraped);
                             if (doScrapeFanart)
                               logger.Info("Artist: " + artist + " has already maximum number of images. Will not download anymore images for this artist.");
                         }
@@ -1046,15 +1131,15 @@ namespace FanartHandler
             if (!MediaPortal.Util.Win32API.IsConnectedToInternet())
             {
               logger.Debug("No internet connection detected. Cancelling new scrape.");
-              return 0 ;
+              return 0;
             }
-            // logger.Debug("=== DoScrapeNew: "+StopScraper) ;
+            // logger.Debug("=== DoScrapeNew: "+StopScraper);
             if (!StopScraper)
             {
                 try
                 {
                     var GetImages = 0;
-                    // logger.Debug("=== DoScrapeNew: "+artist) ;
+                    // logger.Debug("=== DoScrapeNew: "+artist);
                     if (!string.IsNullOrWhiteSpace(artist))
                     {
                     #region NowPlaying Artist
@@ -1067,7 +1152,7 @@ namespace FanartHandler
                         logger.Debug("Artist: " + artist + " images: " + numberOfFanartImages + " from: " + MaxImages);
 
                         if (checked (MaxImages - numberOfFanartImages) <= 0)
-                          GetImages = 8888 ;
+                          GetImages = 8888;
                         else
                         {
                             scraper = new Scraper();
@@ -1085,7 +1170,7 @@ namespace FanartHandler
                                   logger.Info("No fanart found for Artist: " + artist + ".");
                                 break;
                             case 8888:
-                                UpdateTimeStamp(dbartist, null, Utils.Category.MusicFanartScraped) ;
+                                UpdateTimeStamp(dbartist, null, Utils.Category.MusicFanartScraped);
                                 logger.Info("Artist: " + artist + " has already maximum number of images. Will not download anymore images for this artist.");
                                 break;
                         }
@@ -1105,7 +1190,7 @@ namespace FanartHandler
                             scraper = null;
                           } 
                           else
-                            UpdateTimeStamp(dbartist, null, Utils.Category.MusicArtistThumbScraped) ;
+                            UpdateTimeStamp(dbartist, null, Utils.Category.MusicArtistThumbScraped);
                         if (StopScraper)
                             return GetImages;
                     #endregion
@@ -1122,7 +1207,7 @@ namespace FanartHandler
                             scraper = null;
                           } 
                           else
-                            UpdateTimeStamp(dbartist, dbalbum, Utils.Category.MusicAlbumThumbScraped) ;
+                            UpdateTimeStamp(dbartist, dbalbum, Utils.Category.MusicAlbumThumbScraped);
                         if (StopScraper)
                             return GetImages;
                     #endregion
@@ -1209,12 +1294,12 @@ namespace FanartHandler
         {
             CurrArtistsBeingScraped = 0.0;
             TotArtistsBeingScraped = 0.0;
-            CurrTextBeingScraped = string.Empty ;
+            CurrTextBeingScraped = string.Empty;
 
             if (!MediaPortal.Util.Win32API.IsConnectedToInternet())
             {
               logger.Debug("No internet connection detected. Cancelling initial scrape.");
-              return ;
+              return;
             }
 
             Utils.SetProperty("scraper.task", Translation.ScrapeInitial + " - " + Translation.ScrapeInitializing);
@@ -1268,7 +1353,7 @@ namespace FanartHandler
                                   "FROM Image "+
                                   "WHERE Category IN (" + Utils.GetMusicFanartCategoriesInStatement(Utils.UseHighDefThumbnails) + ") AND "+
                                         "Enabled = 'True' AND "+
-                                        // 3.5 "((iWidth > " + Utils.MinWResolution + " AND iHeight > " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth = null AND iHeight = null)) AND "+
+                                        // 3.6 "((iWidth > " + Utils.MinWResolution + " AND iHeight > " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth = null AND iHeight = null)) AND "+
                                         "DummyItem = 'False' "+
                                   "GROUP BY Key1 "+
                                   "HAVING count(key1) >= " + Utils.ScraperMaxImages.Trim() +
@@ -1280,7 +1365,7 @@ namespace FanartHandler
                     var num = 0;
                     while (num < sqLiteResultSet.Rows.Count)
                     {
-                        var htArtist = Scraper.UndoArtistPrefix(sqLiteResultSet.GetField(num, 0).ToLower()) ;
+                        var htArtist = Scraper.UndoArtistPrefix(sqLiteResultSet.GetField(num, 0).ToLower());
                         if (!htFanart.Contains(htArtist))
                             htFanart.Add(htArtist, sqLiteResultSet.GetField(num, 1));
                         checked { ++num; }
@@ -1290,12 +1375,12 @@ namespace FanartHandler
                     while (index < musicDatabaseArtists.Count)
                     {
                         var artist = musicDatabaseArtists[index].ToString();
-                        CurrTextBeingScraped = artist ;
+                        CurrTextBeingScraped = artist;
 
                         if (!StopScraper && !Utils.GetIsStopping()) 
                         {
                             var dbartist = Utils.GetArtist(artist.Trim(), Utils.Category.MusicFanartScraped);
-                            var htArtist = Scraper.UndoArtistPrefix(dbartist.ToLower()) ;
+                            var htArtist = Scraper.UndoArtistPrefix(dbartist.ToLower());
                             if (!htFanart.Contains(htArtist))
                             {
                               if (DoScrape(artist.Trim()) > 0 && flag)
@@ -1315,7 +1400,7 @@ namespace FanartHandler
                               if (!sartist.Equals(artist, StringComparison.CurrentCulture))
                               {
                                 dbartist = Utils.GetArtist(sartist.Trim(), Utils.Category.MusicFanartScraped);
-                                htArtist = Scraper.UndoArtistPrefix(dbartist.ToLower()) ;
+                                htArtist = Scraper.UndoArtistPrefix(dbartist.ToLower());
                                 if (!htFanart.Contains(htArtist))
                                 {
                                   if (DoScrape(sartist.Trim()) > 0 && flag)
@@ -1343,9 +1428,10 @@ namespace FanartHandler
                     }
                     logger.Debug("InitialScrape done for Artists.");
                 }
-                CurrTextBeingScraped = string.Empty ;
+                CurrTextBeingScraped = string.Empty;
                 musicDatabaseArtists = null;
                 RefreshAnyFanart(Utils.Category.MusicFanartScraped, false);
+                RefreshAnyLatestsFanart(Utils.Latests.Music, false);
                 #endregion
 
                 #region Albums
@@ -1396,7 +1482,7 @@ namespace FanartHandler
                       var i = 0;
                       while (i < sqLiteResultSet.Rows.Count)
                       {
-                          var htArtistAlbum = Scraper.UndoArtistPrefix(sqLiteResultSet.GetField(i, 0).ToLower()) + "-" + sqLiteResultSet.GetField(i, 1).ToLower() ;
+                          var htArtistAlbum = Scraper.UndoArtistPrefix(sqLiteResultSet.GetField(i, 0).ToLower()) + "-" + sqLiteResultSet.GetField(i, 1).ToLower();
                           if (!htAlbums.Contains(htArtistAlbum))
                               htAlbums.Add(htArtistAlbum,sqLiteResultSet.GetField(i, 2));
                           checked { ++i; }
@@ -1409,12 +1495,12 @@ namespace FanartHandler
                           var album = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Album).Trim();
                           if (!string.IsNullOrWhiteSpace(album))
                           {
-                              // logger.Debug("*** "+Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Artist).Trim()+"/"+Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].AlbumArtist).Trim()+" - "+Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Album).Trim()) ;
+                              // logger.Debug("*** "+Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Artist).Trim()+"/"+Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].AlbumArtist).Trim()+" - "+Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Album).Trim());
                               var artist   = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Artist).Trim();
                               var dbartist = Scraper.UndoArtistPrefix(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped)).ToLower();
                               var dbalbum  = Utils.GetAlbum(album, Utils.Category.MusicFanartScraped).ToLower();
-                              var htArtistAlbum = dbartist + "-" + dbalbum ;
-                              CurrTextBeingScraped = htArtistAlbum ;
+                              var htArtistAlbum = dbartist + "-" + dbalbum;
+                              CurrTextBeingScraped = htArtistAlbum;
                               // Artist - Album
                               if (!string.IsNullOrEmpty(artist))
                                 if (!htAlbums.Contains(htArtistAlbum))
@@ -1435,8 +1521,8 @@ namespace FanartHandler
                                 if (!albumartist.Equals(artist, StringComparison.InvariantCultureIgnoreCase))
                                 {
                                   dbartist = Scraper.UndoArtistPrefix(Utils.GetArtist(albumartist, Utils.Category.MusicFanartScraped)).ToLower();
-                                  htArtistAlbum = dbartist + "-" + dbalbum ;
-                                  CurrTextBeingScraped = htArtistAlbum ;
+                                  htArtistAlbum = dbartist + "-" + dbalbum;
+                                  CurrTextBeingScraped = htArtistAlbum;
                                   if (!htAlbums.Contains(htArtistAlbum))
                                   {
                                       if (!StopScraper && !Utils.GetIsStopping()) 
@@ -1457,8 +1543,8 @@ namespace FanartHandler
                               foreach (string sartist in artists)
                               {
                                 dbartist = Scraper.UndoArtistPrefix(Utils.GetArtist(sartist.Trim(), Utils.Category.MusicFanartScraped)).ToLower();
-                                htArtistAlbum = dbartist + "-" + dbalbum ;
-                                CurrTextBeingScraped = htArtistAlbum ;
+                                htArtistAlbum = dbartist + "-" + dbalbum;
+                                CurrTextBeingScraped = htArtistAlbum;
                                 if (!htAlbums.Contains(htArtistAlbum))
                                 {
                                     if (!StopScraper && !Utils.GetIsStopping()) 
@@ -1482,7 +1568,7 @@ namespace FanartHandler
                       }
                       logger.Debug("InitialScrape done for Artists - Albums.");
                   }
-                  CurrTextBeingScraped = string.Empty ;
+                  CurrTextBeingScraped = string.Empty;
                   musicDatabaseAlbums = null;
                 }
                 #endregion
@@ -1530,7 +1616,7 @@ namespace FanartHandler
                       var i = 0;
                       while (i < sqLiteResultSet.Rows.Count)
                       {
-                          var htMovie = sqLiteResultSet.GetField(i, 0).ToLower() ;
+                          var htMovie = sqLiteResultSet.GetField(i, 0).ToLower();
                           if (!htMovies.Contains(htMovie))
                               htMovies.Add(htMovie,sqLiteResultSet.GetField(i, 2));
                           checked { ++i; }
@@ -1541,11 +1627,11 @@ namespace FanartHandler
                       while (index < videoDatabaseMovies.Count)
                       {
                           IMDBMovie details = new IMDBMovie();
-                          details = (IMDBMovie) videoDatabaseMovies[index] ;
+                          details = (IMDBMovie) videoDatabaseMovies[index];
                           var movieID = details.ID.ToString().ToLower();
                           var movieIMDBID = details.IMDBNumber.Trim().ToLower().Replace("unknown",string.Empty);
                           var movieTitle = details.Title.Trim();
-                          CurrTextBeingScraped = movieIMDBID + " - " + movieTitle  ;
+                          CurrTextBeingScraped = movieIMDBID + " - " + movieTitle;
 
                           if (!string.IsNullOrEmpty(movieID) && !string.IsNullOrEmpty(movieIMDBID))
                           {
@@ -1570,19 +1656,20 @@ namespace FanartHandler
                       }
                       logger.Debug("InitialScrape done for Movies.");
                   }
-                  CurrTextBeingScraped = string.Empty ;
+                  CurrTextBeingScraped = string.Empty;
                   videoDatabaseMovies = null;
                 }
                 RefreshAnyFanart(Utils.Category.MovieScraped, false);
+                RefreshAnyLatestsFanart(Utils.Latests.Movies, false);
                 #endregion
 
                 #region Statistics
                 logger.Debug("InitialScrape statistic for Category:");
-                GetCategoryStatistic (true) ;
+                GetCategoryStatistic (true);
                 logger.Debug("InitialScrape statistic for Provider:");
-                GetProviderStatistic (true) ;
+                GetProviderStatistic (true);
                 logger.Debug("InitialScrape statistic for Actual Music Fanart/Thumbs:");
-                GetAccessStatistic(true) ;
+                GetAccessStatistic(true);
                 #endregion
 
                 logger.Info("InitialScrape is done.");
@@ -1603,7 +1690,7 @@ namespace FanartHandler
             if (!MediaPortal.Util.Win32API.IsConnectedToInternet())
             {
               logger.Debug("No internet connection detected. Cancelling thumb scrape.");
-              return ;
+              return;
             }
 
             try
@@ -1629,7 +1716,7 @@ namespace FanartHandler
                     while (index < musicDatabaseArtists.Count)
                     {
                       var artist = musicDatabaseArtists[index].ToString();
-                      CurrTextBeingScraped = artist ;
+                      CurrTextBeingScraped = artist;
 
                       if (!StopScraper && !Utils.GetIsStopping())
                         DoScrapeThumbs(artist.Trim(), onlyMissing);
@@ -1649,7 +1736,7 @@ namespace FanartHandler
                       checked { ++index; }
                     }
                   }
-                  CurrTextBeingScraped = string.Empty ;
+                  CurrTextBeingScraped = string.Empty;
                   musicDatabaseArtists = null;
                 }
                 else
@@ -1682,7 +1769,7 @@ namespace FanartHandler
                         var artist = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Artist).Trim();
                         var dbartist = Utils.GetArtist(Scraper.UndoArtistPrefix(artist), Utils.Category.MusicFanartScraped);
                         var dbalbum = Utils.GetAlbum(album, Utils.Category.MusicFanartScraped);
-                        CurrTextBeingScraped = artist + " - " + album ;
+                        CurrTextBeingScraped = artist + " - " + album;
                         // Artist - Album
                         if (!string.IsNullOrEmpty(artist))
                           if (!HasAlbumThumb(dbartist,dbalbum) || !onlyMissing)
@@ -1694,7 +1781,7 @@ namespace FanartHandler
                           }
                         // AlbumArtist - Album
                         var albumartist  = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].AlbumArtist).Trim();
-                        CurrTextBeingScraped = albumartist + " - " + album ;
+                        CurrTextBeingScraped = albumartist + " - " + album;
                         if (!string.IsNullOrEmpty(albumartist))
                           if (!albumartist.Equals(artist, StringComparison.InvariantCultureIgnoreCase))
                           {
@@ -1713,7 +1800,7 @@ namespace FanartHandler
                         string[] artists = pipedartist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
                         foreach (string sartist in artists)
                         {
-                          CurrTextBeingScraped = sartist + " - " + album ;
+                          CurrTextBeingScraped = sartist + " - " + album;
                           dbartist = Scraper.UndoArtistPrefix(Utils.GetArtist(sartist.Trim(), Utils.Category.MusicFanartScraped)).ToLower();
                           if (!HasAlbumThumb(dbartist,dbalbum) || !onlyMissing)
                           {
@@ -1729,7 +1816,7 @@ namespace FanartHandler
                     }
                     scraper = null;
                   }
-                  CurrTextBeingScraped = string.Empty ;
+                  CurrTextBeingScraped = string.Empty;
                   musicDatabaseAlbums = null;
                 }
                 else
@@ -1780,7 +1867,7 @@ namespace FanartHandler
 
                 string[] artists = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
                 CurrArtistsBeingScraped = 0.0;
-                TotArtistsBeingScraped = artists.Length * 6.0 + 1.0 ; // 6.0 - Number of Providers
+                TotArtistsBeingScraped = artists.Length * 6.0 + 1.0; // 6.0 - Number of Providers
 
                 var flag = false;
                 foreach (string sartist in artists)
@@ -1856,7 +1943,7 @@ namespace FanartHandler
                     {
                       var artist = musicDatabaseArtists[index].ToString();
                       var dbartist = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
-                      var htArtist = Scraper.UndoArtistPrefix(dbartist.ToLower()) ;
+                      var htArtist = Scraper.UndoArtistPrefix(dbartist.ToLower());
 
                       if (!htFanart.Contains(htArtist))
                           htFanart.Add(htArtist, htArtist);
@@ -1866,7 +1953,7 @@ namespace FanartHandler
                       foreach (string sartist in artists)
                       {
                         dbartist = Utils.GetArtist(sartist.Trim(), Utils.Category.MusicFanartScraped);
-                        htArtist = Scraper.UndoArtistPrefix(dbartist.ToLower()) ;
+                        htArtist = Scraper.UndoArtistPrefix(dbartist.ToLower());
 
                         if (!htFanart.Contains(htArtist))
                             htFanart.Add(htArtist, htArtist);
@@ -1886,7 +1973,7 @@ namespace FanartHandler
                     if (htFanart.Count > 0)
                       while (num < sqLiteResultSet.Rows.Count)
                       {
-                          var htArtist = Scraper.UndoArtistPrefix(sqLiteResultSet.GetField(num, 0).ToLower()) ;
+                          var htArtist = Scraper.UndoArtistPrefix(sqLiteResultSet.GetField(num, 0).ToLower());
                           if (!htFanart.Contains(htArtist))
                           {
                             var filename = sqLiteResultSet.GetField(num, 1).Trim();
@@ -1961,7 +2048,7 @@ namespace FanartHandler
                         var artist   = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].Artist).Trim();
                         var dbartist = Scraper.UndoArtistPrefix(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped)).ToLower();
                         var dbalbum  = Utils.GetAlbum(album, Utils.Category.MusicFanartScraped).ToLower();
-                        var htArtistAlbum = dbartist + "-" + dbalbum ;
+                        var htArtistAlbum = dbartist + "-" + dbalbum;
 
                         if (!string.IsNullOrEmpty(artist))
                           if (!htAlbums.Contains(htArtistAlbum))
@@ -1971,7 +2058,7 @@ namespace FanartHandler
                         artist   = Utils.RemoveMPArtistPipe(musicDatabaseAlbums[index].AlbumArtist).Trim();
                         dbartist = Scraper.UndoArtistPrefix(Utils.GetArtist(artist, Utils.Category.MusicFanartScraped)).ToLower();
                         // dbalbum  = Utils.GetAlbum(album, Utils.Category.MusicFanartScraped).ToLower();
-                        htArtistAlbum = dbartist + "-" + dbalbum ;
+                        htArtistAlbum = dbartist + "-" + dbalbum;
 
                         if (!string.IsNullOrEmpty(artist))
                           if (!htAlbums.Contains(htArtistAlbum))
@@ -1985,7 +2072,7 @@ namespace FanartHandler
                         {
                           dbartist = Scraper.UndoArtistPrefix(Utils.GetArtist(sartist.Trim(), Utils.Category.MusicFanartScraped)).ToLower();
                           // dbalbum  = Utils.GetAlbum(album, Utils.Category.MusicFanartScraped).ToLower();
-                          htArtistAlbum = dbartist + "-" + dbalbum ;
+                          htArtistAlbum = dbartist + "-" + dbalbum;
 
                           if (!string.IsNullOrEmpty(artist))
                             if (!htAlbums.Contains(htArtistAlbum))
@@ -2007,7 +2094,7 @@ namespace FanartHandler
                     if (htAlbums.Count > 0)
                       while (i < sqLiteResultSet.Rows.Count)
                       {
-                          var htArtistAlbum = Scraper.UndoArtistPrefix(sqLiteResultSet.GetField(i, 0).ToLower()) + "-" + sqLiteResultSet.GetField(i, 1).ToLower() ;
+                          var htArtistAlbum = Scraper.UndoArtistPrefix(sqLiteResultSet.GetField(i, 0).ToLower()) + "-" + sqLiteResultSet.GetField(i, 1).ToLower();
                           if (!htAlbums.Contains(htArtistAlbum))
                           {
                             var filename = sqLiteResultSet.GetField(i, 2).Trim();
@@ -2064,7 +2151,7 @@ namespace FanartHandler
                            "WHERE Key1 = '" + Utils.PatchSql(artist) + "' AND "+
                                  "Enabled = 'True' AND "+ 
                                  "Category IN (" + Utils.GetMusicFanartCategoriesInStatement(Utils.UseHighDefThumbnails) + ") AND "+
-                                 // 3.5 "((iWidth > " + Utils.MinWResolution + " AND iHeight > " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth = null AND iHeight = null)) AND "+
+                                 // 3.6 "((iWidth > " + Utils.MinWResolution + " AND iHeight > " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth = null AND iHeight = null)) AND "+
                                  "DummyItem = 'False';";
                 SQLiteResultSet sqLiteResultSet;
                 lock (lockObject)
@@ -2373,27 +2460,27 @@ namespace FanartHandler
                             (album == null ? string.Empty : "Key2 IN ("+Utils.HandleMultipleKeysForDBQuery(Utils.PatchSql(album))+") AND ")+
                             "Enabled = 'True' AND "+
                             "DummyItem = 'False'"+
-                            // 3.5 " AND ((iWidth > " + Utils.MinWResolution + " AND iHeight > " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth = null AND iHeight = null))"+
-                            (category == Utils.Category.MusicFanartScraped ? " AND Category in (" + Utils.GetMusicFanartCategoriesInStatement(highDef) + ");" : ";") ;
+                            // 3.6 " AND ((iWidth > " + Utils.MinWResolution + " AND iHeight > " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth = null AND iHeight = null))"+
+                            (category == Utils.Category.MusicFanartScraped ? " AND Category IN (" + Utils.GetMusicFanartCategoriesInStatement(highDef) + ");" : " AND Category IN ('" + category + "');");
 
                 lock (lockObject)
                     sqLiteResultSet = dbClient.Execute(SQL);
                 
                 if (!string.IsNullOrEmpty(album) && (sqLiteResultSet.Rows.Count <= 0))
                 {
-                  flag = true ;
+                  flag = true;
                   SQL = "SELECT Id, Key1, FullPath, SourcePath, Category, Provider "+
                         "FROM Image "+
                         "WHERE Key1 IN (" + Utils.HandleMultipleKeysForDBQuery(Utils.PatchSql(artist)) + ") AND "+
                               "Enabled = 'True' AND "+
                               "DummyItem = 'False'"+ 
-                              // 3.5 " AND ((iWidth > " + Utils.MinWResolution + " AND iHeight > " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth = null AND iHeight = null))"+
-                              (category == Utils.Category.MusicFanartScraped ? " AND Category in (" + Utils.GetMusicFanartCategoriesInStatement(highDef) + ");" : ";") ;
+                              // 3.6 " AND ((iWidth > " + Utils.MinWResolution + " AND iHeight > " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth = null AND iHeight = null))"+
+                              (category == Utils.Category.MusicFanartScraped ? " AND Category IN (" + Utils.GetMusicFanartCategoriesInStatement(highDef) + ");" : " AND Category IN ('" + category + "');");
 
                   lock (lockObject)
                       sqLiteResultSet = dbClient.Execute(SQL);
                 }
-                // logger.Debug("*** "+SQL) ;
+                // logger.Debug("*** "+SQL);
 
                 var index = 0;
                 while (index < sqLiteResultSet.Rows.Count)
@@ -2419,8 +2506,8 @@ namespace FanartHandler
                                   (album == null || flag ? string.Empty : "Key2 IN ("+Utils.HandleMultipleKeysForDBQuery(Utils.PatchSql(album))+") AND ")+
                                   "Enabled = 'True' AND "+
                                   "DummyItem = 'False'"+
-                                  // 3.5 " AND ((iWidth > " + Utils.MinWResolution + " AND iHeight > " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth = null AND iHeight = null))"+
-                                  (category == Utils.Category.MusicFanartScraped ? " AND Category in (" + Utils.GetMusicFanartCategoriesInStatement(highDef) + ");" : ";") ;
+                                  // 3.6 " AND ((iWidth > " + Utils.MinWResolution + " AND iHeight > " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth = null AND iHeight = null))"+
+                                  (category == Utils.Category.MusicFanartScraped ? " AND Category in (" + Utils.GetMusicFanartCategoriesInStatement(highDef) + ");" : " AND Category IN ('" + category + "');");
                     lock (lockObject)
                         dbClient.Execute(SQL);
                   }
@@ -2474,6 +2561,8 @@ namespace FanartHandler
                     str = diskImage;
                 else if (category == Utils.Category.TvManual)
                     str = diskImage;
+                else if (category == Utils.Category.Weather)
+                    str = diskImage;
             }
             catch (Exception ex)
             {
@@ -2491,12 +2580,12 @@ namespace FanartHandler
                 var now = DateTime.Now;
 
                 if (provider == Utils.Provider.MusicFolder)
-                  album = (string.IsNullOrEmpty(album) ? null : album) ;
+                  album = (string.IsNullOrEmpty(album) ? null : album);
                 else
-                  album = ((category == Utils.Category.MusicAlbumThumbScraped || category == Utils.Category.MusicFanartAlbum) ? album : null) ;
-                category = (category == Utils.Category.MusicFanartAlbum ? Utils.Category.MusicFanartManual : category) ;
+                  album = ((category == Utils.Category.MusicAlbumThumbScraped || category == Utils.Category.MusicFanartAlbum) ? album : null);
+                category = (category == Utils.Category.MusicFanartAlbum ? Utils.Category.MusicFanartManual : category);
 
-                DeleteDummyItem(artist, album, category) ;
+                DeleteDummyItem(artist, album, category);
                 if (DatabaseUtility.GetAsInt(dbClient.Execute("SELECT COUNT(Key1) "+
                                                                "FROM Image "+
                                                                "WHERE Id = '" + Utils.PatchSql(imageId) + "' AND "+
@@ -2517,6 +2606,7 @@ namespace FanartHandler
                                 "Provider = '" + ((object) provider).ToString() + "';";
                     lock (lockObject)
                         dbClient.Execute(SQL);
+                    // 3.6 Utils.CheckImageResolution(DiskImage, false);
                     logger.Debug("Updating fanart in fanart handler database (" + diskImage + ").");
                 }
                 else
@@ -2536,7 +2626,7 @@ namespace FanartHandler
                                   "'False');";
                     lock (lockObject)
                         dbClient.Execute(SQL);
-                    // 3.5 Utils.CheckImageResolution(DiskImage, category, false);
+                    // 3.6 Utils.CheckImageResolution(DiskImage, false);
                     logger.Info("Importing fanart into fanart handler database (" + diskImage + ").");
                 }
             }
@@ -2617,7 +2707,8 @@ namespace FanartHandler
               return dbClient.Execute("SELECT DISTINCT MBID "+
                                        "FROM Image "+
                                        "WHERE Key1 = '"+Utils.PatchSql(artist)+"' AND "+
-                                             "Key2 = '"+Utils.PatchSql(album)+"'"+
+                                             "Key2 = '"+Utils.PatchSql(album)+"' AND "+
+                                             "TRIM(MBID) <> '' "+
                                        " LIMIT 1;").GetField(0, 0);
           }
           catch (Exception ex)
@@ -2677,7 +2768,7 @@ namespace FanartHandler
                 catch (Exception ex)
                 {
                   logger.Error("ChangeDBMusicBrainzID: Deleting: " + field);
-                  logger.Error(ex) ;
+                  logger.Error(ex);
                 }
               }
               checked { ++index; }
@@ -2692,7 +2783,7 @@ namespace FanartHandler
         }
         // End: ChangeDBMusicBrainzID
 
-        #region Hash
+        #region Any Random Fanart
         public Hashtable GetAnyHashtable(Utils.Category category)
         {
           /*
@@ -2769,7 +2860,7 @@ namespace FanartHandler
         }
         #endregion
 
-        #region HashFanart
+        #region Hash Random Fanart
         public Hashtable GetAnyFanart(Utils.Category category)
         {
           var filenames = GetAnyHashtable(category);
@@ -2880,7 +2971,7 @@ namespace FanartHandler
                          "WHERE Enabled = 'True' AND "+
                                "DummyItem = 'False' AND "+ 
                                "AvailableRandom = 'True' AND "+
-                               // 3.5 " AND ((iWidth > " + Utils.MinWResolution + " AND iHeight > " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth = null AND iHeight = null))"
+                               // 3.6 " AND ((iWidth > " + Utils.MinWResolution + " AND iHeight > " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth = null AND iHeight = null))"
                                "Category IN (" + SQLCategory + ") "+
                          (iLimit > 0 ? "LIMIT " + iLimit.ToString() + " OFFSET " + iOffset.ToString() : "") +
                          ";";
@@ -2905,6 +2996,232 @@ namespace FanartHandler
           {
             logger.Error("GetAnyFanartFromDB: " + ex);
           }
+          return filenames;
+        }
+        #endregion
+
+        #region Any Latests Fanart
+        public Hashtable GetAnyLatestsHashtable(Utils.Latests category)
+        {
+          if (HtAnyLatestsFanart == null)
+          {
+            HtAnyLatestsFanart = new Hashtable();
+          }
+
+          lock (HtAnyLatestsFanart)
+          {
+            if (HtAnyLatestsFanart.ContainsKey(category))
+            {
+              return (Hashtable) HtAnyLatestsFanart[category];
+            }
+            else
+            {
+              return null;
+            }
+          }
+        }
+
+        public void AddToAnyLatestsHashtable(Utils.Latests category, Hashtable ht)
+        {
+          if (HtAnyLatestsFanart == null)
+          {
+            HtAnyLatestsFanart = new Hashtable();
+          }
+
+          lock (HtAnyLatestsFanart)
+          {
+            if (HtAnyLatestsFanart.ContainsKey(category))
+            {
+              HtAnyLatestsFanart.Remove(category);
+            }
+            HtAnyLatestsFanart.Add(category, ht);
+          }
+        }
+
+        public void RemoveFromAnyLatestsHashtable(Utils.Latests category)
+        {
+          if (HtAnyLatestsFanart == null)
+          {
+            HtAnyLatestsFanart = new Hashtable();
+          }
+
+          lock (HtAnyLatestsFanart)
+          {
+            if (HtAnyLatestsFanart.ContainsKey(category))
+            {
+              HtAnyLatestsFanart.Remove(category);
+            }
+          }
+        }
+        #endregion
+
+        #region Hash Latests Fanart
+        public Hashtable GetAnyLatestsFanart(Utils.Latests category)
+        {
+          var filenames = GetAnyLatestsHashtable(category);
+          if (!Utils.LatestMediaHandlerEnabled)
+          {
+            return filenames;
+          }  
+
+          try
+          {
+            if (UtilsLatestMediaHandler.GetLatestsUpdate(category) == UtilsLatestMediaHandler.GetLatestsMediaHandlerUpdate(category))
+            {
+              if (filenames != null && filenames.Count > 0)
+              {
+                return filenames;
+              }
+            }
+            // logger.Debug("*** GetAnyLatestsFanart: " + category + " " + UtilsLatestMediaHandler.GetLatestsUpdate(category) +" - "+ UtilsLatestMediaHandler.GetLatestsMediaHandlerUpdate(category));
+
+            filenames = GetAnyLatestsFanartFromDB(category);
+            Utils.Shuffle(ref filenames);
+            AddToAnyLatestsHashtable(category, filenames);
+          }
+          catch (Exception ex)
+          {
+            logger.Error("GetAnyLatestsFanart: " + ex);
+          }
+          return filenames;
+        }
+
+        public void RefreshAnyLatestsFanart(Utils.Latests category, bool FullUpdate = true)
+        {
+          if (!Utils.LatestMediaHandlerEnabled)
+          {
+            return;
+          }  
+          var dbfilenames = GetAnyLatestsFanartFromDB(category);
+          if (dbfilenames == null)
+          {
+            return;
+          }
+
+          FullUpdate = FullUpdate || (UtilsLatestMediaHandler.GetLatestsUpdate(category) < UtilsLatestMediaHandler.GetLatestsMediaHandlerUpdate(category));
+
+          try
+          {
+            Utils.Shuffle(ref dbfilenames);
+            if (FullUpdate)
+            {
+              AddToAnyLatestsHashtable(category, dbfilenames);
+            }
+            else
+            {
+              var hashfilenames = GetAnyLatestsHashtable(category);
+              if (hashfilenames == null)
+              {
+                AddToAnyLatestsHashtable(category, dbfilenames);
+                return;
+              }
+
+              int index = 0;
+              lock (hashfilenames)
+              {
+                foreach (DictionaryEntry fn in hashfilenames)
+                {
+                  if ((int)fn.Key > index)
+                  {
+                    index = (int)fn.Key;
+                  }
+                }
+              }
+
+              lock (dbfilenames)
+              {
+                foreach (DictionaryEntry fn in dbfilenames)
+                {
+                  if (!hashfilenames.ContainsValue(fn.Value))
+                  {
+                    index++;
+                    hashfilenames.Add(index, fn.Value);
+                  }
+                }
+              }
+              AddToAnyLatestsHashtable(category, hashfilenames);
+            }
+          }
+          catch (Exception ex)
+          {
+            logger.Error("RefreshAnyLatestsFanart: " + ex);
+          }
+        }
+
+        public Hashtable GetAnyLatestsFanartFromDB(Utils.Latests category)
+        {
+          var filenames = new Hashtable();
+          if (!Utils.LatestMediaHandlerEnabled)
+          {
+            return filenames;
+          }  
+
+          var dt = UtilsLatestMediaHandler.GetLatestsMediaHandlerUpdate(category);
+
+          Hashtable htLatests = UtilsLatestMediaHandler.GetLatests(category);
+          if (htLatests == null || htLatests.Count == 0)
+          {
+            UtilsLatestMediaHandler.UpdateLatestsUpdate(category, dt);
+            return filenames;
+          }
+
+          var index = 0;
+          var latestsenumerator = htLatests.GetEnumerator();
+          while (latestsenumerator.MoveNext())
+          {
+            var key1 = string.Empty;
+            var key2 = string.Empty;
+            var cat  = Utils.Category.Dummy;
+            var isMusic = false;
+
+            var val1 = string.Empty;
+            var val2 = string.Empty;
+            try
+            {
+              if (latestsenumerator.Value is String)
+              {
+                val1 = latestsenumerator.Key.ToString();
+                val2 = latestsenumerator.Value.ToString();
+              }
+              else
+              {
+                val1 = ( latestsenumerator.Value as string[] )[0];
+                val2 = ( latestsenumerator.Value as string[] )[1];
+              }
+            }
+            catch
+            {
+              val1 = string.Empty;
+              val2 = string.Empty;
+              logger.Error("GetAnyLatestsFanartFromDB: Wrong result from GetLatests for " + category + ".");
+            }
+            if (!Utils.GetKeysForLatests(category, val1, val2, ref cat, ref key1, ref key2, ref isMusic))
+            {
+              continue;
+            }
+            // logger.Debug("*** GetAnyLatestsFanartFromDB: ["+category + "/" + cat+"] " + key1 + " - " + key2);
+
+            Hashtable latestsFanart = new Hashtable();
+            Utils.GetFanart(ref latestsFanart, key1, key2, cat, isMusic);
+            if (latestsFanart != null && latestsFanart.Count > 0)
+            {
+              foreach (FanartImage fanartImage in latestsFanart.Values)
+              {
+                if (!filenames.ContainsValue(fanartImage))
+                {
+                  filenames.Add(index, fanartImage);
+                  checked { ++index; }
+                }
+              }
+            }
+            if (latestsFanart != null)
+              latestsFanart.Clear();
+          }
+          if (htLatests != null)
+            htLatests.Clear();
+
+          // if (filenames != null) logger.Debug("*** GetAnyLatestsFanartFromDB: " + category + " - " + filenames.Count + " [ " + UtilsLatestMediaHandler.GetLatestsUpdate(category) + " -> " + dt + " ] ");
+          UtilsLatestMediaHandler.UpdateLatestsUpdate(category, dt);
           return filenames;
         }
         #endregion
@@ -2937,7 +3254,7 @@ namespace FanartHandler
         #endregion
 
         #region Image Attributes
-        public void GetImageAttr(string Image, ref int iWidth, ref int iHeight, ref float fRatio)
+        public void GetImageAttr(string Image, ref int iWidth, ref int iHeight, ref float fRatio) // 3.6
         {
           iWidth = 0;
           iHeight = 0;
@@ -2999,7 +3316,7 @@ namespace FanartHandler
           }
         }
 
-        public void SetImageRatio(string Image, float fRatio, int iWidth, int iHeight)
+        public void SetImageRatio(string Image, float fRatio, int iWidth, int iHeight) // 3.6
         {
           try
           {
@@ -3051,7 +3368,7 @@ namespace FanartHandler
                 {
                   DummyFile = Path.Combine(Utils.FAHMusicAlbums, MediaPortal.Util.Utils.GetAlbumThumbName(artist, album));
                   if (DummyFile.IndexOf(".jpg") < 0) 
-                    DummyFile = DummyFile + ".jpg" ;
+                    DummyFile = DummyFile + ".jpg";
                 }
                 else if (category == Utils.Category.MusicFanartScraped)
                 {
@@ -3069,7 +3386,7 @@ namespace FanartHandler
 
                 var now = DateTime.Now;
                 var SQL = string.Empty;
-                DeleteDummyItem(artist, album, category) ;
+                DeleteDummyItem(artist, album, category);
                 SQL = "INSERT INTO Image (Id, Category, Provider, Key1, Key2, FullPath, SourcePath, AvailableRandom, Enabled, DummyItem, Time_Stamp, MBID, Last_Access, Protected) "+
                                   "VALUES('" + Utils.PatchSql(DummyFile) + "', "+
                                          "'" + ((object) category).ToString() + "', "+
@@ -3113,6 +3430,44 @@ namespace FanartHandler
         }
         #endregion
 
+        public string GetMovieId(string movieFile)
+        {
+          if (string.IsNullOrEmpty(movieFile))
+            return "-1";
+
+          try
+          {
+            return VideoDatabase.GetMovieId(movieFile).ToString();
+          }
+          catch
+          {
+            return "-1";
+          }
+        }
+
+        public void GetMoviesByCollectionUserGroup(string strCategory, ref ArrayList movies, bool flag)
+        {
+          movies.Clear();
+          if (string.IsNullOrEmpty(strCategory))
+            return;
+
+          try
+          {
+            if (flag)
+            {
+              VideoDatabase.GetMoviesByCollection(strCategory, ref movies);
+            }
+            else
+            {
+              VideoDatabase.GetMoviesByUserGroup(strCategory, ref movies);
+            }
+          }
+          catch
+          {
+            movies.Clear();
+          }
+        }
+
         #region Statistic
         public string GetCategoryStatistic (bool Log = false)
         {
@@ -3134,7 +3489,7 @@ namespace FanartHandler
                     var line = string.Format("{3,3} {0,-25} {1,-15} {2,5}", sqLiteResultSet.GetField(i, 0), sqLiteResultSet.GetField(i, 1), sqLiteResultSet.GetField(i, 2), i);
                     res = res + line + System.Environment.NewLine;
                     if (Log)
-                      logger.Debug(line) ;
+                      logger.Debug(line);
                     checked { ++i; }
                 }
             }
@@ -3162,10 +3517,10 @@ namespace FanartHandler
                 var i = 0;
                 while (i < sqLiteResultSet.Rows.Count)
                 {
-                    var line = string.Format("{2,3} {0,-15} {1,5}", sqLiteResultSet.GetField(i, 0), sqLiteResultSet.GetField(i, 1), i) ;
+                    var line = string.Format("{2,3} {0,-15} {1,5}", sqLiteResultSet.GetField(i, 0), sqLiteResultSet.GetField(i, 1), i);
                     res = res + line + System.Environment.NewLine;
                     if (Log)
-                      logger.Debug(line) ;
+                      logger.Debug(line);
                     checked { ++i; }
                 }
             }
@@ -3198,10 +3553,10 @@ namespace FanartHandler
                 var i = 0;
                 while (i < sqLiteResultSet.Rows.Count)
                 {
-                    var line = string.Format("{2,3} {0,-15} {1,5}", sqLiteResultSet.GetField(i, 0), sqLiteResultSet.GetField(i, 1), i) ;
+                    var line = string.Format("{2,3} {0,-15} {1,5}", sqLiteResultSet.GetField(i, 0), sqLiteResultSet.GetField(i, 1), i);
                     res = res + line + System.Environment.NewLine;
                     if (Log)
-                      logger.Debug(line) ;
+                      logger.Debug(line);
                     checked { ++i; }
                 }
             }

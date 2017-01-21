@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- https://github.com/andrewjswan/mediaportal.images.weather -->
+<weathers>
+  <weather name="0">00</weather>  <!-- Tornado -->
+  <weather name="1">01</weather>  <!-- Tropical Storm -->
+  <weather name="2">02</weather>  <!-- Hurricane -->
+  <weather name="3">03</weather>  <!-- Severe Thunderstorms -->
+  <weather name="4">04</weather>  <!-- Thunderstorms -->
+  <weather name="5">05</weather>  <!-- Mixed Rain And Snow -->
+  <weather name="6">06</weather>  <!-- Mixed Rain And Sleet -->
+  <weather name="7">07</weather>  <!-- Mixed Snow And Sleet -->
+  <weather name="8">08</weather>  <!-- Freezing Drizzle -->
+  <weather name="9">09</weather>  <!-- Drizzle -->
+  <weather name="10">10</weather> <!-- Freezing Rain -->
+  <weather name="11">11</weather> <!-- Showers -->
+  <weather name="12">12</weather> <!-- Showers -->
+  <weather name="13">13</weather> <!-- Snow Flurries -->
+  <weather name="14">14</weather> <!-- Light Snow Showers -->
+  <weather name="15">15</weather> <!-- Blowing Snow -->
+  <weather name="16">16</weather> <!-- Snow -->
+  <weather name="17">17</weather> <!-- Hail -->
+  <weather name="18">18</weather> <!-- Sleet -->
+  <weather name="19">19</weather> <!-- Dust -->
+  <weather name="20">20</weather> <!-- Foggy -->
+  <weather name="21">21</weather> <!-- Haze -->
+  <weather name="22">22</weather> <!-- Smoky -->
+  <weather name="23">23</weather> <!-- Blustery -->
+  <weather name="24">24</weather> <!-- Windy -->
+  <weather name="25">25</weather> <!-- Cold -->
+  <weather name="26">26</weather> <!-- Cloudy -->
+  <weather name="27">27</weather> <!-- Mostly Cloudy (Night) -->
+  <weather name="28">28</weather> <!-- Mostly Cloudy (Day) -->
+  <weather name="29">29</weather> <!-- Partly Cloudy (Night) -->
+  <weather name="30">30</weather> <!-- Partly Cloudy (Day) -->
+  <weather name="31">31</weather> <!-- Clear (Night) -->
+  <weather name="32">32</weather> <!-- Sunny -->
+  <weather name="33">33</weather> <!-- Fair (Night) -->
+  <weather name="34">34</weather> <!-- Fair (Day) -->
+  <weather name="35">35</weather> <!-- Mixed Rain And Hail -->
+  <weather name="36">36</weather> <!-- Hot -->
+  <weather name="37">37</weather> <!-- Isolated Thunderstorms -->
+  <weather name="38">38</weather> <!-- Scattered Thunderstorms -->
+  <weather name="39">38</weather> <!-- Scattered Thunderstorms -->
+  <weather name="40">40</weather> <!-- Scattered Showers -->
+  <weather name="41">41</weather> <!-- Heavy Snow -->
+  <weather name="42">42</weather> <!-- Scattered Snow Showers -->
+  <weather name="43">41</weather> <!-- Heavy Snow -->
+  <weather name="44">30</weather> <!-- Partly Cloudy -->
+  <weather name="45">45</weather> <!-- Thundershowers -->
+  <weather name="46">46</weather> <!-- Snow Showers -->
+  <weather name="47">47</weather> <!-- Isolated Thundershowers -->
+</weathers>

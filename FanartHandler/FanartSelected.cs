@@ -2,9 +2,11 @@
 // Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 
+extern alias FHNLog;
+
 using MediaPortal.GUI.Library;
 
-using NLog;
+using FHNLog.NLog;
 
 using System;
 using System.Collections;
@@ -223,12 +225,12 @@ namespace FanartHandler
               if (DoShowImageOne)
               {
                 Utils.AddProperty(ref propertiesSelect, "" + property + ".backdrop1.selected", newFanart, ref listSelectedGeneric);
-                // logger.Debug("*** Image 1: " + newFanart) ;
+                // logger.Debug("*** Image 1: " + newFanart);
               }
               else
               {
                 Utils.AddProperty(ref propertiesSelect, "" + property + ".backdrop2.selected", newFanart, ref listSelectedGeneric);
-                // logger.Debug("*** Image 2: " + newFanart) ;
+                // logger.Debug("*** Image 2: " + newFanart);
               }
             }
             else
@@ -252,7 +254,7 @@ namespace FanartHandler
 
           Utils.AddProperty(ref propertiesSelect, "" + property + ".backdrop1.selected", string.Empty, ref listSelectedGeneric);
           Utils.AddProperty(ref propertiesSelect, "" + property + ".backdrop2.selected", string.Empty, ref listSelectedGeneric);
-          // logger.Debug("*** Image 1,2: Empty...") ;
+          // logger.Debug("*** Image 1,2: Empty...");
           //
           SetCurrentSelectedImageNames(null, category); 
           if (isMusic || isMusicVideo)
@@ -277,17 +279,16 @@ namespace FanartHandler
         if (Utils.GetIsStopping())
           return;
 
-        var SelectedItem = string.Empty;
         var album = string.Empty;
         var genre = string.Empty + Utils.GetProperty("#music.genre").Replace(" / ", "|").Replace(", ", "|");
-        SelectedItem = Utils.GetMusicArtistFromListControl(ref album);
+        var SelectedItem = string.Empty + Utils.GetMusicArtistFromListControl(ref album);
         // logger.Info("*** GMAFLC: R - ["+SelectedItem+"] ["+album+"]");
 
         // var FanartNotFound = true;
         if (!string.IsNullOrWhiteSpace(SelectedItem) && !SelectedItem.Equals("..", StringComparison.CurrentCulture))
         {
           var oldFanart = CurrSelectedMusic;
-          var newFanart = string.Empty ;
+          var newFanart = string.Empty;
           var flag = (!CurrSelectedMusicArtist.Equals(SelectedItem, StringComparison.CurrentCulture) || !CurrSelectedMusicAlbum.Equals(album, StringComparison.CurrentCulture));
 
           if (flag || (RefreshTickCount >= Utils.MaxRefreshTickCount))
@@ -326,12 +327,12 @@ namespace FanartHandler
               if (DoShowImageOne)
               {
                 Utils.AddProperty(ref propertiesSelect, "music.backdrop1.selected", newFanart, ref ListSelectedMusic);
-                // logger.Debug("*** Image 1: " + newFanart) ;
+                // logger.Debug("*** Image 1: " + newFanart);
               }
               else
               {
                 Utils.AddProperty(ref propertiesSelect, "music.backdrop2.selected", newFanart, ref ListSelectedMusic);
-                // logger.Debug("*** Image 2: " + newFanart) ;
+                // logger.Debug("*** Image 2: " + newFanart);
               }
             }
             else
@@ -353,7 +354,7 @@ namespace FanartHandler
 
           Utils.AddProperty(ref propertiesSelect, "music.backdrop1.selected", string.Empty, ref ListSelectedMusic);
           Utils.AddProperty(ref propertiesSelect, "music.backdrop2.selected", string.Empty, ref ListSelectedMusic);
-          // logger.Debug("*** Image 1,2: Empty...") ;
+          // logger.Debug("*** Image 1,2: Empty...");
           //
           SetCurrentSelectedImageNames(null, Utils.Category.MusicFanartScraped);
           FanartAvailableMusic = false;
@@ -433,7 +434,7 @@ namespace FanartHandler
             if (!SelectedItem.Equals(CurrSelectedPicture, StringComparison.CurrentCulture) || (RefreshTickCount >= Utils.MaxRefreshTickCount))
             {
               var htValues = CurrentPicturesImageNames.Values;
-              SelectedPath = Utils.GetFanartFilename(ref PrevSelectedPicture, ref CurrSelectedPictureImage, ref htValues, Utils.Category.Dummy);
+              SelectedPath = Utils.GetFanartFilename(ref PrevSelectedPicture, ref CurrSelectedPictureImage, ref htValues);
             }
           }
           else
@@ -741,7 +742,10 @@ namespace FanartHandler
           {
             CurrentSelectedImageNames.Remove(category);
           }
-          CurrentSelectedImageNames.Add(category, ht);
+          if (ht != null)
+          {
+            CurrentSelectedImageNames.Add(category, ht);
+          }
         }
       }
     }
@@ -752,6 +756,7 @@ namespace FanartHandler
       var result = string.Empty;
       try
       {
+        // logger.Debug("*** Key: "+key+" Key2: "+key2+" Cat: "+category.ToString());
         if (!Utils.GetIsStopping())
         {
           key = Utils.GetArtist(key, category);
@@ -772,7 +777,7 @@ namespace FanartHandler
             if (filenames.Count > 0)
             {
               var htValues = filenames.Values;
-              result = Utils.GetFanartFilename(ref iFilePrev, ref currFile, ref htValues, category);
+              result = Utils.GetFanartFilename(ref iFilePrev, ref currFile, ref htValues);
             }
           }
         }
@@ -783,6 +788,7 @@ namespace FanartHandler
       {
         logger.Error("GetFilename: " + ex);
       }
+      // logger.Debug("*** Filename: "+result);
       return result;
     }
 
@@ -968,7 +974,7 @@ namespace FanartHandler
         GUIControl.HideControl(Utils.iActiveWindow, 91919292);
         DoShowImageOne = true;
         ControlImageVisible = 0;
-        // logger.Debug("*** Hide all fanart [91919291,91919292]... ") ;
+        // logger.Debug("*** Hide all fanart [91919291,91919292]... ");
       }
     }
 
@@ -1016,7 +1022,7 @@ namespace FanartHandler
         GUIControl.HideControl(Utils.iActiveWindow, 91919291);
         DoShowImageOne = true;
         ControlImageVisible = 1;
-        // logger.Debug ("*** Second fanart [91919292] visible ...") ;
+        // logger.Debug ("*** Second fanart [91919292] visible ...");
       }
       else
       {

@@ -2,9 +2,11 @@
 // Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 
+extern alias FHNLog;
+
 using MediaPortal.GUI.Library;
 
-using NLog;
+using FHNLog.NLog;
 
 using System;
 using System.Collections;
@@ -23,6 +25,11 @@ namespace FanartHandler
 
     internal static void SetupTVSeriesLatest()
     {
+      if (!Utils.TVSeriesEnabled)
+      {
+        return;
+      }
+
       try
       {
         // ISSUE: method pointer
@@ -36,6 +43,11 @@ namespace FanartHandler
 
     internal static void DisposeTVSeriesLatest()
     {
+      if (!Utils.TVSeriesEnabled)
+      {
+        return;
+      }
+
       try
       {
         // ISSUE: method pointer
@@ -49,6 +61,11 @@ namespace FanartHandler
 
     internal static void TVSeriesOnObjectInserted(bool dataUpdated)
     {
+      if (!Utils.TVSeriesEnabled)
+      {
+        return;
+      }
+
       try
       {
         if (!dataUpdated)
@@ -64,6 +81,12 @@ namespace FanartHandler
     internal static Hashtable GetTVSeriesName(Utils.Category category)
     {
       var hashtable = new Hashtable();
+
+      if (!Utils.TVSeriesEnabled)
+      {
+        return hashtable;
+      }
+
       try
       {
         var allSeries = DBOnlineSeries.getAllSeries();
@@ -97,6 +120,11 @@ namespace FanartHandler
 
     internal static string GetTVSeriesAttributes(GUIListItem currentitem, ref string sGenre, ref string sStudio) // -> TV Series name ...
     {
+      if (!Utils.TVSeriesEnabled)
+      {
+        return string.Empty;
+      }
+
       sGenre = string.Empty;
       sStudio = string.Empty;
 
@@ -145,6 +173,12 @@ namespace FanartHandler
     internal static string GetTVSeriesAttributes(ref string sGenre, ref string sStudio) // -> TV Series name ...
     {
       string result = string.Empty;
+
+      if (!Utils.TVSeriesEnabled)
+      {
+        return result;
+      }
+
       try
       {
         if (Utils.iActiveWindow == (int)GUIWindow.Window.WINDOW_INVALID)

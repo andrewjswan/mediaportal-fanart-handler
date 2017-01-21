@@ -2,13 +2,15 @@
 // Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 
+extern alias FHNLog;
+
 using MediaPortal.Configuration;
 using MediaPortal.Profile;
 using MediaPortal.Services;
 
-using NLog;
-using NLog.Config;
-using NLog.Targets;
+using FHNLog.NLog;
+using FHNLog.NLog.Config;
+using FHNLog.NLog.Targets;
 
 using System;
 using System.Collections;
@@ -161,6 +163,7 @@ namespace FanartHandler
     private CheckBox checkBoxHtBackdrops;
     private CheckBox checkBoxLastFM;
     private CheckBox checkBoxCoverArtArchive;
+    private CheckBox checkBoxUseTheAudioDB;
     private CheckBox CheckBoxUseMinimumResolutionForDownload;
     private Label label8;
     private Button button6;
@@ -218,7 +221,7 @@ namespace FanartHandler
     public int StripProgressBarValue
     {
       get { return toolStripProgressBar.Value; }
-      set { toolStripProgressBar.Value = (toolStripProgressBar.Maximum >= value) ? value : toolStripProgressBar.Maximum ; }
+      set { toolStripProgressBar.Value = (toolStripProgressBar.Maximum >= value) ? value : toolStripProgressBar.Maximum; }
     }
 
     public int StripProgressBarMaximum
@@ -238,7 +241,7 @@ namespace FanartHandler
       if (Fanart)
       {
         if (progressBarScraper == null)
-          return ;
+          return;
 
         if (Init)
         {
@@ -250,7 +253,7 @@ namespace FanartHandler
         {
           progressBarScraper.Minimum = 0;
           progressBarScraper.Maximum = Convert.ToInt32(Utils.TotArtistsBeingScraped);
-          progressBarScraper.Value = (Convert.ToInt32(Utils.CurrArtistsBeingScraped) >= progressBarScraper.Maximum) ? progressBarScraper.Maximum : Convert.ToInt32(Utils.CurrArtistsBeingScraped) ;
+          progressBarScraper.Value = (Convert.ToInt32(Utils.CurrArtistsBeingScraped) >= progressBarScraper.Maximum) ? progressBarScraper.Maximum : Convert.ToInt32(Utils.CurrArtistsBeingScraped);
         }
 
         toolStripProgressBar.Minimum = progressBarScraper.Minimum;
@@ -260,7 +263,7 @@ namespace FanartHandler
       else
       {
         if (progressBarThumbs == null)
-          return ;
+          return;
 
         if (Init)
         {
@@ -272,7 +275,7 @@ namespace FanartHandler
         {
           progressBarThumbs.Minimum = 0;
           progressBarThumbs.Maximum = Convert.ToInt32(Utils.TotArtistsBeingScraped);
-          progressBarThumbs.Value = (Convert.ToInt32(Utils.CurrArtistsBeingScraped) >= progressBarThumbs.Maximum) ? progressBarThumbs.Maximum : Convert.ToInt32(Utils.CurrArtistsBeingScraped) ;
+          progressBarThumbs.Value = (Convert.ToInt32(Utils.CurrArtistsBeingScraped) >= progressBarThumbs.Maximum) ? progressBarThumbs.Maximum : Convert.ToInt32(Utils.CurrArtistsBeingScraped);
         }
 
         toolStripProgressBar.Minimum = progressBarThumbs.Minimum;
@@ -280,7 +283,7 @@ namespace FanartHandler
         toolStripProgressBar.Value = progressBarThumbs.Value;
       }
 
-      toolStripStatusLabelToolTip.Text = string.IsNullOrEmpty(Utils.GetDbm().CurrTextBeingScraped) ? "-" : Utils.GetDbm().CurrTextBeingScraped.Replace("&","&&").Trim() ;
+      toolStripStatusLabelToolTip.Text = string.IsNullOrEmpty(Utils.GetDbm().CurrTextBeingScraped) ? "-" : Utils.GetDbm().CurrTextBeingScraped.Replace("&","&&").Trim();
       int i = Utils.Percent(toolStripProgressBar.Value, toolStripProgressBar.Maximum);
       toolStripStatusLabel.Text = (i == 0) ? "-" : i.ToString()+"%";
       statusStrip.Refresh();
@@ -357,28 +360,29 @@ namespace FanartHandler
       checkBoxUseHighDefThumbnails.Checked = Utils.UseHighDefThumbnails;
       CheckBoxUseMinimumResolutionForDownload.Checked = Utils.UseMinimumResolutionForDownload;
       //
-      checkBoxShowDummyItems.Checked = Utils.ShowDummyItems ;
-      checkBoxAddAdditionalSeparators.Checked = Utils.AddAdditionalSeparators ;
+      checkBoxShowDummyItems.Checked = Utils.ShowDummyItems;
+      checkBoxAddAdditionalSeparators.Checked = Utils.AddAdditionalSeparators;
       //
-      checkBoxFanartTV.Checked = Utils.UseFanartTV ;
-      checkBoxHtBackdrops.Checked = Utils.UseHtBackdrops ;
-      checkBoxLastFM.Checked = Utils.UseLastFM ;
-      checkBoxCoverArtArchive.Checked = Utils.UseCoverArtArchive ;
+      checkBoxFanartTV.Checked = Utils.UseFanartTV;
+      checkBoxHtBackdrops.Checked = Utils.UseHtBackdrops;
+      checkBoxLastFM.Checked = Utils.UseLastFM;
+      checkBoxCoverArtArchive.Checked = Utils.UseCoverArtArchive;
+      checkBoxUseTheAudioDB.Checked = Utils.UseTheAudioDB;
       //
-      checkBoxMusicClearArtDownload.Checked = Utils.MusicClearArtDownload ;
-      checkBoxMusicBannerDownload.Checked = Utils.MusicBannerDownload ;
-      checkBoxMusicCDArtDownload.Checked = Utils.MusicCDArtDownload ;
-      checkBoxMoviesClearArtDownload.Checked = Utils.MoviesClearArtDownload ;
-      checkBoxMoviesBannerDownload.Checked = Utils.MoviesBannerDownload ;
-      checkBoxMoviesClearLogoDownload.Checked = Utils.MoviesClearLogoDownload ;
-      checkBoxMoviesCDArtDownload.Checked = Utils.MoviesCDArtDownload ;
+      checkBoxMusicClearArtDownload.Checked = Utils.MusicClearArtDownload;
+      checkBoxMusicBannerDownload.Checked = Utils.MusicBannerDownload;
+      checkBoxMusicCDArtDownload.Checked = Utils.MusicCDArtDownload;
+      checkBoxMoviesClearArtDownload.Checked = Utils.MoviesClearArtDownload;
+      checkBoxMoviesBannerDownload.Checked = Utils.MoviesBannerDownload;
+      checkBoxMoviesClearLogoDownload.Checked = Utils.MoviesClearLogoDownload;
+      checkBoxMoviesCDArtDownload.Checked = Utils.MoviesCDArtDownload;
       // Utils.MoviesFanartNameAsMediaportal
       //
       if (string.IsNullOrEmpty(Utils.FanartTVLanguage))
-        comboBoxFanartTVLanguage.SelectedIndex = 0 ;
+        comboBoxFanartTVLanguage.SelectedIndex = 0;
       else
         comboBoxFanartTVLanguage.SelectedValue = Utils.FanartTVLanguage;
-      checkBoxFanartTVLanguageToAny.Checked = Utils.FanartTVLanguageToAny ;
+      checkBoxFanartTVLanguageToAny.Checked = Utils.FanartTVLanguageToAny;
       // Slideshow
       checkBoxMyPicturesSlideShow.Checked = Utils.UseMyPicturesSlideShow;
       if (Utils.MyPicturesSlideShowFolders == null)
@@ -421,26 +425,27 @@ namespace FanartHandler
        Utils.UseHighDefThumbnails = checkBoxUseHighDefThumbnails.Checked;
        Utils.UseMinimumResolutionForDownload = CheckBoxUseMinimumResolutionForDownload.Checked;
        //
-       Utils.ShowDummyItems = checkBoxShowDummyItems.Checked ;
-       Utils.AddAdditionalSeparators = checkBoxAddAdditionalSeparators.Checked ;
+       Utils.ShowDummyItems = checkBoxShowDummyItems.Checked;
+       Utils.AddAdditionalSeparators = checkBoxAddAdditionalSeparators.Checked;
        //
-       Utils.UseFanartTV = checkBoxFanartTV.Checked ;
-       Utils.UseHtBackdrops = checkBoxHtBackdrops.Checked ;
-       Utils.UseLastFM = checkBoxLastFM.Checked ;
-       Utils.UseCoverArtArchive = checkBoxCoverArtArchive.Checked ;
+       Utils.UseFanartTV = checkBoxFanartTV.Checked;
+       Utils.UseHtBackdrops = checkBoxHtBackdrops.Checked;
+       Utils.UseLastFM = checkBoxLastFM.Checked;
+       Utils.UseCoverArtArchive = checkBoxCoverArtArchive.Checked;
+       Utils.UseTheAudioDB = checkBoxUseTheAudioDB.Checked;
        //
-       Utils.MusicClearArtDownload = checkBoxMusicClearArtDownload.Checked ;
-       Utils.MusicBannerDownload = checkBoxMusicBannerDownload.Checked ;
-       Utils.MusicCDArtDownload = checkBoxMusicCDArtDownload.Checked ;
-       Utils.MoviesClearArtDownload = checkBoxMoviesClearArtDownload.Checked ;
-       Utils.MoviesBannerDownload = checkBoxMoviesBannerDownload.Checked ;
-       Utils.MoviesClearLogoDownload = checkBoxMoviesClearLogoDownload.Checked ;
-       Utils.MoviesCDArtDownload = checkBoxMoviesCDArtDownload.Checked ;
+       Utils.MusicClearArtDownload = checkBoxMusicClearArtDownload.Checked;
+       Utils.MusicBannerDownload = checkBoxMusicBannerDownload.Checked;
+       Utils.MusicCDArtDownload = checkBoxMusicCDArtDownload.Checked;
+       Utils.MoviesClearArtDownload = checkBoxMoviesClearArtDownload.Checked;
+       Utils.MoviesBannerDownload = checkBoxMoviesBannerDownload.Checked;
+       Utils.MoviesClearLogoDownload = checkBoxMoviesClearLogoDownload.Checked;
+       Utils.MoviesCDArtDownload = checkBoxMoviesCDArtDownload.Checked;
        // Utils.MoviesFanartNameAsMediaportal
        //
        KeyValuePair<string, string> selectedPair = (KeyValuePair<string, string>)comboBoxFanartTVLanguage.SelectedItem;
        Utils.FanartTVLanguage = selectedPair.Key.Trim();
-       Utils.FanartTVLanguageToAny = checkBoxFanartTVLanguageToAny.Checked ;
+       Utils.FanartTVLanguageToAny = checkBoxFanartTVLanguageToAny.Checked;
        //
        // Slideshow
        Utils.UseMyPicturesSlideShow = checkBoxMyPicturesSlideShow.Checked;
@@ -569,7 +574,7 @@ namespace FanartHandler
     private void FilterThumbGrid(int startCount)
     {
       if (dataGridViewThumbs == null || myDataTableThumbs == null) 
-        return ;
+        return;
 
       try
       {
@@ -978,7 +983,7 @@ namespace FanartHandler
         if (dialogResult != DialogResult.Yes)
           return;
 
-        foreach (var path in Directory.GetFiles(Utils.FAHUDFolder + (string) comboBox2.SelectedItem, "*.jpg"))
+        foreach (var path in Directory.GetFiles((GetCategoryFromComboFilter(comboBox2.SelectedItem.ToString()) == Utils.Category.Weather ? Utils.FAHUDWeather : Utils.FAHUDFolder + (string) comboBox2.SelectedItem), "*.jpg"))
           if (!Utils.GetFileName(path).ToLower(CultureInfo.CurrentCulture).StartsWith("default", StringComparison.CurrentCulture) && Utils.GetDbm().IsImageProtectedByUser(path).Equals("False"))
             MediaPortal.Util.Utils.FileDelete(path);
         Utils.GetDbm().DeleteAllFanart(GetCategoryFromComboFilter(comboBox2.SelectedItem.ToString()));
@@ -986,7 +991,7 @@ namespace FanartHandler
         dataGridViewUserManaged.ClearSelection();
         myDataTableUserManaged.Rows.Clear();
         //
-        Utils.SetupFilenames(Utils.FAHUDFolder + (string) comboBox2.SelectedItem, "*.jpg", GetCategoryFromComboFilter(comboBox2.SelectedItem.ToString()), null, Utils.Provider.Local);
+        Utils.SetupFilenames((GetCategoryFromComboFilter(comboBox2.SelectedItem.ToString()) == Utils.Category.Weather ? Utils.FAHUDWeather : Utils.FAHUDFolder + (string) comboBox2.SelectedItem), "*.jpg", GetCategoryFromComboFilter(comboBox2.SelectedItem.ToString()), null, Utils.Provider.Local);
         UpdateFanartUserManagedTable();
         //
         myDataTableUserManaged.AcceptChanges();
@@ -1059,7 +1064,7 @@ namespace FanartHandler
           return;
 
         if (dialogResult == DialogResult.No)
-          Utils.GetDbm().UpdateTimeStamp(null, null, Utils.Category.Dummy, false, true) ;
+          Utils.GetDbm().UpdateTimeStamp(null, null, Utils.Category.Dummy, false, true);
       }
 
       StartScrape();
@@ -1093,7 +1098,7 @@ namespace FanartHandler
           button5.Enabled = false;
           button9.Enabled = false;
           button10.Enabled = false;
-          UpdateProgressBars(true, true) ;
+          UpdateProgressBars(true, true);
           UpdateScraperTimer();
           new Thread(new ThreadStart(AddToDataGridView)).Start();
           dataGridViewFanart.Enabled = true;
@@ -1111,7 +1116,7 @@ namespace FanartHandler
           button9.Enabled = true;
           button10.Enabled = true;
           Utils.StopScraper = false;
-          UpdateProgressBars(true, true) ;
+          UpdateProgressBars(true, true);
           dataGridViewFanart.Enabled = true;
         }
       }
@@ -1164,7 +1169,7 @@ namespace FanartHandler
 
           button41.Enabled = false;
           button42.Enabled = false;
-          UpdateProgressBars(false, true) ;
+          UpdateProgressBars(false, true);
           oMissing = onlyMissing;
           watcherAlbum = new FileSystemWatcher();
           // var str1 = Config.GetFolder((Config.Dir) 6) + "\\Music\\Albums";
@@ -1198,7 +1203,7 @@ namespace FanartHandler
           button43.Enabled = true;
           button44.Enabled = true;
           Utils.StopScraper = false;
-          UpdateProgressBars(false, true) ;
+          UpdateProgressBars(false, true);
           dataGridViewThumbs.Enabled = true;
         }
       }
@@ -1296,7 +1301,7 @@ namespace FanartHandler
         UpdateThumbnailTable(0);
 
         if (progressBarScraper != null)
-          UpdateProgressBars(true, true) ;
+          UpdateProgressBars(true, true);
 
         if (button2 != null)
         button2.Enabled = true;
@@ -1414,7 +1419,7 @@ namespace FanartHandler
         UpdateFanartTable();
         Thread.Sleep(3000);
       }
-      UpdateProgressBars(true, true, true) ;
+      UpdateProgressBars(true, true, true);
       Thread.Sleep(1000);
       StopScraper();
     }
@@ -1439,14 +1444,14 @@ namespace FanartHandler
           if (str2.IndexOf("-", StringComparison.CurrentCulture) > 0)
             row["Album"] = Utils.GetAlbum(str2, Utils.Category.MusicAlbumThumbScraped);
           else
-            row["Album"] = string.Empty ;
+            row["Album"] = string.Empty;
           row["Type"] = (string.IsNullOrEmpty(row["Album"].ToString().Trim()) ? "Artist" : "Album");
           row["Locked"] = Utils.GetDbm().IsImageProtectedByUser(str1);
           row["Image"] = fileName;
           row["Image Path"] = path;
           myDataTableThumbs.Rows.Add(row);
 
-          UpdateProgressBars(false, false) ;
+          UpdateProgressBars(false, false);
         }
       }
       catch (Exception ex)
@@ -1458,7 +1463,7 @@ namespace FanartHandler
     public void UpdateFanartExternalTable()
     {
       if (dataGridViewExternal == null || myDataTableExternal == null)
-        return ;
+        return;
 
       try
       {
@@ -1492,7 +1497,7 @@ namespace FanartHandler
       }
     }
 
-    private void UpdateFanartUserManagedTable()
+    public void UpdateFanartUserManagedTable()
     {
       try
       {
@@ -1567,7 +1572,7 @@ namespace FanartHandler
               }
             }
           }
-          UpdateProgressBars(true, false) ;
+          UpdateProgressBars(true, false);
         }
       }
       catch (Exception ex)
@@ -1581,7 +1586,7 @@ namespace FanartHandler
     public void UpdateThumbnailTable(int startCount) 
     {
       if (comboBox1 == null)
-        return ;
+        return;
 
       var category = new Utils.Category[2];
       if (comboBox1.SelectedItem.ToString().Equals("Artists and Albums"))
@@ -1605,7 +1610,7 @@ namespace FanartHandler
     public void UpdateThumbnailTableOnStartup(Utils.Category[] category, int sqlStartVal)
     {
       if (dataGridViewThumbs == null || myDataTableThumbs == null)
-        return ;
+        return;
 
       try
       {
@@ -1661,7 +1666,7 @@ namespace FanartHandler
     public void UpdateFanartTableOnStartup(int sqlStartVal)
     {
       if (dataGridViewFanart == null || myDataTableFanart == null)
-        return ;
+        return;
 
       try
       {
@@ -1752,7 +1757,7 @@ namespace FanartHandler
         var random = new Random();
         var openFileDialog = new OpenFileDialog();
 
-        openFileDialog.InitialDirectory = Utils.MPThumbsFolder ; // Config.GetFolder((Config.Dir) 6);
+        openFileDialog.InitialDirectory = Utils.MPThumbsFolder; // Config.GetFolder((Config.Dir) 6);
         openFileDialog.Title = "Select Fanart Images To Import";
         openFileDialog.Filter = "Image Files(*.JPG)|*.JPG";
         openFileDialog.Multiselect = true;
@@ -1792,6 +1797,11 @@ namespace FanartHandler
             str2 = Path.Combine(Utils.FAHUDScorecenter, artist + " (" + random.Next(10000, 99999) + ").jpg");
           if (!Path.GetDirectoryName(str1).Equals(Path.GetDirectoryName(str2)))
             File.Copy(str1, str2);
+          //
+          if ((category == Utils.Category.MusicFanartScraped) || (category == Utils.Category.MovieScraped))
+          { }
+          else
+            FanartHandlerSetup.Fh.UpdateDirectoryTimer(str2, "UserManaged");
         }
       }
       catch (Exception ex)
@@ -1898,6 +1908,8 @@ namespace FanartHandler
         return Utils.Category.PictureManual;
       if (s.Equals("Plugins"))
         return Utils.Category.PluginManual;
+      if (s.Equals("Weather"))
+        return Utils.Category.Weather;
       return s.Equals("Scorecenter") ? Utils.Category.SportsManual : Utils.Category.TvManual;
     }
 
@@ -1905,15 +1917,19 @@ namespace FanartHandler
     {
       if (s.Equals("MovingPictures"))
         return Utils.Category.MovingPictureManual;
+      if (s.Equals("MyFilms"))
+        return Utils.Category.MyFilmsManual;
       return s.Equals("MyVideos") ? Utils.Category.MovieScraped : Utils.Category.TvSeriesScraped;
     }
 
     private void button18_Click(object sender, EventArgs e)
     {
+      if (GetCategoryFromComboFilter(comboBox2.SelectedItem.ToString()) == Utils.Category.Weather)
+        return;
+
       try
       {
         ImportLocalFanart(GetCategoryFromComboFilter(comboBox2.SelectedItem.ToString()));
-        UpdateFanartUserManagedTable();
       }
       catch (Exception ex)
       {
@@ -1933,14 +1949,14 @@ namespace FanartHandler
         var dbmbid = Utils.GetDbm().GetDBMusicBrainzID(dbartist, dbalbum);
 
         var newmbid = Prompt.ShowDialog("Change MBID:","For ["+dbartist+" - "+dbalbum+"]", dbmbid).Trim();
-        var flag = false ;
+        var flag = false;
 
         if (newmbid.Equals(dbmbid, StringComparison.CurrentCulture))
-          return ;
+          return;
         if (!string.IsNullOrEmpty(newmbid) && ((newmbid.Length > 10) || (newmbid.Trim().Equals("<none>", StringComparison.CurrentCulture))))
           flag = Utils.GetDbm().ChangeDBMusicBrainzID(dbartist, dbalbum, dbmbid, newmbid);
 
-        logger.Debug("Change MBID ["+dbartist+"/"+dbalbum+"] "+dbmbid+" -> "+newmbid) ;
+        logger.Debug("Change MBID ["+dbartist+"/"+dbalbum+"] "+dbmbid+" -> "+newmbid);
         if (flag)
           MessageBox.Show("Done!", "MBID Changed!", MessageBoxButtons.OK, MessageBoxIcon.Information);
         else
@@ -1964,14 +1980,14 @@ namespace FanartHandler
         var dbmbid = Utils.GetDbm().GetDBMusicBrainzID(dbartist, dbalbum);
 
         var newmbid = Prompt.ShowDialog("Change MBID:","For ["+dbartist+"]", dbmbid).Trim();
-        var flag = false ;
+        var flag = false;
 
         if (newmbid.Equals(dbmbid, StringComparison.CurrentCulture))
-          return ;
+          return;
         if (!string.IsNullOrEmpty(newmbid) && ((newmbid.Length > 10) || (newmbid.Trim().Equals("<none>", StringComparison.CurrentCulture))))
           flag = Utils.GetDbm().ChangeDBMusicBrainzID(dbartist, dbalbum, dbmbid, newmbid);
 
-        logger.Debug("Change MBID ["+dbartist+"] "+dbmbid+" -> "+newmbid) ;
+        logger.Debug("Change MBID ["+dbartist+"] "+dbmbid+" -> "+newmbid);
         if (flag)
           MessageBox.Show("Done!", "MBID Changed!", MessageBoxButtons.OK, MessageBoxIcon.Information);
         else
@@ -1998,7 +2014,7 @@ namespace FanartHandler
         pictureBox1.Image = null;
         var str1 = string.Empty;
         var openFileDialog = new OpenFileDialog();
-        openFileDialog.InitialDirectory = Utils.MPThumbsFolder ; // Config.GetFolder((Config.Dir) 6);
+        openFileDialog.InitialDirectory = Utils.MPThumbsFolder; // Config.GetFolder((Config.Dir) 6);
         openFileDialog.Title = "Select Image";
         openFileDialog.Filter = "Image Files(*.JPG)|*.JPG";
         if (openFileDialog.ShowDialog() == DialogResult.Cancel)
@@ -2188,7 +2204,7 @@ namespace FanartHandler
     private void timerProgress_Tick(object sender, EventArgs e)
     {
       if (watcherArtists != null)
-        UpdateProgressBars(false, false) ;
+        UpdateProgressBars(false, false);
 
       int i = Utils.Percent(toolStripProgressBar.Value, toolStripProgressBar.Maximum);
       toolStripStatusLabel.Text = (i == 0) ? "-" : i.ToString()+"%";
@@ -2320,6 +2336,7 @@ namespace FanartHandler
             this.checkBoxLastFM = new System.Windows.Forms.CheckBox();
             this.checkBoxHtBackdrops = new System.Windows.Forms.CheckBox();
             this.checkBoxFanartTV = new System.Windows.Forms.CheckBox();
+            this.checkBoxUseTheAudioDB = new System.Windows.Forms.CheckBox();
             this.groupBoxScrape = new System.Windows.Forms.GroupBox();
             this.groupBoxShow = new System.Windows.Forms.GroupBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -3776,6 +3793,7 @@ namespace FanartHandler
             this.groupBoxProviders.Controls.Add(this.checkBoxLastFM);
             this.groupBoxProviders.Controls.Add(this.checkBoxHtBackdrops);
             this.groupBoxProviders.Controls.Add(this.checkBoxFanartTV);
+            this.groupBoxProviders.Controls.Add(this.checkBoxUseTheAudioDB);
             this.groupBoxProviders.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold);
             this.groupBoxProviders.Location = new System.Drawing.Point(514, 12);
             this.groupBoxProviders.Name = "groupBoxProviders";
@@ -3866,6 +3884,19 @@ namespace FanartHandler
             this.checkBoxFanartTV.TabIndex = 0;
             this.checkBoxFanartTV.Text = "Fanart.TV";
             this.checkBoxFanartTV.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxUseTheAudioDB
+            // 
+            this.checkBoxUseTheAudioDB.AutoSize = true;
+            this.checkBoxUseTheAudioDB.Checked = true;
+            this.checkBoxUseTheAudioDB.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxUseTheAudioDB.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBoxUseTheAudioDB.Location = new System.Drawing.Point(19, 133);
+            this.checkBoxUseTheAudioDB.Name = "checkBoxUseTheAudioDB";
+            this.checkBoxUseTheAudioDB.Size = new System.Drawing.Size(106, 20);
+            this.checkBoxUseTheAudioDB.TabIndex = 0;
+            this.checkBoxUseTheAudioDB.Text = "TheAudioDB";
+            this.checkBoxUseTheAudioDB.UseVisualStyleBackColor = true;
             // 
             // groupBoxScrape
             // 
@@ -4154,7 +4185,8 @@ namespace FanartHandler
       comboBox2.Items.Add("Pictures");
       comboBox2.Items.Add("Plugins");
       comboBox2.Items.Add("Scorecenter");
-      comboBox2.Items.Add("Tv");
+      comboBox2.Items.Add("TV");
+      comboBox2.Items.Add("Weather");
       comboBox2.SelectedItem = "Games";
       //
       comboBox3.Enabled = true;
@@ -4162,6 +4194,7 @@ namespace FanartHandler
       comboBox3.Items.Add("MovingPictures");
       comboBox3.Items.Add("MyVideos");
       comboBox3.Items.Add("TVSeries");
+      comboBox3.Items.Add("MyFilms");
       comboBox3.SelectedItem = "MovingPictures";
       //
       comboBoxFanartTVLanguage.Enabled = true;
@@ -4276,7 +4309,22 @@ namespace FanartHandler
       logger.Info("Fanart Handler configuration is starting.");
       logger.Info("Fanart Handler version is " + Utils.GetAllVersionNumber());
       logger.Debug("Current Culture: {0}", CultureInfo.CurrentCulture.Name);
-      //
+      /*
+      string __str = "AC/DC";
+      logger.Debug("*** AC/DC: {0}", Utils.GetArtist(__str,Utils.Category.MusicFanartScraped));
+      __str = "D:A:D";
+      logger.Debug("*** D:A:D: {0}", Utils.GetArtist(__str,Utils.Category.MusicFanartScraped));
+      __str = "D-A-D";
+      logger.Debug("*** D-A-D: {0}", Utils.GetArtist(__str,Utils.Category.MusicFanartScraped));
+      __str = "D_A_D";
+      logger.Debug("*** D_A_D: {0}", Utils.GetArtist(__str,Utils.Category.MusicFanartScraped));
+      __str = "Madonna|AC/DC|D:A:В";
+      logger.Debug("*** Madonna|AC/DC|D:A:В: {0}", Utils.GetArtist(__str,Utils.Category.MusicFanartScraped));
+      __str = "Madonna | AC/DC | D:A:В";
+      logger.Debug("*** Madonna | AC/DC | D:A:В: {0}", Utils.GetArtist(__str,Utils.Category.MusicFanartScraped));
+      __str = @"M:\Mediaportal\Thumbs\Skin FanArt\Scraper\music\D_A_D (110653).jpg";
+      logger.Debug("*** Fanart: {0}", Utils.GetArtist(__str,Utils.Category.MusicFanartScraped));
+      */
       Text = Text + " " + Utils.GetAllVersionNumber();
       //
       Utils.DelayStop = new Hashtable();

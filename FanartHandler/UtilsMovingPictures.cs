@@ -2,12 +2,14 @@
 // Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 
+extern alias FHNLog;
+
 using Cornerstone.Database.Tables;
 
 using MediaPortal.Plugins.MovingPictures;
 using MediaPortal.Plugins.MovingPictures.Database;
 
-using NLog;
+using FHNLog.NLog;
 
 using System;
 using System.IO;
@@ -37,6 +39,9 @@ namespace FanartHandler
 
     internal static void DisposeMovingPicturesLatest()
     {
+      if (!Utils.MovingPicturesEnabled)
+        return;
+
       try
       {
         // ISSUE: method pointer
@@ -50,6 +55,9 @@ namespace FanartHandler
 
     internal static void MovingPictureOnObjectInserted(DatabaseTable obj)
     {
+      if (!Utils.MovingPicturesEnabled)
+        return;
+
       try
       {
         if (obj.GetType() != typeof (DBMovieInfo))
@@ -65,6 +73,9 @@ namespace FanartHandler
 
     internal static void GetMovingPicturesBackdrops()
     {
+      if (!Utils.MovingPicturesEnabled)
+        return;
+
       try
       {
         var allFilenames = Utils.GetDbm().GetAllFilenames(Utils.Category.MovingPictureManual);

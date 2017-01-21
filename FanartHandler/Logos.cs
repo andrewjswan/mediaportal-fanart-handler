@@ -2,9 +2,11 @@
 // Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 
+extern alias FHNLog;
+
 using MediaPortal.GUI.Library;
 
-using NLog;
+using FHNLog.NLog;
 
 using System;
 using System.Collections.Generic;
@@ -23,13 +25,23 @@ namespace FanartHandler
 
     private Logos() { }
 
+    private static void Flush(string sTextureName)
+    {
+      logger.Debug("ClearDynLogos: Flush {0}", sTextureName);
+      GUITextureManager.ReleaseTexture(sTextureName);
+    }
+
     public static void ClearDynLogos()
     {
       if (DynLogos != null)
       {
+        foreach (String sTextureName in DynLogos)
+        {
+          Flush(sTextureName);
+        }
         DynLogos.Clear();
       }
-      DynLogos = null ;
+      DynLogos = null;
       DynLogos = new List<string>();
     }
 
@@ -88,10 +100,10 @@ namespace FanartHandler
             if (equal) 
             {
               logger.Debug("Skip: Image " + logosForBuilding[i] + " already added.");
-              break ;
+              break;
             }
           }
-          if (equal) continue ;
+          if (equal) continue;
         }
         catch (Exception)
         {
@@ -160,21 +172,27 @@ namespace FanartHandler
       Bitmap b = new Bitmap(imgWidth, imgHeight);
       Image img = b;
       Graphics g = Graphics.FromImage(img);
-
-      int x_pos = 0;
-      int y_pos = 0;
-      for (int i = 0; i < imgs.Count; i++)
+      try
       {
-        if (bVertical)
+        int x_pos = 0;
+        int y_pos = 0;
+        for (int i = 0; i < imgs.Count; i++)
         {
-          g.DrawImage(imgs[i], imgWidth - imgSizes[i].Width, y_pos, imgSizes[i].Width, imgSizes[i].Height);
-          y_pos += imgSizes[i].Height + spacer;
+          if (bVertical)
+          {
+            g.DrawImage(imgs[i], imgWidth - imgSizes[i].Width, y_pos, imgSizes[i].Width, imgSizes[i].Height);
+            y_pos += imgSizes[i].Height + spacer;
+          }
+          else
+          {
+            g.DrawImage(imgs[i], x_pos, imgHeight - imgSizes[i].Height, imgSizes[i].Width, imgSizes[i].Height);
+            x_pos += imgSizes[i].Width + spacer;
+          }
         }
-        else
-        {
-          g.DrawImage(imgs[i], x_pos, imgHeight - imgSizes[i].Height, imgSizes[i].Width, imgSizes[i].Height);
-          x_pos += imgSizes[i].Width + spacer;
-        }
+      }
+      finally
+      {
+        g.Dispose();
       }
 
       // step five: build image in memory

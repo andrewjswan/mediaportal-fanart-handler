@@ -2,9 +2,11 @@
 // Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 
+extern alias FHNLog;
+
 using MediaPortal.GUI.Library;
 
-using NLog;
+using FHNLog.NLog;
 
 using System;
 using System.Collections;
@@ -24,6 +26,8 @@ namespace FanartHandler
     private string CurrSelectedMusic;
     private string CurrSelectedMusicArtist;
     private string CurrSelectedMusicAlbum;
+    private string CurrSelectedMusicDiscID;
+    private string CurrSelectedMusicGenre;
 
     private bool FanartAvailable;
 
@@ -79,6 +83,8 @@ namespace FanartHandler
       CurrSelectedMusic = string.Empty;
       CurrSelectedMusicArtist = string.Empty;
       CurrSelectedMusicAlbum = string.Empty;
+      CurrSelectedMusicDiscID = string.Empty;
+      CurrSelectedMusicGenre = string.Empty;
     }
 
     public bool CheckValidWindowIDForFanart()
@@ -108,10 +114,10 @@ namespace FanartHandler
         var isVideo = (property.Equals("movie", StringComparison.CurrentCulture));
         var isMusicVideo = false;
 
+        var SelectedItem = (string) null;
         var SelectedAlbum = (string) null;
         var SelectedGenre = (string) null;
         var SelectedStudios = (string) null;
-        var SelectedItem = (string) null;
 
         Utils.GetSelectedItem(ref SelectedItem, ref SelectedAlbum, ref SelectedGenre, ref SelectedStudios, ref isMusicVideo);
         // logger.Debug("*** Refresh: {0} - {1} - {2} - {3} - {4}", SelectedItem, SelectedAlbum, SelectedGenre,  SelectedStudios, isMusicVideo);
@@ -124,20 +130,21 @@ namespace FanartHandler
 
             if (isMusic || isMusicVideo)
             {
-              AddSelectedArtistProperty(currSelectedGenericTitle) ;
+              AddSelectedArtistProperty(currSelectedGenericTitle);
+              AddSelectedArtistAlbumProperty(currSelectedGenericTitle, SelectedAlbum);
             }
             if (isVideo)
             {
               AddSelectedStudioProperty(SelectedStudios);
               AddSelectedAwardProperty();
 
-              var selectedTitle = Utils.GetSelectedMyVideoTitle();
+              var selectedTitle = Utils.GetSelectedMyVideoTitle(true);
               if (!string.IsNullOrEmpty(selectedTitle))
               {
                 SelectedItem = selectedTitle;
               }
             }
-            AddSelectedGenreProperty(SelectedGenre, SelectedItem, property) ;
+            AddSelectedGenreProperty(SelectedGenre, SelectedItem, property);
 
             ResetRefreshTickCount();
           }
@@ -146,14 +153,15 @@ namespace FanartHandler
         {
           if (isMusic)
           {
-            AddSelectedArtistProperty(string.Empty) ;
+            AddSelectedArtistProperty(string.Empty);
+            AddSelectedArtistAlbumProperty(string.Empty, string.Empty);
           }
           if (isVideo)
           {
-            AddSelectedStudioProperty(string.Empty) ;
+            AddSelectedStudioProperty(string.Empty);
             AddSelectedAwardProperty();
           }
-          AddSelectedGenreProperty(string.Empty, string.Empty, property) ;
+          AddSelectedGenreProperty(string.Empty, string.Empty, property);
 
           currSelectedGenericTitle = string.Empty;
 
@@ -176,36 +184,46 @@ namespace FanartHandler
           return;
 
         // logger.Debug("Album Artist: "+Utils.GetProperty("#music.albumArtist")+ " Artist: "+Utils.GetProperty("#music.Artist")+ "Album: "+Utils.GetProperty("#music.album"));
-        var SelectedItem = string.Empty + Utils.GetMusicArtistFromListControl(ref CurrSelectedMusicAlbum);
-        var SaveAlbum = CurrSelectedMusicAlbum;
-        var album = string.Empty + CurrSelectedMusicAlbum;
-        CurrSelectedMusicAlbum = SaveAlbum;
+        var album = string.Empty;
         var genre = string.Empty + Utils.GetProperty("#music.genre").Replace(" / ", "|").Replace(", ", "|");
+        var discID = string.Empty + Utils.GetProperty("#music.discid");
+        var SelectedItem = string.Empty + Utils.GetMusicArtistFromListControl(ref album);
 
         // logger.Debug("*** SelectedItem/CurrSelectedMusicArtist: "+SelectedItem+ "/"+CurrSelectedMusicArtist+ " Album/CurrSelectedMusicAlbum: "+album+"/"+CurrSelectedMusicAlbum);
         if (SelectedItem != null && !SelectedItem.Equals("..", StringComparison.CurrentCulture) && SelectedItem.Trim().Length > 0)
         {
-          var flag = (!CurrSelectedMusicArtist.Equals(SelectedItem, StringComparison.CurrentCulture) || !CurrSelectedMusicAlbum.Equals(album, StringComparison.CurrentCulture));
+          // Artist - Album - CD# - Genre
+          var flag = (!CurrSelectedMusicArtist.Equals(SelectedItem, StringComparison.CurrentCulture) || 
+                      !CurrSelectedMusicAlbum.Equals(album, StringComparison.CurrentCulture) || 
+                      !CurrSelectedMusicDiscID.Equals(discID, StringComparison.CurrentCulture) || 
+                      !CurrSelectedMusicGenre.Equals(genre, StringComparison.CurrentCulture));
 
           if (flag || (RefreshTickCount >= Utils.MaxRefreshTickCount))
           {
             CurrSelectedMusicArtist = SelectedItem;
             CurrSelectedMusicAlbum = album;
+            CurrSelectedMusicDiscID = discID;
+            CurrSelectedMusicGenre = genre;
             ResetRefreshTickCount();
 
-            AddSelectedArtistProperty(CurrSelectedMusicArtist) ;
-            AddSelectedGenreProperty(genre, CurrSelectedMusicArtist, "music") ;
+            AddSelectedArtistProperty(CurrSelectedMusicArtist);
+            AddSelectedArtistAlbumProperty(CurrSelectedMusicArtist, CurrSelectedMusicAlbum, CurrSelectedMusicDiscID);
+            AddSelectedGenreProperty(genre, CurrSelectedMusicArtist, "music");
           }
         }
         else
         {
           FanartAvailable = FanartAvailable || false;
+
           CurrSelectedMusic = string.Empty;
           CurrSelectedMusicArtist = string.Empty;
           CurrSelectedMusicAlbum = string.Empty;
+          CurrSelectedMusicDiscID = string.Empty;
+          CurrSelectedMusicGenre = string.Empty;
 
-          AddSelectedArtistProperty(string.Empty) ;
-          AddSelectedGenreProperty(string.Empty, string.Empty, "music") ;
+          AddSelectedArtistProperty(string.Empty);
+          AddSelectedArtistAlbumProperty(string.Empty, string.Empty);
+          AddSelectedGenreProperty(string.Empty, string.Empty, "music");
         }
       }
       catch (Exception ex)
@@ -307,8 +325,8 @@ namespace FanartHandler
 
       var caFile = string.Empty;
       var bnFile = string.Empty;
-      var caFileNames = new List<string>() ;  
-      var bnFileNames = new List<string>() ;  
+      var caFileNames = new List<string>();  
+      var bnFileNames = new List<string>();  
       try
       {
         // Get Artist name
@@ -317,21 +335,21 @@ namespace FanartHandler
         {
           foreach (string sartist in artists)
           {
-            caFile = string.Empty ;
+            caFile = string.Empty;
             if (!string.IsNullOrEmpty(Utils.MusicClearArtFolder))
               caFile = Path.Combine(Utils.MusicClearArtFolder, MediaPortal.Util.Utils.MakeFileName(sartist.Trim())+".png");
             if (!string.IsNullOrEmpty(caFile) && File.Exists(caFile))
-              caFileNames.Add(caFile) ;
+              caFileNames.Add(caFile);
             //
-            bnFile = string.Empty ;
+            bnFile = string.Empty;
             if (!string.IsNullOrEmpty(Utils.MusicBannerFolder))
               bnFile = Path.Combine(Utils.MusicBannerFolder, MediaPortal.Util.Utils.MakeFileName(sartist.Trim())+".png");
             if (!string.IsNullOrEmpty(bnFile) && File.Exists(bnFile))
-              bnFileNames.Add(bnFile) ;
+              bnFileNames.Add(bnFile);
           }
 
           if (caFileNames.Count == 0)
-            caFile = string.Empty ;
+            caFile = string.Empty;
           else if (caFileNames.Count == 1)
             caFile = caFileNames[0].Trim();
           else if (caFileNames.Count == 2)
@@ -343,7 +361,7 @@ namespace FanartHandler
           }
 
           if (bnFileNames.Count == 0)
-            bnFile = string.Empty ;
+            bnFile = string.Empty;
           else if (bnFileNames.Count == 1)
             bnFile = bnFileNames[0].Trim();
           else if (bnFileNames.Count == 2)
@@ -356,14 +374,108 @@ namespace FanartHandler
         }
 
         Utils.SetProperty("music.artistclearart.selected", caFile);
-        // logger.Debug("*** "+artist+" - "+caFile) ;
+        // logger.Debug("*** "+artist+" - "+caFile);
         Utils.SetProperty("music.artistbanner.selected", bnFile);
-        // logger.Debug("*** "+artist+" - "+bnFile) ;
+        // logger.Debug("*** "+artist+" - "+bnFile);
         FanartAvailable = FanartAvailable || (!string.IsNullOrEmpty(caFile) || !string.IsNullOrEmpty(bnFile));
       }
       catch (Exception ex)
       {
         logger.Error("AddSelectedArtistProperty: " + ex);
+      }
+    }
+
+    public void AddSelectedArtistAlbumProperty(string artist, string album)
+    {
+      AddSelectedArtistAlbumProperty(artist, album, string.Empty);
+    }
+
+    public void AddSelectedArtistAlbumProperty(string artist, string album, string cd)
+    {
+      if (string.IsNullOrEmpty(artist) || string.IsNullOrEmpty(album))
+      {
+        Utils.SetProperty("music.albumcd.selected", string.Empty);
+        return;
+      }
+      if (!Utils.ContainsID(WindowsUsingFanartSelectedClearArtMusic))
+      {
+        return;
+      }
+
+      var cdFile = string.Empty;
+      var cdFileNames = new List<string>();  
+      try
+      {
+        // Get Artist name
+        var artists = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
+        if (artists != null)
+        {
+          foreach (string sartist in artists)
+          {
+            string _sartist = MediaPortal.Util.Utils.MakeFileName(sartist).Trim();
+            string _salbum  = MediaPortal.Util.Utils.MakeFileName(album).Trim();
+
+            // CD with DiscID
+            if (!string.IsNullOrWhiteSpace(cd))
+            {
+              // MePoTools
+              cdFile = Path.Combine(Utils.MusicCDArtFolder, string.Format("{0} - {1}.CD{2}.png", _sartist, _salbum, cd));
+              if (File.Exists(cdFile))
+              {
+                if (!cdFileNames.Contains(cdFile))
+                  cdFileNames.Add(cdFile);
+              }
+              else
+              {
+                // Mediaportal or other plugins
+                cdFile = Path.Combine(Utils.MusicCDArtFolder, string.Format("{0}-{1}.CD{2}.png", _sartist, _salbum, cd));
+                if (File.Exists(cdFile))
+                  if (!cdFileNames.Contains(cdFile))
+                    cdFileNames.Add(cdFile);
+              }
+            }
+
+            // CD witout DiscID
+            if (cdFileNames == null || (cdFileNames.Count == 0))
+            {
+              // MePoTools
+              cdFile = Path.Combine(Utils.MusicCDArtFolder, string.Format("{0} - {1}.png", _sartist, _salbum));
+              if (File.Exists(cdFile))
+              {
+                if (!cdFileNames.Contains(cdFile))
+                  cdFileNames.Add(cdFile);
+              }
+              else
+              {
+                // Mediaportal or other plugins
+                cdFile = Path.Combine(Utils.MusicCDArtFolder, string.Format("{0}-{1}.png", _sartist, _salbum));
+                if (File.Exists(cdFile))
+                  if (!cdFileNames.Contains(cdFile))
+                    cdFileNames.Add(cdFile);
+              }
+            }
+          }
+
+          if (cdFileNames.Count == 0)
+            cdFile = string.Empty;
+          else if (cdFileNames.Count == 1)
+            cdFile = cdFileNames[0].Trim();
+          else if (cdFileNames.Count == 2)
+            cdFile = cdFileNames[(DoShowImageOne ? 0 : 1)].Trim();
+          else
+          {
+            var rand = new Random();
+            cdFile = cdFileNames[rand.Next(cdFileNames.Count-1)].Trim();
+          }
+        }
+
+        Utils.SetProperty("music.albumcd.selected", cdFile);
+        // logger.Debug("*** "+artist+" - "+album+" - "+cd+" - "+cdFile);
+        FanartAvailable = FanartAvailable || (!string.IsNullOrEmpty(cdFile));
+      }
+      catch (Exception ex)
+      {
+        logger.Error("AddSelectedArtistAlbumProperty: " + ex);
       }
     }
 
@@ -383,7 +495,7 @@ namespace FanartHandler
 
       var picFound = false;
       var sFile = string.Empty;
-      var sFileNames = new List<string>() ;  
+      var sFileNames = new List<string>();  
       try
       {
         if ((Utils.ContainsID(WindowsUsingFanartSelectedStudioMovie, Utils.Logo.Single)) ||
@@ -397,16 +509,16 @@ namespace FanartHandler
           var studios = Studios.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
           if (studios != null)
           {
-            // logger.Debug("*** Studios: > "+Studios) ;
+            // logger.Debug("*** Studios: > "+Studios);
             foreach (string studio in studios)
             {
               string _studio = Utils.GetStudio(studio.Trim());
-              sFile = Utils.GetThemedSkinFile(Utils.FAHStudios + MediaPortal.Util.Utils.MakeFileName(_studio) + ".png") ; 
+              sFile = Utils.GetThemedSkinFile(Utils.FAHStudios + MediaPortal.Util.Utils.MakeFileName(_studio) + ".png"); 
               if (!string.IsNullOrEmpty(sFile) && File.Exists(sFile))
               {
                 if (!sFileNames.Contains(sFile))
                 {
-                  sFileNames.Add(sFile) ;
+                  sFileNames.Add(sFile);
                 }
                 // logger.Debug("- Studio [{0}/{1}] found. {2}", studio, _studio, sFile);
               }
@@ -470,7 +582,7 @@ namespace FanartHandler
 
       var picFound = false;
       var sFile = string.Empty;
-      var sFileNames = new List<string>() ;  
+      var sFileNames = new List<string>();  
       try
       {
         // Get Awards name
@@ -489,12 +601,12 @@ namespace FanartHandler
             {
               foreach (string award in awards)
               {
-                sFile = Utils.GetThemedSkinFile(Utils.FAHAwards + MediaPortal.Util.Utils.MakeFileName(award) + ".png") ; 
+                sFile = Utils.GetThemedSkinFile(Utils.FAHAwards + MediaPortal.Util.Utils.MakeFileName(award) + ".png"); 
                 if (!string.IsNullOrEmpty(sFile) && File.Exists(sFile))
                 {
                   if (!sFileNames.Contains(sFile))
                   {
-                    sFileNames.Add(sFile) ;
+                    sFileNames.Add(sFile);
                   }
                   logger.Debug("- Award [{0}] found. {1}", award, sFile);
                 }
@@ -600,12 +712,12 @@ namespace FanartHandler
             {
               foreach (string award in awards)
               {
-                sFile = Utils.GetThemedSkinFile(Utils.FAHAwards + MediaPortal.Util.Utils.MakeFileName(award) + ".png") ; 
+                sFile = Utils.GetThemedSkinFile(Utils.FAHAwards + MediaPortal.Util.Utils.MakeFileName(award) + ".png"); 
                 if (!string.IsNullOrEmpty(sFile) && File.Exists(sFile))
                 {
                   if (!sFileNames.Contains(sFile))
                   {
-                    sFileNames.Add(sFile) ;
+                    sFileNames.Add(sFile);
                   }
                   logger.Debug("- Award [{0}] found. {1}", award, sFile);
                 }
@@ -625,12 +737,12 @@ namespace FanartHandler
               foreach (string character in characters)
               {
                 string _character = Utils.GetCharacter(character.Trim());
-                sFile = Utils.GetThemedSkinFile(Utils.FAHCharacters + MediaPortal.Util.Utils.MakeFileName(_character) + ".png") ; 
+                sFile = Utils.GetThemedSkinFile(Utils.FAHCharacters + MediaPortal.Util.Utils.MakeFileName(_character) + ".png"); 
                 if (!string.IsNullOrEmpty(sFile) && File.Exists(sFile))
                 {
                   if (!sFileNames.Contains(sFile))
                   {
-                    sFileNames.Add(sFile) ;
+                    sFileNames.Add(sFile);
                   }
                   logger.Debug("- Character [{0}/{1}] found. {2}", character, _character, sFile);
                 }
@@ -645,16 +757,16 @@ namespace FanartHandler
           var genres = Genres.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
           if (genres != null)
           {
-            // logger.Debug("*** Genres: > "+Genres) ;
+            // logger.Debug("*** Genres: > "+Genres);
             foreach (string genre in genres)
             {
               string _genre = Utils.GetGenre(genre.Trim());
-              sFile = Utils.GetThemedSkinFile(Utils.FAHGenres + MediaPortal.Util.Utils.MakeFileName(_genre) + ".png") ; 
+              sFile = Utils.GetThemedSkinFile(Utils.FAHGenres + MediaPortal.Util.Utils.MakeFileName(_genre) + ".png"); 
               if (!string.IsNullOrEmpty(sFile) && File.Exists(sFile))
               {
                 if (!sFileNames.Contains(sFile))
                 {
-                  sFileNames.Add(sFile) ;
+                  sFileNames.Add(sFile);
                 }
                 // logger.Debug("- Genre [{0}/{1}] found. {2}", genre, _genre, sFile);
               }
@@ -733,6 +845,8 @@ namespace FanartHandler
         CurrSelectedMusic = string.Empty;
         CurrSelectedMusicArtist = string.Empty;
         CurrSelectedMusicAlbum = string.Empty;
+        CurrSelectedMusicDiscID = string.Empty;
+        CurrSelectedMusicGenre = string.Empty;
       }
       EmptySelectedMusicProperties();
       IsSelectedMusic = false;
@@ -782,6 +896,7 @@ namespace FanartHandler
     {
       Utils.SetProperty("music.artistclearart.selected", string.Empty);
       Utils.SetProperty("music.artistbanner.selected", string.Empty);
+      Utils.SetProperty("music.albumcd.selected", string.Empty);
 
       Utils.SetProperty("music.genres.selected.single", string.Empty);
       Utils.SetProperty("music.genres.selected.all", string.Empty);

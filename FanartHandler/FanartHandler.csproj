@@ -82,9 +82,18 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>External\MP-TVSeries.dll</HintPath>
     </Reference>
+    <Reference Include="LatestMediaHandler">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>External\LatestMediaHandler.dll</HintPath>
+    </Reference>
+    <Reference Include="MyFilms">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>External\MyFilms.dll</HintPath>
+    </Reference>
     <Reference Include="NLog">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>External\NLog.dll</HintPath>
+      <Aliases>FHNLog</Aliases>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -120,6 +129,7 @@
     <Compile Include="FanartRandom.cs" />
     <Compile Include="FanartSelected.cs" />
     <Compile Include="FanartSelectedOther.cs" />
+    <Compile Include="FanartWeather.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -161,7 +171,11 @@
     <Compile Include="UtilsMovingPictures.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UtilsMyFilms.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="UtilsTVSeries.cs" />
+    <Compile Include="UtilsLatestMediaHandler.cs" />
     <Compile Include="JunctionPoint.cs" />
     <Compile Include="Logos.cs" />
     <Compile Include="Translation.cs" />

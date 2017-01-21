@@ -2,7 +2,9 @@
 // Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 
-using NLog;
+extern alias FHNLog;
+
+using FHNLog.NLog;
 
 using System;
 using System.Collections;
@@ -176,7 +178,7 @@ namespace FanartHandler
         if (string.IsNullOrEmpty(artist))
           return null;
 
-        // logger.Debug("*** Artist: "+artist+" Album: "+album) ;
+        // logger.Debug("*** Artist: "+artist+" Album: "+album);
         var fanart1 = new Hashtable();
         Utils.GetFanart(ref fanart1, artist, album, Utils.Category.MusicFanartScraped, true);
 
@@ -187,7 +189,7 @@ namespace FanartHandler
           {
             if (num < 2)
             {
-              if (Utils.CheckImageResolution(fanartImage.DiskImage, Utils.Category.MusicFanartScraped, Utils.UseAspectRatio))
+              if (Utils.CheckImageResolution(fanartImage.DiskImage, Utils.UseAspectRatio))
               {
                 hashtable1.Add(num, fanartImage.DiskImage);
                 checked { ++num; }
