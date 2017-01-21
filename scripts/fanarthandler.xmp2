@@ -724,10 +724,20 @@ ajs</Value>
        * push random images from selected folders
 
 </ExtensionDescription>
-    <VersionDescription>Cosmetic Fix for MultiArtists shared view Music Fanart</VersionDescription>
+    <VersionDescription>Fix import local fanart in configurator
+Fix for Fanart for artists that have characters in the title like : / (ie AC/DC, D:A:D etc)
+Fix for CDArt for album that have characters in the title like : / (ie Bruce Springsteen - We Shall Overcome: The Seeger Sessions etc)
+Fix Skin/Themes (Include XML tag support for Random defines)
+Fix Fanart Handler dont show fanarts after MP Start
+Add Weather Fanart support (multi fanart for current weather conditions + season fanart)
+Add Latest Random Fanart support. Show Random Fanart only for Latests media (Get from LMH)
+Add MyFilms Fanart support.
+Add TheAudioDB support. Thanks @zag2me
+Turn off htBackdrops support due shutdown
+Small cosmetic bug fixes.</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-{VERSION}.MPE1</OnlineLocation>
-    <ReleaseDate>2016-07-12T15:04:24</ReleaseDate>
+    <ReleaseDate>2017-01-21T15:04:24</ReleaseDate>
     <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios</Tags>
     <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
     <Params>
