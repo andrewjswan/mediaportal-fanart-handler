@@ -1890,7 +1890,7 @@ namespace FanartHandler
     // Begin: Extract TheAudioDB URL
     public string ExtractAudioDBMBID (string AInputString)
     {
-      const string MBIDRE = @"\""strMusicBrainzID\""\:\""(.+?)\""";
+      const string MBIDRE = @"\""strMusicBrainzID\""\:\""(.*?)\""";
                
       if (string.IsNullOrEmpty(AInputString) || (AInputString == "null"))
         return string.Empty;
@@ -1920,7 +1920,7 @@ namespace FanartHandler
 
     public List<string> ExtractAudioDBURL (string Sec, string AInputString)
     {
-      const string URLRE  = @"\""%1\""\:\""(.+?)\""";
+      const string URLRE  = @"\""%1\""\:\""(.*?)\""";
                
       var URLList = new List<string>();  
 
@@ -1933,7 +1933,7 @@ namespace FanartHandler
       foreach(Match mu in mcu)
       {
         string _str = mu.Groups[1].Value.ToString();
-        if (_str != @"""")
+        if (!string.IsNullOrEmpty(_str))
         {
           URLList.Add(i + "|" + mu.Groups[1]);
           i++;
