@@ -724,10 +724,11 @@ ajs</Value>
        * push random images from selected folders
 
 </ExtensionDescription>
-    <VersionDescription>Audio DB fix...</VersionDescription>
+    <VersionDescription>Fix for empty Fanart.tv Personal API key...
+Fix for latest MyFilm support ...</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-{VERSION}.MPE1</OnlineLocation>
-    <ReleaseDate>2017-01-21T15:04:24</ReleaseDate>
+    <ReleaseDate>2017-03-08T15:04:24</ReleaseDate>
     <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios</Tags>
     <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
     <Params>

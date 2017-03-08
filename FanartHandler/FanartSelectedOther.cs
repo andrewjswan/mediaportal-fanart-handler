@@ -649,7 +649,7 @@ namespace FanartHandler
         // Vertical
         if (Utils.ContainsID(WindowsUsingFanartSelectedAwardMovie, Utils.Logo.Vertical))
         {
-          picFound = Utils.SetPropertyCache("movie.awards.selected.all", "VerticalAwards", sAwards, Utils.Logo.Vertical, ref sFileNames, ref PicturesCache);
+          picFound = Utils.SetPropertyCache("movie.awards.selected.verticalall", "VerticalAwards", sAwards, Utils.Logo.Vertical, ref sFileNames, ref PicturesCache);
         }
       }
       catch (Exception ex)

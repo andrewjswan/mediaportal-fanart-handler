@@ -1664,7 +1664,7 @@ namespace FanartHandler
                   SelectedItem = SelectedItem + "|" + movie.ID.ToString();
                 }
               }
-              logger.Debug("*** "+movieSelected+": Group: "+isGroup+" Collection: "+isCollection+" -> "+SelectedItem);
+              // logger.Debug("*** "+movieSelected+": Group: "+isGroup+" Collection: "+isCollection+" -> "+SelectedItem);
             }
           }
         }

@@ -5,8 +5,9 @@ extern alias FHNLog;
 
 using Cornerstone.Database.Tables;
 
-using MyFilmsPlugin.MyFilms;
-using MyFilmsPlugin.MyFilms.MyFilmsGUI;
+using MyFilmsPlugin;
+using MyFilmsPlugin.DataBase;
+using MyFilmsPlugin.MyFilmsGUI;
 
 using FHNLog.NLog;
 

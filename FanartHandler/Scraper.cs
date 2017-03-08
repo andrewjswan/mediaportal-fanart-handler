@@ -2228,10 +2228,21 @@ namespace FanartHandler
     // Begin GetHtml
     private static bool GetHtml(string strURL, out string strHtml)
     {
-      string strURLLog = strURL.Replace(ApiKeyhtBackdrops, "<apikey>").Replace(ApiKeyLastFM,"<apikey>").Replace(ApiKeyFanartTV,"<apikey>").Replace(Utils.FanartTVPersonalAPIKey,"<apikey>").Replace(ApiKeyTheAudioDB,"<apikey>");
       strHtml = string.Empty;
       // if (!MediaPortal.Util.Win32API.IsConnectedToInternet())
+      // {
       //  return false;
+      // }
+      if (string.IsNullOrWhiteSpace(strURL))
+      {
+        return false;
+      }
+
+      string strURLLog = strURL.Replace(ApiKeyhtBackdrops, "<apikey>").Replace(ApiKeyLastFM,"<apikey>").Replace(ApiKeyFanartTV,"<apikey>").Replace(ApiKeyTheAudioDB,"<apikey>");
+      if (!string.IsNullOrEmpty(Utils.FanartTVPersonalAPIKey))
+      {
+        strURLLog = strURLLog.Replace(Utils.FanartTVPersonalAPIKey,"<apikey>");
+      }
 
       try
       {
