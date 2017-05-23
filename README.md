@@ -12,6 +12,8 @@ push fanart for selected music or movie<br/>
 push random images from selected folders<br/>
 push random images for Latests media<br/>
 push weather images for current weather<br/>
+push holiday images for current holiday<br/>
+and more ...
 
 #Scope
 The scope of this plugin is to:
@@ -28,16 +30,33 @@ push music fanart for browsed music artist in YouTube.FM plugin<br/>
 push movie fanart for browsed video title in myVideo plugin<br/>
 push scorecenter fanart for browsed category in myScoreCenter plugin<br/>
 push weather fanart for current weather from World Weather / World Weather Lite<br/>
+push fanart for current Holiday<br/>
 push cycling fanart from the following folders for use anywhere in a skin for<br/>
-- thumbs\Skin Fanart\games
-- thumbs\Skin Fanart\movies
-- thumbs\Skin Fanart\music
-- thumbs\Skin Fanart\pictures
-- thumbs\Skin Fanart\plugins
-- thumbs\Skin Fanart\tv
+- thumbs\Skin Fanart\UserDef\games
+- thumbs\Skin Fanart\UserDef\movies
+- thumbs\Skin Fanart\UserDef\music
+- thumbs\Skin Fanart\UserDef\albums
+- thumbs\Skin Fanart\UserDef\pictures
+- thumbs\Skin Fanart\UserDef\plugins
+- thumbs\Skin Fanart\UserDef\tv
+- thumbs\Skin Fanart\UserDef\scorecenter
+- thumbs\Skin Fanart\UserDef\Holidays
+- thumbs\Skin Fanart\Scraper\movies
+- thumbs\Skin Fanart\Scraper\music
 - thumbs\MovingPictures\Backdrops\FullSize
 - thumbs\MyFilms\Fanart
 - thumbs\Fan Art\fanart\original
+- thumbs\Skin Fanart\Media\Weather\Backdrops
+- thumbs\Music\Artists
+- thumbs\Music\Albums
+- thumbs\mvCentral\Artists\FullSize
+- thumbs\mvCentral\Albums\FullSize
+- Theme|Skin|\Media\Logos\Genres - Thumb\Skin Fanart\Media\Logos\Genres
+- Theme|Skin|\Media\Logos\Genres\Music - Thumb\Skin Fanart\Media\Logos\Genres\Music
+- Theme|Skin|\Media\Logos\Genres\Characters - Thumb\Skin Fanart\Media\Logos\Genres\Characters
+- Theme|Skin|\Media\Logos\Studios - Thumb\Skin Fanart\Media\Logos\Studios
+- Theme|Skin|\Media\Logos\Awards - Thumb\Skin Fanart\Media\Logos\Awards
+- Theme|Skin|\Media\Logos\Holidays - Thumb\Skin Fanart\Media\Logos\Holidays
 
 #Guides
 - Installation Guide http://code.google.com/p/fanart-handler/wiki/InstallationGuide
@@ -54,6 +73,7 @@ Studios - https://github.com/andrewjswan/mediaportal.images.studios
 Genres - https://github.com/andrewjswan/mediaportal.images.genres
 Awards - https://github.com/andrewjswan/mediaportal.images.awards
 Weather - https://github.com/andrewjswan/mediaportal.images.weather
+Holiday - https://github.com/andrewjswan/mediaportal.images.holiday
 
 #Supported Skins
 Titan ( full support in ajs Theme for Titan - https://github.com/andrewjswan/mediaportal-skin-themes )
@@ -180,6 +200,11 @@ To the team behind the MP Moving Picture plugin. From who I have used some of th
 
 #fanarthandler.weather.backdrop1
 #fanarthandler.weather.backdrop2
+
+#fanarthandler.holiday.backdrop1
+#fanarthandler.holiday.backdrop2
+#fanarthandler.holiday.current - Holiday name
+#fanarthandler.holiday.icon - Holiday icon
 </pre>
 
 #Defines
@@ -224,6 +249,10 @@ To the team behind the MP Moving Picture plugin. From who I have used some of th
 91919283 - Current Weather Fanart 1 Showed 
 91919281 - Current Weather Fanart 2 Showed 
 91919282 - Current Weather Fanart Available
+
+91919285 - Holiday Fanart 1 Showed
+91919286 - Holiday Fanart 2 Showed
+91919284 - Holiday Fanart Available
 </pre>
 
 Automatically exported from code.google.com/p/mediaportal-fanart-handler

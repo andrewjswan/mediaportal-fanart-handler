@@ -180,6 +180,9 @@ namespace FanartHandler
     private TextBox textBoxMyPicturesSlideShowFolders;
     private Label labelSlideShowFolders;
     private CheckBox checkBoxMyPicturesSlideShow;
+    private CheckBox checkBoxSeriesClearLogoDownload;
+    private CheckBox checkBoxSeriesBannerDownload;
+    private CheckBox checkBoxSeriesClearArtDownload;
     private Button button12;
 
     static FanartHandlerConfig()
@@ -377,6 +380,9 @@ namespace FanartHandler
       checkBoxMoviesClearLogoDownload.Checked = Utils.MoviesClearLogoDownload;
       checkBoxMoviesCDArtDownload.Checked = Utils.MoviesCDArtDownload;
       // Utils.MoviesFanartNameAsMediaportal
+      checkBoxSeriesClearArtDownload.Checked = Utils.SeriesClearArtDownload;
+      checkBoxSeriesBannerDownload.Checked = Utils.SeriesBannerDownload;
+      checkBoxSeriesClearLogoDownload.Checked = Utils.SeriesClearLogoDownload;
       //
       if (string.IsNullOrEmpty(Utils.FanartTVLanguage))
         comboBoxFanartTVLanguage.SelectedIndex = 0;
@@ -442,6 +448,9 @@ namespace FanartHandler
        Utils.MoviesClearLogoDownload = checkBoxMoviesClearLogoDownload.Checked;
        Utils.MoviesCDArtDownload = checkBoxMoviesCDArtDownload.Checked;
        // Utils.MoviesFanartNameAsMediaportal
+       Utils.SeriesClearArtDownload = checkBoxSeriesClearArtDownload.Checked;
+       Utils.SeriesBannerDownload = checkBoxSeriesBannerDownload.Checked;
+       Utils.SeriesClearLogoDownload = checkBoxSeriesClearLogoDownload.Checked;
        //
        KeyValuePair<string, string> selectedPair = (KeyValuePair<string, string>)comboBoxFanartTVLanguage.SelectedItem;
        Utils.FanartTVLanguage = selectedPair.Key.Trim();
@@ -2354,6 +2363,9 @@ namespace FanartHandler
       this.toolStripStatusLabelToolTip = new System.Windows.Forms.ToolStripStatusLabel();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.timerProgress = new System.Windows.Forms.Timer(this.components);
+      this.checkBoxSeriesClearLogoDownload = new System.Windows.Forms.CheckBox();
+      this.checkBoxSeriesBannerDownload = new System.Windows.Forms.CheckBox();
+      this.checkBoxSeriesClearArtDownload = new System.Windows.Forms.CheckBox();
       this.tabPage13.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.dataGridViewUserManaged)).BeginInit();
@@ -3610,6 +3622,9 @@ namespace FanartHandler
       // 
       this.groupBoxFanartTV.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.groupBoxFanartTV.Controls.Add(this.checkBoxSeriesClearLogoDownload);
+      this.groupBoxFanartTV.Controls.Add(this.checkBoxSeriesBannerDownload);
+      this.groupBoxFanartTV.Controls.Add(this.checkBoxSeriesClearArtDownload);
       this.groupBoxFanartTV.Controls.Add(this.checkBoxMoviesCDArtDownload);
       this.groupBoxFanartTV.Controls.Add(this.checkBoxMoviesClearLogoDownload);
       this.groupBoxFanartTV.Controls.Add(this.checkBoxMoviesBannerDownload);
@@ -4056,6 +4071,45 @@ namespace FanartHandler
       this.timerProgress.Interval = 500;
       this.timerProgress.Tick += new System.EventHandler(this.timerProgress_Tick);
       // 
+      // checkBoxSeriesClearLogoDownload
+      // 
+      this.checkBoxSeriesClearLogoDownload.AutoSize = true;
+      this.checkBoxSeriesClearLogoDownload.Checked = true;
+      this.checkBoxSeriesClearLogoDownload.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.checkBoxSeriesClearLogoDownload.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.checkBoxSeriesClearLogoDownload.Location = new System.Drawing.Point(416, 141);
+      this.checkBoxSeriesClearLogoDownload.Name = "checkBoxSeriesClearLogoDownload";
+      this.checkBoxSeriesClearLogoDownload.Size = new System.Drawing.Size(196, 20);
+      this.checkBoxSeriesClearLogoDownload.TabIndex = 15;
+      this.checkBoxSeriesClearLogoDownload.Text = "Series ClearLogo Download";
+      this.checkBoxSeriesClearLogoDownload.UseVisualStyleBackColor = true;
+      // 
+      // checkBoxSeriesBannerDownload
+      // 
+      this.checkBoxSeriesBannerDownload.AutoSize = true;
+      this.checkBoxSeriesBannerDownload.Checked = true;
+      this.checkBoxSeriesBannerDownload.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.checkBoxSeriesBannerDownload.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.checkBoxSeriesBannerDownload.Location = new System.Drawing.Point(416, 115);
+      this.checkBoxSeriesBannerDownload.Name = "checkBoxSeriesBannerDownload";
+      this.checkBoxSeriesBannerDownload.Size = new System.Drawing.Size(176, 20);
+      this.checkBoxSeriesBannerDownload.TabIndex = 14;
+      this.checkBoxSeriesBannerDownload.Text = "Series Banner Download";
+      this.checkBoxSeriesBannerDownload.UseVisualStyleBackColor = true;
+      // 
+      // checkBoxSeriesClearArtDownload
+      // 
+      this.checkBoxSeriesClearArtDownload.AutoSize = true;
+      this.checkBoxSeriesClearArtDownload.Checked = true;
+      this.checkBoxSeriesClearArtDownload.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.checkBoxSeriesClearArtDownload.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.checkBoxSeriesClearArtDownload.Location = new System.Drawing.Point(416, 89);
+      this.checkBoxSeriesClearArtDownload.Name = "checkBoxSeriesClearArtDownload";
+      this.checkBoxSeriesClearArtDownload.Size = new System.Drawing.Size(181, 20);
+      this.checkBoxSeriesClearArtDownload.TabIndex = 13;
+      this.checkBoxSeriesClearArtDownload.Text = "Series ClearArt Download";
+      this.checkBoxSeriesClearArtDownload.UseVisualStyleBackColor = true;
+      // 
       // FanartHandlerConfig
       // 
       this.ClientSize = new System.Drawing.Size(979, 562);
@@ -4330,8 +4384,8 @@ namespace FanartHandler
       Utils.DelayStop = new Hashtable();
       //
       Utils.InitFolders();
-      Utils.SetupDirectories();
       Utils.LoadSettings();
+      Utils.SetupDirectories();
       Utils.InitiateDbm("config");
       Utils.StopScraper = false;
       //

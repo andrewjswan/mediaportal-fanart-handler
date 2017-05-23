@@ -59,6 +59,7 @@ namespace FanartHandler
         FanartHandlerSetup.Fh.FSelected.RefreshSelected(this, e);
         FanartHandlerSetup.Fh.FSelectedOther.RefreshSelected(this, e);
         FanartHandlerSetup.Fh.FWeather.RefreshWeather(this, e);
+        FanartHandlerSetup.Fh.FHoliday.RefreshHoliday(this, e);
         FanartHandlerSetup.Fh.FRandom.RefreshRandom(this, e);
 
         Report(e);

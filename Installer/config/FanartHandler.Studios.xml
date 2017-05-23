@@ -313,6 +313,7 @@
   <studio name="Chimera Films LLC">Chimera Films</studio>
   <studio name="China Star Production Services Limited">China Star Entertainment</studio>
   <studio name="China Star Worldwide Distribution">China Star Entertainment</studio>
+  <studio name="China Film">China Film Group</studio>
   <studio name="CiBy 2000">CiBy</studio>
   <studio name="Ciné">Cine</studio>
   <studio name="Ciné+">Cine</studio>
@@ -657,6 +658,8 @@
   <studio name="Lionsgate">Lions Gate</studio>
   <studio name="Lionsgate/Summit">Lionsgate|Summit</studio>
   <studio name="Lisa-Film">Lisa Film</studio>
+  <studio name="Los Angeles Media Fund">LAMF</studio>
+  <studio name="Los Angeles Media Fund (LAMF)">LAMF</studio>
   <studio name="M&amp;M Production">M&amp;M</studio>
   <studio name="M&amp;M Productions">M&amp;M</studio>
   <studio name="mmprod">M&amp;M</studio>
@@ -823,6 +826,8 @@
   <studio name="Oddlot">Odd Lot</studio>
   <studio name="Olga Film GmbH">Olga Film</studio>
   <studio name="Oliwood Productions">Olliwood Productions</studio>
+  <studio name="One Race">One Race Productions</studio>
+  <studio name="One Race Films">One Race Productions</studio>
   <studio name="Open Doors International">Open Door</studio>
   <studio name="Open Door Productions">Open Door</studio>
   <studio name="Open Road Films">Open Road</studio>
@@ -1126,6 +1131,7 @@
   <studio name="Sony Pictures Entertainment">Sony</studio>
   <studio name="Sony Pictures Entertainment (SPE)">Sony</studio>
   <studio name="Sony Pictures Imageworks">Sony</studio>
+  <studio name="Southpaw Entertainment">Southpaw</studio>
   <studio name="Space Films">Space</studio>
   <studio name="Space Productions">Space</studio>
   <studio name="Speed Channel">Speed</studio>
@@ -1154,6 +1160,8 @@
   <studio name="Studio Pierrot Co. Ltd.">Pierrot</studio>
   <studio name="Studio Matrix">Satelight</studio>
   <studio name="Studios USA Television">Studios USA</studio>
+  <studio name="Robert Simonds Company">STX</studio>
+  <studio name="STX Entertainment">STX</studio>
   <studio name="Sveriges Television">SVT</studio>
   <studio name="Sveriges Television (SVT)">SVT</studio>
   <studio name="Subversive Flix">Subversive</studio>
@@ -1180,6 +1188,8 @@
   <studio name="Tatsunoko Productions Company">Tatsunoko Production</studio>
   <studio name="Anime Friend">Tatsunoko Production</studio>
   <studio name="Tartan Films">Palisades Tartan</studio>
+  <studio name="Taihe Entertainment">Taihe</studio>
+  <studio name="Taihe Films">Taihe</studio>
   <studio name="TBS Superstation">TBS</studio>
   <studio name="Telos Films">Telos</studio>
   <studio name="Telecom Animation Film">TMS Entertainment</studio>
@@ -1216,6 +1226,7 @@
   <studio name="TNT Originals">TNT</studio>
   <studio name="Turner Network Television">TNT</studio>
   <studio name="Turner Network Television (TNT)">TNT</studio>
+  <studio name="TNT (US)">TNT</studio>
   <studio name="TNT_hd">TNT HD</studio>
   <studio name="Tobis-Filmverleih">Tobis</studio>
   <studio name="Tobis Filmverleih">Tobis</studio>
@@ -1268,6 +1279,8 @@
   <studio name="Trigger Street Independent">Trigger Street</studio>
   <studio name="Trigger Street Productions">Trigger Street</studio>
   <studio name="Triggerstreet">Trigger Street</studio>
+  <studio name="Trigger Inc.">Trigger</studio>
+  <studio name="Studio Trigger">Trigger</studio>
   <studio name="Trimark Home Video">Trimark</studio>
   <studio name="Trimark Pictures">Trimark</studio>
   <studio name="Trimark Video">Trimark</studio>
@@ -1513,6 +1526,8 @@
   <studio name="Koktebel Film Company">Кинокомпания Коктебель</studio>
   <studio name="СТБ">Кинокомпания CTB</studio>
   <studio name="Кинокомпания СТВ">Кинокомпания CTB</studio>
+  <studio name="Кинокомпания «Магнум»">Магнум</studio>
+  <studio name="Кинокомпания Магнум">Магнум</studio>
   <studio name="Киномания">Кіноманія</studio>
   <studio name="Kinomania">Кіноманія</studio>
   <studio name="Kvartal 95 Studio">Квартал-95</studio>
@@ -1553,4 +1568,5 @@
   <studio name="Гостелерадио">Госкино</studio>
   <studio name="Студия Горького">Киностудия Горького</studio>
   <studio name="Тбилисская киностудия">Грузия-фильм</studio>
+  <studio name="Третий Рим">3rome</studio>
 </studios>

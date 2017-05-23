@@ -46,12 +46,55 @@ namespace FanartHandler
         Utils.CurrArtistsBeingScraped = 0.0;
 
         Utils.AllocateDelayStop("FanartHandlerSetup-StartScraper");
-        Utils.SetProperty("scraper.task", Translation.ScrapeInitial);
+        Utils.SetProperty("scraper.task", Translation.ScrapeInitial + " - " + Translation.ScrapeInitializing);
         Utils.SetProperty("scraper.percent.completed", string.Empty);
         Utils.SetProperty("scraper.percent.sign", "...");
+
         FanartHandlerSetup.Fh.ShowScraperProgressIndicator();
 
-        Utils.GetDbm().InitialScrape();
+        var sparams = e.Argument as int[];
+        if (sparams == null) // All
+        {
+          if (Utils.DeleteMissing)
+          {
+            Utils.SetProperty("scraper.task", Translation.DeleteMissing);
+            logger.Info("Synchronised fanart database: Removed " + Utils.GetDbm().DeleteRecordsWhereFileIsMissing() + " entries.");
+          }
+          Utils.GetDbm().InitialScrape();
+
+          if (Utils.FanartTVNeedDownload)
+          {
+            if (Utils.DeleteMissing)
+            {
+              Utils.GetDbm().DeleteOldFanartTV();
+            }
+            Utils.GetDbm().InitialScrapeFanart();
+          }
+
+          #region Statistics
+          logger.Debug("InitialScrape statistic for Category:");
+          Utils.GetDbm().GetCategoryStatistic(true);
+          logger.Debug("InitialScrape statistic for Provider:");
+          Utils.GetDbm().GetProviderStatistic(true);
+          logger.Debug("InitialScrape statistic for Actual Music Fanart/Thumbs:");
+          Utils.GetDbm().GetAccessStatistic(true);
+          #endregion
+        }
+        else // Part of ...
+        {
+          int vParam = sparams[0];
+          if (Enum.IsDefined(typeof(Utils.Category), vParam))
+          {
+            if (Utils.FanartTVNeedDownload)
+            {
+              Utils.GetDbm().InitialScrapeFanart((Utils.Category)vParam);
+            }
+          }
+          else
+          {
+            logger.Debug("ScraperWorker: Unknown Fanart type: {0}", sparams[0]);
+          }
+        }
 
         ReportProgress(100, "Done");
         Utils.ThreadToSleep();

@@ -114,10 +114,10 @@ namespace FanartHandler
               FanartAvailable = false;
             }
 
-            newFanart = GetFilename(string.Empty + Utils.GetWeatherCurrentSeason().ToString() + SelectedItem, null, ref CurrWeather, ref PrevWeather, Utils.Category.Weather, flag, false);
+            newFanart = GetFilename(string.Empty + Utils.GetWeatherCurrentSeason().ToString() + SelectedItem, null, ref CurrWeather, ref PrevWeather, Utils.Category.Weather, flag);
             if (string.IsNullOrEmpty(newFanart))
             {
-              newFanart = GetFilename(string.Empty + SelectedItem, null, ref CurrWeather, ref PrevWeather, Utils.Category.Weather, flag, false);
+              newFanart = GetFilename(string.Empty + SelectedItem, null, ref CurrWeather, ref PrevWeather, Utils.Category.Weather, flag);
             }
 
             if (!string.IsNullOrEmpty(newFanart))
@@ -260,7 +260,7 @@ namespace FanartHandler
     }
     #endregion
 
-    internal string GetFilename(string key, string key2, ref string currFile, ref int iFilePrev, Utils.Category category, bool newArtist, bool isWeather)
+    internal string GetFilename(string key, string key2, ref string currFile, ref int iFilePrev, Utils.Category category, bool newArtist)
     {
       var result = string.Empty;
       try
@@ -268,12 +268,11 @@ namespace FanartHandler
         if (!Utils.GetIsStopping())
         {
           key = Utils.GetArtist(key, category);
-          key2 = isWeather ? Utils.GetAlbum(key2, category) : null;
           var filenames = GetCurrentSelectedImageNames(category);
 
           if (newArtist || filenames == null || filenames.Count == 0)
           {
-            Utils.GetFanart(ref filenames, key, key2, category, isWeather);
+            Utils.GetFanart(ref filenames, key, key2, category, false);
             if (iFilePrev == -1)
               Utils.Shuffle(ref filenames);
 

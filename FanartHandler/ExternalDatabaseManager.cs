@@ -69,8 +69,8 @@ namespace FanartHandler
         if (category == Utils.Category.TvSeriesScraped)
           SQL = "SELECT SortName, id FROM online_series;";
         else if (category == Utils.Category.MusicAlbumThumbScraped)
-          SQL = "SELECT DISTINCT c.[artist] as Artist, b.[album] as Album, b.[yearreleased] as Year "+
-                 "FROM album_info b, album_info__track_info t, artist_info__track_info a, artist_info c "+
+          SQL = "SELECT DISTINCT c.[artist] as Artist, b.[album] as Album, b.[yearreleased] as Year " +
+                 "FROM album_info b, album_info__track_info t, artist_info__track_info a, artist_info c " +
                  "WHERE (b.[album] is not null AND Trim(b.[album])<>'') AND "+
                        "(b.[id]=t.[album_info_id] AND t.[track_info_id] = a.[track_info_id] AND a.[artist_info_id] = c.[id]) AND "+
                        "(c.[artist] is not null AND Trim(c.[artist])<>'') "+

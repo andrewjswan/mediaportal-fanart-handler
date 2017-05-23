@@ -12,6 +12,7 @@ using System;
 using System.Collections;
 
 using WindowPlugins.GUITVSeries;
+using System.Collections.Generic;
 
 namespace FanartHandler
 {
@@ -71,6 +72,7 @@ namespace FanartHandler
         if (!dataUpdated)
           return;
         FanartHandlerSetup.Fh.AddToDirectoryTimerQueue("TVSeries");
+        FanartHandlerSetup.Fh.AddToFanartTVTimerQueue(Utils.Category.FanartTVSeries);
       }
       catch (Exception ex)
       {
@@ -78,7 +80,7 @@ namespace FanartHandler
       }
     }
 
-    internal static Hashtable GetTVSeriesName(Utils.Category category)
+    internal static Hashtable GetTVSeriesNames(Utils.Category category)
     {
       var hashtable = new Hashtable();
 
@@ -100,6 +102,7 @@ namespace FanartHandler
               var SeriesName = Utils.GetArtist(mytv[DBSeries.cParsedName], category);
               string seriesId = mytv[DBSeries.cID];
               // logger.Debug("*** "+seriesId + " - " + SeriesName + " - " + mytv[DBSeries.cParsedName] + " - " + mytv);
+              // *** 72860 - Tom And Jerry - Tom And Jerry - Том и Джерри
               if (!hashtable.Contains(seriesId))
               {
                 // hashtable.Add(seriesId, SeriesName);
@@ -113,9 +116,97 @@ namespace FanartHandler
       }
       catch (Exception ex)
       {
-        logger.Error("GetTVSeriesName: " + ex);
+        logger.Error("GetTVSeriesNames: " + ex);
       }
       return hashtable;
+    }
+
+    internal static Hashtable GetTVSeries(Utils.Category category)
+    {
+      var hashtable = new Hashtable();
+
+      if (!Utils.TVSeriesEnabled)
+      {
+        return hashtable;
+      }
+
+      try
+      {
+        var allSeries = DBOnlineSeries.getAllSeries();
+        if (allSeries != null)
+        {
+          foreach (var series in allSeries)
+          {
+            DBSeries mytv = Helper.getCorrespondingSeries(series[DBOnlineSeries.cID]);
+            if (mytv != null)
+            {
+              string seriesId = mytv[DBSeries.cID];
+              if (!hashtable.Contains(seriesId))
+              {
+                FanartTVSeries tvS = new FanartTVSeries();
+                tvS.Id = seriesId; // 72860
+                tvS.Name = mytv[DBSeries.cParsedName]; // Tom And Jerry
+                tvS.LocalName = mytv.ToString(); // Том и Джерри
+
+                List<DBSeason> allSeasons = DBSeason.Get(Int32.Parse(seriesId));
+                foreach (DBSeason season in allSeasons)
+                {
+                  tvS.Seasons = tvS.Seasons + (!string.IsNullOrEmpty(tvS.Seasons) ? "|" : "") + season[DBSeason.cIndex];  // 1|2|3|4
+                }
+
+                hashtable.Add(seriesId, tvS);
+              }
+            }
+          }
+        }
+        if (allSeries != null)
+          allSeries.Clear();
+      }
+      catch (Exception ex)
+      {
+        logger.Error("GetTVSeriesNames: " + ex);
+      }
+      return hashtable;
+    }
+
+    internal static string GetTVSeriesID(string tvSeriesName)  // -> TV Series ID ...
+    {
+      if (!Utils.TVSeriesEnabled)
+      {
+        return string.Empty;
+      }
+
+      string result = string.Empty;
+      try
+      {
+        var searchName = Utils.GetArtist(tvSeriesName, Utils.Category.TvManual);
+        var allSeries = DBOnlineSeries.getAllSeries();
+        if (allSeries != null)
+        {
+          foreach (var series in allSeries)
+          {
+            DBSeries mytv = Helper.getCorrespondingSeries(series[DBOnlineSeries.cID]);
+            if (mytv != null)
+            {
+              string seriesName = Utils.GetArtist(mytv[DBSeries.cParsedName], Utils.Category.TvManual); // Tom And Jerry
+              string seriesLocalName = mytv.ToString(); // Том и Джерри
+              if (seriesName.Equals(searchName, StringComparison.InvariantCultureIgnoreCase) ||
+                  seriesLocalName.Equals(searchName, StringComparison.InvariantCultureIgnoreCase))
+              {
+                result = mytv[DBSeries.cID]; // 72860
+                break;
+              }
+            }
+          }
+        }
+        if (allSeries != null)
+          allSeries.Clear();
+      }
+      catch (Exception ex)
+      {
+        logger.Error("GetTVSeriesID: " + ex);
+      }
+      return result;
     }
 
     internal static string GetTVSeriesAttributes(GUIListItem currentitem, ref string sGenre, ref string sStudio) // -> TV Series name ...

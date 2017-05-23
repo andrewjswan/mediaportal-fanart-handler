@@ -336,11 +336,11 @@ namespace FanartHandler
                           () => { if (needLatestsUpdate) { RefreshRandomLatestsTVSeriesImageProperties(rw); } },
                           () => { if (needLatestsUpdate) { RefreshRandomLatestsMyFilmsImageProperties(rw); } });
           stopwatch.Stop();
-          logger.Debug("Refreshing {2}{3}{4} properties is done. FanartAvailable: {1} Time elapsed: {0}.", stopwatch.Elapsed, 
-                                                                                                           Utils.Check(FanartAvailable),
-                                                                                                           ((needRandomUpdate) ? "Random" : ""),
-                                                                                                           ((needRandomUpdate && needLatestsUpdate) ? "/" : ""),
-                                                                                                           ((needLatestsUpdate) ? "Latests" : ""));
+          // logger.Debug("Refreshing {2}{3}{4} properties is done. FanartAvailable: {1} Time elapsed: {0}.", stopwatch.Elapsed, 
+          //                                                                                                  Utils.Check(FanartAvailable),
+          //                                                                                                  ((needRandomUpdate) ? "Random" : ""),
+          //                                                                                                  ((needRandomUpdate && needLatestsUpdate) ? "/" : ""),
+          //                                                                                                  ((needLatestsUpdate) ? "Latests" : ""));
           if (needRandomUpdate)
           {
             ResetRefreshTickCount();

@@ -17,6 +17,7 @@ using FHNLog.NLog;
 using System;
 using System.Collections;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace FanartHandler
@@ -81,6 +82,7 @@ namespace FanartHandler
     }
     #endregion
 
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static DateTime GetLatestsMediaHandlerUpdate(Utils.Latests category)
     {
       if (!Utils.TVSeriesEnabled && (category == Utils.Latests.TVSeries))
@@ -116,6 +118,7 @@ namespace FanartHandler
       return new DateTime();
     }
 
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static Hashtable GetLatests(Utils.Latests category)
     {
       if (!Utils.LatestMediaHandlerEnabled)

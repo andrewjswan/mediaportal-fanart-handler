@@ -220,6 +220,7 @@ namespace FanartHandler
        
     // Scrape
     public static string ScrapeInitial = "Initial Scrape";
+    public static string ScrapeInitialFanart = "Scrape (Fanart.TV)";
     public static string ScrapeNowPlaying = "Now Playing Scrape";
     public static string ScrapeInitializing = "Initializing";
 
@@ -237,6 +238,7 @@ namespace FanartHandler
     public static string FHArtists = "Artists";
     public static string FHAlbums = "Albums";
     public static string FHVideos = "Videos";
+    public static string FHSeries = "Series";
 
     public static string FHSlideshow = "Fanart Handler Slideshow";
 

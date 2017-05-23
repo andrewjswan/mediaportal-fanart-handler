@@ -29,6 +29,8 @@ using System.Xml;
 
 using Monitor.Core.Utilities;
 
+using JayMuntzCom;
+
 namespace FanartHandler
 {
   internal static class Utils
@@ -42,6 +44,8 @@ namespace FanartHandler
     private const string ConfigStudiosFilename = "FanartHandler.Studios.xml";
     private const string ConfigAwardsFilename = "FanartHandler.Awards.xml";
     private const string ConfigWeathersFilename = "FanartHandler.Weather.xml";
+    private const string ConfigHolidaysFilename = "FanartHandler.Holidays.xml";
+    private const string ConfigHolidaysCustomFilename = "FanartHandler.Holidays.Custom.xml";
     private const string FanartHandlerPrefix = "#fanarthandler.";
 
     private static bool isStopping;
@@ -62,6 +66,8 @@ namespace FanartHandler
     private static Hashtable slideshowImages;
 
     private static int activeWindow = (int)GUIWindow.Window.WINDOW_INVALID;
+
+    private static readonly object Locker = new object();
 
     public static bool AddAwardsToGenre = false;
 
@@ -100,6 +106,7 @@ namespace FanartHandler
     public static bool ScraperMPDatabase { get; set; } 
     public static string ScraperInterval { get; set; } 
     public static bool UseAspectRatio { get; set; } 
+    public static bool ScrapeFanart { get; set; } 
     public static bool ScrapeThumbnails { get; set; } 
     public static bool ScrapeThumbnailsAlbum { get; set; } 
     public static bool DoNotReplaceExistingThumbs { get; set; } 
@@ -127,6 +134,8 @@ namespace FanartHandler
     public static bool FastScanMyPicturesSlideShow { get; set; }
     public static int LimitNumberFanart { get; set; }
     public static bool AddOtherPicturesToCache { get; set; }
+    public static int HolidayShow { get; set; }
+    public static bool HolidayShowAllDay { get; set; }
     #endregion
 
     #region Providers
@@ -141,11 +150,20 @@ namespace FanartHandler
     public static bool MusicClearArtDownload { get; set; }
     public static bool MusicBannerDownload { get; set; }
     public static bool MusicCDArtDownload { get; set; }
+
     public static bool MoviesClearArtDownload { get; set; }
     public static bool MoviesBannerDownload { get; set; }
     public static bool MoviesClearLogoDownload { get; set; }
     public static bool MoviesCDArtDownload { get; set; }
     public static bool MoviesFanartNameAsMediaportal { get; set; }  // movieid{0..9} instead movieid{FanartTVImageID}
+
+    public static bool SeriesBannerDownload { get; set; }
+    public static bool SeriesClearArtDownload { get; set; }
+    public static bool SeriesClearLogoDownload { get; set; }
+    public static bool SeriesCDArtDownload { get; set; }
+    public static bool SeriesSeasonBannerDownload { get; set; }
+    public static bool SeriesSeasonCDArtDownload { get; set; }
+
     public static string FanartTVLanguage { get; set; }
     public static string FanartTVLanguageDef { get; set; }
     public static bool FanartTVLanguageToAny { get; set; }
@@ -184,6 +202,7 @@ namespace FanartHandler
     public static string FAHMVCAlbums { get; set; }
 
     public static string FAHUDWeather { get; set; }
+    public static string FAHUDHoliday { get; set; }
     #endregion
 
     #region Fanart.TV folders
@@ -195,14 +214,21 @@ namespace FanartHandler
     public static string MoviesBannerFolder { get; set; }
     public static string MoviesClearLogoFolder { get; set; }
     public static string MoviesCDArtFolder { get; set; }
+    public static string SeriesBannerFolder { get; set; }
+    public static string SeriesClearArtFolder { get; set; }
+    public static string SeriesClearLogoFolder { get; set; }
+    public static string SeriesCDArtFolder { get; set; }
+    public static string SeriesSeasonBannerFolder { get; set; }
+    public static string SeriesSeasonCDArtFolder { get; set; }
     #endregion
 
-    #region Genres, Awards and Studios folders
+    #region Genres, Awards, Studios and Holiday folders
     public static string FAHGenres { get; set; }
     public static string FAHGenresMusic { get; set; }
     public static string FAHCharacters { get; set; }
     public static string FAHStudios { get; set; }
     public static string FAHAwards { get; set; }
+    public static string FAHHolidayIcon { get; set; }
     #endregion
 
     #region Junction
@@ -281,6 +307,50 @@ namespace FanartHandler
       set { dbm.StopScraper = value; }
     }
 
+    #region FanartTV Need ...
+
+    public static bool FanartTVNeedDownload
+    {
+      get 
+      {
+        return (FanartTVNeedDownloadArtist || FanartTVNeedDownloadAlbum || FanartTVNeedDownloadMovies || FanartTVNeedDownloadSeries);
+      }
+    }
+
+    public static bool FanartTVNeedDownloadArtist
+    {
+      get 
+      {
+        return (MusicClearArtDownload || MusicBannerDownload);
+      }
+    }
+
+    public static bool FanartTVNeedDownloadAlbum
+    {
+      get 
+      {
+        return (MusicCDArtDownload);
+      }
+    }
+
+    public static bool FanartTVNeedDownloadMovies
+    {
+      get 
+      {
+        return (MoviesClearArtDownload || MoviesBannerDownload || MoviesClearLogoDownload || MoviesCDArtDownload);
+      }
+    }
+
+    public static bool FanartTVNeedDownloadSeries
+    {
+      get 
+      {
+        return (SeriesBannerDownload || SeriesClearArtDownload || SeriesClearLogoDownload || SeriesCDArtDownload || SeriesSeasonBannerDownload || SeriesSeasonCDArtDownload);
+      }
+    }
+
+    #endregion
+
     static Utils()
     {
     }
@@ -298,7 +368,13 @@ namespace FanartHandler
       MoviesClearArtFolder = string.Empty;
       MoviesBannerFolder = string.Empty;
       MoviesCDArtFolder = string.Empty;
-      MoviesClearLogoFolder= string.Empty;
+      MoviesClearLogoFolder = string.Empty;
+      SeriesBannerFolder = string.Empty;
+      SeriesClearArtFolder = string.Empty;
+      SeriesClearLogoFolder = string.Empty;
+      SeriesCDArtFolder = string.Empty;
+      SeriesSeasonBannerFolder = string.Empty;
+      SeriesSeasonCDArtFolder = string.Empty;
 
       FAHFolder = string.Empty;
       FAHUDFolder = string.Empty;
@@ -339,7 +415,8 @@ namespace FanartHandler
       MPThumbsFolder = Config.GetFolder((Config.Dir) 6);
       logger.Debug("Mediaportal Thumb folder: "+MPThumbsFolder);
 
-      #region Fill.MusicFanartFolders
+      #region Fill.FanartFolders
+      // Music
       MusicClearArtFolder = Path.Combine(MPThumbsFolder, @"ClearArt\Music\"); // MePotools
       if (!Directory.Exists(MusicClearArtFolder) || IsDirectoryEmpty(MusicClearArtFolder))
       {
@@ -376,6 +453,7 @@ namespace FanartHandler
       }
       logger.Debug("Fanart Handler Music CD folder: "+MusicCDArtFolder+" | Mask: "+MusicMask);
 
+      // Movies
       MoviesClearArtFolder = Path.Combine(MPThumbsFolder, @"ClearArt\Movies\"); // MePotools
       if (!Directory.Exists(MoviesClearArtFolder) || IsDirectoryEmpty(MoviesClearArtFolder))
       {
@@ -411,6 +489,67 @@ namespace FanartHandler
           MoviesClearLogoFolder = string.Empty;
       }
       logger.Debug("Fanart Handler Movies ClearLogo folder: "+MoviesClearLogoFolder);
+
+      // Series
+      SeriesBannerFolder = Path.Combine(MPThumbsFolder, @"Banner\Series\"); // MePotools
+      if (!Directory.Exists(SeriesBannerFolder) || IsDirectoryEmpty(SeriesBannerFolder))
+      {
+        SeriesBannerFolder = Path.Combine(MPThumbsFolder, @"TVSeries\Banner\FullSize\"); // DVDArt
+        if (!Directory.Exists(SeriesBannerFolder) || IsDirectoryEmpty(SeriesBannerFolder))
+          SeriesBannerFolder = string.Empty;
+      }
+      logger.Debug("Fanart Handler Series Banner folder: "+SeriesBannerFolder);
+
+      SeriesClearArtFolder = Path.Combine(MPThumbsFolder, @"ClearArt\Series\"); // MePotools
+      if (!Directory.Exists(SeriesClearArtFolder) || IsDirectoryEmpty(SeriesClearArtFolder))
+      {
+        SeriesClearArtFolder = Path.Combine(MPThumbsFolder, @"TVSeries\ClearArt\FullSize\"); // DVDArt
+        if (!Directory.Exists(SeriesClearArtFolder) || IsDirectoryEmpty(SeriesClearArtFolder))
+          SeriesClearArtFolder = string.Empty;
+      }
+      logger.Debug("Fanart Handler Series ClearArt folder: "+SeriesClearArtFolder);
+
+      SeriesClearLogoFolder = Path.Combine(MPThumbsFolder, @"ClearLogo\Series\"); // MePotools
+      if (!Directory.Exists(SeriesClearLogoFolder) || IsDirectoryEmpty(SeriesClearLogoFolder))
+      {
+        SeriesClearLogoFolder = Path.Combine(MPThumbsFolder, @"TVSeries\ClearLogo\FullSize\"); // DVDArt
+        if (!Directory.Exists(SeriesClearLogoFolder) || IsDirectoryEmpty(SeriesClearLogoFolder))
+          SeriesClearLogoFolder = string.Empty;
+      }
+      logger.Debug("Fanart Handler Series ClearLogo folder: "+SeriesClearLogoFolder);
+
+      SeriesCDArtFolder = Path.Combine(MPThumbsFolder, @"CDArt\Series\"); // MePotools
+      if (!Directory.Exists(SeriesCDArtFolder) || IsDirectoryEmpty(SeriesCDArtFolder))
+      {
+        SeriesCDArtFolder = Path.Combine(MPThumbsFolder, @"TVSeries\DVDArt\FullSize\"); // DVDArt
+        if (!Directory.Exists(SeriesCDArtFolder) || IsDirectoryEmpty(SeriesCDArtFolder))
+          SeriesCDArtFolder = string.Empty;
+      }
+      logger.Debug("Fanart Handler Series CD folder: "+SeriesCDArtFolder);
+
+      // Seasons
+      SeriesSeasonBannerFolder = Path.Combine(MPThumbsFolder, @"Banner\Seasons\"); // MePotools
+      if (!Directory.Exists(SeriesSeasonBannerFolder) || IsDirectoryEmpty(SeriesSeasonBannerFolder))
+      {
+        /*
+        SeriesSeasonBannerFolder = Path.Combine(MPThumbsFolder, @"TVSeries\DVDArt\FullSize\"); // DVDArt
+        if (!Directory.Exists(SeriesSeasonBannerFolder) || IsDirectoryEmpty(SeriesSeasonBannerFolder))
+        */
+          SeriesSeasonBannerFolder = string.Empty;
+      }
+      logger.Debug("Fanart Handler Series.Seasons Banner folder: "+SeriesSeasonBannerFolder);
+
+      SeriesSeasonCDArtFolder = Path.Combine(MPThumbsFolder, @"CDArt\Seasons\"); // MePotools
+      if (!Directory.Exists(SeriesSeasonCDArtFolder) || IsDirectoryEmpty(SeriesSeasonCDArtFolder))
+      {
+        /*
+        SeriesSeasonCDArtFolder = Path.Combine(MPThumbsFolder, @"TVSeries\DVDArt\FullSize\"); // DVDArt
+        if (!Directory.Exists(SeriesSeasonCDArtFolder) || IsDirectoryEmpty(SeriesSeasonCDArtFolder))
+        */
+          SeriesSeasonCDArtFolder = string.Empty;
+      }
+      logger.Debug("Fanart Handler Series.Seasons CD folder: "+SeriesSeasonCDArtFolder);
+
       #endregion
 
       #region Fill.FanartHandler 
@@ -441,6 +580,9 @@ namespace FanartHandler
       FAHUDWeather = Path.Combine(FAHFolder, @"Media\Weather\Backdrops\");
       logger.Debug("Fanart Handler Weather folder: "+FAHUDWeather);
 
+      FAHUDHoliday = Path.Combine(FAHUDFolder, @"Holidays\");
+      logger.Debug("Fanart Handler Holidays folder: "+FAHUDHoliday);
+
       FAHSFolder = Path.Combine(FAHFolder, @"Scraper\"); 
       logger.Debug("Fanart Handler Scraper folder: "+FAHSFolder);
       FAHSMovies = Path.Combine(FAHSFolder, @"movies\"); 
@@ -466,7 +608,7 @@ namespace FanartHandler
       logger.Debug("mvCentral Albums folder: "+FAHTVSeries);
       #endregion
 
-      #region Genres and Studios folders
+      #region Genres and Studios, Awards, Holiday (Icon) folders
       FAHGenres = @"\Media\Logos\Genres\";
       logger.Debug("Fanart Handler Genres folder: Theme|Skin|Thumb "+FAHGenres);
       FAHGenresMusic = FAHGenres + @"Music\";
@@ -477,6 +619,8 @@ namespace FanartHandler
       logger.Debug("Fanart Handler Studios folder: Theme|Skin|Thumb "+FAHStudios);
       FAHAwards = @"\Media\Logos\Awards\";
       logger.Debug("Fanart Handler Awards folder: Theme|Skin|Thumb "+FAHAwards);
+      FAHHolidayIcon = @"\Media\Logos\Holidays\";
+      logger.Debug(@"Fanart Handler Holidays (Icon) folder: Theme|Skin|Thumb: "+FAHHolidayIcon);
       #endregion
 
       WatchFullThumbFolder = true;
@@ -534,7 +678,7 @@ namespace FanartHandler
             JunctionSource = FAHWatchFolder;
             JunctionTarget = JunctionPoint.GetTarget(JunctionSource).Trim().Replace(@"UNC\", @"\\");
             FAHWatchFolder = JunctionTarget;
-            logger.Debug("Junction detected: "+Utils.JunctionSource+" -> "+Utils.JunctionTarget);
+            logger.Debug("Junction detected: "+JunctionSource+" -> "+JunctionTarget);
             IsJunction = iIsJunction;
           }
         }
@@ -544,6 +688,107 @@ namespace FanartHandler
       #endregion
 
       logger.Info("Fanart Handler folder initialize done.");
+    }
+    #endregion
+
+    #region Check for Default FanartFolders
+    public static void CheckForDefaultFanartFolders()
+    {
+      // Music
+      if (string.IsNullOrEmpty(MusicClearArtFolder) && MusicClearArtDownload)
+      {
+        MusicClearArtFolder = Path.Combine(MPThumbsFolder, @"ClearArt\Music\");
+        CreateDirectoryIfMissing(MusicClearArtFolder);
+        logger.Debug("Default: Fanart Handler Music ClearArt folder: "+MusicClearArtFolder);
+      }
+
+      if (string.IsNullOrEmpty(MusicBannerFolder) && MusicBannerDownload)
+      {
+        MusicBannerFolder = Path.Combine(MPThumbsFolder, @"Banner\Music\");
+        CreateDirectoryIfMissing(MusicBannerFolder);
+        logger.Debug("Default: Fanart Handler Music Banner folder: "+MusicBannerFolder);
+      }
+
+      if (string.IsNullOrEmpty(MusicCDArtFolder) && MusicCDArtDownload)
+      {
+        MusicCDArtFolder = Path.Combine(MPThumbsFolder, @"CDArt\Music\");
+        MusicMask = "{0} - {1}"; // MePotools
+        CreateDirectoryIfMissing(MusicCDArtFolder);
+        logger.Debug("Default: Fanart Handler Music CD folder: "+MusicCDArtFolder+" | Mask: "+MusicMask);
+      }
+
+      // Movies
+      if (string.IsNullOrEmpty(MoviesClearArtFolder) && MoviesClearArtDownload)
+      {
+        MoviesClearArtFolder = Path.Combine(MPThumbsFolder, @"ClearArt\Movies\");
+        CreateDirectoryIfMissing(MoviesClearArtFolder);
+        logger.Debug("Default: Fanart Handler Movies ClearArt folder: "+MoviesClearArtFolder);
+      }
+
+      if (string.IsNullOrEmpty(MoviesBannerFolder) && MoviesBannerDownload)
+      {
+        MoviesBannerFolder = Path.Combine(MPThumbsFolder, @"Banner\Movies\");
+        CreateDirectoryIfMissing(MoviesBannerFolder);
+        logger.Debug("Default: Fanart Handler Movies Banner folder: "+MoviesBannerFolder);
+      }
+
+      if (string.IsNullOrEmpty(MoviesCDArtFolder) && MoviesCDArtDownload)
+      {
+        MoviesCDArtFolder = Path.Combine(MPThumbsFolder, @"CDArt\Movies\");
+        CreateDirectoryIfMissing(MoviesCDArtFolder);
+        logger.Debug("Default: Fanart Handler Movies CD folder: "+MoviesCDArtFolder);
+      }
+
+      if (string.IsNullOrEmpty(MoviesClearLogoFolder) && MoviesClearLogoDownload)
+      {
+        MoviesClearLogoFolder = Path.Combine(MPThumbsFolder, @"ClearLogo\Movies\");
+        CreateDirectoryIfMissing(MoviesClearLogoFolder);
+        logger.Debug("Default: Fanart Handler Movies ClearLogo folder: "+MoviesClearLogoFolder);
+      }
+
+      // Series
+      if (string.IsNullOrEmpty(SeriesBannerFolder) && SeriesBannerDownload)
+      {
+        SeriesBannerFolder = Path.Combine(MPThumbsFolder, @"Banner\Series\");
+        CreateDirectoryIfMissing(SeriesBannerFolder);
+        logger.Debug("Default: Fanart Handler Series Banner folder: "+SeriesBannerFolder);
+      }
+
+      if (string.IsNullOrEmpty(SeriesClearArtFolder) && SeriesClearArtDownload)
+      {
+        SeriesClearArtFolder = Path.Combine(MPThumbsFolder, @"ClearArt\Series\");
+        CreateDirectoryIfMissing(SeriesClearArtFolder);
+        logger.Debug("Default: Fanart Handler Series ClearArt folder: "+SeriesClearArtFolder);
+      }
+
+      if (string.IsNullOrEmpty(SeriesClearLogoFolder) && SeriesClearLogoDownload)
+      {
+        SeriesClearLogoFolder = Path.Combine(MPThumbsFolder, @"ClearLogo\Series\");
+        CreateDirectoryIfMissing(SeriesClearLogoFolder);
+        logger.Debug("Default: Fanart Handler Series ClearLogo folder: "+SeriesClearLogoFolder);
+      }
+
+      if (string.IsNullOrEmpty(SeriesCDArtFolder) && SeriesCDArtDownload)
+      {
+        SeriesCDArtFolder = Path.Combine(MPThumbsFolder, @"CDArt\Series\");
+        CreateDirectoryIfMissing(SeriesCDArtFolder);
+        logger.Debug("Default: Fanart Handler Series CD folder: "+SeriesCDArtFolder);
+      }
+
+      // Seasons
+      if (string.IsNullOrEmpty(SeriesSeasonBannerFolder) && SeriesSeasonBannerDownload)
+      {
+        SeriesSeasonBannerFolder = Path.Combine(MPThumbsFolder, @"Banner\Seasons\");
+        CreateDirectoryIfMissing(SeriesSeasonBannerFolder);
+        logger.Debug("Default: Fanart Handler Series.Seasons Banner folder: "+SeriesSeasonBannerFolder);
+      }
+
+      if (string.IsNullOrEmpty(SeriesSeasonCDArtFolder) && SeriesSeasonCDArtDownload)
+      {
+        SeriesSeasonCDArtFolder = Path.Combine(MPThumbsFolder, @"CDArt\Seasons\");
+        CreateDirectoryIfMissing(SeriesSeasonCDArtFolder);
+        logger.Debug("Default: Fanart Handler Series.Seasons CD folder: "+SeriesSeasonCDArtFolder);
+      }
     }
     #endregion
 
@@ -601,11 +846,11 @@ namespace FanartHandler
 
     public static void WaitForDB()
     {
-      if (!dbm.isDBInit)
+      if (!dbm.IsDBInit)
       {
         logger.Debug("Wait for DB...");
       }
-      while (!dbm.isDBInit)
+      while (!dbm.IsDBInit)
       {
         ThreadToLongSleep();
       }
@@ -1057,38 +1302,42 @@ namespace FanartHandler
 
     public static ArrayList GetMusicVideoArtists(string dbName)
     {
-      var externalDatabaseManager1 = (ExternalDatabaseManager) null;
+      var externalDatabaseManager = (ExternalDatabaseManager) null;
       var arrayList = new ArrayList();
       
       try
       {
-        externalDatabaseManager1 = new ExternalDatabaseManager();
+        externalDatabaseManager = new ExternalDatabaseManager();
         var str = string.Empty;
-        if (externalDatabaseManager1.InitDB(dbName))
+        if (externalDatabaseManager.InitDB(dbName))
         {
-          var data = externalDatabaseManager1.GetData(Category.MusicFanartScraped);
+          var data = externalDatabaseManager.GetData(Category.MusicFanartScraped);
           if (data != null && data.Rows.Count > 0)
           {
             var num = 0;
             while (num < data.Rows.Count)
             {
-              var artist = GetArtist(data.GetField(num, 0), Category.MusicFanartScraped);
-              arrayList.Add(artist);
+              // var artist = GetArtist(data.GetField(num, 0), Category.MusicFanartScraped);
+              var artist = data.GetField(num, 0);
+              if (!string.IsNullOrWhiteSpace(artist))
+              {
+                arrayList.Add(artist);
+              }
               checked { ++num; }
             }
           }
         }
         try
         {
-          externalDatabaseManager1.Close();
+          externalDatabaseManager.Close();
         }
         catch { }
         return arrayList;
       }
       catch (Exception ex)
       {
-        if (externalDatabaseManager1 != null)
-          externalDatabaseManager1.Close();
+        if (externalDatabaseManager != null)
+          externalDatabaseManager.Close();
         logger.Error("GetMusicVideoArtists: " + ex);
       }
       return null;
@@ -1096,25 +1345,29 @@ namespace FanartHandler
 
     public static List<AlbumInfo> GetMusicVideoAlbums(string dbName)
     {
-      var externalDatabaseManager1 = (ExternalDatabaseManager) null;
+      var externalDatabaseManager = (ExternalDatabaseManager) null;
       var arrayList = new List<AlbumInfo>();
       try
       {
-        externalDatabaseManager1 = new ExternalDatabaseManager();
+        externalDatabaseManager = new ExternalDatabaseManager();
         var str = string.Empty;
-        if (externalDatabaseManager1.InitDB(dbName))
+        if (externalDatabaseManager.InitDB(dbName))
         {
-          var data = externalDatabaseManager1.GetData(Category.MusicAlbumThumbScraped);
+          var data = externalDatabaseManager.GetData(Category.MusicAlbumThumbScraped);
           if (data != null && data.Rows.Count > 0)
           {
             var num = 0;
             while (num < data.Rows.Count)
             {
               var album = new AlbumInfo();
+              /*
               album.Artist      = GetArtist(data.GetField(num, 0), Category.MusicAlbumThumbScraped);
               album.AlbumArtist = album.Artist;
               album.Album       = GetAlbum(data.GetField(num, 1), Category.MusicAlbumThumbScraped);
-
+              */
+              album.Artist      = data.GetField(num, 0);
+              album.AlbumArtist = album.Artist;
+              album.Album       = data.GetField(num, 1);
               arrayList.Add(album);
               checked { ++num; }
             }
@@ -1122,15 +1375,15 @@ namespace FanartHandler
         }
         try
         {
-          externalDatabaseManager1.Close();
+          externalDatabaseManager.Close();
         }
         catch { }
         return arrayList;
       }
       catch (Exception ex)
       {
-        if (externalDatabaseManager1 != null)
-          externalDatabaseManager1.Close();
+        if (externalDatabaseManager != null)
+          externalDatabaseManager.Close();
         logger.Error("GetMusicVideoAlbums: " + ex);
       }
       return null;
@@ -1370,7 +1623,10 @@ namespace FanartHandler
 
       try
       {
-        al.Add(value);
+        lock (Locker)
+        {
+          al.Add(value);
+        }
       }
       catch (Exception ex)
       {
@@ -1403,13 +1659,16 @@ namespace FanartHandler
       {
         if (al == null || al.Count <= 0)
           return;
-
-        foreach (var obj in al)
+        
+        lock (Locker)
         {
-          if (obj != null)
-            UNLoadImage(obj.ToString());
+          foreach (var obj in al)
+          {
+            if (obj != null)
+              UNLoadImage(obj.ToString());
+          }
+          al.Clear();
         }
-        al.Clear();
       }
       catch (Exception ex)
       {
@@ -1631,12 +1890,12 @@ namespace FanartHandler
                 )
         {
           var movieID = Utils.GetProperty("#movieid");
-          var movieFile = Utils.GetProperty("#file");
           var movieTitle = Utils.GetProperty("#title");
           var movieSelected = Utils.GetProperty("#selecteditem");
           var selectedTitle = (string.IsNullOrEmpty(movieTitle) ? movieSelected : movieTitle); // (iActiveWindow != 2003 ? Utils.GetProperty("#selecteditem") : Utils.GetProperty("#title"));
-          if (movieID == null || movieID == string.Empty || movieID == "-1" || movieID == "0")
+          if (string.IsNullOrEmpty(movieID) || movieID == "-1" || movieID == "0")
           {
+            var movieFile = Utils.GetProperty("#file");
             if (!string.IsNullOrEmpty(movieFile))
             {
               movieID = dbm.GetMovieId(movieFile).ToString();
@@ -1644,6 +1903,7 @@ namespace FanartHandler
             }
           }
           SelectedItem = (movieID == null || movieID == string.Empty || movieID == "-1" || movieID == "0") ? selectedTitle : movieID;
+          // logger.Debug("*** " + movieID + " - " + movieSelected + " - " + movieTitle + " -> " + SelectedItem);
           SelectedGenre = Utils.GetProperty("#genre");
           SelectedStudios = Utils.GetProperty("#studios");
           // logger.Debug("*** "+movieID+" - "+Utils.GetProperty("#selecteditem")+" - "+Utils.GetProperty("#title")+" - "+Utils.GetProperty("#myvideosuserfanart")+" -> "+SelectedItem+" - "+SelectedGenre);
@@ -2190,6 +2450,197 @@ namespace FanartHandler
       return result;
     }
 
+    public static string GetFanartTVPath(Utils.FanartTV category)
+    {
+      if (category == Utils.FanartTV.None)
+      {
+        return string.Empty;
+      }
+
+      string path = string.Empty;
+      switch (category)
+      {
+        // Music
+        case Utils.FanartTV.MusicClearArt:
+          path = Utils.MusicClearArtFolder;
+          break;
+        case Utils.FanartTV.MusicBanner:
+          path = Utils.MusicBannerFolder;
+          break;
+        // Music album
+        case Utils.FanartTV.MusicCDArt:
+          path = Utils.MusicCDArtFolder;
+          break;
+        // Movie
+        case Utils.FanartTV.MoviesClearArt:
+          path = Utils.MoviesClearArtFolder;
+          break;
+        case Utils.FanartTV.MoviesBanner:
+          path = Utils.MoviesBannerFolder;
+          break;
+        case Utils.FanartTV.MoviesClearLogo:
+          path = Utils.MoviesClearLogoFolder;
+          break;
+        case Utils.FanartTV.MoviesCDArt:
+          path = Utils.MoviesCDArtFolder;
+          break;
+        // Series
+        case Utils.FanartTV.SeriesBanner:
+          path = Utils.SeriesBannerFolder;
+          break;
+        case Utils.FanartTV.SeriesClearArt:
+          path = Utils.SeriesClearArtFolder;
+          break;
+        case Utils.FanartTV.SeriesClearLogo:
+          path = Utils.SeriesClearLogoFolder;
+          break;
+        case Utils.FanartTV.SeriesCDArt:
+          path = Utils.SeriesCDArtFolder;
+          break;
+        // Season
+        case Utils.FanartTV.SeriesSeasonBanner:
+          path = Utils.SeriesSeasonBannerFolder;
+          break;
+        case Utils.FanartTV.SeriesSeasonCDArt:
+          path = Utils.SeriesSeasonCDArtFolder;
+          break;
+      }
+      return path;
+    }
+
+    public static string GetFanartTVFileName(string key1, string key2, string key3, Utils.FanartTV category)
+    {
+      if (category == Utils.FanartTV.None)
+      {
+        return string.Empty;
+      }
+      if (string.IsNullOrEmpty(key1) && string.IsNullOrEmpty(key3))
+      {
+        return string.Empty;
+      }
+
+      string path = GetFanartTVPath(category);
+      if (string.IsNullOrEmpty(path))
+      {
+        return string.Empty;
+      }
+      if (category == Utils.FanartTV.MusicCDArt && string.IsNullOrEmpty(key2))
+      {
+        return string.Empty;
+      }
+
+      var filename = string.Empty;
+      if (category == Utils.FanartTV.MusicCDArt)
+      {
+        if (string.IsNullOrWhiteSpace(key3))
+        {
+          filename = Path.Combine(path, string.Format(Utils.MusicMask, MediaPortal.Util.Utils.MakeFileName(key1).Trim(), MediaPortal.Util.Utils.MakeFileName(key2).Trim()) + ".png");
+        }
+        else
+        {
+          filename = Path.Combine(path, string.Format(Utils.MusicMask, MediaPortal.Util.Utils.MakeFileName(key1).Trim(), MediaPortal.Util.Utils.MakeFileName(key2).Trim()) + ".CD" + key3 + ".png");
+        }
+      }
+      else if ((category == Utils.FanartTV.SeriesSeasonBanner) || (category == Utils.FanartTV.SeriesSeasonCDArt))
+      {
+        filename = Path.Combine(path, MediaPortal.Util.Utils.MakeFileName(key3+"_s"+key1).Trim() + ".png");
+      }
+      else
+      {
+        filename = Path.Combine(path, MediaPortal.Util.Utils.MakeFileName((string.IsNullOrEmpty(key3) ? key1 : key3)) + ".png");
+      }
+
+      return filename;
+    }
+
+    public static bool FanartTVFileExists(string key1, string key2, string key3, Utils.FanartTV category)
+    {
+      var filename = GetFanartTVFileName(key1, key2, key3, category);
+
+      if (string.IsNullOrEmpty(filename))
+      {
+        return false;
+      }
+
+      return (File.Exists(filename));
+    }
+
+    public static bool FanartTVNeedFileDownload(string key1, string key2, string key3, Utils.FanartTV category)
+    {
+      if (category == Utils.FanartTV.None)
+      {
+        return false;
+      }
+      if (string.IsNullOrEmpty(key1) && string.IsNullOrEmpty(key3))
+      {
+        return false;
+      }
+
+      bool need = false;
+      switch (category)
+      {
+        // Music
+        case Utils.FanartTV.MusicClearArt:
+          need = Utils.MusicClearArtDownload;
+          break;
+        case Utils.FanartTV.MusicBanner:
+          need = Utils.MusicBannerDownload;
+          break;
+        // Music album
+        case Utils.FanartTV.MusicCDArt:
+          if (!string.IsNullOrEmpty(key2))
+          {
+            need = Utils.MusicCDArtDownload;
+          }
+          break;
+        // Movie
+        case Utils.FanartTV.MoviesClearArt:
+          need = Utils.MoviesClearArtDownload;
+          break;
+        case Utils.FanartTV.MoviesBanner:
+          need = Utils.MoviesBannerDownload;
+          break;
+        case Utils.FanartTV.MoviesClearLogo:
+          need = Utils.MoviesClearLogoDownload;
+          break;
+        case Utils.FanartTV.MoviesCDArt:
+          need = Utils.MoviesCDArtDownload;
+          break;
+        // Series
+        case Utils.FanartTV.SeriesBanner:
+          need = Utils.SeriesBannerDownload;
+          break;
+        case Utils.FanartTV.SeriesClearArt:
+          need = Utils.SeriesClearArtDownload;
+          break;
+        case Utils.FanartTV.SeriesClearLogo:
+          need = Utils.SeriesClearLogoDownload;
+          break;
+        case Utils.FanartTV.SeriesCDArt:
+          need = Utils.SeriesCDArtDownload;
+          break;
+        // Season
+        case Utils.FanartTV.SeriesSeasonBanner:
+          need = Utils.SeriesSeasonBannerDownload;
+          break;
+        case Utils.FanartTV.SeriesSeasonCDArt:
+          need = Utils.SeriesSeasonCDArtDownload;
+          break;
+      }
+      if (need)
+      {
+        var filename = GetFanartTVFileName(key1, key2, key3, category);
+
+        if (string.IsNullOrEmpty(filename))
+        {
+          return false;
+        }
+
+        return (!File.Exists(filename));
+      }
+      return false;
+    }
+
     /// <summary>
     /// Scan Folder for files by Mask and Import it to Database
     /// </summary>
@@ -2236,6 +2687,10 @@ namespace FanartHandler
                   {
                     artist = GetArtist(GetWeatherFromFileName(FileName), category);
                   }
+                }
+                if (category == Category.Holiday)
+                {
+                  artist = GetArtist(GetHolidayFromFileName(FileName), category);
                 }
                 else if (provider != Provider.MusicFolder)
                 {
@@ -2768,6 +3223,11 @@ namespace FanartHandler
           {
             _picType = "Award";
             _picFolders = FAHAwards;
+          }
+          else if (PicturesType == Utils.OtherPictures.Holiday)
+          {
+            _picType = "Holiday";
+            _picFolders = FAHHolidayIcon;
           }
           else // Possible multi-value ... like Disney|Sony ...
           {
@@ -3503,30 +3963,34 @@ namespace FanartHandler
 
     public static void CreateDirectoryIfMissing(string directory)
     {
-      if (!Directory.Exists(directory))
-        Directory.CreateDirectory(directory);
+      try
+      {
+        if (!Directory.Exists(directory))
+        {
+          Directory.CreateDirectory(directory);
+        }
+      }
+      catch (Exception ex)
+      {
+        logger.Error("CreateDirectoryIfMissing {0} - {1}", directory, ex);
+      }
     }
 
     public static void SetupDirectories()
     {
-      try
-      {
-        CreateDirectoryIfMissing(FAHUDGames);
-        CreateDirectoryIfMissing(FAHUDMovies);
-        CreateDirectoryIfMissing(FAHUDMusic);
-        CreateDirectoryIfMissing(FAHUDMusicAlbum);
-        // CreateDirectoryIfMissing(FAHUDMusicGenre);
-        CreateDirectoryIfMissing(FAHUDPictures);
-        CreateDirectoryIfMissing(FAHUDScorecenter);
-        CreateDirectoryIfMissing(FAHUDTV);
-        CreateDirectoryIfMissing(FAHUDPlugins);
-        CreateDirectoryIfMissing(FAHSMovies);
-        CreateDirectoryIfMissing(FAHSMusic);
-      }
-      catch (Exception ex)
-      {
-        logger.Error("SetupDirectories: " + ex);
-      }
+      CreateDirectoryIfMissing(FAHUDGames);
+      CreateDirectoryIfMissing(FAHUDMovies);
+      CreateDirectoryIfMissing(FAHUDMusic);
+      CreateDirectoryIfMissing(FAHUDMusicAlbum);
+      // CreateDirectoryIfMissing(FAHUDMusicGenre);
+      CreateDirectoryIfMissing(FAHUDPictures);
+      CreateDirectoryIfMissing(FAHUDScorecenter);
+      CreateDirectoryIfMissing(FAHUDTV);
+      CreateDirectoryIfMissing(FAHUDPlugins);
+      CreateDirectoryIfMissing(FAHSMovies);
+      CreateDirectoryIfMissing(FAHSMusic);
+
+      CheckForDefaultFanartFolders();
     }
 
     public static void LoadSettings()
@@ -3544,6 +4008,7 @@ namespace FanartHandler
       ScraperMPDatabase = true;
       ScraperInterval = "12";
       UseAspectRatio = true;
+      ScrapeFanart = true;
       ScrapeThumbnails = true;
       ScrapeThumbnailsAlbum = true;
       DoNotReplaceExistingThumbs = true;
@@ -3571,6 +4036,8 @@ namespace FanartHandler
       FastScanMyPicturesSlideShow = false;
       LimitNumberFanart = 10;
       AddOtherPicturesToCache = true;
+      HolidayShow = 5;
+      HolidayShowAllDay = false;
       #endregion
       #region Init Providers
       UseFanartTV = true;
@@ -3580,14 +4047,20 @@ namespace FanartHandler
       UseTheAudioDB = true;
       #endregion
       #region Fanart.TV
-      MusicClearArtDownload = true;
-      MusicBannerDownload = true;
-      MusicCDArtDownload = true;
-      MoviesClearArtDownload = true;
-      MoviesBannerDownload = true;
-      MoviesCDArtDownload = true;
-      MoviesClearLogoDownload = true;
+      MusicClearArtDownload = false;
+      MusicBannerDownload = false;
+      MusicCDArtDownload = false;
+      MoviesClearArtDownload = false;
+      MoviesBannerDownload = false;
+      MoviesCDArtDownload = false;
+      MoviesClearLogoDownload = false;
       MoviesFanartNameAsMediaportal = false;
+      SeriesBannerDownload = false;
+      SeriesClearArtDownload = false;
+      SeriesClearLogoDownload = false;
+      SeriesCDArtDownload = false;
+      SeriesSeasonCDArtDownload = false;
+      SeriesSeasonBannerDownload = false;
       FanartTVLanguage = string.Empty;
       FanartTVLanguageDef = "en";
       FanartTVLanguageToAny = false;
@@ -3624,6 +4097,7 @@ namespace FanartHandler
           ScraperMPDatabase = settings.GetValueAsBool("FanartHandler", "ScraperMPDatabase", ScraperMPDatabase);
           ScraperInterval = settings.GetValueAsString("FanartHandler", "ScraperInterval", ScraperInterval);
           UseAspectRatio = settings.GetValueAsBool("FanartHandler", "UseAspectRatio", UseAspectRatio);
+          ScrapeFanart = settings.GetValueAsBool("FanartHandler", "ScrapeFanart", ScrapeFanart);
           ScrapeThumbnails = settings.GetValueAsBool("FanartHandler", "ScrapeThumbnails", ScrapeThumbnails);
           ScrapeThumbnailsAlbum = settings.GetValueAsBool("FanartHandler", "ScrapeThumbnailsAlbum", ScrapeThumbnailsAlbum);
           DoNotReplaceExistingThumbs = settings.GetValueAsBool("FanartHandler", "DoNotReplaceExistingThumbs", DoNotReplaceExistingThumbs);
@@ -3650,6 +4124,8 @@ namespace FanartHandler
           FastScanMyPicturesSlideShow = settings.GetValueAsBool("FanartHandler", "FastScanMyPicturesSlideShow", FastScanMyPicturesSlideShow);
           LimitNumberFanart = settings.GetValueAsInt("FanartHandler", "LimitNumberFanart", LimitNumberFanart);
           AddOtherPicturesToCache = settings.GetValueAsBool("FanartHandler", "AddOtherPicturesToCache", AddOtherPicturesToCache);
+          HolidayShow = settings.GetValueAsInt("FanartHandler", "HolidayShow", HolidayShow);
+          HolidayShowAllDay = settings.GetValueAsBool("FanartHandler", "HolidayShowAllDay", HolidayShowAllDay);
           //
           UseFanartTV = settings.GetValueAsBool("Providers", "UseFanartTV", UseFanartTV);
           UseHtBackdrops = settings.GetValueAsBool("Providers", "UseHtBackdrops", UseHtBackdrops);
@@ -3667,6 +4143,12 @@ namespace FanartHandler
           MoviesCDArtDownload = settings.GetValueAsBool("FanartTV", "MoviesCDArtDownload", MoviesCDArtDownload);
           MoviesClearLogoDownload = settings.GetValueAsBool("FanartTV", "MoviesClearLogoDownload", MoviesClearLogoDownload);
           MoviesFanartNameAsMediaportal = settings.GetValueAsBool("FanartTV", "MoviesFanartNameAsMediaportal", MoviesFanartNameAsMediaportal);
+          SeriesBannerDownload = settings.GetValueAsBool("FanartTV", "SeriesBannerDownload", SeriesBannerDownload);
+          SeriesClearArtDownload = settings.GetValueAsBool("FanartTV", "SeriesClearArtDownload", SeriesClearArtDownload);
+          SeriesClearLogoDownload = settings.GetValueAsBool("FanartTV", "SeriesClearLogoDownload", SeriesClearLogoDownload);
+          SeriesCDArtDownload = settings.GetValueAsBool("FanartTV", "SeriesCDArtDownload", SeriesCDArtDownload);
+          SeriesSeasonBannerDownload = settings.GetValueAsBool("FanartTV", "SeriesSeasonBannerDownload", SeriesSeasonBannerDownload);
+          SeriesSeasonCDArtDownload = settings.GetValueAsBool("FanartTV", "SeriesSeasonCDArtDownload", SeriesSeasonCDArtDownload);
           //
           FanartTVLanguage = settings.GetValueAsString("FanartTV", "FanartTVLanguage", FanartTVLanguage);
           FanartTVLanguageToAny = settings.GetValueAsBool("FanartTV", "FanartTVLanguageToAny", FanartTVLanguageToAny);
@@ -3727,13 +4209,15 @@ namespace FanartHandler
       #region Report Settings
       logger.Info("Fanart Handler is using: " + Check(UseFanart) + " Fanart, " + Check(UseArtist) + " Artist Thumbs, " + Check(UseAlbum) + " Album Thumbs, " + Check(UseGenreFanart) + " Genre Fanart, Min: " + MinResolution + ", " + Check(UseAspectRatio) + " Aspect Ratio >= 1.3");
       logger.Debug("Scan: " + Check(ScanMusicFoldersForFanart) + " Music Folders for Fanart, RegExp: " + MusicFoldersArtistAlbumRegex);
-      logger.Debug("Scraper: [x] Fanart, " + Check(ScraperMPDatabase) + " MP Databases , " + Check(ScrapeThumbnails) + " Artists Thumb , " + Check(ScrapeThumbnailsAlbum) + " Album Thumb, " + Check(UseMinimumResolutionForDownload) + " Delete if less then " + MinResolution + ", " + Check(UseHighDefThumbnails) + " High Def Thumbs, Max Count [" + ScraperMaxImages + "]");
+      logger.Debug("Scraper: " + Check(ScrapeFanart) + " Fanart, " + Check(ScraperMPDatabase) + " MP Databases , " + Check(ScrapeThumbnails) + " Artists Thumb , " + Check(ScrapeThumbnailsAlbum) + " Album Thumb, " + Check(UseMinimumResolutionForDownload) + " Delete if less then " + MinResolution + ", " + Check(UseHighDefThumbnails) + " High Def Thumbs, Max Count [" + ScraperMaxImages + "]");
       logger.Debug("Providers: " + Check(UseFanartTV) + " Fanart.TV, " + Check(UseHtBackdrops) + " HtBackdrops, " + Check(UseLastFM) + " Last.fm, " + Check(UseCoverArtArchive) + " CoverArtArchive, " + Check(UseTheAudioDB) + " TheAudioDB");
       if (UseFanartTV)
       {
         logger.Debug("Fanart.TV: Language: [" + (string.IsNullOrWhiteSpace(FanartTVLanguage) ? "Any]" : FanartTVLanguage + "] If not found, try to use Any language: " + FanartTVLanguageToAny));
         logger.Debug("Fanart.TV: Music: " + Check(MusicClearArtDownload) + " ClearArt, " + Check(MusicBannerDownload) + " Banner, " + Check(MusicCDArtDownload) + " CD");
         logger.Debug("Fanart.TV: Movie: " + Check(MoviesClearArtDownload) + " ClearArt, " + Check(MoviesBannerDownload) + " Banner, " + Check(MoviesCDArtDownload) + " CD, " + Check(MoviesClearLogoDownload) + " ClearLogo");
+        logger.Debug("Fanart.TV: Series: " + Check(SeriesClearArtDownload) + " ClearArt, " + Check(SeriesBannerDownload) + " Banner, " + Check(SeriesClearLogoDownload) + " ClearLogo, " + Check(SeriesCDArtDownload) + " CD");
+        logger.Debug("Fanart.TV: Series.Season: " + Check(SeriesSeasonBannerDownload) + " Banner, " + Check(SeriesSeasonCDArtDownload) + " CD");
       }
       logger.Debug("Artists pipes: [" + string.Join("][", PipesArray) + "]");
       #endregion
@@ -3763,6 +4247,7 @@ namespace FanartHandler
           xmlwriter.SetValueAsBool("FanartHandler", "ScraperMPDatabase", ScraperMPDatabase);
           xmlwriter.SetValue("FanartHandler", "ScraperInterval", ScraperInterval);
           xmlwriter.SetValueAsBool("FanartHandler", "UseAspectRatio", UseAspectRatio);
+          xmlwriter.SetValueAsBool("FanartHandler", "ScrapeFanart", ScrapeFanart);
           xmlwriter.SetValueAsBool("FanartHandler", "ScrapeThumbnails", ScrapeThumbnails);
           xmlwriter.SetValueAsBool("FanartHandler", "ScrapeThumbnailsAlbum", ScrapeThumbnailsAlbum);
           xmlwriter.SetValueAsBool("FanartHandler", "DoNotReplaceExistingThumbs", DoNotReplaceExistingThumbs);
@@ -3778,6 +4263,9 @@ namespace FanartHandler
           xmlwriter.SetValueAsBool("FanartHandler", "ShowDummyItems", ShowDummyItems);
           xmlwriter.SetValueAsBool("FanartHandler", "UseMyPicturesSlideShow", UseMyPicturesSlideShow);
           // xmlwriter.SetValueAsBool("FanartHandler", "FastScanMyPicturesSlideShow", FastScanMyPicturesSlideShow);
+          // xmlwriter.SetValue("FanartHandler", "LimitNumberFanart", LimitNumberFanart);
+          xmlwriter.SetValue("FanartHandler", "HolidayShow", HolidayShow);
+          xmlwriter.SetValueAsBool("FanartHandler", "HolidayShowAllDay", HolidayShowAllDay);
           //
           xmlwriter.SetValueAsBool("Providers", "UseFanartTV", UseFanartTV);
           xmlwriter.SetValueAsBool("Providers", "UseHtBackdrops", UseHtBackdrops);
@@ -3795,6 +4283,12 @@ namespace FanartHandler
           xmlwriter.SetValueAsBool("FanartTV", "MoviesCDArtDownload", MoviesCDArtDownload);
           xmlwriter.SetValueAsBool("FanartTV", "MoviesClearLogoDownload", MoviesClearLogoDownload);
           // xmlwriter.SetValueAsBool("FanartTV", "MoviesFanartNameAsMediaportal", MoviesFanartNameAsMediaportal);
+          xmlwriter.SetValueAsBool("FanartTV", "SeriesBannerDownload", SeriesBannerDownload);
+          xmlwriter.SetValueAsBool("FanartTV", "SeriesClearArtDownload", SeriesClearArtDownload);
+          xmlwriter.SetValueAsBool("FanartTV", "SeriesClearLogoDownload", SeriesClearLogoDownload);
+          xmlwriter.SetValueAsBool("FanartTV", "SeriesCDArtDownload", SeriesCDArtDownload);
+          xmlwriter.SetValueAsBool("FanartTV", "SeriesSeasonCDArtDownload", SeriesSeasonCDArtDownload);
+          xmlwriter.SetValueAsBool("FanartTV", "SeriesSeasonBannerDownload", SeriesSeasonBannerDownload);
           //
           xmlwriter.SetValue("FanartTV", "FanartTVLanguage", FanartTVLanguage);
           xmlwriter.SetValueAsBool("FanartTV", "FanartTVLanguageToAny", FanartTVLanguageToAny);
@@ -4105,6 +4599,76 @@ namespace FanartHandler
     }
     #endregion
 
+    #region Holidays
+    public static string GetHolidayFromFileName(string FileName) 
+    {
+      if (string.IsNullOrWhiteSpace(FileName))
+        return string.Empty;
+
+      string holiday = Path.GetFileName(Path.GetDirectoryName(Path.GetFullPath(FileName)));
+
+      if (string.IsNullOrWhiteSpace(holiday))
+        return string.Empty;
+
+      holiday = holiday.Trim();
+
+      return holiday; 
+    }
+
+    public static string GetHolidays(DateTime date, ref string holidayText)
+    {
+      try
+      {
+        holidayText = string.Empty;
+        string currentHolidays = string.Empty;
+        string FullFileName = Config.GetFile((Config.Dir)10, ConfigHolidaysFilename);
+
+        if (File.Exists(FullFileName))
+        {
+          HolidayCalculator hc = new HolidayCalculator(date, FullFileName);
+          foreach (HolidayCalculator.Holiday h in hc.OrderedHolidays)
+          {
+            if (!string.IsNullOrEmpty(h.ShortName))
+            {
+              currentHolidays = currentHolidays + (string.IsNullOrEmpty(currentHolidays) ? "" : "|") + h.ShortName;
+            }
+            if (!string.IsNullOrEmpty(h.Name))
+            {
+              holidayText = holidayText + (string.IsNullOrEmpty(holidayText) ? "" : " | ") + h.Name;
+            }
+          }
+        }
+        else
+        {
+          logger.Debug("GetHolidays: Holidays file not found! - {0}", FullFileName);
+        }
+
+        FullFileName = Config.GetFile((Config.Dir)10, ConfigHolidaysCustomFilename);
+        if (File.Exists(FullFileName))
+        {
+          HolidayCalculator hc = new HolidayCalculator(date, FullFileName);
+          foreach (HolidayCalculator.Holiday h in hc.OrderedHolidays)
+          {
+            if (!string.IsNullOrEmpty(h.ShortName))
+            {
+              currentHolidays = currentHolidays + (string.IsNullOrEmpty(currentHolidays) ? "" : "|") + h.ShortName;
+            }
+            if (!string.IsNullOrEmpty(h.Name))
+            {
+              holidayText = holidayText + (string.IsNullOrEmpty(holidayText) ? "" : " | ") + h.Name;
+            }
+          }
+        }
+        return currentHolidays;
+      }
+      catch (Exception e)
+      {
+        logger.Debug("RefreshHolidayProperties: " + e.Message);
+        return string.Empty;
+      }
+    }
+    #endregion
+
     #region Awards
     public static void AddAwardToList(string name, string wID, string property, string regex)
     {
@@ -4143,9 +4707,12 @@ namespace FanartHandler
       TvManual,
       TVSeriesManual,
       TvSeriesScraped,
-      FanartTVArt, 
-      FanartTVCDArt,
+      FanartTVArtist,
+      FanartTVAlbum,
+      FanartTVMovie,
+      FanartTVSeries,
       Weather,
+      Holiday, 
       Dummy,
     }
 
@@ -4179,6 +4746,7 @@ namespace FanartHandler
       Genres,
       GenresMusic,
       Studios,
+      Holiday, 
     }
 
     public enum Seasons
@@ -4198,6 +4766,24 @@ namespace FanartHandler
       MovingPictures, 
       TVSeries, 
       MyFilms, 
+    }
+
+    public enum FanartTV
+    {
+      MusicClearArt, 
+      MusicBanner, 
+      MusicCDArt, 
+      MoviesClearArt, 
+      MoviesBanner, 
+      MoviesClearLogo, 
+      MoviesCDArt,
+      SeriesBanner,
+      SeriesClearArt,
+      SeriesClearLogo, 
+      SeriesCDArt,
+      SeriesSeasonBanner,
+      SeriesSeasonCDArt,
+      None, 
     }
   }
 

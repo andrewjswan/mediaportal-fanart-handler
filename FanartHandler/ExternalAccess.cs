@@ -8,6 +8,7 @@ using FHNLog.NLog;
 
 using System;
 using System.Collections;
+using System.IO;
 using System.Threading;
 
 namespace FanartHandler
@@ -75,12 +76,17 @@ namespace FanartHandler
       return str;
     }
 
-    public static Hashtable GetTVFanart(string tvshow)
+    public static Hashtable GetTVFanart(string show)
     {
       var hashtable = new Hashtable();
       try
       {
-        tvshow = Utils.GetArtist(tvshow, Utils.Category.TvManual);
+        string tvshow = Utils.GetArtist(show, Utils.Category.TvManual);
+        string tvshowid = UtilsTVSeries.GetTVSeriesID(tvshow);
+        if (!string.IsNullOrEmpty(tvshowid))
+        {
+          tvshow = tvshow + "|" + tvshowid;
+        }
         var values = Utils.GetDbm().GetFanart(tvshow, null, Utils.Category.TvManual, false).Values;
         var num = 0;
         foreach (FanartImage fanartImage in values)
@@ -147,8 +153,8 @@ namespace FanartHandler
       var hashtable1 = new Hashtable();
       try
       {
-        string artist      = string.Empty;
-        string album       = string.Empty;
+        string artist = string.Empty;
+        string album  = string.Empty;
 
         if (!string.IsNullOrEmpty(Album))
           album = Album.Trim();
@@ -216,15 +222,41 @@ namespace FanartHandler
       return hashtable1;
     }
 
-    public static Hashtable GetMusicFanartForLatestMedia(string artist, string album = (string) null)
+    public static Hashtable GetMusicFanartForLatestMedia(string artist)
     {
-      return GetMusicFanartForLatestMedia (artist, string.Empty, album);
+      return GetMusicFanartForLatestMedia(artist, string.Empty, null);
+    }
+
+    public static Hashtable GetMusicFanartForLatestMedia(string artist, string album)
+    {
+      return GetMusicFanartForLatestMedia(artist, string.Empty, album);
+    }
+
+    public static string GetFanartTVForLatestMedia(string key1, string key2, string key3, string category)
+    {
+      if (string.IsNullOrEmpty(category))
+        return string.Empty ;
+
+      Utils.FanartTV fanartTVType = Utils.FanartTV.None;
+      if (!Enum.TryParse(category, out fanartTVType))
+        return string.Empty;
+      if (!Enum.IsDefined(typeof(Utils.FanartTV), fanartTVType))  
+        return string.Empty;
+
+      var filename = Utils.GetFanartTVFileName(key1, key2, key3, fanartTVType);
+
+      if (!string.IsNullOrEmpty(filename) && File.Exists(filename))
+      {
+        return filename;
+      }
+
+      return string.Empty;
     }
 
     public static string GetAlbumForArtistTrack(string artist, string track)
     {
       Scraper scraper = new Scraper();
-      string result = scraper.LastFMGetAlbum (artist, track);
+      string result = scraper.LastFMGetAlbum(artist, track);
       scraper = null;
       return result;
     }

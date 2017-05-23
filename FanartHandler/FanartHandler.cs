@@ -48,6 +48,7 @@ namespace FanartHandler
 
     internal int syncPointProgressChange;
     internal Hashtable DirectoryTimerQueue;
+    internal Hashtable FanartTVTimerQueue;
 
     private Timer refreshTimer;
     private TimerCallback myScraperTimer;
@@ -59,6 +60,7 @@ namespace FanartHandler
     internal FanartSelectedOther FSelectedOther;
     internal FanartRandom FRandom;
     internal FanartWeather FWeather;
+    internal FanartHoliday FHoliday;
 
     private DirectoryWorker MyDirectoryWorker;
     private RefreshWorker MyRefreshWorker;
@@ -112,9 +114,10 @@ namespace FanartHandler
 
     internal bool CheckValidWindowIDForFanart()
     {
-      return (FPlay.CheckValidWindowIDForFanart() || FPlayOther.CheckValidWindowIDForFanart() || FSelected.CheckValidWindowIDForFanart() || FSelectedOther.CheckValidWindowIDForFanart() || FRandom.CheckValidWindowIDForFanart() || FWeather.CheckValidWindowIDForFanart());
+      return (FPlay.CheckValidWindowIDForFanart() || FPlayOther.CheckValidWindowIDForFanart() || FSelected.CheckValidWindowIDForFanart() || FSelectedOther.CheckValidWindowIDForFanart() || FRandom.CheckValidWindowIDForFanart() || FWeather.CheckValidWindowIDForFanart() || FHoliday.CheckValidWindowIDForFanart());
     }
 
+    #region DirectoryTimerQueue
     internal bool CheckValidWindowsForDirectoryTimerQueue()
     {
       var flag = false;
@@ -208,6 +211,75 @@ namespace FanartHandler
         hashtable.Clear();
       hashtable = null;
     }
+    #endregion
+
+    #region FanartTVTimerQueue
+    internal bool CheckValidWindowsForFanartTVTimerQueue()
+    {
+      var flag = false;
+      try
+      {
+        if (!Utils.GetIsStopping())
+        {
+          flag = (CheckValidWindowIDForFanart() && Utils.AllowFanartInActiveWindow());
+        }
+      }
+      catch (Exception ex)
+      {
+        logger.Error("CheckValidWindowsForFanartTVTimerQueue: " + ex);
+      }
+      return flag;
+    }
+
+    internal void AddToFanartTVTimerQueue(Utils.Category param)
+    {
+      bool flag = false;
+      try
+      {
+        if (CheckValidWindowsForFanartTVTimerQueue())
+        {
+          flag = StartScraper(param);
+        }
+
+        if (!flag)
+        {
+          if (FanartTVTimerQueue.Contains(param))
+          {
+            return;
+          }
+          FanartTVTimerQueue.Add(param, param);
+        }
+      }
+      catch (Exception ex)
+      {
+        logger.Error("AddToFanartTVTimerQueue: " + ex);
+      }
+    }
+
+    private void ProcessFanartTVTimerQueue()
+    {
+      var hashtable = new Hashtable();
+      foreach (Utils.Category value in FanartTVTimerQueue.Values)
+      {
+        if (CheckValidWindowsForFanartTVTimerQueue())
+        {
+          if (StartScraper(value))
+          {
+            hashtable.Add(value, value);
+          }
+        }
+      }
+
+      foreach (Utils.Category value in hashtable.Values)
+      {
+        FanartTVTimerQueue.Remove(value);
+      }
+
+      if (hashtable != null)
+        hashtable.Clear();
+      hashtable = null;
+    }
+    #endregion
 
     private void UpdateImageTimer(object stateInfo, ElapsedEventArgs e)
     {
@@ -286,6 +358,11 @@ namespace FanartHandler
       if (FWeather.RefreshTickCount > Utils.MaxRefreshTickCount)
       {
         FWeather.RefreshTickCount = 0;
+      }
+
+      if (FHoliday.RefreshTickCount > Utils.MaxRefreshTickCount)
+      {
+        FHoliday.RefreshTickCount = 0;
       }
     }
 
@@ -367,6 +444,20 @@ namespace FanartHandler
           }
         }
 
+        if (FHoliday != null)
+        {
+          // Holiday
+          if (FHoliday.RefreshTickCount == 2)
+          {
+            FHoliday.UpdateProperties();
+            FHoliday.ShowImageSelected();
+          }
+          else if (FHoliday.RefreshTickCount == needClean)
+          {
+            FHoliday.EmptyAllSelectedImages();
+          }
+        }
+
       }
       catch (Exception ex)
       {
@@ -393,6 +484,9 @@ namespace FanartHandler
 
         FWeather.FanartIsNotAvailable();
         FWeather.HideImageSelected();
+
+        FHoliday.FanartIsNotAvailable();
+        FHoliday.HideImageSelected();
       }
       catch (Exception ex)
       {
@@ -442,6 +536,7 @@ namespace FanartHandler
       FSelectedOther.EmptyAllSelectedProperties();
       FRandom.EmptyAllRandomProperties();
       FWeather.EmptyAllSelectedProperties();
+      FHoliday.EmptyAllSelectedProperties();
     }
 
     public void ClearCurrProperties()
@@ -452,6 +547,7 @@ namespace FanartHandler
       FSelectedOther.ClearCurrProperties();
       FRandom.ClearCurrProperties();
       FWeather.ClearCurrProperties();
+      FHoliday.ClearCurrProperties();
     }
 
     public void RefreshRefreshTickCount()
@@ -462,6 +558,7 @@ namespace FanartHandler
       FSelectedOther.RefreshRefreshTickCount();
       FRandom.RefreshRefreshTickCount();
       FWeather.RefreshRefreshTickCount();
+      FHoliday.RefreshRefreshTickCount();
     }
 
     private void SetupVariables()
@@ -476,6 +573,7 @@ namespace FanartHandler
       SyncPointDefaultBackdrops = 0;
 
       DirectoryTimerQueue = new Hashtable();
+      FanartTVTimerQueue = new Hashtable();
       Utils.DefaultBackdropImages = new Hashtable();
       Utils.SlideShowImages = new Hashtable();
     }
@@ -485,21 +583,23 @@ namespace FanartHandler
       var loggingConfiguration = LogManager.Configuration ?? new LoggingConfiguration();
       try
       {
-        var fileInfo = new FileInfo(Config.GetFile((Config.Dir) 1, LogFileName));
+        var fileInfo = new FileInfo(Config.GetFile((Config.Dir)1, LogFileName));
         if (fileInfo.Exists)
         {
-          if (File.Exists(Config.GetFile((Config.Dir) 1, OldLogFileName)))
-            File.Delete(Config.GetFile((Config.Dir) 1, OldLogFileName));
-          fileInfo.CopyTo(Config.GetFile((Config.Dir) 1, OldLogFileName));
+          if (File.Exists(Config.GetFile((Config.Dir)1, OldLogFileName)))
+            File.Delete(Config.GetFile((Config.Dir)1, OldLogFileName));
+          fileInfo.CopyTo(Config.GetFile((Config.Dir)1, OldLogFileName));
           fileInfo.Delete();
         }
       }
       catch { }
 
-      var fileTarget = new FileTarget();
-      fileTarget.FileName = Config.GetFile((Config.Dir) 1, LogFileName);
-      fileTarget.Encoding = "utf-8";
-      fileTarget.Layout = "${date:format=dd-MMM-yyyy HH\\:mm\\:ss} ${level:fixedLength=true:padding=5} [${logger:fixedLength=true:padding=20:shortName=true}]: ${message} ${exception:format=tostring}";
+      var fileTarget = new FileTarget()
+      {
+        FileName = Config.GetFile((Config.Dir)1, LogFileName),
+        Encoding = "utf-8",
+        Layout = "${date:format=dd-MMM-yyyy HH\\:mm\\:ss} ${level:fixedLength=true:padding=5} [${logger:fixedLength=true:padding=20:shortName=true}]: ${message} ${exception:format=tostring}"
+      };
       loggingConfiguration.AddTarget("fanart-handler", fileTarget);
       var settings = new Settings(Config.GetFile((Config.Dir) 10, "MediaPortal.xml"));
       var str = settings.GetValue("general", "ThreadPriority");
@@ -548,6 +648,7 @@ namespace FanartHandler
         FSelectedOther = new FanartSelectedOther();
         FRandom = new FanartRandom();
         FWeather = new FanartWeather();
+        FHoliday = new FanartHoliday();
         //
         SetupWindowsUsingFanartHandlerVisibility();
         SetupVariables();
@@ -622,6 +723,7 @@ namespace FanartHandler
         logger.Debug(" Random: " + Utils.Check(FRandom.WindowsUsingFanartRandom.Count > 0) + " Fanart");
         logger.Debug(" Random Latests: " + Utils.Check(FRandom.WindowsUsingFanartLatestsRandom.Count > 0) + " Fanart");
         logger.Debug(" Weather: " + Utils.Check(FWeather.WindowsUsingFanartWeather.Count > 0) + " Fanart, Season: " + Utils.GetWeatherCurrentSeason().ToString());
+        logger.Debug(" Holiday: " + Utils.Check(FHoliday.WindowsUsingFanartHoliday.Count > 0) + Utils.Check(FHoliday.WindowsUsingFanartHolidayText.Count > 0) + " Fanart, " + Utils.Check(Utils.HolidayShowAllDay) + " All Day, Show: " + Utils.HolidayShow + "min");
         //
         Utils.InitiateDbm("mediaportal");
         Utils.StopScraper = false;
@@ -706,6 +808,7 @@ namespace FanartHandler
         {
           logger.Debug("VideoInfo refresh detected: Refreshing video fanarts.");
           AddToDirectoryTimerQueue(Utils.FAHSMovies);
+          AddToFanartTVTimerQueue(Utils.Category.FanartTVMovie);
           break;
         }
         /*
@@ -773,7 +876,8 @@ namespace FanartHandler
                      " Player: " + Utils.Check((g_Player.Playing || g_Player.Paused) && (g_Player.IsCDA || g_Player.IsMusic || g_Player.IsRadio)) + 
                      " Selected: " + Utils.Check(FSelected.CheckValidWindowIDForFanart()) + " " + Utils.Check(FSelectedOther.CheckValidWindowIDForFanart()) + 
                      " Random: " + Utils.Check(FRandom.CheckValidWindowIDForFanart()) + 
-                     " Weather: " + Utils.Check(FWeather.CheckValidWindowIDForFanart()));
+                     " Weather: " + Utils.Check(FWeather.CheckValidWindowIDForFanart()) +
+                     " Holiday: " + Utils.Check(FHoliday.CheckValidWindowIDForFanart()));
 
         if (Utils.IsScraping)
         {
@@ -859,6 +963,17 @@ namespace FanartHandler
           {
             FWeather.EmptyAllProperties();
           }
+
+          // Holiday
+          if (FHoliday.CheckValidWindowIDForFanart() && Utils.AllowFanartInActiveWindow())
+          {
+            // logger.Debug("*** Activate Window:" + Utils.sActiveWindow + " - Holiday");
+            refreshStart = true;
+          }
+          else
+          {
+            FHoliday.EmptyAllProperties();
+          }
         }
 
         if (refreshStart)
@@ -920,6 +1035,7 @@ namespace FanartHandler
         ClearCurrProperties();
         CheckRefreshTimer();
         ProcessDirectoryTimerQueue();
+        ProcessFanartTVTimerQueue();
       }
       catch (Exception ex)
       {
@@ -981,10 +1097,15 @@ namespace FanartHandler
 
     private void StartScraper()
     {
+      StartScraper(Utils.Category.Dummy);
+    }
+
+    private bool StartScraper(Utils.Category param)
+    {
       try
       {
         if (Utils.GetIsStopping())
-          return;
+          return false;
 
         if (MyScraperWorker == null)
         {
@@ -993,14 +1114,23 @@ namespace FanartHandler
           MyScraperWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(MyScraperWorker.OnRunWorkerCompleted);
         }
         if (MyScraperWorker.IsBusy)
-          return;
+          return false;
 
-        MyScraperWorker.RunWorkerAsync();
+        if (param == Utils.Category.Dummy)
+        {
+          MyScraperWorker.RunWorkerAsync();
+        }
+        else
+        {
+          MyScraperWorker.RunWorkerAsync(new int[1] { (int)param });
+        }
+        return true;
       }
       catch (Exception ex)
       {
         logger.Error("StartScraper: " + ex);
       }
+      return false;
     }
 
     internal void StartScraperNowPlaying(string artist, string album, string genre)
@@ -1154,6 +1284,8 @@ namespace FanartHandler
         }
         if (FWeather != null)
           FWeather.EmptyAllSelectedImages();
+        if (FHoliday != null)
+          FHoliday.EmptyAllSelectedImages();
         Logos.ClearDynLogos();
         //
         if (!suspending)
@@ -1174,6 +1306,7 @@ namespace FanartHandler
         FSelectedOther = null;
         FRandom = null;
         FWeather = null;
+        FHoliday = null;
         //
         Utils.DelayStop = new Hashtable();
       }
@@ -1288,6 +1421,9 @@ namespace FanartHandler
 
           var _flagWeather = false;
 
+          var _flagHoliday = false;
+          var _flagHolidayText = false;
+
           var skinFile = new FanartRandom.SkinFile();
           #endregion
 
@@ -1308,7 +1444,7 @@ namespace FanartHandler
                                                            ref _flagGenreMovie, ref _flagGenreMovieSingle, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
                                                            ref _flagStudioMovie, ref _flagStudioMovieSingle, ref _flagStudioMovieAll, ref _flagStudioMovieVertical,
                                                            ref _flagAwardMovie, ref _flagAwardMovieSingle, ref _flagAwardMovieAll, ref _flagAwardMovieVertical, 
-                                                           ref _flagWeather, 
+                                                           ref _flagWeather, ref _flagHoliday, ref _flagHolidayText,
                                                            ref skinFile
                                                            );
             #region Skin import
@@ -1331,7 +1467,7 @@ namespace FanartHandler
                                                            ref _flagGenreMovie, ref _flagGenreMovieSingle, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
                                                            ref _flagStudioMovie, ref _flagStudioMovieSingle, ref _flagStudioMovieAll, ref _flagStudioMovieVertical,
                                                            ref _flagAwardMovie, ref _flagAwardMovieSingle, ref _flagAwardMovieAll, ref _flagAwardMovieVertical, 
-                                                           ref _flagWeather, 
+                                                           ref _flagWeather, ref _flagHoliday, ref _flagHolidayText,
                                                            ref skinFile
                                                            );
                   if (!string.IsNullOrEmpty(theme))
@@ -1349,7 +1485,7 @@ namespace FanartHandler
                                                                ref _flagGenreMovie, ref _flagGenreMovieSingle, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
                                                                ref _flagStudioMovie, ref _flagStudioMovieSingle, ref _flagStudioMovieAll, ref _flagStudioMovieVertical,
                                                                ref _flagAwardMovie, ref _flagAwardMovieSingle, ref _flagAwardMovieAll, ref _flagAwardMovieVertical, 
-                                                               ref _flagWeather, 
+                                                               ref _flagWeather, ref _flagHoliday, ref _flagHolidayText,
                                                                ref skinFile
                                                                );
                   }
@@ -1369,7 +1505,7 @@ namespace FanartHandler
                                                              ref _flagGenreMovie, ref _flagGenreMovieSingle, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
                                                              ref _flagStudioMovie, ref _flagStudioMovieSingle, ref _flagStudioMovieAll, ref _flagStudioMovieVertical,
                                                              ref _flagAwardMovie, ref _flagAwardMovieSingle, ref _flagAwardMovieAll, ref _flagAwardMovieVertical, 
-                                                             ref _flagWeather, 
+                                                             ref _flagWeather, ref _flagHoliday, ref _flagHolidayText,
                                                              ref skinFile
                                                              );
                 }
@@ -1397,7 +1533,7 @@ namespace FanartHandler
                                                            ref _flagGenreMovie, ref _flagGenreMovieSingle, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
                                                            ref _flagStudioMovie, ref _flagStudioMovieSingle, ref _flagStudioMovieAll, ref _flagStudioMovieVertical,
                                                            ref _flagAwardMovie, ref _flagAwardMovieSingle, ref _flagAwardMovieAll, ref _flagAwardMovieVertical, 
-                                                           ref _flagWeather, 
+                                                           ref _flagWeather, ref _flagHoliday, ref _flagHolidayText,
                                                            ref skinFile
                                                            );
                   if (!string.IsNullOrEmpty(theme))
@@ -1415,7 +1551,7 @@ namespace FanartHandler
                                                                ref _flagGenreMovie, ref _flagGenreMovieSingle, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
                                                                ref _flagStudioMovie, ref _flagStudioMovieSingle, ref _flagStudioMovieAll, ref _flagStudioMovieVertical,
                                                                ref _flagAwardMovie, ref _flagAwardMovieSingle, ref _flagAwardMovieAll, ref _flagAwardMovieVertical, 
-                                                               ref _flagWeather, 
+                                                               ref _flagWeather, ref _flagHoliday, ref _flagHolidayText,
                                                                ref skinFile
                                                                );
                   }
@@ -1435,7 +1571,7 @@ namespace FanartHandler
                                                              ref _flagGenreMovie, ref _flagGenreMovieSingle, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
                                                              ref _flagStudioMovie, ref _flagStudioMovieSingle, ref _flagStudioMovieAll, ref _flagStudioMovieVertical,
                                                              ref _flagAwardMovie, ref _flagAwardMovieSingle, ref _flagAwardMovieAll, ref _flagAwardMovieVertical, 
-                                                             ref _flagWeather, 
+                                                             ref _flagWeather, ref _flagHoliday, ref _flagHolidayText,
                                                              ref skinFile
                                                              );
                 }
@@ -1574,6 +1710,17 @@ namespace FanartHandler
             }
             #endregion
 
+            #region Holiday
+            if (_flagHoliday && !Utils.ContainsID(FHoliday.WindowsUsingFanartHoliday, nodeValue))
+            {
+              FHoliday.WindowsUsingFanartHoliday.Add(nodeValue, nodeValue);
+            }
+            if (_flagHolidayText && !Utils.ContainsID(FHoliday.WindowsUsingFanartHolidayText, nodeValue))
+            {
+              FHoliday.WindowsUsingFanartHolidayText.Add(nodeValue, nodeValue);
+            }
+            #endregion
+
             #region Random
             try
             {
@@ -1657,6 +1804,7 @@ namespace FanartHandler
                                   ref bool _flagStudioMovie, ref bool _flagStudioMovieSingle, ref bool _flagStudioMovieAll, ref bool _flagStudioMovieVertical, 
                                   ref bool _flagAwardMovie, ref bool _flagAwardMovieSingle, ref bool _flagAwardMovieAll, ref bool _flagAwardMovieVertical, 
                                   ref bool _flagWeather, 
+                                  ref bool _flagHoliday, ref bool _flagHolidayText,
                                   ref FanartRandom.SkinFile _skinFile)
     {
       var xpathDocument = new XPathDocument(filename);
@@ -1817,9 +1965,21 @@ namespace FanartHandler
 
       #region Weather fanart
       // Weather Backdrop
-      if (_xml.Contains("#fanarthandler.weather.backdrop") )
+      if (_xml.Contains("#fanarthandler.weather.backdrop"))
       {
         _flagWeather = true;
+      }
+      #endregion
+
+      #region Holiday fanart
+      // Holiday Backdrop
+      if (_xml.Contains("#fanarthandler.holiday.backdrop"))
+      {
+        _flagHoliday = true;
+      }
+      if (_xml.Contains("#fanarthandler.holiday.current") || _xml.Contains("#fanarthandler.holiday.icon"))
+      {
+        _flagHolidayText = true;
       }
       #endregion
 

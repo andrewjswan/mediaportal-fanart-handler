@@ -15,6 +15,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace FanartHandler
 {
@@ -26,6 +27,7 @@ namespace FanartHandler
     {
     }
 
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static void GetMyFilmsBackdrops()
     {
       if (!Utils.MyFilmsEnabled)

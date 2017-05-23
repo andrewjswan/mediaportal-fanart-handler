@@ -13,6 +13,7 @@ using FHNLog.NLog;
 
 using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace FanartHandler
 {
@@ -64,6 +65,7 @@ namespace FanartHandler
           return;
 
         FanartHandlerSetup.Fh.AddToDirectoryTimerQueue("MovingPictures");
+        // FanartHandlerSetup.Fh.AddToFanartTVTimerQueue(Utils.Category.FanartTVMovie);
       }
       catch (Exception ex)
       {
@@ -71,6 +73,7 @@ namespace FanartHandler
       }
     }
 
+    [MethodImpl(MethodImplOptions.NoInlining)]
     internal static void GetMovingPicturesBackdrops()
     {
       if (!Utils.MovingPicturesEnabled)
