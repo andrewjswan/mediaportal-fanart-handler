@@ -143,6 +143,27 @@
               <ZipFileName>Installer{CopyFile}\{efb0c06f-82d0-47a1-9d38-4f3ee7a69946}-FanartHandler.Awards.xml</ZipFileName>
               <DestinationFilename>%Config%\FanartHandler.Awards.xml</DestinationFilename>
             </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\config\FanartHandler.Holidays.xml</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{169928d2-ff4b-4668-bbac-b3bcf282b48b}-FanartHandler.Holidays.xml</ZipFileName>
+              <DestinationFilename>%Config%\FanartHandler.Holidays.xml</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\config\FanartHandler.Weather.xml</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{3d4a003c-d130-41af-8a97-f23d337c1a7b}-FanartHandler.Weather.xml</ZipFileName>
+              <DestinationFilename>%Config%\FanartHandler.Weather.xml</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>NeverOverwrite</UpdateOption>
+              <LocalFileName>..\Installer\config\FanartHandler.Holidays.Custom.xml</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{4612af9d-1ce4-4ead-a386-9504cd6b8e8e}-FanartHandler.Holidays.Custom.xml</ZipFileName>
+              <DestinationFilename>%Config%\FanartHandler.Holidays.Custom.xml</DestinationFilename>
+            </FileItem>
           </Items>
         </Files>
       </GroupItem>
@@ -357,6 +378,13 @@
               <LocalFileName>..\Installer\language\es.xml</LocalFileName>
               <ZipFileName>Installer{CopyFile}\{3a5d39a3-5fef-499d-9675-eb8e63bb03ff}-es.xml</ZipFileName>
               <DestinationFilename>%Language%\FanartHandler\es.xml</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\language\de.xml</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{c61bbe6c-1c7e-497b-95e6-c810f35972c1}-de.xml</ZipFileName>
+              <DestinationFilename>%Language%\FanartHandler\de.xml</DestinationFilename>
             </FileItem>
           </Items>
         </Files>
@@ -724,11 +752,13 @@ ajs</Value>
        * push random images from selected folders
 
 </ExtensionDescription>
-    <VersionDescription>Fix for empty Fanart.tv Personal API key...
-Fix for latest MyFilm support ...</VersionDescription>
+    <VersionDescription>* Awards, Studios xml updated
+* Add Windows 10 Showtime support
+* Bug fixes, optimizations and internal rework
+* Music Record Label support</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-{VERSION}.MPE1</OnlineLocation>
-    <ReleaseDate>2017-03-08T15:04:24</ReleaseDate>
+    <ReleaseDate>2017-11-15T15:04:24</ReleaseDate>
     <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios</Tags>
     <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
     <Params>
@@ -897,6 +927,27 @@ Fix for latest MyFilm support ...</VersionDescription>
         <LocalFileName>..\Installer\config\FanartHandler.Awards.xml</LocalFileName>
         <ZipFileName>Installer{CopyFile}\{efb0c06f-82d0-47a1-9d38-4f3ee7a69946}-FanartHandler.Awards.xml</ZipFileName>
         <DestinationFilename>%Config%\FanartHandler.Awards.xml</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\config\FanartHandler.Holidays.xml</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{169928d2-ff4b-4668-bbac-b3bcf282b48b}-FanartHandler.Holidays.xml</ZipFileName>
+        <DestinationFilename>%Config%\FanartHandler.Holidays.xml</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\config\FanartHandler.Weather.xml</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{3d4a003c-d130-41af-8a97-f23d337c1a7b}-FanartHandler.Weather.xml</ZipFileName>
+        <DestinationFilename>%Config%\FanartHandler.Weather.xml</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>NeverOverwrite</UpdateOption>
+        <LocalFileName>..\Installer\config\FanartHandler.Holidays.Custom.xml</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{4612af9d-1ce4-4ead-a386-9504cd6b8e8e}-FanartHandler.Holidays.Custom.xml</ZipFileName>
+        <DestinationFilename>%Config%\FanartHandler.Holidays.Custom.xml</DestinationFilename>
       </FileItem>
       <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
         <Param1 />
@@ -1093,6 +1144,13 @@ Fix for latest MyFilm support ...</VersionDescription>
         <LocalFileName>..\Installer\language\es.xml</LocalFileName>
         <ZipFileName>Installer{CopyFile}\{3a5d39a3-5fef-499d-9675-eb8e63bb03ff}-es.xml</ZipFileName>
         <DestinationFilename>%Language%\FanartHandler\es.xml</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\language\de.xml</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{c61bbe6c-1c7e-497b-95e6-c810f35972c1}-de.xml</ZipFileName>
+        <DestinationFilename>%Language%\FanartHandler\de.xml</DestinationFilename>
       </FileItem>
       <FileItem InstallType="CopyFile" SystemFile="true" Modified="true">
         <Param1 />
