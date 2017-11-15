@@ -3,17 +3,14 @@
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 extern alias FHNLog;
 
-using Cornerstone.Database.Tables;
 
 using MyFilmsPlugin;
 using MyFilmsPlugin.DataBase;
-using MyFilmsPlugin.MyFilmsGUI;
 
 using FHNLog.NLog;
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 
@@ -69,8 +66,12 @@ namespace FanartHandler
           var ImdbID = current.IMDBNumber.Trim();
 
           if (!string.IsNullOrWhiteSpace(backdropFullPath) && (allFilenames == null || !allFilenames.Contains(backdropFullPath)))
+          {
             if (File.Exists(backdropFullPath))
-              Utils.GetDbm().LoadFanart(Utils.GetArtist(current.Title, Utils.Category.MyFilmsManual), backdropFullPath, backdropFullPath, Utils.Category.MyFilmsManual, null, Utils.Provider.MyFilms, null, ImdbID);
+            {
+              Utils.GetDbm().LoadFanart(Utils.GetArtist(current.Title, Utils.Category.MyFilmsManual), null, ImdbID, null, backdropFullPath, backdropFullPath, Utils.Category.MyFilmsManual, Utils.Provider.MyFilms);
+            }
+          }
         }
         if (allFilenames != null)
           allFilenames.Clear();

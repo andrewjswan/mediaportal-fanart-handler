@@ -55,11 +55,18 @@ namespace FanartHandler
           foreach (string logo in logosForBuilding)
           {
             tmpFile += System.IO.Path.GetFileNameWithoutExtension(logo);
-            // tmpFile = Path.Combine(PathfortmpFile, "FanartDynLogo" + tmpFile + ".png");
           }
-          tmpFile = @"skin\" + Cat + @"\" + tmpFile.Replace(";","-").Replace(" ","") + ".png";
+          tmpFile = @"skin\" + Cat + @"\" + tmpFile.Replace(";","-").Replace(" ",""); // + ".png";
 
-          return BuildImages(logosForBuilding, tmpFile, bVertical);
+          tmpFile = "[FanartHandler:" + tmpFile.Trim() + "]";
+          if (DynLogos.Contains(tmpFile) && GUITextureManager.LoadFromMemory(null, tmpFile, 0, 0, 0) > 0) // Name already exists in MP cache
+          {
+            return tmpFile;
+          }
+          else
+          {
+            return BuildImages(logosForBuilding, tmpFile, bVertical);
+          }
         }
       }
       catch (Exception ex)
@@ -196,7 +203,7 @@ namespace FanartHandler
       }
 
       // step five: build image in memory
-      string name = "[FanartHandler:" + sFileName.Trim() + "]";
+      string name = sFileName;
       try
       {                
         // we don't have to try first, if name already exists mp will not do anything with the image

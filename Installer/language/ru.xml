@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Russian (RU) -->
 <!-- Note: English is the fallback for any strings not found in other languages -->
-<!-- Last Updated: 23th September 2015 -->
+<!-- Last Updated: 05th June 2017 -->
 <strings>
  
  <!-- Scrape -->
   <string Field="ScrapeInitial">Сканирование</string>
+  <string Field="ScrapeInitialFanart">Сканирование (фан-арт)</string>
   <string Field="ScrapeNowPlaying">Сканирование</string>
   <string Field="ScrapeInitializing">Инициализация</string>
 
@@ -23,6 +24,7 @@
   <string Field="FHArtists">Исполнители</string>
   <string Field="FHAlbums">Альбомы</string>
   <string Field="FHVideos">Видео</string>
+  <string Field="FHSeries">Сериалы</string>
 
   <string Field="FHSlideshow">Слайдшоу при проигрывании</string>
 </strings>

@@ -632,7 +632,7 @@ namespace FanartHandler
             {  // TV
               RefreshGenericSelectedProperties("movie", 
                                                ref ListSelectedMovies, 
-                                               Utils.Category.TvManual, 
+                                               Utils.Category.TVManual, 
                                                ref CurrSelectedMovie, 
                                                ref CurrSelectedMovieTitle);
             }
@@ -641,7 +641,7 @@ namespace FanartHandler
             {
               RefreshGenericSelectedProperties("movie", 
                                                ref ListSelectedMovies, 
-                                               Utils.Category.TvSeriesScraped, 
+                                               Utils.Category.TVSeriesScraped, 
                                                ref CurrSelectedMovie, 
                                                ref CurrSelectedMovieTitle);
             }
@@ -834,8 +834,8 @@ namespace FanartHandler
       EmptySelectedMoviesProperties();
       Utils.EmptyAllImages(ref ListSelectedMovies);
       SetCurrentSelectedImageNames(null, Utils.Category.MovieScraped);
-      SetCurrentSelectedImageNames(null, Utils.Category.TvSeriesScraped);
-      SetCurrentSelectedImageNames(null, Utils.Category.TvManual);
+      SetCurrentSelectedImageNames(null, Utils.Category.TVSeriesScraped);
+      SetCurrentSelectedImageNames(null, Utils.Category.TVManual);
       IsSelectedVideo = false;
       FanartAvailableMovies = false;
     }

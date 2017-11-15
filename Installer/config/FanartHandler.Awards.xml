@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- https://github.com/andrewjswan/mediaportal.images.awards/tree/master/awards -->
 <awards>
   <settings>
@@ -7,36 +7,16 @@
   <!-- -->
   <award>
     <awardName>Oscar</awardName>
+    <awardText>The Oscar</awardText>
+    <awardTextRU>Оскар</awardTextRU>
+    <awardTextDE>Oscar</awardTextDE>
     <rule>
-      <winID>6</winID>
-      <searchProperty>#userreview</searchProperty>
+      <winID>6|25|2003</winID>
+      <searchProperty>#userreview|#awards</searchProperty>
       <searchRegex>Награды:[\s\S]*?Оскар[^:]+?Победитель:[\s\S]-</searchRegex>
     </rule>
     <rule>
-      <winID>25</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Оскар[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Оскар[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-  </award>
-  <award>
-    <awardName>Oscar</awardName>
-    <rule>
-      <winID>6</winID>
-      <searchProperty>#awards</searchProperty>
-      <searchRegex>Won[^*]+?-.Oscar</searchRegex>
-    </rule>
-    <rule>
-      <winID>25</winID>
-      <searchProperty>#awards</searchProperty>
-      <searchRegex>Won[^*]+?-.Oscar</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
+      <winID>6|25|2003</winID>
       <searchProperty>#awards</searchProperty>
       <searchRegex>Won[^*]+?-.Oscar</searchRegex>
     </rule>
@@ -44,36 +24,15 @@
 
   <award>
     <awardName>GoldenGlobe</awardName>
+    <awardText>Golden Globe</awardText>
+    <awardTextRU>Золотой глобус</awardTextRU>
     <rule>
-      <winID>6</winID>
-      <searchProperty>#userreview</searchProperty>
+      <winID>6|25|2003</winID>
+      <searchProperty>#userreview|#awards</searchProperty>
       <searchRegex>Награды:[\s\S]*?Золотой глобус[^:]+?Победитель:[\s\S]-</searchRegex>
     </rule>
     <rule>
-      <winID>25</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Золотой глобус[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Золотой глобус[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-  </award>
-  <award>
-    <awardName>GoldenGlobe</awardName>
-    <rule>
-      <winID>6</winID>
-      <searchProperty>#awards</searchProperty>
-      <searchRegex>Won[^*]+?-.Golden Globe</searchRegex>
-    </rule>
-    <rule>
-      <winID>25</winID>
-      <searchProperty>#awards</searchProperty>
-      <searchRegex>Won[^*]+?-.Golden Globe</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
+      <winID>6|25|2003</winID>
       <searchProperty>#awards</searchProperty>
       <searchRegex>Won[^*]+?-.Golden Globe</searchRegex>
     </rule>
@@ -81,36 +40,16 @@
 
   <award>
     <awardName>MTV</awardName>
+    <awardText>MTV Movie</awardText>
+    <awardTextRU>Кинонаграда MTV</awardTextRU>
+    <awardTextDE>MTV Filmpreis</awardTextDE>
     <rule>
-      <winID>6</winID>
-      <searchProperty>#userreview</searchProperty>
+      <winID>6|25|2003</winID>
+      <searchProperty>#userreview|#awards</searchProperty>
       <searchRegex>Награды:[\s\S]*?Премия канала .MTV.[^:]+?Победитель:[\s\S]-</searchRegex>
     </rule>
     <rule>
-      <winID>25</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Премия канала .MTV.[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Премия канала .MTV.[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-  </award>
-  <award>
-    <awardName>MTV</awardName>
-    <rule>
-      <winID>6</winID>
-      <searchProperty>#awards</searchProperty>
-      <searchRegex>Won[^*]+?-.MTV</searchRegex>
-    </rule>
-    <rule>
-      <winID>25</winID>
-      <searchProperty>#awards</searchProperty>
-      <searchRegex>Won[^*]+?-.MTV</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
+      <winID>6|25|2003</winID>
       <searchProperty>#awards</searchProperty>
       <searchRegex>Won[^*]+?-.MTV</searchRegex>
     </rule>
@@ -118,36 +57,16 @@
 
   <award>
     <awardName>Raspberry</awardName>
+    <awardText>Golden Raspberry</awardText>
+    <awardTextRU>Золотая малина</awardTextRU>
+    <awardTextDE>Goldene Himbeere</awardTextDE>
     <rule>
-      <winID>6</winID>
-      <searchProperty>#userreview</searchProperty>
+      <winID>6|25|2003</winID>
+      <searchProperty>#userreview|#awards</searchProperty>
       <searchRegex>Награды:[\s\S]*?Золотая малина[^:]+?Победитель:[\s\S]-</searchRegex>
     </rule>
     <rule>
-      <winID>25</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Золотая малина[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Золотая малина[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-  </award>
-  <award>
-    <awardName>Raspberry</awardName>
-    <rule>
-      <winID>6</winID>
-      <searchProperty>#awards</searchProperty>
-      <searchRegex>Won[^*]+?-.Raspberry</searchRegex>
-    </rule>
-    <rule>
-      <winID>25</winID>
-      <searchProperty>#awards</searchProperty>
-      <searchRegex>Won[^*]+?-.Raspberry</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
+      <winID>6|25|2003</winID>
       <searchProperty>#awards</searchProperty>
       <searchRegex>Won[^*]+?-.Raspberry</searchRegex>
     </rule>
@@ -155,55 +74,33 @@
 
   <award>
     <awardName>MMKF</awardName>
+    <awardText>Moscow International Film Festival</awardText>
+    <awardTextRU>ММКФ</awardTextRU>
+    <awardTextDE>Moskau Internationales Filmfestival</awardTextDE>
     <rule>
-      <winID>6</winID>
-      <searchProperty>#userreview</searchProperty>
+      <winID>6|25|2003</winID>
+      <searchProperty>#userreview|#awards</searchProperty>
       <searchRegex>Награды:[\s\S]*?ММКФ[^:]+?Победитель:[\s\S]-</searchRegex>
     </rule>
     <rule>
-      <winID>25</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?ММКФ[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?ММКФ[^:]+?Победитель:[\s\S]-</searchRegex>
+      <winID>6|25|2003</winID>
+      <searchProperty>#awards</searchProperty>
+      <searchRegex>Moscow International Film Festival[^*]+?Won[^*]+?-</searchRegex>
     </rule>
   </award>
 
   <award>
     <awardName>Venice</awardName>
+    <awardText>Golden Lion</awardText>
+    <awardTextRU>Золотой лев</awardTextRU>
+    <awardTextDE>Goldener Löwe</awardTextDE>
     <rule>
-      <winID>6</winID>
-      <searchProperty>#userreview</searchProperty>
+      <winID>6|25|2003</winID>
+      <searchProperty>#userreview|#awards</searchProperty>
       <searchRegex>Награды:[\s\S]*?Венецианский кинофестиваль[^:]+?Победитель:[\s\S]-</searchRegex>
     </rule>
     <rule>
-      <winID>25</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Венецианский кинофестиваль[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Венецианский кинофестиваль[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-  </award>
-  <award>
-    <awardName>Venice</awardName>
-    <rule>
-      <winID>6</winID>
-      <searchProperty>#awards</searchProperty>
-      <searchRegex>Won[^*]+?-.Golden Lion</searchRegex>
-    </rule>
-    <rule>
-      <winID>25</winID>
-      <searchProperty>#awards</searchProperty>
-      <searchRegex>Won[^*]+?-.Golden Lion</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
+      <winID>6|25|2003</winID>
       <searchProperty>#awards</searchProperty>
       <searchRegex>Won[^*]+?-.Golden Lion</searchRegex>
     </rule>
@@ -211,36 +108,16 @@
 
   <award>
     <awardName>Berlin</awardName>
+    <awardText>Golden Bear</awardText>
+    <awardTextRU>Золотой медведь</awardTextRU>
+    <awardTextDE>Goldener Bär</awardTextDE>
     <rule>
-      <winID>6</winID>
-      <searchProperty>#userreview</searchProperty>
+      <winID>6|25|2003</winID>
+      <searchProperty>#userreview|#awards</searchProperty>
       <searchRegex>Награды:[\s\S]*?Берлинский кинофестиваль[^:]+?Победитель:[\s\S]-</searchRegex>
     </rule>
     <rule>
-      <winID>25</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Берлинский кинофестиваль[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Берлинский кинофестиваль[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-  </award>
-  <award>
-    <awardName>Berlin</awardName>
-    <rule>
-      <winID>6</winID>
-      <searchProperty>#awards</searchProperty>
-      <searchRegex>Won[^*]+?-.Golden Berlin Bear</searchRegex>
-    </rule>
-    <rule>
-      <winID>25</winID>
-      <searchProperty>#awards</searchProperty>
-      <searchRegex>Won[^*]+?-.Golden Berlin Bear</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
+      <winID>6|25|2003</winID>
       <searchProperty>#awards</searchProperty>
       <searchRegex>Won[^*]+?-.Golden Berlin Bear</searchRegex>
     </rule>
@@ -248,36 +125,16 @@
 
   <award>
     <awardName>Cannes</awardName>
+    <awardText>Golden Palm</awardText>
+    <awardTextRU>Золотая пальмовая ветвь</awardTextRU>
+    <awardTextDE>Goldene Palme</awardTextDE>
     <rule>
-      <winID>6</winID>
-      <searchProperty>#userreview</searchProperty>
+      <winID>6|25|2003</winID>
+      <searchProperty>#userreview|#awards</searchProperty>
       <searchRegex>Награды:[\s\S]*?Каннский кинофестиваль[^:]+?Победитель:[\s\S]-</searchRegex>
     </rule>
     <rule>
-      <winID>25</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Каннский кинофестиваль[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Каннский кинофестиваль[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-  </award>
-  <award>
-    <awardName>Cannes</awardName>
-    <rule>
-      <winID>6</winID>
-      <searchProperty>#awards</searchProperty>
-      <searchRegex>Won[^*]+?-.Cannes</searchRegex>
-    </rule>
-    <rule>
-      <winID>25</winID>
-      <searchProperty>#awards</searchProperty>
-      <searchRegex>Won[^*]+?-.Cannes</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
+      <winID>6|25|2003</winID>
       <searchProperty>#awards</searchProperty>
       <searchRegex>Won[^*]+?-.Cannes</searchRegex>
     </rule>
@@ -285,36 +142,16 @@
 
   <award>
     <awardName>Asian</awardName>
+    <awardText>Asian Film Award</awardText>
+    <awardTextRU>Азиатская кинопремия</awardTextRU>
+    <awardTextDE>Asiatischer Filmpreis</awardTextDE>
     <rule>
-      <winID>6</winID>
-      <searchProperty>#userreview</searchProperty>
+      <winID>6|25|2003</winID>
+      <searchProperty>#userreview|#awards</searchProperty>
       <searchRegex>Награды:[\s\S]*?Азиатская киноакадемия[^:]+?Победитель:[\s\S]-</searchRegex>
     </rule>
     <rule>
-      <winID>25</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Азиатская киноакадемия[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Азиатская киноакадемия[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-  </award>
-  <award>
-    <awardName>Asian</awardName>
-    <rule>
-      <winID>6</winID>
-      <searchProperty>#awards</searchProperty>
-      <searchRegex>Won[^*]+?-.Asian</searchRegex>
-    </rule>
-    <rule>
-      <winID>25</winID>
-      <searchProperty>#awards</searchProperty>
-      <searchRegex>Won[^*]+?-.Asian</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
+      <winID>6|25|2003</winID>
       <searchProperty>#awards</searchProperty>
       <searchRegex>Won[^*]+?-.Asian</searchRegex>
     </rule>
@@ -322,36 +159,16 @@
 
   <award>
     <awardName>BAFTA</awardName>
+    <awardText>BAFTA Award</awardText>
+    <awardTextRU>Премия Британской академии</awardTextRU>
+    <awardTextDE>British Academy Filmpreis</awardTextDE>
     <rule>
-      <winID>6</winID>
-      <searchProperty>#userreview</searchProperty>
+      <winID>6|25|2003</winID>
+      <searchProperty>#userreview|#awards</searchProperty>
       <searchRegex>Награды:[\s\S]*?Британская академия[^:]+?Победитель:[\s\S]-</searchRegex>
     </rule>
     <rule>
-      <winID>25</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Британская академия[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Британская академия[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-  </award>
-  <award>
-    <awardName>BAFTA</awardName>
-    <rule>
-      <winID>6</winID>
-      <searchProperty>#awards</searchProperty>
-      <searchRegex>Won[^*]+?-.BAFTA</searchRegex>
-    </rule>
-    <rule>
-      <winID>25</winID>
-      <searchProperty>#awards</searchProperty>
-      <searchRegex>Won[^*]+?-.BAFTA</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
+      <winID>6|25|2003</winID>
       <searchProperty>#awards</searchProperty>
       <searchRegex>Won[^*]+?-.BAFTA</searchRegex>
     </rule>
@@ -359,36 +176,16 @@
 
   <award>
     <awardName>Emmy</awardName>
+    <awardText>Emmy Award</awardText>
+    <awardTextRU>Эмми</awardTextRU>
+    <awardTextDE>Emmy</awardTextDE>
     <rule>
-      <winID>6</winID>
-      <searchProperty>#userreview</searchProperty>
+      <winID>6|25|2003</winID>
+      <searchProperty>#userreview|#awards</searchProperty>
       <searchRegex>Награды:[\s\S]*?Эмми[^:]+?Победитель:[\s\S]-</searchRegex>
     </rule>
     <rule>
-      <winID>25</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Эмми[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Эмми[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-  </award>
-  <award>
-    <awardName>Emmy</awardName>
-    <rule>
-      <winID>6</winID>
-      <searchProperty>#awards</searchProperty>
-      <searchRegex>Won[^*]+?-[^*]+?Emmy</searchRegex>
-    </rule>
-    <rule>
-      <winID>25</winID>
-      <searchProperty>#awards</searchProperty>
-      <searchRegex>Won[^*]+?-[^*]+?Emmy</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
+      <winID>6|25|2003</winID>
       <searchProperty>#awards</searchProperty>
       <searchRegex>Won[^*]+?-[^*]+?Emmy</searchRegex>
     </rule>
@@ -396,36 +193,16 @@
 
   <award>
     <awardName>SAG</awardName>
+    <awardText>SAG Award</awardText>
+    <awardTextRU>Премия Гильдии киноактёров</awardTextRU>
+    <awardTextDE>Screen Actors Guild Filmpreis</awardTextDE>
     <rule>
-      <winID>6</winID>
-      <searchProperty>#userreview</searchProperty>
+      <winID>6|25|2003</winID>
+      <searchProperty>#userreview|#awards</searchProperty>
       <searchRegex>Награды:[\s\S]*?Премия Гильдии актеров[^:]+?Победитель:[\s\S]-</searchRegex>
     </rule>
     <rule>
-      <winID>25</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Премия Гильдии актеров[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Премия Гильдии актеров[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-  </award>
-  <award>
-    <awardName>SAG</awardName>
-    <rule>
-      <winID>6</winID>
-      <searchProperty>#awards</searchProperty>
-      <searchRegex>Screen Actors Guild[^*]+?Won[^*]+?-</searchRegex>
-    </rule>
-    <rule>
-      <winID>25</winID>
-      <searchProperty>#awards</searchProperty>
-      <searchRegex>Screen Actors Guild[^*]+?Won[^*]+?-</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
+      <winID>6|25|2003</winID>
       <searchProperty>#awards</searchProperty>
       <searchRegex>Screen Actors Guild[^*]+?Won[^*]+?-</searchRegex>
     </rule>
@@ -433,191 +210,176 @@
 
   <award>
     <awardName>Saturn</awardName>
+    <awardText>Saturn Award</awardText>
+    <awardTextRU>Премия Сатурн</awardTextRU>
+    <awardTextDE>Saturn Filmpreis</awardTextDE>
     <rule>
-      <winID>6</winID>
-      <searchProperty>#userreview</searchProperty>
+      <winID>6|25|2003</winID>
+      <searchProperty>#userreview|#awards</searchProperty>
       <searchRegex>Награды:[\s\S]*?Сатурн[^:]+?Победитель:[\s\S]-</searchRegex>
     </rule>
     <rule>
-      <winID>25</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Сатурн[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Сатурн[^:]+?Победитель:[\s\S]-</searchRegex>
+      <winID>6|25|2003</winID>
+      <searchProperty>#awards</searchProperty>
+      <searchRegex>Won[^*]+?-[^*]+?Saturn</searchRegex>
     </rule>
   </award>
 
   <award>
     <awardName>Nika</awardName>
+    <awardText>Nika Award</awardText>
+    <awardTextRU>Кинопремия «Ника»</awardTextRU>
+    <awardTextDE>Nika Filmpreis</awardTextDE>
     <rule>
-      <winID>6</winID>
-      <searchProperty>#userreview</searchProperty>
+      <winID>6|25|2003</winID>
+      <searchProperty>#userreview|#awards</searchProperty>
       <searchRegex>Награды:[\s\S]*?Ника[^:]+?Победитель:[\s\S]-</searchRegex>
     </rule>
     <rule>
-      <winID>25</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Ника[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Ника[^:]+?Победитель:[\s\S]-</searchRegex>
+      <winID>6|25|2003</winID>
+      <searchProperty>#awards</searchProperty>
+      <searchRegex>Won[^*]+?-[^*]+?Nika</searchRegex>
     </rule>
   </award>
 
   <award>
     <awardName>Kinotavr</awardName>
+    <awardText>Kinotavr Award</awardText>
+    <awardTextRU>Кинопремия «Кинотавр»</awardTextRU>
+    <awardTextDE>Sochi Open Russian Film Festival</awardTextDE>
     <rule>
-      <winID>6</winID>
-      <searchProperty>#userreview</searchProperty>
+      <winID>6|25|2003</winID>
+      <searchProperty>#userreview|#awards</searchProperty>
       <searchRegex>Награды:[\s\S]*?Кинотавр[^:]+?Победитель:[\s\S]-</searchRegex>
     </rule>
     <rule>
-      <winID>25</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Кинотавр[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Кинотавр[^:]+?Победитель:[\s\S]-</searchRegex>
+      <winID>6|25|2003</winID>
+      <searchProperty>#awards</searchProperty>
+      <searchRegex>Sochi Open Russian Film Festival[^*]+?Won[^*]+?-</searchRegex>
     </rule>
   </award>
 
   <award>
     <awardName>EFA</awardName>
+    <awardText>European Film Award</awardText>
+    <awardTextRU>Премия Европейской киноакадемии</awardTextRU>
+    <awardTextDE>Europäischer Filmpreis</awardTextDE>
     <rule>
-      <winID>6</winID>
-      <searchProperty>#userreview</searchProperty>
+      <winID>6|25|2003</winID>
+      <searchProperty>#userreview|#awards</searchProperty>
       <searchRegex>Награды:[\s\S]*?Европейская киноакадемия[^:]+?Победитель:[\s\S]-</searchRegex>
     </rule>
     <rule>
-      <winID>25</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Европейская киноакадемия[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Европейская киноакадемия[^:]+?Победитель:[\s\S]-</searchRegex>
+      <winID>6|25|2003</winID>
+      <searchProperty>#awards</searchProperty>
+      <searchRegex>European Film Awards[^*]+?Won[^*]+?-</searchRegex>
     </rule>
   </award>
 
   <award>
     <awardName>Goya</awardName>
+    <awardText>Goya Award</awardText>
+    <awardTextRU>Премия «Гойя»</awardTextRU>
+    <awardTextDE>Goya</awardTextDE>
     <rule>
-      <winID>6</winID>
-      <searchProperty>#userreview</searchProperty>
+      <winID>6|25|2003</winID>
+      <searchProperty>#userreview|#awards</searchProperty>
       <searchRegex>Награды:[\s\S]*?Гойя[^:]+?Победитель:[\s\S]-</searchRegex>
     </rule>
     <rule>
-      <winID>25</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Гойя[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Гойя[^:]+?Победитель:[\s\S]-</searchRegex>
+      <winID>6|25|2003</winID>
+      <searchProperty>#awards</searchProperty>
+      <searchRegex>Won[^*]+?-[^*]+?Goya</searchRegex>
     </rule>
   </award>
 
   <award>
     <awardName>Сesar</awardName>
+    <awardText>César Award</awardText>
+    <awardTextRU>Кинопремия «Сезар»</awardTextRU>
+    <awardTextDE>César</awardTextDE>
     <rule>
-      <winID>6</winID>
-      <searchProperty>#userreview</searchProperty>
+      <winID>6|25|2003</winID>
+      <searchProperty>#userreview|#awards</searchProperty>
       <searchRegex>Награды:[\s\S]*?Сезар[^:]+?Победитель:[\s\S]-</searchRegex>
     </rule>
     <rule>
-      <winID>25</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Сезар[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Сезар[^:]+?Победитель:[\s\S]-</searchRegex>
+      <winID>6|25|2003</winID>
+      <searchProperty>#awards</searchProperty>
+      <searchRegex>Won[^*]+?-[^*]+?César</searchRegex>
     </rule>
   </award>
 
   <award>
     <awardName>KVIFF</awardName>
+    <awardText>Crystal Globe Award</awardText>
+    <awardTextRU>Хрустальный глобус</awardTextRU>
+    <awardTextDE>Crystal Globe (Karlovy Vary International Film Festival)</awardTextDE>
     <rule>
-      <winID>6</winID>
-      <searchProperty>#userreview</searchProperty>
+      <winID>6|25|2003</winID>
+      <searchProperty>#userreview|#awards</searchProperty>
       <searchRegex>Награды:[\s\S]*?Карловы Вары[^:]+?Победитель:[\s\S]-</searchRegex>
     </rule>
     <rule>
-      <winID>25</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Карловы Вары[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Карловы Вары[^:]+?Победитель:[\s\S]-</searchRegex>
+      <winID>6|25|2003</winID>
+      <searchProperty>#awards</searchProperty>
+      <searchRegex>Karlovy Vary International Film Festival[^*]+?Won[^*]+?-</searchRegex>
     </rule>
   </award>
 
   <award>
     <awardName>Georges</awardName>
+    <awardText>Georges Award</awardText>
+    <awardTextRU>Кинопремия «Жорж»</awardTextRU>
+    <awardTextDE>Prix Georges Delerue</awardTextDE>
     <rule>
-      <winID>6</winID>
-      <searchProperty>#userreview</searchProperty>
+      <winID>6|25|2003</winID>
+      <searchProperty>#userreview|#awards</searchProperty>
       <searchRegex>Награды:[\s\S]*?Жорж[^:]+?Победитель:[\s\S]-</searchRegex>
     </rule>
     <rule>
-      <winID>25</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Жорж[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Жорж[^:]+?Победитель:[\s\S]-</searchRegex>
+      <winID>6|25|2003</winID>
+      <searchProperty>#awards</searchProperty>
+      <searchRegex>Won[^*]+?-[^*]+?Georges</searchRegex>
     </rule>
   </award>
 
   <award>
     <awardName>Sundance</awardName>
+    <awardText>Sundance Film Festival Award</awardText>
+    <awardTextRU>Премия кинофестиваль «Сандэнс»</awardTextRU>
+    <awardTextDE>Sundance Film Festival Award</awardTextDE>
     <rule>
-      <winID>6</winID>
-      <searchProperty>#userreview</searchProperty>
+      <winID>6|25|2003</winID>
+      <searchProperty>#userreview|#awards</searchProperty>
       <searchRegex>Награды:[\s\S]*?Сандэнс[^:]+?Победитель:[\s\S]-</searchRegex>
     </rule>
     <rule>
-      <winID>25</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Сандэнс[^:]+?Победитель:[\s\S]-</searchRegex>
-    </rule>
-    <rule>
-      <winID>2003</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Сандэнс[^:]+?Победитель:[\s\S]-</searchRegex>
+      <winID>6|25|2003</winID>
+      <searchProperty>#awards</searchProperty>
+      <searchRegex>Sundance Film Festival[^*]+?Won[^*]+?-</searchRegex>
     </rule>
   </award>
 
   <award>
     <awardName>SSIFF</awardName>
+    <awardText>Golden Shell Award</awardText>
+    <awardTextRU>Премия «Золотая раковина»</awardTextRU>
+    <awardTextDE>Goldene Muschel (Silver Springs International Film Festival)</awardTextDE>
     <rule>
-      <winID>6</winID>
-      <searchProperty>#userreview</searchProperty>
+      <winID>6|25|2003</winID>
+      <searchProperty>#userreview|#awards</searchProperty>
       <searchRegex>Награды:[\s\S]*?Сан.Себастьян[^:]+?Победитель:[\s\S]-</searchRegex>
     </rule>
     <rule>
-      <winID>25</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Сан.Себастьян[^:]+?Победитель:[\s\S]-</searchRegex>
+      <winID>6|25|2003</winID>
+      <searchProperty>#awards</searchProperty>
+      <searchRegex>San Sebastián International Film Festival[^*]+?Won[^*]+?-</searchRegex>
     </rule>
     <rule>
-      <winID>2003</winID>
-      <searchProperty>#userreview</searchProperty>
-      <searchRegex>Награды:[\s\S]*?Сан.Себастьян[^:]+?Победитель:[\s\S]-</searchRegex>
+      <winID>6|25|2003</winID>
+      <searchProperty>#awards</searchProperty>
+      <searchRegex>Won[^*]+?-[^*]+?Golden Seashell</searchRegex>
     </rule>
   </award>
 

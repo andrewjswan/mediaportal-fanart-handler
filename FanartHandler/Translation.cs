@@ -99,7 +99,6 @@ namespace FanartHandler
         lang = CultureInfo.CurrentUICulture.Name;
       }
 
-
       if (!System.IO.Directory.Exists(_path))
         System.IO.Directory.CreateDirectory(_path);
 
@@ -239,6 +238,7 @@ namespace FanartHandler
     public static string FHAlbums = "Albums";
     public static string FHVideos = "Videos";
     public static string FHSeries = "Series";
+    public static string FHLabels = "Music Record Labels";
 
     public static string FHSlideshow = "Fanart Handler Slideshow";
 

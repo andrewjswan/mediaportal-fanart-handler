@@ -14,6 +14,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading;
 
 namespace FanartHandler
@@ -45,6 +46,7 @@ namespace FanartHandler
 
     public Hashtable WindowsUsingFanartPlayGenre { get; set; }
     public Hashtable WindowsUsingFanartPlayClearArt { get; set; }
+    public Hashtable WindowsUsingFanartPlayLabel { get; set; }
 
     public bool IsPlaying { get; set; }
 
@@ -71,6 +73,7 @@ namespace FanartHandler
 
       WindowsUsingFanartPlayGenre = new Hashtable();
       WindowsUsingFanartPlayClearArt = new Hashtable();
+      WindowsUsingFanartPlayLabel = new Hashtable();
 
       PicturesCache = new Hashtable();
 
@@ -88,7 +91,8 @@ namespace FanartHandler
     public bool CheckValidWindowIDForFanart()
     {
       return (Utils.ContainsID(WindowsUsingFanartPlayGenre) ||
-              Utils.ContainsID(WindowsUsingFanartPlayClearArt)
+              Utils.ContainsID(WindowsUsingFanartPlayClearArt) ||
+              Utils.ContainsID(WindowsUsingFanartPlayLabel)
              );
     }
 
@@ -98,6 +102,7 @@ namespace FanartHandler
       AddPlayingArtistBannerProperty(artist);
       AddPlayingArtistAlbumCDProperty(artist, album);
       AddPlayingGenreProperty(genres);
+      AddPlayingArtistAlbumLabelProperty(artist, album);
     }
 
     public void AddPlayingArtistClearArtProperty(string artist)
@@ -117,7 +122,11 @@ namespace FanartHandler
         var PictureList = new List<string>();
         var FileName = (string) null;
 
-        var strArray = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
+        var strArray = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries)
+                             .Where(x => !string.IsNullOrWhiteSpace(x))
+                             .Select(s => s.Trim())
+                             .Distinct(StringComparer.CurrentCultureIgnoreCase)
+                             .ToArray();
         if (strArray != null)
           foreach (string sartist in strArray)
           {
@@ -179,7 +188,11 @@ namespace FanartHandler
         var PictureList = new List<string>();
         var FileName = (string) null;
 
-        var strArray = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
+        var strArray = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries)
+                             .Where(x => !string.IsNullOrWhiteSpace(x))
+                             .Select(s => s.Trim())
+                             .Distinct(StringComparer.CurrentCultureIgnoreCase)
+                             .ToArray();
         if (strArray != null)
           foreach (string sartist in strArray)
           {
@@ -243,7 +256,11 @@ namespace FanartHandler
 
         string _cd = Utils.GetProperty("#Play.Current.DiscID");
 
-        var strArray = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
+        var strArray = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries)
+                             .Where(x => !string.IsNullOrWhiteSpace(x))
+                             .Select(s => s.Trim())
+                             .Distinct(StringComparer.CurrentCultureIgnoreCase)
+                             .ToArray();
         if (strArray != null)
         {
           foreach (string sartist in strArray)
@@ -354,29 +371,6 @@ namespace FanartHandler
           // logger.Debug("*** PlayGenres: "+Genres);
           // Get Genre name
           Utils.FillFilesList(ref sFileNames, Genres, Utils.OtherPictures.GenresMusic);
-          /*
-          var genres = Genres.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
-          if (genres != null)
-          {
-            // logger.Debug("*** PlayGenres: > "+Genres);
-            foreach (string genre in genres)
-            {
-              sFile = Utils.GetThemedSkinFile(Utils.FAHGenres + MediaPortal.Util.Utils.MakeFileName(Utils.GetGenre(genre))+".png"); 
-              if (!string.IsNullOrEmpty(sFile) && File.Exists(sFile))
-              {
-                if (!sFileNames.Contains(sFile))
-                {
-                  sFileNames.Add(sFile);
-                }
-                // logger.Debug("- Genre [{0}/{1}] found. {2}", genre, Utils.GetGenre(genre), sFile);
-              }
-              else if (!string.IsNullOrEmpty(sFile) && !File.Exists(sFile))
-              {
-                logger.Debug("- Genre [{0}/{1}] not found. Skipped.", genre, Utils.GetGenre(genre));
-              }
-            }
-          }
-          */
           picFound = sFileNames.Count > 0; 
         }
 
@@ -411,6 +405,73 @@ namespace FanartHandler
         logger.Error("AddPlayingGenreProperty: " + ex);
       }
       FanartAvailable = FanartAvailable || picFound;
+    }
+
+    public void AddPlayingArtistAlbumLabelProperty(string artist, string album)
+    {
+      if (string.IsNullOrEmpty(artist) || string.IsNullOrEmpty(album))
+      {
+        Utils.SetProperty("music.labels.play", string.Empty);
+        return;
+      }
+      if (!Utils.ContainsID(WindowsUsingFanartPlayLabel))
+      {
+        return;
+      }
+      
+      var labelFile = string.Empty;
+      var labelFileNames = new List<string>();  
+      try
+      {
+        // Get Artist name
+        var artists = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries)
+                            .Where(x => !string.IsNullOrWhiteSpace(x))
+                            .Select(s => s.Trim())
+                            .Distinct(StringComparer.CurrentCultureIgnoreCase)
+                            .ToArray();
+        if (artists != null)
+        {
+          foreach (string sartist in artists)
+          {
+            FanartAlbum fa = new FanartAlbum(sartist, album);
+            if (fa.IsEmpty)
+            {
+              continue;
+            }
+
+            if (fa.RecordLabel.IsEmpty)
+            {
+              fa.RecordLabel.SetRecordLabelFromDB(Utils.GetDbm().GetLabelIdNameForAlbum(fa.DBArtist, fa.DBAlbum));
+            }
+
+            string label = fa.RecordLabel.GetFileName();
+            if (!string.IsNullOrWhiteSpace(label))
+            {
+              Utils.FillFilesList(ref labelFileNames, label, Utils.OtherPictures.RecordLabels);
+            }
+          }
+
+          if (labelFileNames.Count == 0)
+            labelFile = string.Empty;
+          else if (labelFileNames.Count == 1)
+            labelFile = labelFileNames[0].Trim();
+          else if (labelFileNames.Count == 2)
+            labelFile = labelFileNames[(DoShowImageOnePlay ? 0 : 1)].Trim();
+          else
+          {
+            var rand = new Random();
+            labelFile = labelFileNames[rand.Next(labelFileNames.Count-1)].Trim();
+          }
+        }
+
+        Utils.SetProperty("music.labels.play", labelFile);
+        // logger.Debug("*** "+artist+" - "+album+" - "+label+" - "+labelFile);
+        FanartAvailable = FanartAvailable || (!string.IsNullOrEmpty(labelFile));
+      }
+      catch (Exception ex)
+      {
+        logger.Error("AddPlayingArtistAlbumLabelProperty: " + ex);
+      }
     }
 
     public void RefreshMusicPlayingProperties()
@@ -534,6 +595,8 @@ namespace FanartHandler
       Utils.SetProperty("music.genres.play.single", string.Empty);
       Utils.SetProperty("music.genres.play.all", string.Empty);
       Utils.SetProperty("music.genres.play.verticalall", string.Empty);
+
+      Utils.SetProperty("music.labels.play", string.Empty);
     }
 
     public void ShowImagePlay()

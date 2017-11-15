@@ -141,7 +141,7 @@ namespace FanartHandler
             if (mytv != null)
             {
               string seriesId = mytv[DBSeries.cID];
-              if (!hashtable.Contains(seriesId))
+              if (!string.IsNullOrEmpty(seriesId) && !seriesId.StartsWith("-") && !hashtable.Contains(seriesId))
               {
                 FanartTVSeries tvS = new FanartTVSeries();
                 tvS.Id = seriesId; // 72860
@@ -179,7 +179,7 @@ namespace FanartHandler
       string result = string.Empty;
       try
       {
-        var searchName = Utils.GetArtist(tvSeriesName, Utils.Category.TvManual);
+        var searchName = Utils.GetArtist(tvSeriesName, Utils.Category.TVManual);
         var allSeries = DBOnlineSeries.getAllSeries();
         if (allSeries != null)
         {
@@ -188,7 +188,7 @@ namespace FanartHandler
             DBSeries mytv = Helper.getCorrespondingSeries(series[DBOnlineSeries.cID]);
             if (mytv != null)
             {
-              string seriesName = Utils.GetArtist(mytv[DBSeries.cParsedName], Utils.Category.TvManual); // Tom And Jerry
+              string seriesName = Utils.GetArtist(mytv[DBSeries.cParsedName], Utils.Category.TVManual); // Tom And Jerry
               string seriesLocalName = mytv.ToString(); // Том и Джерри
               if (seriesName.Equals(searchName, StringComparison.InvariantCultureIgnoreCase) ||
                   seriesLocalName.Equals(searchName, StringComparison.InvariantCultureIgnoreCase))

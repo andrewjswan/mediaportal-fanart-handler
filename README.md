@@ -122,9 +122,10 @@ To the team behind the MP Moving Picture plugin. From who I have used some of th
 #fanarthandler.movie.awards.selected.single
 #fanarthandler.movie.awards.selected.all
 #fanarthandler.movie.awards.selected.verticalall
+#fanarthandler.movie.awards.selected.text
 
 #fanarthandler.movingpicture.latests.available
-#fanarthandler.movingpicture.random.available
+#fanarthandler.movingpicture.available
 #fanarthandler.movingpicture.backdrop1.any
 #fanarthandler.movingpicture.backdrop2.any
 #fanarthandler.movingpicture.latests.backdrop1.any
@@ -150,6 +151,10 @@ To the team behind the MP Moving Picture plugin. From who I have used some of th
 #fanarthandler.music.backdrop2.selected
 #fanarthandler.music.artistclearart.selected
 #fanarthandler.music.artistbanner.selected
+
+#fanarthandler.music.labels.play
+#fanarthandler.music.labels.selected
+
 #fanarthandler.music.genres.play.single
 #fanarthandler.music.genres.play.all
 #fanarthandler.music.genres.play.verticalall
@@ -177,7 +182,7 @@ To the team behind the MP Moving Picture plugin. From who I have used some of th
 #fanarthandler.scorecenter.userdef.backdrop2.any
 
 #fanarthandler.tvseries.latests.available
-#fanarthandler.tvseries.random.available
+#fanarthandler.tvseries.available
 #fanarthandler.tvseries.backdrop1.any
 #fanarthandler.tvseries.backdrop2.any
 #fanarthandler.tvseries.latests.backdrop1.any
@@ -188,7 +193,7 @@ To the team behind the MP Moving Picture plugin. From who I have used some of th
 #fanarthandler.tv.userdef.backdrop2.any
 
 #fanarthandler.myfilms.latests.available
-#fanarthandler.myfilms.random.available
+#fanarthandler.myfilms.available
 #fanarthandler.myfilms.backdrop1.any
 #fanarthandler.myfilms.backdrop2.any
 #fanarthandler.myfilms.latests.backdrop1.any
@@ -197,6 +202,10 @@ To the team behind the MP Moving Picture plugin. From who I have used some of th
 #fanarthandler.plugins.userdef.available
 #fanarthandler.plugins.userdef.backdrop1.any
 #fanarthandler.plugins.userdef.backdrop2.any
+
+#fanarthandler.showtimes.available
+#fanarthandler.showtimes.backdrop1.any
+#fanarthandler.showtimes.backdrop2.any
 
 #fanarthandler.weather.backdrop1
 #fanarthandler.weather.backdrop2

@@ -67,26 +67,41 @@ namespace FanartHandler
         Thread.CurrentThread.Priority = !FanartHandlerSetup.Fh.FHThreadPriority.Equals("Lowest", StringComparison.CurrentCulture) ? ThreadPriority.BelowNormal : ThreadPriority.Lowest;
         Thread.CurrentThread.Name = "ScraperNowWorker";
 
+        /*
         var strArray = e.Argument as string[];
         artist = strArray[0];
         album = strArray[1];
         genre = strArray[2];
         triggerRefresh = false;
+        */
+        artist = string.Empty;
+        album = string.Empty;
+        genre = string.Empty;
+
+        FanartVideoTrack fmp = e.Argument as FanartVideoTrack;
 
         Utils.TotArtistsBeingScraped = 0.0;
         Utils.CurrArtistsBeingScraped = 0.0;
 
-        Utils.IsScraping = true;
-        Utils.AllocateDelayStop("FanartHandlerSetup-ScraperNowPlaying");
-        Utils.SetProperty("scraper.task", Translation.ScrapeNowPlaying);
-        Utils.SetProperty("scraper.percent.completed", "0");
-        Utils.SetProperty("scraper.percent.sign", Translation.StatusPercent);
-        FanartHandlerSetup.Fh.ShowScraperProgressIndicator();
+        if (fmp != null)
+        {
+          artist = fmp.GetArtists;
+          album = fmp.TrackAlbum;
+          genre = fmp.Genre;
 
-        Utils.GetDbm().NowPlayingScrape(artist, album);
+          Utils.IsScraping = true;
+          Utils.AllocateDelayStop("FanartHandlerSetup-ScraperNowPlaying");
+          Utils.SetProperty("scraper.task", Translation.ScrapeNowPlaying);
+          Utils.SetProperty("scraper.percent.completed", "0");
+          Utils.SetProperty("scraper.percent.sign", Translation.StatusPercent);
+          FanartHandlerSetup.Fh.ShowScraperProgressIndicator();
 
-        ReportProgress(100, "Done");
-        Utils.ThreadToSleep();
+          // Utils.GetDbm().NowPlayingScrape(artist, album);
+          Utils.GetDbm().NowPlayingScrape(fmp);
+
+          ReportProgress(100, "Done");
+          Utils.ThreadToSleep();
+        }
         e.Result = 0;
       }
       catch (Exception ex)

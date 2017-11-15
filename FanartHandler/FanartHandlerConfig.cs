@@ -206,6 +206,7 @@ namespace FanartHandler
       {
         isStopping = true;
         StopScraper();
+        Utils.StopScraperInfo = true;
         StopThumbScraper("True");
         Utils.GetDbm().Close();
       }
@@ -1798,7 +1799,7 @@ namespace FanartHandler
           else if (category == Utils.Category.PluginManual)
             // str2 = folder + (object) "\\Skin FanArt\\UserDef\\plugins\\" + artist + " (" + random.Next(10000, 99999) + ").jpg";
             str2 = Path.Combine(Utils.FAHUDPlugins, artist + " (" + random.Next(10000, 99999) + ").jpg");
-          else if (category == Utils.Category.TvManual)
+          else if (category == Utils.Category.TVManual)
             // str2 = folder + (object) "\\Skin FanArt\\UserDef\\tv\\" + artist + " (" + random.Next(10000, 99999) + ").jpg";
             str2 = Path.Combine(Utils.FAHUDTV, artist + " (" + random.Next(10000, 99999) + ").jpg");
           else
@@ -1919,7 +1920,7 @@ namespace FanartHandler
         return Utils.Category.PluginManual;
       if (s.Equals("Weather"))
         return Utils.Category.Weather;
-      return s.Equals("Scorecenter") ? Utils.Category.SportsManual : Utils.Category.TvManual;
+      return s.Equals("Scorecenter") ? Utils.Category.SportsManual : Utils.Category.TVManual;
     }
 
     private static Utils.Category GetCategoryFromExtComboFilter(string s)
@@ -1928,7 +1929,11 @@ namespace FanartHandler
         return Utils.Category.MovingPictureManual;
       if (s.Equals("MyFilms"))
         return Utils.Category.MyFilmsManual;
-      return s.Equals("MyVideos") ? Utils.Category.MovieScraped : Utils.Category.TvSeriesScraped;
+      if (s.Equals("MyVideos"))
+        return Utils.Category.MovieScraped;
+      if (s.Equals("ShowTimes"))
+        return Utils.Category.ShowTimesManual;
+      return Utils.Category.TVSeriesScraped;
     }
 
     private void button18_Click(object sender, EventArgs e)
@@ -2032,7 +2037,7 @@ namespace FanartHandler
         var fileName = openFileDialog.FileName;
         if (doInsert)
         {
-          Utils.GetDbm().LoadFanart(dataGridViewFanart.CurrentRow.Cells[0].Value.ToString(), fileName, fileName, Utils.Category.MusicFanartManual, null, Utils.Provider.Local, null, null);
+          Utils.GetDbm().LoadFanart(dataGridViewFanart.CurrentRow.Cells[0].Value.ToString(), null, null, null, fileName, fileName, Utils.Category.MusicFanartManual, Utils.Provider.Local);
           var row = myDataTableFanart.NewRow();
           row["Artist"] = dataGridViewFanart.CurrentRow.Cells[0].Value.ToString();
           row["Enabled"] = "True";
@@ -2045,7 +2050,7 @@ namespace FanartHandler
         else
         {
           dataGridViewFanart.CurrentRow.Cells[4].Value = fileName;
-          Utils.GetDbm().LoadFanart(dataGridViewFanart.CurrentRow.Cells[0].Value.ToString(), fileName, fileName, Utils.Category.MusicFanartManual, null, Utils.Provider.Local, null, null);
+          Utils.GetDbm().LoadFanart(dataGridViewFanart.CurrentRow.Cells[0].Value.ToString(), null, null, null, fileName, fileName, Utils.Category.MusicFanartManual, Utils.Provider.Local);
           var str2 = dataGridViewFanart.CurrentRow.Cells[5].Value.ToString();
           if (File.Exists(str2))
           {
@@ -4249,6 +4254,7 @@ namespace FanartHandler
       comboBox3.Items.Add("MyVideos");
       comboBox3.Items.Add("TVSeries");
       comboBox3.Items.Add("MyFilms");
+      comboBox3.Items.Add("ShowTimes");
       comboBox3.SelectedItem = "MovingPictures";
       //
       comboBoxFanartTVLanguage.Enabled = true;
@@ -4363,22 +4369,7 @@ namespace FanartHandler
       logger.Info("Fanart Handler configuration is starting.");
       logger.Info("Fanart Handler version is " + Utils.GetAllVersionNumber());
       logger.Debug("Current Culture: {0}", CultureInfo.CurrentCulture.Name);
-      /*
-      string __str = "AC/DC";
-      logger.Debug("*** AC/DC: {0}", Utils.GetArtist(__str,Utils.Category.MusicFanartScraped));
-      __str = "D:A:D";
-      logger.Debug("*** D:A:D: {0}", Utils.GetArtist(__str,Utils.Category.MusicFanartScraped));
-      __str = "D-A-D";
-      logger.Debug("*** D-A-D: {0}", Utils.GetArtist(__str,Utils.Category.MusicFanartScraped));
-      __str = "D_A_D";
-      logger.Debug("*** D_A_D: {0}", Utils.GetArtist(__str,Utils.Category.MusicFanartScraped));
-      __str = "Madonna|AC/DC|D:A:В";
-      logger.Debug("*** Madonna|AC/DC|D:A:В: {0}", Utils.GetArtist(__str,Utils.Category.MusicFanartScraped));
-      __str = "Madonna | AC/DC | D:A:В";
-      logger.Debug("*** Madonna | AC/DC | D:A:В: {0}", Utils.GetArtist(__str,Utils.Category.MusicFanartScraped));
-      __str = @"M:\Mediaportal\Thumbs\Skin FanArt\Scraper\music\D_A_D (110653).jpg";
-      logger.Debug("*** Fanart: {0}", Utils.GetArtist(__str,Utils.Category.MusicFanartScraped));
-      */
+      //
       Text = Text + " " + Utils.GetAllVersionNumber();
       //
       Utils.DelayStop = new Hashtable();

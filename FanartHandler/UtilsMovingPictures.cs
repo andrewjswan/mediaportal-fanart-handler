@@ -92,13 +92,21 @@ namespace FanartHandler
             var ImdbID = current.ImdbID.Trim();
 
             if (!string.IsNullOrWhiteSpace(backdropFullPath) && (allFilenames == null || !allFilenames.Contains(backdropFullPath)))
+            {
               if (File.Exists(backdropFullPath))
-                Utils.GetDbm().LoadFanart(Utils.GetArtist(current.Title, Utils.Category.MovingPictureManual), backdropFullPath, backdropFullPath, Utils.Category.MovingPictureManual, null, Utils.Provider.MovingPictures, null, ImdbID);
+              {
+                Utils.GetDbm().LoadFanart(Utils.GetArtist(current.Title, Utils.Category.MovingPictureManual), null, ImdbID, null, backdropFullPath, backdropFullPath, Utils.Category.MovingPictureManual, Utils.Provider.MovingPictures);
+              }
+            }
 
             backdropFullPath = Path.Combine(Utils.FAHMovingPictures, ImdbID+".jpg");
             if (!string.IsNullOrWhiteSpace(ImdbID) && (allFilenames == null || !allFilenames.Contains(backdropFullPath)))
+            {
               if (File.Exists(backdropFullPath))
-                Utils.GetDbm().LoadFanart(Utils.GetArtist(current.Title, Utils.Category.MovingPictureManual), backdropFullPath, backdropFullPath, Utils.Category.MovingPictureManual, null, Utils.Provider.MovingPictures, null, ImdbID);
+              {
+                Utils.GetDbm().LoadFanart(Utils.GetArtist(current.Title, Utils.Category.MovingPictureManual), null, ImdbID, null, backdropFullPath, backdropFullPath, Utils.Category.MovingPictureManual, Utils.Provider.MovingPictures);
+              }
+            }
           }
         }
         if (all != null)

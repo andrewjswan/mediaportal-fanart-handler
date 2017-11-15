@@ -68,6 +68,7 @@ namespace FanartHandler
     private DefaultBackdropWorker MyDefaultBackdropWorker;
 
     internal FileSystemWatcher MyFileWatcher { get; set; }
+    internal FileSystemWatcher MySpotLightFileWatcher { get; set; }
     internal ScraperNowWorker MyScraperNowWorker { get; set; }
     internal ScraperWorker MyScraperWorker { get; set; }
 
@@ -77,7 +78,7 @@ namespace FanartHandler
       set { fhThreadPriority = value; }
     }
 
-    private void MyFileWatcher_Created(object sender, FileSystemEventArgs e)
+    private void FileWatcher_Created(object sender, FileSystemEventArgs e)
     {
       var FileName = e.FullPath;
 
@@ -96,7 +97,10 @@ namespace FanartHandler
           !FileName.Contains(Utils.FAHFolder, StringComparison.OrdinalIgnoreCase) &&
           !FileName.Contains(Utils.FAHTVSeries, StringComparison.OrdinalIgnoreCase) &&
           !FileName.Contains(Utils.FAHMovingPictures, StringComparison.OrdinalIgnoreCase) &&
-          !FileName.Contains(Utils.FAHMyFilms, StringComparison.OrdinalIgnoreCase))
+          !FileName.Contains(Utils.FAHMyFilms, StringComparison.OrdinalIgnoreCase) &&
+          !FileName.Contains(Utils.FAHShowTimes, StringComparison.OrdinalIgnoreCase) &&
+          !FileName.Contains(Utils.FAHSSpotLight, StringComparison.OrdinalIgnoreCase) &&
+          !FileName.Contains(Utils.W10SpotLight, StringComparison.OrdinalIgnoreCase))
         return;
 
       if (FileName.Contains(Utils.FAHSMusic, StringComparison.OrdinalIgnoreCase) || 
@@ -710,13 +714,15 @@ namespace FanartHandler
         logger.Debug("FanartHandler skin use: ");
         logger.Debug(" Play: " + Utils.Check(FPlay.WindowsUsingFanartPlay.Count > 0) + " Fanart");
         logger.Debug("       " + Utils.Check(FPlayOther.WindowsUsingFanartPlayClearArt.Count > 0) + " ClearArt, " + 
-                                 Utils.Check(FPlayOther.WindowsUsingFanartPlayGenre.Count > 0) + " Genres");
+                                 Utils.Check(FPlayOther.WindowsUsingFanartPlayGenre.Count > 0) + " Genres" +
+                                 Utils.Check(FPlayOther.WindowsUsingFanartPlayLabel.Count > 0) + " Labels");
         logger.Debug(" Selected: " + Utils.Check(FSelected.WindowsUsingFanartSelectedMusic.Count > 0) + " Music Fanart, " + 
                                      Utils.Check(FSelected.WindowsUsingFanartSelectedMovie.Count > 0) + " Movie Fanart, " +
                                      Utils.Check(FSelected.WindowsUsingFanartSelectedPictures.Count > 0) + " Pictures Fanart, " +
                                      Utils.Check(FSelected.WindowsUsingFanartSelectedScoreCenter.Count > 0) + " ScoreCenter Fanart");
         logger.Debug("           " + Utils.Check(FSelectedOther.WindowsUsingFanartSelectedClearArtMusic.Count > 0) + " Music ClearArt, " + 
-                                     Utils.Check(FSelectedOther.WindowsUsingFanartSelectedGenreMusic.Count > 0) + " Music Genres");
+                                     Utils.Check(FSelectedOther.WindowsUsingFanartSelectedGenreMusic.Count > 0) + " Music Genres" +
+                                     Utils.Check(FSelectedOther.WindowsUsingFanartSelectedLabelMusic.Count > 0) + " Music Labels");
         logger.Debug("           " + Utils.Check(FSelectedOther.WindowsUsingFanartSelectedStudioMovie.Count > 0) + " Movie Studios, " + 
                                      Utils.Check(FSelectedOther.WindowsUsingFanartSelectedGenreMovie.Count > 0) + " Movie Genres, " +
                                      Utils.Check(FSelectedOther.WindowsUsingFanartSelectedAwardMovie.Count > 0) + " Movie Awards");
@@ -727,6 +733,7 @@ namespace FanartHandler
         //
         Utils.InitiateDbm("mediaportal");
         Utils.StopScraper = false;
+        Utils.StopScraperInfo = false;
         //
         AddToDirectoryTimerQueue("All");
         //
@@ -791,12 +798,31 @@ namespace FanartHandler
         MyFileWatcher.Filter = "*.jpg";
         MyFileWatcher.IncludeSubdirectories = true;
         MyFileWatcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.LastWrite;
-        MyFileWatcher.Created += new FileSystemEventHandler(MyFileWatcher_Created);
+        MyFileWatcher.Created += new FileSystemEventHandler(FileWatcher_Created);
         MyFileWatcher.EnableRaisingEvents = true;
       }
       catch (Exception ex)
       {
         logger.Error("InitFileWatcher: "+ex);
+      }
+
+      if (!Utils.UseSpotLight && Directory.Exists(Utils.W10SpotLight))
+      {
+        return;
+      }
+      try
+      {
+        MySpotLightFileWatcher = new FileSystemWatcher();
+        MySpotLightFileWatcher.Path = Utils.W10SpotLight;
+        MySpotLightFileWatcher.Filter = "*.*";
+        MySpotLightFileWatcher.IncludeSubdirectories = false;
+        MySpotLightFileWatcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.LastWrite;
+        MySpotLightFileWatcher.Created += new FileSystemEventHandler(FileWatcher_Created);
+        MySpotLightFileWatcher.EnableRaisingEvents = true;
+      }
+      catch (Exception ex)
+      {
+        logger.Error("InitFileWatcher (SpotLight): "+ex);
       }
     }
 
@@ -871,13 +897,13 @@ namespace FanartHandler
         {
           return;
         }
-        logger.Debug("Active Window: " + Utils.sActiveWindow + " " + Utils.Check(CheckValidWindowIDForFanart()) + " " + Utils.Check(Utils.UseOverlayFanart) + " " + Utils.Check(Utils.AllowFanartInActiveWindow()) +
-                     " Play: " + Utils.Check(FPlay.CheckValidWindowIDForFanart()) + " " + Utils.Check(FPlayOther.CheckValidWindowIDForFanart()) +
-                     " Player: " + Utils.Check((g_Player.Playing || g_Player.Paused) && (g_Player.IsCDA || g_Player.IsMusic || g_Player.IsRadio)) + 
-                     " Selected: " + Utils.Check(FSelected.CheckValidWindowIDForFanart()) + " " + Utils.Check(FSelectedOther.CheckValidWindowIDForFanart()) + 
-                     " Random: " + Utils.Check(FRandom.CheckValidWindowIDForFanart()) + 
-                     " Weather: " + Utils.Check(FWeather.CheckValidWindowIDForFanart()) +
-                     " Holiday: " + Utils.Check(FHoliday.CheckValidWindowIDForFanart()));
+        logger.Debug("Active Window: " + Utils.sActiveWindow + " " + Utils.Check(CheckValidWindowIDForFanart()) + " " + Utils.Check(Utils.UseOverlayFanart) + " " + Utils.Check(Utils.AllowFanartInActiveWindow()) + " | " +
+                     Utils.Check(FPlay.CheckValidWindowIDForFanart()) + " " + Utils.Check(FPlayOther.CheckValidWindowIDForFanart()) + " Play, " +
+                     Utils.Check((g_Player.Playing || g_Player.Paused) && (g_Player.IsCDA || g_Player.IsMusic || g_Player.IsRadio)) + " Player, " +
+                     Utils.Check(FSelected.CheckValidWindowIDForFanart()) + " " + Utils.Check(FSelectedOther.CheckValidWindowIDForFanart()) + " Selected, " +
+                     Utils.Check(FRandom.CheckValidWindowIDForFanart()) +  " Random, " + Utils.Check(Utils.ContainsID(FRandom.WindowsUsingFanartLatestsRandom)) +  " Random Latests, " +
+                     Utils.Check(FWeather.CheckValidWindowIDForFanart()) + " Weather, " +
+                     Utils.Check(FHoliday.CheckValidWindowIDForFanart()) + " Holiday") ;
 
         if (Utils.IsScraping)
         {
@@ -1021,6 +1047,7 @@ namespace FanartHandler
       {
         System.Threading.ThreadPool.QueueUserWorkItem(delegate { FRandom.RefreshRandomFilenames(); }, null);
         System.Threading.ThreadPool.QueueUserWorkItem(delegate { FRandom.RefreshRandomLatestsFilenames(); }, null);
+        System.Threading.ThreadPool.QueueUserWorkItem(delegate { Utils.GetDbm().UpdateWidthHeightRatio(); }, null);
       }
       catch { }
     }
@@ -1053,9 +1080,8 @@ namespace FanartHandler
         logger.Debug("OnPlayBackStarted: Window: " + Utils.sActiveWindow + " MediaType: " + type.ToString() + " LastFM: " + MediaPortal.Util.Utils.IsLastFMStream(filename).ToString() + " - " + filename);
         if (type == g_Player.MediaType.Music || type == g_Player.MediaType.Radio || MediaPortal.Util.Utils.IsLastFMStream(filename))
         {
-          if ((Utils.ContainsID(FPlay.WindowsUsingFanartPlay) || 
-               Utils.ContainsID(FPlayOther.WindowsUsingFanartPlayGenre) || 
-               Utils.ContainsID(FPlayOther.WindowsUsingFanartPlayClearArt) || 
+          if ((FPlay.CheckValidWindowIDForFanart() || 
+               FPlayOther.CheckValidWindowIDForFanart() || 
                Utils.UseOverlayFanart) && Utils.AllowFanartInActiveWindow())
           {
             StartRefreshTimer();
@@ -1065,6 +1091,7 @@ namespace FanartHandler
             logger.Debug("OnPlayBackStarted: Window: " + Utils.sActiveWindow + 
                                            " Skip due: " + Utils.Check(Utils.ContainsID(FPlay.WindowsUsingFanartPlay)) + " WPlay, "+
                                                            Utils.Check(Utils.ContainsID(FPlayOther.WindowsUsingFanartPlayGenre)) + " WPlayGenre, "+
+                                                           Utils.Check(Utils.ContainsID(FPlayOther.WindowsUsingFanartPlayLabel)) + " WPlayLabel, "+
                                                            Utils.Check(Utils.ContainsID(FPlayOther.WindowsUsingFanartPlayClearArt)) + " WPlayClearArt, "+
                                                            Utils.Check(Utils.UseOverlayFanart) + " WPlayOverlay, "+
                                                            Utils.Check(Utils.AllowFanartInActiveWindow()) + " WPlayActive.");
@@ -1133,7 +1160,7 @@ namespace FanartHandler
       return false;
     }
 
-    internal void StartScraperNowPlaying(string artist, string album, string genre)
+    internal void StartScraperNowPlaying(FanartVideoTrack fmp)
     {
       try
       {
@@ -1149,12 +1176,15 @@ namespace FanartHandler
         if (MyScraperNowWorker.IsBusy)
           return;
 
+        /*
         MyScraperNowWorker.RunWorkerAsync(new string[3]
         {
             artist,
             album, 
             genre
         });
+        */
+        MyScraperNowWorker.RunWorkerAsync(fmp);
       }
       catch (Exception ex)
       {
@@ -1199,6 +1229,8 @@ namespace FanartHandler
         Utils.SetIsStopping(true);
         if (Utils.GetDbm() != null)
           Utils.StopScraper = true;
+        if (Utils.GetDbm() != null)
+          Utils.StopScraperInfo = true;
 
         try
         {
@@ -1227,8 +1259,13 @@ namespace FanartHandler
         StopScraperNowPlaying();
         if (MyFileWatcher != null)
         {
-          MyFileWatcher.Created -= new FileSystemEventHandler(MyFileWatcher_Created);
+          MyFileWatcher.Created -= new FileSystemEventHandler(FileWatcher_Created);
           MyFileWatcher.Dispose();
+        }
+        if (MySpotLightFileWatcher != null)
+        {
+          MySpotLightFileWatcher.Created -= new FileSystemEventHandler(FileWatcher_Created);
+          MySpotLightFileWatcher.Dispose();
         }
         if (scraperTimer != null)
         {
@@ -1419,6 +1456,9 @@ namespace FanartHandler
           var _flagClearArt = false;
           var _flagClearArtPlay = false;
 
+          var _flagLabelMusic = false;
+          var _flagLabelPlay = false;
+
           var _flagWeather = false;
 
           var _flagHoliday = false;
@@ -1443,6 +1483,7 @@ namespace FanartHandler
                                                            ref _flagGenreMusic, ref _flagGenreMusicSingle, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
                                                            ref _flagGenreMovie, ref _flagGenreMovieSingle, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
                                                            ref _flagStudioMovie, ref _flagStudioMovieSingle, ref _flagStudioMovieAll, ref _flagStudioMovieVertical,
+                                                           ref _flagLabelMusic, ref _flagLabelPlay,
                                                            ref _flagAwardMovie, ref _flagAwardMovieSingle, ref _flagAwardMovieAll, ref _flagAwardMovieVertical, 
                                                            ref _flagWeather, ref _flagHoliday, ref _flagHolidayText,
                                                            ref skinFile
@@ -1466,6 +1507,7 @@ namespace FanartHandler
                                                            ref _flagGenreMusic, ref _flagGenreMusicSingle, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
                                                            ref _flagGenreMovie, ref _flagGenreMovieSingle, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
                                                            ref _flagStudioMovie, ref _flagStudioMovieSingle, ref _flagStudioMovieAll, ref _flagStudioMovieVertical,
+                                                           ref _flagLabelMusic, ref _flagLabelPlay,
                                                            ref _flagAwardMovie, ref _flagAwardMovieSingle, ref _flagAwardMovieAll, ref _flagAwardMovieVertical, 
                                                            ref _flagWeather, ref _flagHoliday, ref _flagHolidayText,
                                                            ref skinFile
@@ -1484,6 +1526,7 @@ namespace FanartHandler
                                                                ref _flagGenreMusic, ref _flagGenreMusicSingle, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
                                                                ref _flagGenreMovie, ref _flagGenreMovieSingle, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
                                                                ref _flagStudioMovie, ref _flagStudioMovieSingle, ref _flagStudioMovieAll, ref _flagStudioMovieVertical,
+                                                               ref _flagLabelMusic, ref _flagLabelPlay,
                                                                ref _flagAwardMovie, ref _flagAwardMovieSingle, ref _flagAwardMovieAll, ref _flagAwardMovieVertical, 
                                                                ref _flagWeather, ref _flagHoliday, ref _flagHolidayText,
                                                                ref skinFile
@@ -1504,6 +1547,7 @@ namespace FanartHandler
                                                              ref _flagGenreMusic, ref _flagGenreMusicSingle, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
                                                              ref _flagGenreMovie, ref _flagGenreMovieSingle, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
                                                              ref _flagStudioMovie, ref _flagStudioMovieSingle, ref _flagStudioMovieAll, ref _flagStudioMovieVertical,
+                                                             ref _flagLabelMusic, ref _flagLabelPlay,
                                                              ref _flagAwardMovie, ref _flagAwardMovieSingle, ref _flagAwardMovieAll, ref _flagAwardMovieVertical, 
                                                              ref _flagWeather, ref _flagHoliday, ref _flagHolidayText,
                                                              ref skinFile
@@ -1532,6 +1576,7 @@ namespace FanartHandler
                                                            ref _flagGenreMusic, ref _flagGenreMusicSingle, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
                                                            ref _flagGenreMovie, ref _flagGenreMovieSingle, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
                                                            ref _flagStudioMovie, ref _flagStudioMovieSingle, ref _flagStudioMovieAll, ref _flagStudioMovieVertical,
+                                                           ref _flagLabelMusic, ref _flagLabelPlay,
                                                            ref _flagAwardMovie, ref _flagAwardMovieSingle, ref _flagAwardMovieAll, ref _flagAwardMovieVertical, 
                                                            ref _flagWeather, ref _flagHoliday, ref _flagHolidayText,
                                                            ref skinFile
@@ -1550,6 +1595,7 @@ namespace FanartHandler
                                                                ref _flagGenreMusic, ref _flagGenreMusicSingle, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
                                                                ref _flagGenreMovie, ref _flagGenreMovieSingle, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
                                                                ref _flagStudioMovie, ref _flagStudioMovieSingle, ref _flagStudioMovieAll, ref _flagStudioMovieVertical,
+                                                               ref _flagLabelMusic, ref _flagLabelPlay,
                                                                ref _flagAwardMovie, ref _flagAwardMovieSingle, ref _flagAwardMovieAll, ref _flagAwardMovieVertical, 
                                                                ref _flagWeather, ref _flagHoliday, ref _flagHolidayText,
                                                                ref skinFile
@@ -1570,6 +1616,7 @@ namespace FanartHandler
                                                              ref _flagGenreMusic, ref _flagGenreMusicSingle, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
                                                              ref _flagGenreMovie, ref _flagGenreMovieSingle, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
                                                              ref _flagStudioMovie, ref _flagStudioMovieSingle, ref _flagStudioMovieAll, ref _flagStudioMovieVertical,
+                                                             ref _flagLabelMusic, ref _flagLabelPlay,
                                                              ref _flagAwardMovie, ref _flagAwardMovieSingle, ref _flagAwardMovieAll, ref _flagAwardMovieVertical, 
                                                              ref _flagWeather, ref _flagHoliday, ref _flagHolidayText,
                                                              ref skinFile
@@ -1612,6 +1659,19 @@ namespace FanartHandler
             if (_flagClearArt && !Utils.ContainsID(FSelectedOther.WindowsUsingFanartSelectedClearArtMusic, nodeValue))
             {
               FSelectedOther.WindowsUsingFanartSelectedClearArtMusic.Add(nodeValue, nodeValue);
+            }
+            #endregion
+
+            #region Labels
+            // Play Music Labels
+            if (_flagLabelPlay && !Utils.ContainsID(FPlayOther.WindowsUsingFanartPlayLabel, nodeValue))
+            {
+              FPlayOther.WindowsUsingFanartPlayLabel.Add(nodeValue, nodeValue);
+            }
+            // Selected Music Labels
+            if (_flagLabelMusic && !Utils.ContainsID(FSelectedOther.WindowsUsingFanartSelectedLabelMusic, nodeValue))
+            {
+              FSelectedOther.WindowsUsingFanartSelectedLabelMusic.Add(nodeValue, nodeValue);
             }
             #endregion
 
@@ -1736,7 +1796,9 @@ namespace FanartHandler
                   skinFile.UseRandomScoreCenterFanartUser || 
                   skinFile.UseRandomTVSeriesFanart || 
                   skinFile.UseRandomTVFanartUser ||
-                  skinFile.UseRandomPluginsFanartUser)
+                  skinFile.UseRandomPluginsFanartUser ||
+                  skinFile.UseRandomShowTimesFanart  ||
+                  skinFile.UseRandomSpotLightsFanart)
               {
                 if (Utils.ContainsID(FRandom.WindowsUsingFanartRandom, nodeValue))
                 {
@@ -1802,6 +1864,7 @@ namespace FanartHandler
                                   ref bool _flagGenreMusic, ref bool _flagGenreMusicSingle, ref bool _flagGenreMusicAll, ref bool _flagGenreMusicVertical, 
                                   ref bool _flagGenreMovie, ref bool _flagGenreMovieSingle, ref bool _flagGenreMovieAll, ref bool _flagGenreMovieVertical, 
                                   ref bool _flagStudioMovie, ref bool _flagStudioMovieSingle, ref bool _flagStudioMovieAll, ref bool _flagStudioMovieVertical, 
+                                  ref bool _flagLabelMusic, ref bool _flagLabelPlay,
                                   ref bool _flagAwardMovie, ref bool _flagAwardMovieSingle, ref bool _flagAwardMovieAll, ref bool _flagAwardMovieVertical, 
                                   ref bool _flagWeather, 
                                   ref bool _flagHoliday, ref bool _flagHolidayText,
@@ -1843,6 +1906,11 @@ namespace FanartHandler
       {
         _flagClearArtPlay = true;
       }
+      // Label
+      if (_xml.Contains("#fanarthandler.music.labels.play"))
+      {
+        _flagLabelPlay = true;
+      }
       #endregion
 
       #region Selected Fanart
@@ -1877,6 +1945,12 @@ namespace FanartHandler
       if (_xml.Contains("#fanarthandler.music.artistclearart.selected") || _xml.Contains("#fanarthandler.music.artistbanner.selected") || _xml.Contains("#fanarthandler.music.albumcd.selected"))
       {
         _flagClearArt = true;
+      }
+
+      // Labels
+      if (_xml.Contains("#fanarthandler.music.labels.selected"))
+      {
+        _flagLabelMusic = true;
       }
 
       // Studios
@@ -2016,6 +2090,8 @@ namespace FanartHandler
             _skinFile.UseRandomPluginsFanartUser = Utils.GetBool(ParseNodeValue(s));
           if (s.StartsWith("#useRandomMyFilmsFanart", StringComparison.CurrentCulture))
             _skinFile.UseRandomMyFilmsFanart = Utils.GetBool(ParseNodeValue(s));
+          if (s.StartsWith("#useRandomShowTimesFanart", StringComparison.CurrentCulture))
+            _skinFile.UseRandomShowTimesFanart = Utils.GetBool(ParseNodeValue(s));
           // Latest Random
           if (s.StartsWith("#useRandomLatestsMusicFanart", StringComparison.CurrentCulture))
             _skinFile.UseRandomMusicLatestsFanart = Utils.GetBool(ParseNodeValue(s));
@@ -2029,6 +2105,9 @@ namespace FanartHandler
             _skinFile.UseRandomTVSeriesLatestsFanart = Utils.GetBool(ParseNodeValue(s));
           if (s.StartsWith("#useRandomLatestsMyFilmsFanart", StringComparison.CurrentCulture))
             _skinFile.UseRandomMyFilmsLatestsFanart = Utils.GetBool(ParseNodeValue(s));
+          // SpotLight
+          if (s.StartsWith("#useRandomSpotLightsFanart", StringComparison.CurrentCulture))
+            _skinFile.UseRandomSpotLightsFanart = Utils.GetBool(ParseNodeValue(s));
         }
       }
       #endregion

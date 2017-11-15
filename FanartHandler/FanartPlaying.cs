@@ -14,6 +14,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading;
 
 namespace FanartHandler
@@ -137,7 +138,11 @@ namespace FanartHandler
 
       try
       {
-        var strArray = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
+        var strArray = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries)
+                             .Where(x => !string.IsNullOrWhiteSpace(x))
+                             .Select(s => s.Trim())
+                             .Distinct(StringComparer.CurrentCultureIgnoreCase)
+                             .ToArray();
         
         // Get Album thumb name for Artists
         if (!string.IsNullOrEmpty(album))
@@ -316,7 +321,7 @@ namespace FanartHandler
         #region Music playing
         if (CheckValidWindowIDForFanart())
         {
-          Utils.GetCurrMusicPlayItem(ref CurrentTrackTag, ref CurrentAlbumTag, ref CurrentGenreTag, ref LastArtistTrack, ref LastAlbumArtistTrack);
+          FanartVideoTrack fmp = Utils.GetCurrMusicPlayItem(ref CurrentTrackTag, ref CurrentAlbumTag, ref CurrentGenreTag, ref LastArtistTrack, ref LastAlbumArtistTrack);
 
           if (Utils.ScraperMusicPlaying && (FanartHandlerSetup.Fh.MyScraperNowWorker != null && FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh))
           {
@@ -346,7 +351,7 @@ namespace FanartHandler
                 if (FanartHandlerSetup.Fh.MyScraperNowWorker == null || (FanartHandlerSetup.Fh.MyScraperNowWorker != null && !FanartHandlerSetup.Fh.MyScraperNowWorker.IsBusy))
                 {
                   // logger.Debug ("*** NP: "+CurrentTrackTag+" - "+CurrentAlbumTag+" - "+CurrentGenreTag);
-                  FanartHandlerSetup.Fh.StartScraperNowPlaying(CurrentTrackTag, CurrentAlbumTag, CurrentGenreTag);
+                  FanartHandlerSetup.Fh.StartScraperNowPlaying(fmp);
                 }
               }
             }

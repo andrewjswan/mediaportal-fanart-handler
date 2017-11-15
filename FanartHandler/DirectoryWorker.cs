@@ -194,9 +194,9 @@ namespace FanartHandler
             if (All || Folder.Contains(Utils.FAHUDTV, StringComparison.OrdinalIgnoreCase))
             {
               logger.Info("Refreshing local fanart for TV is starting.");
-              Utils.SetupFilenames(Utils.FAHUDTV, "*.jpg", Utils.Category.TvManual, null, Utils.Provider.Local);
-              // Utils.GetDbm().RemoveFromAnyHashtable(Utils.Category.TvManual);
-              Utils.GetDbm().RefreshAnyFanart(Utils.Category.TvManual, false);
+              Utils.SetupFilenames(Utils.FAHUDTV, "*.jpg", Utils.Category.TVManual, null, Utils.Provider.Local);
+              // Utils.GetDbm().RemoveFromAnyHashtable(Utils.Category.TVManual);
+              Utils.GetDbm().RefreshAnyFanart(Utils.Category.TVManual, false);
               logger.Info("Refreshing local fanart for TV is done.");
             }
             ReportProgress(82, "Importing local fanart for Plugins...");
@@ -216,14 +216,14 @@ namespace FanartHandler
               logger.Info("Refreshing local fanart for TVSeries is starting.");
               try
               {
-                var tvSeriesName = UtilsTVSeries.GetTVSeriesNames(Utils.Category.TvSeriesScraped);
+                var tvSeriesName = UtilsTVSeries.GetTVSeriesNames(Utils.Category.TVSeriesScraped);
                 if (tvSeriesName != null)
                 {
-                  Utils.SetupFilenames(Utils.FAHTVSeries, "*.jpg", Utils.Category.TvSeriesScraped, tvSeriesName, Utils.Provider.TVSeries);
+                  Utils.SetupFilenames(Utils.FAHTVSeries, "*.jpg", Utils.Category.TVSeriesScraped, tvSeriesName, Utils.Provider.TVSeries);
                   logger.Info("Refreshing local fanart for TVSeries added files.");
                   tvSeriesName.Clear();
-                  // Utils.GetDbm().RemoveFromAnyHashtable(Utils.Category.TvSeriesScraped);
-                  Utils.GetDbm().RefreshAnyFanart(Utils.Category.TvSeriesScraped, false);
+                  // Utils.GetDbm().RemoveFromAnyHashtable(Utils.Category.TVSeriesScraped);
+                  Utils.GetDbm().RefreshAnyFanart(Utils.Category.TVSeriesScraped, false);
                 }
               }
               catch { }
@@ -244,7 +244,7 @@ namespace FanartHandler
               catch { }
               logger.Info("Refreshing local fanart for MovingPictures is done.");
             }
-            ReportProgress(98, "Importing loacal fanart for MyFilms...");
+            ReportProgress(96, "Importing loacal fanart for MyFilms...");
             if (Utils.MyFilmsEnabled && 
                 (FanartHandlerHelper.IsAssemblyAvailable("MyFilms", new Version(6, 0, 0, 0), Path.Combine(Path.Combine(Config.GetFolder((Config.Dir) 5), "windows"), "MyFilms.dll")) &&
                 (All || Folder.Equals("MyFilms") || Folder.Contains(Utils.FAHMyFilms, StringComparison.OrdinalIgnoreCase))))
@@ -258,6 +258,33 @@ namespace FanartHandler
               }
               catch { }
               logger.Info("Refreshing local fanart for MyFilms is done.");
+            }
+            ReportProgress(98, "Importing local fanart for ShowTimes...");
+            if (All || Folder.Contains(Utils.FAHShowTimes, StringComparison.OrdinalIgnoreCase))
+            {
+              logger.Info("Refreshing local fanart for ShowTimes is starting.");
+              Utils.SetupFilenames(Utils.FAHShowTimes, "*.jpg", Utils.Category.ShowTimesManual, null, Utils.Provider.Local);
+              // Utils.GetDbm().RemoveFromAnyHashtable(Utils.Category.ShowTimesManual);
+              Utils.GetDbm().RefreshAnyFanart(Utils.Category.ShowTimesManual, false);
+              logger.Info("Refreshing local fanart for ShowTimes is done.");
+            }
+            ReportProgress(99, "Importing fanart for SpotLight...");
+            if (All || Folder.Contains(Utils.W10SpotLight, StringComparison.OrdinalIgnoreCase))
+            {
+              logger.Info("Refreshing Windows fanart for SpotLight is starting.");
+              Utils.SetupW10SpotLights();
+              Utils.SetupFilenames(Utils.FAHSSpotLight, "*.jpg", Utils.Category.SpotLightScraped, null, Utils.Provider.SpotLight);
+              Utils.GetDbm().CleanRedundantFanart(Utils.Category.SpotLightScraped, Utils.SpotLightMax);
+              Utils.GetDbm().RefreshAnyFanart(Utils.Category.SpotLightScraped, false);
+              logger.Info("Refreshing Windows fanart for SpotLight is done.");
+            }
+            if (All || Folder.Contains(Utils.FAHSSpotLight, StringComparison.OrdinalIgnoreCase))
+            {
+              logger.Info("Refreshing local fanart for SpotLight is starting.");
+              Utils.SetupFilenames(Utils.FAHSSpotLight, "*.jpg", Utils.Category.SpotLightScraped, null, Utils.Provider.SpotLight);
+              Utils.GetDbm().CleanRedundantFanart(Utils.Category.SpotLightScraped, Utils.SpotLightMax);
+              Utils.GetDbm().RefreshAnyFanart(Utils.Category.SpotLightScraped, false);
+              logger.Info("Refreshing local fanart for SpotLight is done.");
             }
           }
         }

@@ -79,6 +79,19 @@ namespace FanartHandler
           logger.Debug("InitialScrape statistic for Actual Music Fanart/Thumbs:");
           Utils.GetDbm().GetAccessStatistic(true);
           #endregion
+
+          Utils.GetDbm().DeleteOldLabels();
+          
+          if (Utils.CleanUpOldFiles)
+          {
+            Utils.GetDbm().DeleteOldImages();
+          }
+
+          if (Utils.GetArtistInfo || Utils.GetAlbumInfo)
+          {
+            logger.Debug("Run get Music Info in background ...");
+            System.Threading.ThreadPool.QueueUserWorkItem(delegate { Utils.GetDbm().GetMusicInfo(); }, null);
+          }
         }
         else // Part of ...
         {

@@ -35,6 +35,8 @@ namespace FanartHandler
     private ArrayList ListAnyTVSeries;
     private ArrayList ListAnyTVUser;
     private ArrayList ListAnyMyFilms;
+    private ArrayList ListAnyShowTimes;
+    private ArrayList ListAnySpotLights;
 
     private ArrayList ListLatestsMusic;
     private ArrayList ListLatestsMvCentral;
@@ -55,6 +57,8 @@ namespace FanartHandler
     private int PrevSelectedTVSeries;
     private int PrevSelectedTVUser;
     private int PrevSelectedMyFilms;
+    private int PrevSelectedShowTimes;
+    private int PrevSelectedSpotLights;
 
     private int PrevSelectedLatestsMusic;         
     private int PrevSelectedLatestsMvCentral;     
@@ -75,6 +79,8 @@ namespace FanartHandler
     private string currAnyTVSeries;
     private string currAnyTVUser;
     private string currAnyMyFilms;
+    private string currAnyShowTimes;
+    private string currAnySpotLights;
 
     private string currLatestsMusic;         
     private string currLatestsMvCentral;     
@@ -99,7 +105,6 @@ namespace FanartHandler
 
     // Public
     public int RefreshTickCount { get; set; }
-    public int CountSetVisibility { get; set; }
 
     public bool FanartAvailable { get; set; }
     public bool IsRandom { get; set; }
@@ -128,6 +133,8 @@ namespace FanartHandler
       PrevSelectedTVSeries = -1;
       PrevSelectedTVUser = -1;
       PrevSelectedMyFilms = -1;
+      PrevSelectedShowTimes = -1;
+      PrevSelectedSpotLights = -1;
 
       PrevSelectedLatestsMusic = -1;
       PrevSelectedLatestsMvCentral = -1;
@@ -148,6 +155,8 @@ namespace FanartHandler
       currAnyTVSeries = string.Empty;
       currAnyTVUser = string.Empty;
       currAnyMyFilms = string.Empty;
+      currAnyShowTimes = string.Empty;
+      currAnySpotLights = string.Empty;
 
       currLatestsMusic = string.Empty;
       currLatestsMvCentral = string.Empty;
@@ -159,7 +168,6 @@ namespace FanartHandler
       DoShowImageOneRandom = true;
 
       RefreshTickCount = 0;
-      CountSetVisibility = 0;
 
       propertiesRandom = new Hashtable();
 
@@ -174,7 +182,9 @@ namespace FanartHandler
       ListAnyTVSeries = new ArrayList();
       ListAnyTVUser = new ArrayList();
       ListAnyPluginsUser = new ArrayList();
+      ListAnyShowTimes = new ArrayList();
       ListAnyMyFilms = new ArrayList();
+      ListAnySpotLights = new ArrayList();
 
       ListLatestsMusic = new ArrayList();
       ListLatestsMvCentral = new ArrayList();
@@ -226,14 +236,14 @@ namespace FanartHandler
 
     public void RefreshRandomTVImageProperties(RefreshWorker rw)
     {
-      FillPropertyRandom(Utils.Category.TvManual, ref currAnyTVUser, ref PrevSelectedTVUser, "tv.userdef", ref ListAnyTVUser);
+      FillPropertyRandom(Utils.Category.TVManual, ref currAnyTVUser, ref PrevSelectedTVUser, "tv.userdef", ref ListAnyTVUser);
       if (rw != null /*&& WindowOpen*/)
         rw.ReportProgress(10, "TV Updated Properties");
     }
 
     public void RefreshRandomTVSeriesImageProperties(RefreshWorker rw)
     {
-      FillPropertyRandom(Utils.Category.TvSeriesScraped, ref currAnyTVSeries, ref PrevSelectedTVSeries, "tvseries", ref ListAnyTVSeries);
+      FillPropertyRandom(Utils.Category.TVSeriesScraped, ref currAnyTVSeries, ref PrevSelectedTVSeries, "tvseries", ref ListAnyTVSeries);
       if (rw != null /*&& WindowOpen*/)
         rw.ReportProgress(10, "TVSeries Updated Properties");
     }
@@ -266,44 +276,58 @@ namespace FanartHandler
         rw.ReportProgress(10, "PlugIns Updated Properties");
     }
 
+    public void RefreshRandomShowTimesImageProperties(RefreshWorker rw)
+    {
+      FillPropertyRandom(Utils.Category.ShowTimesManual, ref currAnyShowTimes, ref PrevSelectedShowTimes, "showtimes", ref ListAnyShowTimes);
+      if (rw != null /*&& WindowOpen*/)
+        rw.ReportProgress(10, "ShowTimes Updated Properties");
+    }
+
+    public void RefreshRandomSpotLightsImageProperties(RefreshWorker rw)
+    {
+      FillPropertyRandom(Utils.Category.SpotLightScraped, ref currAnySpotLights, ref PrevSelectedSpotLights, "spotlight", ref ListAnySpotLights);
+      if (rw != null /*&& WindowOpen*/)
+        rw.ReportProgress(15, "SpotLights Updated Properties");
+    }
+
     public void RefreshRandomLatestsMusicImageProperties(RefreshWorker rw)
     {
-      FillPropertyLatestsRandom(Utils.Latests.Music, ref currLatestsMusic, ref PrevSelectedLatestsMusic, "music.latests", ref ListLatestsMusic);
+      FillPropertyLatestsRandom(Utils.Latests.Music, ref currLatestsMusic, ref PrevSelectedLatestsMusic, "music", ref ListLatestsMusic);
       if (rw != null /*&& WindowOpen*/)
         rw.ReportProgress(20, "Music (Latests) Updated Properties");
     }
 
     public void RefreshRandomLatestsMvCentralImageProperties(RefreshWorker rw)
     {
-      FillPropertyLatestsRandom(Utils.Latests.MvCentral, ref currLatestsMvCentral, ref PrevSelectedLatestsMvCentral, "mvcentral.latests", ref ListLatestsMvCentral);
+      FillPropertyLatestsRandom(Utils.Latests.MvCentral, ref currLatestsMvCentral, ref PrevSelectedLatestsMvCentral, "mvcentral", ref ListLatestsMvCentral);
       if (rw != null /*&& WindowOpen*/)
         rw.ReportProgress(20, "MvCentral (Latests) Updated Properties");
     }
 
     public void RefreshRandomLatestsMoviesImageProperties(RefreshWorker rw)
     {
-      FillPropertyLatestsRandom(Utils.Latests.Movies, ref currLatestsMovies, ref PrevSelectedLatestsMovies, "movie.latests", ref ListLatestsMovies);
+      FillPropertyLatestsRandom(Utils.Latests.Movies, ref currLatestsMovies, ref PrevSelectedLatestsMovies, "movie", ref ListLatestsMovies);
       if (rw != null /*&& WindowOpen*/)
         rw.ReportProgress(20, "Movies (Latests) Updated Properties");
     }
 
     public void RefreshRandomLatestsMovingPicturesImageProperties(RefreshWorker rw)
     {
-      FillPropertyLatestsRandom(Utils.Latests.MovingPictures, ref currLatestsMovingPictures, ref PrevSelectedLatestsMovingPictures, "movingpicture.latests", ref ListLatestsMovingPictures);
+      FillPropertyLatestsRandom(Utils.Latests.MovingPictures, ref currLatestsMovingPictures, ref PrevSelectedLatestsMovingPictures, "movingpicture", ref ListLatestsMovingPictures);
       if (rw != null /*&& WindowOpen*/)
         rw.ReportProgress(20, "MovingPictures (Latests) Updated Properties");
     }
 
     public void RefreshRandomLatestsTVSeriesImageProperties(RefreshWorker rw)
     {
-      FillPropertyLatestsRandom(Utils.Latests.TVSeries, ref currLatestsTVSeries, ref PrevSelectedLatestsTVSeries, "tvseries.latests", ref ListLatestsTVSeries);
+      FillPropertyLatestsRandom(Utils.Latests.TVSeries, ref currLatestsTVSeries, ref PrevSelectedLatestsTVSeries, "tvseries", ref ListLatestsTVSeries);
       if (rw != null /*&& WindowOpen*/)
         rw.ReportProgress(20, "TVSeries (Latests) Updated Properties");
     }
 
     public void RefreshRandomLatestsMyFilmsImageProperties(RefreshWorker rw)
     {
-      FillPropertyLatestsRandom(Utils.Latests.MyFilms, ref currLatestsMyFilms, ref PrevSelectedLatestsMyFilms, "myfilms.latests", ref ListLatestsMyFilms);
+      FillPropertyLatestsRandom(Utils.Latests.MyFilms, ref currLatestsMyFilms, ref PrevSelectedLatestsMyFilms, "myfilms", ref ListLatestsMyFilms);
       if (rw != null /*&& WindowOpen*/)
         rw.ReportProgress(20, "MyFilms (Latests) Updated Properties");
     }
@@ -328,6 +352,8 @@ namespace FanartHandler
                           () => { if (needRandomUpdate) { RefreshRandomGamesImageProperties(rw); } },
                           () => { if (needRandomUpdate) { RefreshRandomScoreCenterImageProperties(rw); } },
                           () => { if (needRandomUpdate) { RefreshRandomPluginsImageProperties(rw); } }, 
+                          () => { if (needRandomUpdate) { RefreshRandomShowTimesImageProperties(rw); } }, 
+                          () => { if (needRandomUpdate) { RefreshRandomSpotLightsImageProperties(rw); } }, 
                           //
                           () => { if (needLatestsUpdate) { RefreshRandomLatestsMusicImageProperties(rw); } },
                           () => { if (needLatestsUpdate) { RefreshRandomLatestsMvCentralImageProperties(rw); } },
@@ -408,7 +434,6 @@ namespace FanartHandler
         FanartAvailable = false;
         EmptyAllRandomProperties();
         RefreshTickCount = 0;
-        CountSetVisibility = 0;
         ClearPropertiesRandom();
         IsRandom = false;
 
@@ -435,6 +460,8 @@ namespace FanartHandler
       PrevSelectedTVSeries = -1;
       PrevSelectedTVUser = -1;
       PrevSelectedMyFilms = -1;
+      PrevSelectedShowTimes = -1;
+      PrevSelectedSpotLights = -1;
 
       currAnyGamesUser = string.Empty;
       currAnyMoviesScraper = string.Empty;
@@ -448,6 +475,8 @@ namespace FanartHandler
       currAnyTVSeries = string.Empty;
       currAnyTVUser = string.Empty;
       currAnyMyFilms = string.Empty;
+      currAnyShowTimes = string.Empty;
+      currAnySpotLights = string.Empty;
       */
     }
 
@@ -482,6 +511,8 @@ namespace FanartHandler
       Utils.EmptyAllImages(ref ListAnyTVUser);
       Utils.EmptyAllImages(ref ListAnyPluginsUser);
       Utils.EmptyAllImages(ref ListAnyMyFilms);
+      Utils.EmptyAllImages(ref ListAnyShowTimes);
+      Utils.EmptyAllImages(ref ListAnySpotLights);
     }
 
     public void EmptyAllRandomLatestsImages()
@@ -519,14 +550,18 @@ namespace FanartHandler
               return skinFile.UseRandomPicturesFanartUser;
             if (category == Utils.Category.SportsManual)
               return skinFile.UseRandomScoreCenterFanartUser;
-            if (category == Utils.Category.TvSeriesScraped || category == Utils.Category.TVSeriesManual)
+            if (category == Utils.Category.TVSeriesScraped || category == Utils.Category.TVSeriesManual)
               return skinFile.UseRandomTVSeriesFanart;
-            if (category == Utils.Category.TvManual)
+            if (category == Utils.Category.TVManual)
               return skinFile.UseRandomTVFanartUser;
             if (category == Utils.Category.PluginManual)
               return skinFile.UseRandomPluginsFanartUser;
             if (category == Utils.Category.MyFilmsManual)
               return skinFile.UseRandomMyFilmsFanart;
+            if (category == Utils.Category.ShowTimesManual)
+              return skinFile.UseRandomShowTimesFanart;
+            if (category == Utils.Category.SpotLightScraped)
+              return skinFile.UseRandomSpotLightsFanart;
           }
         }
       }
@@ -602,11 +637,6 @@ namespace FanartHandler
 
               var htAnyValues = htAny.Values;
               result = Utils.GetFanartFilename(ref iFilePrev, ref sFileNamePrev, ref htAnyValues);
-
-              if (!string.IsNullOrEmpty(result) && (CountSetVisibility == 0))
-              {
-                CountSetVisibility = 1;
-              }
             }
           }
         }
@@ -639,11 +669,6 @@ namespace FanartHandler
 
               var htAnyValues = htAny.Values;
               result = Utils.GetFanartFilename(ref iFilePrev, ref sFileNamePrev, ref htAnyValues);
-
-              if (!string.IsNullOrEmpty(result) && (CountSetVisibility == 0))
-              {
-                CountSetVisibility = 1;
-              }
             }
           }
         }
@@ -673,13 +698,15 @@ namespace FanartHandler
                         () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.MovieScraped, FullUpdate); },
                         () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.MusicFanartManual, FullUpdate); },
                         () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.MusicFanartScraped, FullUpdate); },
-                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.TvSeriesScraped, FullUpdate); },
+                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.TVSeriesScraped, FullUpdate); },
                         () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.MovingPictureManual, FullUpdate); },
-                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.TvManual, FullUpdate); },
+                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.TVManual, FullUpdate); },
                         () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.GameManual, FullUpdate); },
                         () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.SportsManual, FullUpdate); },
                         () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.PluginManual, FullUpdate); },
-                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.MyFilmsManual, FullUpdate); });
+                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.MyFilmsManual, FullUpdate); }, 
+                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.ShowTimesManual, FullUpdate); }, 
+                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.SpotLightScraped, FullUpdate); });
       }
       catch { }
       // stopwatch.Stop();
@@ -764,7 +791,7 @@ namespace FanartHandler
         Utils.EmptyAllImages(ref al);
       }
 
-      var propAvail = propertyname + ".available";
+      var propAvail = propertyname + ".random.available";
       propertyname  = propertyname + ".backdrop";
       if (!string.IsNullOrEmpty(randomFilename))
       {
@@ -808,8 +835,8 @@ namespace FanartHandler
         Utils.EmptyAllImages(ref al);
       }
 
-      var propAvail = propertyname + ".available";
-      propertyname  = propertyname + ".backdrop";
+      var propAvail = propertyname + ".latests.available";
+      propertyname  = propertyname + ".latests.backdrop";
       if (!string.IsNullOrEmpty(randomFilename))
       {
         lock (propertiesRandom)
@@ -841,57 +868,64 @@ namespace FanartHandler
 
     public void EmptyRandomGamesProperties()
     {
-      Utils.SetProperty("games.userdef.available", string.Empty);
+      Utils.SetProperty("games.userdef.random.available", string.Empty);
       Utils.SetProperty("games.userdef.backdrop1.any", string.Empty);
       Utils.SetProperty("games.userdef.backdrop2.any", string.Empty);
     }
 
     public void EmptyRandomMoviesProperties()
     {
-      Utils.SetProperty("movie.userdef.available", string.Empty);
+      Utils.SetProperty("movie.userdef.random.available", string.Empty);
       Utils.SetProperty("movie.userdef.backdrop1.any", string.Empty);
       Utils.SetProperty("movie.userdef.backdrop2.any", string.Empty);
 
-      Utils.SetProperty("movie.scraper.available", string.Empty);
+      Utils.SetProperty("movie.scraper.random.available", string.Empty);
       Utils.SetProperty("movie.scraper.backdrop1.any", string.Empty);
       Utils.SetProperty("movie.scraper.backdrop2.any", string.Empty);
     }
 
     public void EmptyRandomMisicProperties()
     {
-      Utils.SetProperty("music.userdef.available", string.Empty);
+      Utils.SetProperty("music.userdef.random.available", string.Empty);
       Utils.SetProperty("music.userdef.backdrop1.any", string.Empty);
       Utils.SetProperty("music.userdef.backdrop2.any", string.Empty);
 
-      Utils.SetProperty("music.scraper.available", string.Empty);
+      Utils.SetProperty("music.scraper.random.available", string.Empty);
       Utils.SetProperty("music.scraper.backdrop1.any", string.Empty);
       Utils.SetProperty("music.scraper.backdrop2.any", string.Empty);
     }
 
     public void EmptyRandomPicturesProperties()
     {
-      Utils.SetProperty("picture.userdef.available", string.Empty);
+      Utils.SetProperty("picture.userdef.random.available", string.Empty);
       Utils.SetProperty("picture.userdef.backdrop1.any", string.Empty);
       Utils.SetProperty("picture.userdef.backdrop2.any", string.Empty);
     }
 
     public void EmptyRandomScorecenterProperties()
     {
-      Utils.SetProperty("scorecenter.userdef.available", string.Empty);
+      Utils.SetProperty("scorecenter.userdef.random.available", string.Empty);
       Utils.SetProperty("scorecenter.userdef.backdrop1.any", string.Empty);
       Utils.SetProperty("scorecenter.userdef.backdrop2.any", string.Empty);
     }
 
+    public void EmptyRandomShowTimesProperties()
+    {
+      Utils.SetProperty("showtimes.random.available", string.Empty);
+      Utils.SetProperty("showtimes.backdrop1.any", string.Empty);
+      Utils.SetProperty("showtimes.backdrop2.any", string.Empty);
+    }
+
     public void EmptyRandomTVProperties()
     {
-      Utils.SetProperty("tv.userdef.available", string.Empty);
+      Utils.SetProperty("tv.userdef.random.available", string.Empty);
       Utils.SetProperty("tv.userdef.backdrop1.any", string.Empty);
       Utils.SetProperty("tv.userdef.backdrop2.any", string.Empty);
     }
 
     public void EmptyRandomPluginsProperties()
     {
-      Utils.SetProperty("plugins.userdef.available", string.Empty);
+      Utils.SetProperty("plugins.userdef.random.available", string.Empty);
       Utils.SetProperty("plugins.userdef.backdrop1.any", string.Empty);
       Utils.SetProperty("plugins.userdef.backdrop2.any", string.Empty);
     }
@@ -915,6 +949,13 @@ namespace FanartHandler
       Utils.SetProperty("myfilms.random.available", string.Empty);
       Utils.SetProperty("myfilms.backdrop1.any", string.Empty);
       Utils.SetProperty("myfilms.backdrop2.any", string.Empty);
+    }
+
+    public void EmptyRandomSpotLightsProperties()
+    {
+      Utils.SetProperty("spotlight.random.available", string.Empty);
+      Utils.SetProperty("spotlight.backdrop1.any", string.Empty);
+      Utils.SetProperty("spotlight.backdrop2.any", string.Empty);
     }
 
     public void EmptyRandomMisicLatestsProperties()
@@ -976,6 +1017,8 @@ namespace FanartHandler
       EmptyRandomPluginsProperties();
       EmptyRandomMovingPicturesProperties();
       EmptyRandomMyFilmsProperties();
+      EmptyRandomShowTimesProperties();
+      EmptyRandomSpotLightsProperties();
 
       EmptyRandomMisicLatestsProperties();
       EmptyRandomMvCentralLatestsProperties();
@@ -1084,6 +1127,7 @@ namespace FanartHandler
       public bool UseRandomTVFanartUser = false;
       public bool UseRandomTVSeriesFanart = false;
       public bool UseRandomMyFilmsFanart = false;
+      public bool UseRandomShowTimesFanart = false;
 
       public bool UseRandomMusicLatestsFanart = false;
       public bool UseRandomMvCentralLatestsFanart = false;
@@ -1091,6 +1135,8 @@ namespace FanartHandler
       public bool UseRandomMovingPicturesLatestsFanart = false;
       public bool UseRandomTVSeriesLatestsFanart = false;
       public bool UseRandomMyFilmsLatestsFanart = false;
+
+      public bool UseRandomSpotLightsFanart = false;
     }
   }
 }

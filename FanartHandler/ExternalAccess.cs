@@ -81,13 +81,13 @@ namespace FanartHandler
       var hashtable = new Hashtable();
       try
       {
-        string tvshow = Utils.GetArtist(show, Utils.Category.TvManual);
+        string tvshow = Utils.GetArtist(show, Utils.Category.TVManual);
         string tvshowid = UtilsTVSeries.GetTVSeriesID(tvshow);
         if (!string.IsNullOrEmpty(tvshowid))
         {
           tvshow = tvshow + "|" + tvshowid;
         }
-        var values = Utils.GetDbm().GetFanart(tvshow, null, Utils.Category.TvManual, false).Values;
+        var values = Utils.GetDbm().GetFanart(tvshow, null, Utils.Category.TVManual, false).Values;
         var num = 0;
         foreach (FanartImage fanartImage in values)
         {
