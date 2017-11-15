@@ -753,7 +753,7 @@ ajs</Value>
 
 </ExtensionDescription>
     <VersionDescription>* Awards, Studios xml updated
-* Add Windows 10 Showtime support
+* Add Windows 10 Spotlight support
 * Bug fixes, optimizations and internal rework
 * Music Record Label support</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>

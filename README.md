@@ -239,6 +239,8 @@ To the team behind the MP Moving Picture plugin. From who I have used some of th
 #useRandomLatestsMovingPicturesFanart:Yes
 #useRandomLatestsTVSeriesFanart:Yes
 #useRandomLatestsMyFilmsFanart:Yes
+
+#useRandomSpotLightsFanart:Yes
 </pre>
 
 #Window Control IDs
