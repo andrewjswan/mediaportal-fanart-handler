@@ -3939,7 +3939,7 @@ Small cosmetic bug fixes.</VersionDescription>
           <Major>4</Major>
           <Minor>0</Minor>
           <Build>2</Build>
-          <Revision>251</Revision>
+          <Revision>253</Revision>
         </Version>
         <ExtensionDescription>Fanart Handler is a plugin for MediaPortal (MP). The plugin basically supports;
 
@@ -3958,7 +3958,7 @@ Small cosmetic bug fixes.</VersionDescription>
 * Bug fixes, optimizations and internal rework
 * Music Record Label support</VersionDescription>
         <DevelopmentStatus>Stable</DevelopmentStatus>
-        <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-4.0.2.251.mpe1</OnlineLocation>
+        <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-4.0.2.253.mpe1</OnlineLocation>
         <ReleaseDate>2017-11-15T20:04:35.5797156+02:00</ReleaseDate>
         <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios</Tags>
         <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
