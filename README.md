@@ -1,11 +1,11 @@
 # mediaportal-fanart-handler
 
-#Introduction
-Fanart Handler is a plugin for MediaPortal (MP). The plugin has two main purposes;
+## Introduction
+Fanart Handler is a plugin for **MediaPortal (MP)**. The plugin has two main purposes;
 
-Search and download music fanart (scrape) from the htbackdrops/last.fm/fanart.tv site.
-for all artists stored in your MP music database.<br/>
-for any artist currently being played (on the fly).<br/>
+Search and download music fanart (scrape) from the Last.FM/Fanart.TV/TheAudioDB/CoverArtArchive site.
+For all artists stored in your MP music database.<br/>
+For any artist currently being played (on the fly).<br/>
 Push fanart that you store on your local harddrive to the current used MP skin.<br/>
 push fanart for now played music<br/>
 push fanart for selected music or movie<br/>
@@ -15,11 +15,11 @@ push weather images for current weather<br/>
 push holiday images for current holiday<br/>
 and more ...
 
-#Scope
+## Scope
 The scope of this plugin is to:
 
-scrape htbackdrops site for music fanart for all artists stored in your MP music database.<br/>
-scrape htbackdrops site for music fanart for currently played artist.<br/>
+scrape sites for music fanart for all artists stored in your MP music database.<br/>
+scrape sites for music fanart for currently played artist.<br/>
 push music fanart for now played music track (artist images)<br/>
 push music fanart for browsed music artist in myMusic plugin<br/>
 push music fanart for browsed/played music artist in myMusicPlaylist plugin<br/>
@@ -31,6 +31,7 @@ push movie fanart for browsed video title in myVideo plugin<br/>
 push scorecenter fanart for browsed category in myScoreCenter plugin<br/>
 push weather fanart for current weather from World Weather / World Weather Lite<br/>
 push fanart for current Holiday<br/>
+push fanart for pictures from Windows 10 Spotlight<br/>
 push cycling fanart from the following folders for use anywhere in a skin for<br/>
 - thumbs\Skin Fanart\UserDef\games
 - thumbs\Skin Fanart\UserDef\movies
@@ -58,41 +59,41 @@ push cycling fanart from the following folders for use anywhere in a skin for<br
 - Theme|Skin|\Media\Logos\Awards - Thumb\Skin Fanart\Media\Logos\Awards
 - Theme|Skin|\Media\Logos\Holidays - Thumb\Skin Fanart\Media\Logos\Holidays
 
-#Guides
+## Guides
 - Installation Guide http://code.google.com/p/fanart-handler/wiki/InstallationGuide
 - User Guide http://code.google.com/p/fanart-handler/wiki/UserGuide
 - Skinners Guide http://code.google.com/p/fanart-handler/wiki/SkinnersGuide
 
-#Requirements
+## Requirements
 - MediaPortal
 - A skin that supports the Fanart Handler.
 NOTE! This plugin only supports JPG images.
 
-#Additional for Skin
+## Additional for Skin
 Studios - https://github.com/andrewjswan/mediaportal.images.studios
 Genres - https://github.com/andrewjswan/mediaportal.images.genres
 Awards - https://github.com/andrewjswan/mediaportal.images.awards
 Weather - https://github.com/andrewjswan/mediaportal.images.weather
 Holiday - https://github.com/andrewjswan/mediaportal.images.holiday
 
-#Supported Skins
+## Supported Skins
 Titan ( full support in ajs Theme for Titan - https://github.com/andrewjswan/mediaportal-skin-themes )
 DWHD
 aMPed
 X-Factor
-Please let me know if your skin supports the Fanart Handler and I will add it to the list
+Please let me know if your skin supports the Fanart Handler and I will add it to the list.
 
-#Installation (MPE1 FILE)
+## Installation (MPE1 FILE)
 Please see the installation guide (link).
 
-#Forum
+## Forum
 A sub-forum is located on the MediaPortal website. For up-to-date information and community support please use this forum.
 Link: http://forum.team-mediaportal.com/forums/fanart-handler.535/
 
-#Credits
+## Credits
 To the team behind the MP Moving Picture plugin. From who I have used some of the utils code and also got the idea for using two images for smoth image transitions.
 
-#Properties
+## Properties
 <pre>
 #fanarthandler.scraper.task
 #fanarthandler.scraper.percent.completed
@@ -216,7 +217,7 @@ To the team behind the MP Moving Picture plugin. From who I have used some of th
 #fanarthandler.holiday.icon - Holiday icon
 </pre>
 
-#Defines
+## Defines
 <pre>
 #useRandomGamesUserFanart:Yes
 #useRandomMoviesUserFanart:Yes
@@ -243,7 +244,7 @@ To the team behind the MP Moving Picture plugin. From who I have used some of th
 #useRandomSpotLightsFanart:Yes
 </pre>
 
-#Window Control IDs
+## Window Control IDs
 <pre>
 91919297 - Random/Random Latests Fanart 1 Showed
 91919298 - Random/Random Latests Fanart 2 Showed
