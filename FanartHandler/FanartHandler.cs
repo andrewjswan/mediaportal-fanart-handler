@@ -806,7 +806,7 @@ namespace FanartHandler
         logger.Error("InitFileWatcher: "+ex);
       }
 
-      if (!Utils.UseSpotLight && Directory.Exists(Utils.W10SpotLight))
+      if (!Utils.UseSpotLight || !Directory.Exists(Utils.W10SpotLight))
       {
         return;
       }
