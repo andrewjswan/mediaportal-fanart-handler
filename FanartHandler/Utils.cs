@@ -3068,6 +3068,11 @@ namespace FanartHandler
 
     public static void SetupW10SpotLights()
     {
+      if (!UseSpotLight || !Directory.Exists(W10SpotLight))
+      {
+        return;
+      }
+
       try
       {
         var added = 0;
