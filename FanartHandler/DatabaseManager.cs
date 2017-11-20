@@ -3104,7 +3104,7 @@ namespace FanartHandler
                                  "Enabled = 'True', " +
                                  "DummyItem = 'False', " +
                                  "Time_Stamp = '" + now.ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "', " +
-                                 "Last_Access = '" + now.ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "'," +
+                                 "Last_Access = '" + now.ToString("yyyyMMdd", CultureInfo.CurrentCulture) + "' " +
                                  ((string.IsNullOrEmpty(id)) ? string.Empty : ", MBID = '" + Utils.PatchSql(id) + "' ") +
                 "WHERE Id = '" + Utils.PatchSql(imageId) + "' AND " +
                       "Provider = '" + ((object)provider).ToString() + "';";
