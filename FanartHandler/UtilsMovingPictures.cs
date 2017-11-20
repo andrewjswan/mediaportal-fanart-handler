@@ -81,8 +81,13 @@ namespace FanartHandler
 
       try
       {
-        var allFilenames = Utils.GetDbm().GetAllFilenames(Utils.Category.MovingPictureManual);
         var all = DBMovieInfo.GetAll();
+        if (all == null)
+        {
+          return;
+        }
+        var allFilenames = Utils.GetDbm().GetAllFilenames(Utils.Category.MovingPictureManual);
+
         using (var enumerator = all.GetEnumerator())
         {
           while (enumerator.MoveNext())
