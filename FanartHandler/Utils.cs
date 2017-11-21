@@ -905,7 +905,9 @@ namespace FanartHandler
     public static void ReleaseDelayStop(string key)
     {
       if ((DelayStop == null) || (DelayStop.Count <= 0) || string.IsNullOrWhiteSpace(key))
+      {
         return;
+      }
 
       if (DelayStop.Contains(key))
       {
@@ -975,7 +977,15 @@ namespace FanartHandler
       if (self == null)
         return string.Empty;
 
-      return self.Replace(" ", string.Empty).Replace("-", string.Empty).Replace(@"""", string.Empty).Trim();
+      return self.Replace(" ", string.Empty).Replace(",", string.Empty).Replace("-", string.Empty).Replace("_", string.Empty).Replace(@"""", string.Empty).Trim();
+    }
+
+    public static string RemoveSlashs(this string self)
+    {
+      if (self == null)
+        return string.Empty;
+
+      return self.Replace("/", string.Empty).Replace(@"\", string.Empty).Trim();
     }
 
     public static string RemoveDiacritics(this string self)
@@ -1987,19 +1997,19 @@ namespace FanartHandler
         }
         catch (Exception)
         {
-          Log.Debug("GUIImageAllocator: Reverting to slow ImageLoading for: " + filename);
+          logger.Debug("GUIImageAllocator: Reverting to slow ImageLoading for: " + filename);
           imageFile = Image.FromFile(filename);
         }
       }
       catch (FileNotFoundException fe)
       {
-        Log.Debug("GUIImageAllocator: Image does not exist: " + filename + " - " + fe.Message);
+        logger.Debug("GUIImageAllocator: Image does not exist: " + filename + " - " + fe.Message);
         return null;
       }
       catch (Exception e)
       {
         // this probably means the image is bad
-        Log.Debug("GUIImageAllocator: Unable to load Imagefile (corrupt?): " + filename + " - " + e.Message);
+        logger.Debug("GUIImageAllocator: Unable to load Imagefile (corrupt?): " + filename + " - " + e.Message);
         return null;
       }
       return imageFile;
@@ -3608,14 +3618,14 @@ namespace FanartHandler
       {
         return;
       }
-      else
-      {
-        Pictures = Pictures.Replace(@"/","|");
-      }
+      Pictures = Pictures.Replace(@" / ","|");
 
+      // logger.Debug("*** FillFilesList: Pictures: {0} - {1} ", Pictures, PicturesType);
+
+      string[] pipesArray = new string[2] { "|", ";" };
       try
       {
-        var pictures = Pictures.Split(PipesArray, StringSplitOptions.RemoveEmptyEntries)
+        var pictures = Pictures.Split(pipesArray, StringSplitOptions.RemoveEmptyEntries)
                                .Where(x => !string.IsNullOrWhiteSpace(x))
                                .Select(s => s.Trim())
                                .Distinct(StringComparer.CurrentCultureIgnoreCase)
@@ -3666,11 +3676,12 @@ namespace FanartHandler
                 _picFolders = FAHStudios;
                 _pictures = _pictures + (string.IsNullOrWhiteSpace(_pictures) ? string.Empty : "|") + GetStudio(picture);
               }
+              // logger.Debug("*** FillFilesList: Pictures: {0} -> {1} ", picture, _pictures);
             }
 
             if (!string.IsNullOrWhiteSpace(_pictures))
             {
-              pictures = _pictures.Split(PipesArray, StringSplitOptions.RemoveEmptyEntries);
+              pictures = _pictures.Split(pipesArray, StringSplitOptions.RemoveEmptyEntries);
             }
           }
         }
@@ -3699,7 +3710,7 @@ namespace FanartHandler
       }
       catch (Exception ex)
       {
-        Log.Error("FillFilesList: Error filling files lists for: {0} - {1} ", PicturesType, ex.Message);
+        logger.Error("FillFilesList: Error filling files lists for: {0} - {1} ", PicturesType, ex.Message);
       }
     }
     #endregion
@@ -3845,24 +3856,6 @@ namespace FanartHandler
       return sStudio;
     }
 
-    public static string GetStudios(string sStudio)
-    {
-      if (!string.IsNullOrWhiteSpace(sStudio))
-      {
-        var studios = sStudio.Split(PipesArray, StringSplitOptions.RemoveEmptyEntries);
-        if (studios != null)
-        {
-          string _studios = sStudio;
-          foreach (string _studio in studios)
-          {
-            _studios = _studios + "|" + GetStudio(_studio.Trim());
-          }
-          return _studios;
-        }
-      }
-
-      return string.Empty;
-    }
     #endregion
 
     #region Settings
@@ -3983,7 +3976,7 @@ namespace FanartHandler
       }
       catch (Exception ex)
       {
-        Log.Error("LoadAwardsNames: Error loading genres from file: {0} - {1} ", ConfigAwardsFilename, ex.Message);
+        logger.Error("LoadAwardsNames: Error loading genres from file: {0} - {1} ", ConfigAwardsFilename, ex.Message);
       }
     }
 
@@ -4043,7 +4036,7 @@ namespace FanartHandler
       }
       catch (Exception ex)
       {
-        Log.Error("LoadGenresNames: Error loading genres from file: {0} - {1} ", ConfigGenresFilename, ex.Message);
+        logger.Error("LoadGenresNames: Error loading genres from file: {0} - {1} ", ConfigGenresFilename, ex.Message);
       }
     }
 
@@ -4103,7 +4096,7 @@ namespace FanartHandler
       }
       catch (Exception ex)
       {
-        Log.Error("LoadCharactersNames: Error loading characters from file: {0} - {1} ", ConfigCharactersFilename, ex.Message);
+        logger.Error("LoadCharactersNames: Error loading characters from file: {0} - {1} ", ConfigCharactersFilename, ex.Message);
       }
 
       List<string> charFolders = new List<string>();
@@ -4140,7 +4133,7 @@ namespace FanartHandler
         }
         catch (Exception ex)
         {
-          Log.Error("LoadCharactersNames: Error loading characters from folder: {0} - {1} ", FAHCharacters, ex.Message);
+          logger.Error("LoadCharactersNames: Error loading characters from folder: {0} - {1} ", FAHCharacters, ex.Message);
         }
       }
     }
@@ -4200,7 +4193,7 @@ namespace FanartHandler
       }
       catch (Exception ex)
       {
-        Log.Error("LoadStudiosNames: Error loading studios from file: {0} - {1} ", ConfigStudiosFilename, ex.Message);
+        logger.Error("LoadStudiosNames: Error loading studios from file: {0} - {1} ", ConfigStudiosFilename, ex.Message);
       }
     }
 
@@ -4399,7 +4392,7 @@ namespace FanartHandler
       }
       catch (Exception ex)
       {
-        Log.Error("LoadWeather: Error loading weathers from file: {0} - {1} ", ConfigWeathersFilename, ex.Message);
+        logger.Error("LoadWeather: Error loading weathers from file: {0} - {1} ", ConfigWeathersFilename, ex.Message);
       }
     }
 

@@ -282,7 +282,7 @@ namespace FanartHandler
         var album = string.Empty;
         var genre = string.Empty + Utils.GetProperty("#music.genre").Replace(" / ", "|").Replace(", ", "|");
         var SelectedItem = string.Empty + Utils.GetMusicArtistFromListControl(ref album);
-        // logger.Info("*** GMAFLC: R - ["+SelectedItem+"] ["+album+"]");
+        logger.Info("*** GMAFLC: R - ["+SelectedItem+"] ["+album+"]");
 
         // var FanartNotFound = true;
         if (!string.IsNullOrWhiteSpace(SelectedItem) && !SelectedItem.Equals("..", StringComparison.CurrentCulture))
@@ -1006,7 +1006,7 @@ namespace FanartHandler
         GUIControl.HideControl(Utils.iActiveWindow, 91919292);
         DoShowImageOne = false;
         ControlImageVisible = 1;
-        // logger.Debug ("*** First fanart [91919291] visible ...");
+        // logger.Debug("*** First fanart [91919291] visible ...");
       }
       else
       {
@@ -1022,7 +1022,7 @@ namespace FanartHandler
         GUIControl.HideControl(Utils.iActiveWindow, 91919291);
         DoShowImageOne = true;
         ControlImageVisible = 1;
-        // logger.Debug ("*** Second fanart [91919292] visible ...");
+        // logger.Debug("*** Second fanart [91919292] visible ...");
       }
       else
       {

@@ -94,10 +94,10 @@ namespace FanartHandler
       try
       {
         Utils.ThreadToSleep();
+        Utils.ReleaseDelayStop("RefreshWorker-OnDoWork");
         FanartHandlerSetup.Fh.UpdateDummyControls();
         FanartHandlerSetup.Fh.SyncPointRefresh = 0;
         FanartHandlerSetup.Fh.syncPointProgressChange = 0;
-        Utils.ReleaseDelayStop("RefreshWorker-OnDoWork");
       }
       catch (Exception ex)
       {

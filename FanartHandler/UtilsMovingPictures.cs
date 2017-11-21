@@ -94,7 +94,7 @@ namespace FanartHandler
           {
             var current = enumerator.Current;
             var backdropFullPath = current.BackdropFullPath;
-            var ImdbID = current.ImdbID.Trim();
+            var ImdbID = string.IsNullOrEmpty(current.ImdbID) ? string.Empty : current.ImdbID.Trim();
 
             if (!string.IsNullOrWhiteSpace(backdropFullPath) && (allFilenames == null || !allFilenames.Contains(backdropFullPath)))
             {
@@ -121,7 +121,7 @@ namespace FanartHandler
       }
       catch (MissingMethodException ex)
       {
-        logger.Debug("GetMovingPicturesBackdrops: " + ex);
+        logger.Debug("GetMovingPicturesBackdrops: Missing: " + ex);
       }
       catch (Exception ex)
       {
