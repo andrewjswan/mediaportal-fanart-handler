@@ -67,7 +67,8 @@ namespace FanartHandler
     private PicturesWorker MyPicturesWorker;
     private DefaultBackdropWorker MyDefaultBackdropWorker;
 
-    internal FileSystemWatcher MyFileWatcher { get; set; }
+    internal FileSystemWatcher MyJPGFileWatcher { get; set; }
+    // internal FileSystemWatcher MyPNGFileWatcher { get; set; }
     internal FileSystemWatcher MySpotLightFileWatcher { get; set; }
     internal ScraperNowWorker MyScraperNowWorker { get; set; }
     internal ScraperWorker MyScraperWorker { get; set; }
@@ -101,16 +102,24 @@ namespace FanartHandler
           !FileName.Contains(Utils.FAHShowTimes, StringComparison.OrdinalIgnoreCase) &&
           !FileName.Contains(Utils.FAHSSpotLight, StringComparison.OrdinalIgnoreCase) &&
           !FileName.Contains(Utils.W10SpotLight, StringComparison.OrdinalIgnoreCase))
+      {
         return;
+      }
 
       if (FileName.Contains(Utils.FAHSMusic, StringComparison.OrdinalIgnoreCase) || 
           FileName.Contains(Utils.FAHMusicArtists, StringComparison.OrdinalIgnoreCase) ||
           FileName.Contains(Utils.FAHMusicAlbums, StringComparison.OrdinalIgnoreCase))
+      {
         if ((MyScraperWorker != null && MyScraperWorker.IsBusy) || (MyScraperNowWorker != null && MyScraperNowWorker.IsBusy))
+        {
           return;
+        }
+      }
 
       if (FileName.Contains(Utils.FAHSMovies, StringComparison.OrdinalIgnoreCase) && (MyScraperWorker != null && MyScraperWorker.IsBusy))
+      {
         return;
+      }
 
       logger.Debug("MyFileWatcher: Created: "+FileName);
       AddToDirectoryTimerQueue(FileName);
@@ -166,7 +175,6 @@ namespace FanartHandler
 
     internal bool UpdateDirectoryTimer(string param, string type)
     {
-      bool flag = false;
       try
       {
         if (Interlocked.CompareExchange(ref SyncPointDirectory, 1, 0) == 0 && (MyDirectoryWorker == null || (MyDirectoryWorker != null && !MyDirectoryWorker.IsBusy)))
@@ -177,10 +185,10 @@ namespace FanartHandler
             MyDirectoryWorker.ProgressChanged += new ProgressChangedEventHandler(MyDirectoryWorker.OnProgressChanged);
             MyDirectoryWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(MyDirectoryWorker.OnRunWorkerCompleted);
           }
-          if (MyDirectoryWorker != null && !MyDirectoryWorker.IsBusy)
+          if (!MyDirectoryWorker.IsBusy)
           {
             MyDirectoryWorker.RunWorkerAsync(new string[2] { param, type });
-            flag = true;
+            return true;
           }
         }
       }
@@ -189,7 +197,7 @@ namespace FanartHandler
         SyncPointDirectory = 0;
         logger.Error("UpdateDirectoryTimer: " + ex);
       }
-      return flag;
+      return false;
     }
 
     private void ProcessDirectoryTimerQueue()
@@ -300,7 +308,7 @@ namespace FanartHandler
             MyRefreshWorker.ProgressChanged += new ProgressChangedEventHandler(MyRefreshWorker.OnProgressChanged);
             MyRefreshWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(MyRefreshWorker.OnRunWorkerCompleted);
           }
-          if (MyRefreshWorker != null && !MyRefreshWorker.IsBusy)
+          if (!MyRefreshWorker.IsBusy)
           {
             MyRefreshWorker.RunWorkerAsync();
           }
@@ -793,18 +801,35 @@ namespace FanartHandler
     {
       try
       {
-        MyFileWatcher = new FileSystemWatcher();
-        MyFileWatcher.Path = Utils.FAHWatchFolder;
-        MyFileWatcher.Filter = "*.jpg";
-        MyFileWatcher.IncludeSubdirectories = true;
-        MyFileWatcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.LastWrite;
-        MyFileWatcher.Created += new FileSystemEventHandler(FileWatcher_Created);
-        MyFileWatcher.EnableRaisingEvents = true;
+        MyJPGFileWatcher = new FileSystemWatcher();
+        MyJPGFileWatcher.Path = Utils.FAHWatchFolder;
+        MyJPGFileWatcher.Filter = "*.jpg";
+        MyJPGFileWatcher.IncludeSubdirectories = true;
+        MyJPGFileWatcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.LastWrite;
+        MyJPGFileWatcher.Created += new FileSystemEventHandler(FileWatcher_Created);
+        MyJPGFileWatcher.EnableRaisingEvents = true;
       }
       catch (Exception ex)
       {
-        logger.Error("InitFileWatcher: "+ex);
+        logger.Error("InitFileWatcher: (JPG): "+ex);
       }
+
+      /*
+      try
+      {
+        MyPNGFileWatcher = new FileSystemWatcher();
+        MyPNGFileWatcher.Path = Utils.FAHWatchFolder;
+        MyPNGFileWatcher.Filter = "*.png";
+        MyPNGFileWatcher.IncludeSubdirectories = true;
+        MyPNGFileWatcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.LastWrite;
+        MyPNGFileWatcher.Created += new FileSystemEventHandler(FileWatcher_Created);
+        MyPNGFileWatcher.EnableRaisingEvents = true;
+      }
+      catch (Exception ex)
+      {
+        logger.Error("InitFileWatcher: (PNG): "+ex);
+      }
+      */
 
       if (!Utils.UseSpotLight || !Directory.Exists(Utils.W10SpotLight))
       {
@@ -814,7 +839,7 @@ namespace FanartHandler
       {
         MySpotLightFileWatcher = new FileSystemWatcher();
         MySpotLightFileWatcher.Path = Utils.W10SpotLight;
-        MySpotLightFileWatcher.Filter = "*.*";
+        MySpotLightFileWatcher.Filter = "";
         MySpotLightFileWatcher.IncludeSubdirectories = false;
         MySpotLightFileWatcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.LastWrite;
         MySpotLightFileWatcher.Created += new FileSystemEventHandler(FileWatcher_Created);
@@ -897,13 +922,6 @@ namespace FanartHandler
         {
           return;
         }
-        logger.Debug("Active Window: " + Utils.sActiveWindow + " " + Utils.Check(CheckValidWindowIDForFanart()) + " " + Utils.Check(Utils.UseOverlayFanart) + " " + Utils.Check(Utils.AllowFanartInActiveWindow()) + " | " +
-                     Utils.Check(FPlay.CheckValidWindowIDForFanart()) + " " + Utils.Check(FPlayOther.CheckValidWindowIDForFanart()) + " Play, " +
-                     Utils.Check((g_Player.Playing || g_Player.Paused) && (g_Player.IsCDA || g_Player.IsMusic || g_Player.IsRadio)) + " Player, " +
-                     Utils.Check(FSelected.CheckValidWindowIDForFanart()) + " " + Utils.Check(FSelectedOther.CheckValidWindowIDForFanart()) + " Selected, " +
-                     Utils.Check(FRandom.CheckValidWindowIDForFanart()) +  " Random, " + Utils.Check(Utils.ContainsID(FRandom.WindowsUsingFanartLatestsRandom)) +  " Random Latests, " +
-                     Utils.Check(FWeather.CheckValidWindowIDForFanart()) + " Weather, " +
-                     Utils.Check(FHoliday.CheckValidWindowIDForFanart()) + " Holiday") ;
 
         if (Utils.IsScraping)
         {
@@ -1001,6 +1019,14 @@ namespace FanartHandler
             FHoliday.EmptyAllProperties();
           }
         }
+
+        logger.Debug("Active Window: " + Utils.sActiveWindow + " R: " + Utils.Check(refreshStart) + " | " + Utils.Check(CheckValidWindowIDForFanart()) + " " + Utils.Check(Utils.UseOverlayFanart) + " " + Utils.Check(Utils.AllowFanartInActiveWindow())) ;
+        logger.Debug("               " + Utils.Check(FPlay.CheckValidWindowIDForFanart()) + " " + Utils.Check(FPlayOther.CheckValidWindowIDForFanart()) + " Play, " +
+                                         Utils.Check((g_Player.Playing || g_Player.Paused) && (g_Player.IsCDA || g_Player.IsMusic || g_Player.IsRadio)) + " Player, " +
+                                         Utils.Check(FSelected.CheckValidWindowIDForFanart()) + " " + Utils.Check(FSelectedOther.CheckValidWindowIDForFanart()) + " Selected, " +
+                                         Utils.Check(FRandom.CheckValidWindowIDForFanart()) +  " Random, " + Utils.Check(Utils.ContainsID(FRandom.WindowsUsingFanartLatestsRandom)) +  " Random Latests, " +
+                                         Utils.Check(FWeather.CheckValidWindowIDForFanart()) + " Weather, " +
+                                         Utils.Check(FHoliday.CheckValidWindowIDForFanart()) + " Holiday") ;
 
         if (refreshStart)
         {
@@ -1141,7 +1167,9 @@ namespace FanartHandler
           MyScraperWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(MyScraperWorker.OnRunWorkerCompleted);
         }
         if (MyScraperWorker.IsBusy)
+        {
           return false;
+        }
 
         if (param == Utils.Category.Dummy)
         {
@@ -1160,12 +1188,12 @@ namespace FanartHandler
       return false;
     }
 
-    internal void StartScraperNowPlaying(FanartVideoTrack fmp)
+    internal bool StartScraperNowPlaying(FanartVideoTrack fmp)
     {
       try
       {
         if (Utils.GetIsStopping())
-          return;
+          return false;
 
         if (MyScraperNowWorker == null)
         {
@@ -1174,22 +1202,18 @@ namespace FanartHandler
           MyScraperNowWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(MyScraperNowWorker.OnRunWorkerCompleted);
         }
         if (MyScraperNowWorker.IsBusy)
-          return;
-
-        /*
-        MyScraperNowWorker.RunWorkerAsync(new string[3]
         {
-            artist,
-            album, 
-            genre
-        });
-        */
+          return false;
+        }
+
         MyScraperNowWorker.RunWorkerAsync(fmp);
+        return true;
       }
       catch (Exception ex)
       {
         logger.Error("StartScraperNowPlaying: " + ex);
       }
+      return false;
     }
 
     internal void StopScraperNowPlaying()
@@ -1257,11 +1281,18 @@ namespace FanartHandler
         }
 
         StopScraperNowPlaying();
-        if (MyFileWatcher != null)
+        if (MyJPGFileWatcher != null)
         {
-          MyFileWatcher.Created -= new FileSystemEventHandler(FileWatcher_Created);
-          MyFileWatcher.Dispose();
+          MyJPGFileWatcher.Created -= new FileSystemEventHandler(FileWatcher_Created);
+          MyJPGFileWatcher.Dispose();
         }
+        /*
+        if (MyPNGFileWatcher != null)
+        {
+          MyPNGFileWatcher.Created -= new FileSystemEventHandler(FileWatcher_Created);
+          MyPNGFileWatcher.Dispose();
+        }
+        */
         if (MySpotLightFileWatcher != null)
         {
           MySpotLightFileWatcher.Created -= new FileSystemEventHandler(FileWatcher_Created);

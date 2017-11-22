@@ -282,7 +282,7 @@ namespace FanartHandler
         var album = string.Empty;
         var genre = string.Empty + Utils.GetProperty("#music.genre").Replace(" / ", "|").Replace(", ", "|");
         var SelectedItem = string.Empty + Utils.GetMusicArtistFromListControl(ref album);
-        logger.Info("*** GMAFLC: R - ["+SelectedItem+"] ["+album+"]");
+        // logger.Info("*** GMAFLC: R - ["+SelectedItem+"] ["+album+"]");
 
         // var FanartNotFound = true;
         if (!string.IsNullOrWhiteSpace(SelectedItem) && !SelectedItem.Equals("..", StringComparison.CurrentCulture))

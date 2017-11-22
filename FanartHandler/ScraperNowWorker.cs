@@ -153,6 +153,11 @@ namespace FanartHandler
         FanartHandlerSetup.Fh.FPlay.AddPlayingArtistPropertys(artist, album, genre);
         FanartHandlerSetup.Fh.FPlay.UpdateProperties();
         FanartHandlerSetup.Fh.FPlayOther.AddPlayingArtistPropertys(artist, album, genre);
+
+        if (!FanartHandlerSetup.Fh.FPlay.FanartAvailable)
+        {
+          FanartHandlerSetup.Fh.FPlay.RefreshTickCount = Utils.MaxRefreshTickCount;
+        }
       }
       catch (Exception ex)
       {

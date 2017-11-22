@@ -43,6 +43,8 @@ namespace FanartHandler
     private Hashtable propertiesPlay;
     private Hashtable CurrentArtistsImageNames;
 
+    private bool NeedRunScrapper;
+
     /// <summary>
     /// Fanart Control Visible
     /// -1 Unknown, 0 Hiden, 1 Visible
@@ -100,6 +102,8 @@ namespace FanartHandler
       WindowsUsingFanartPlay = new Hashtable();
 
       IsPlaying = false;
+      
+      NeedRunScrapper = false;
 
       ClearCurrProperties();
     }
@@ -332,35 +336,29 @@ namespace FanartHandler
 
           if (!string.IsNullOrEmpty(CurrentTrackTag) && (g_Player.Playing || g_Player.Paused))
           {
+            IsPlaying = true;
+
             if (!CurrPlayMusicArtist.Equals(CurrentTrackTag, StringComparison.CurrentCulture) || 
                 !CurrPlayMusicAlbum.Equals(CurrentAlbumTag, StringComparison.CurrentCulture))
             {
               if (Utils.ScraperMusicPlaying)
               {
-                if (Utils.IsScraping)
-                {
-                  if (FanartHandlerSetup.Fh.MyScraperNowWorker != null)
-                  {
-                    while (Utils.IsScraping && FanartHandlerSetup.Fh.MyScraperNowWorker.IsBusy && !Utils.StopScraper)
-                    {
-                      // logger.Debug ("*** Wait: "+CurrentTrackTag+" - "+CurrentAlbumTag);
-                      Utils.ThreadToLongSleep();
-                    }
-                  }
-                }
-                if (FanartHandlerSetup.Fh.MyScraperNowWorker == null || (FanartHandlerSetup.Fh.MyScraperNowWorker != null && !FanartHandlerSetup.Fh.MyScraperNowWorker.IsBusy))
-                {
-                  // logger.Debug ("*** NP: "+CurrentTrackTag+" - "+CurrentAlbumTag+" - "+CurrentGenreTag);
-                  FanartHandlerSetup.Fh.StartScraperNowPlaying(fmp);
-                }
+                NeedRunScrapper = true;
               }
             }
+
+            if (NeedRunScrapper)
+            {
+              NeedRunScrapper = !FanartHandlerSetup.Fh.StartScraperNowPlaying(fmp);
+            }
+
             RefreshMusicPlayingProperties();
-            IsPlaying = true;
           }
         }
         if (rw != null)
+        { 
           rw.Report(e);
+        }
         #endregion
 
         if (FanartAvailable)
@@ -372,7 +370,9 @@ namespace FanartHandler
           EmptyAllProperties(false);
         }
         if (rw != null)
+        { 
           rw.Report(e);
+        }
       }
       catch (Exception ex)
       {
@@ -396,8 +396,9 @@ namespace FanartHandler
           {
             Utils.GetFanart(ref filenames, key, key2, category, isMusic);
             if (iFilePrev == -1)
+            { 
               Utils.Shuffle(ref filenames);
-
+            }
             SetCurrentArtistsImageNames(filenames);
           }
 
@@ -410,8 +411,10 @@ namespace FanartHandler
             }
           }
         }
-        else 
+        else
+        { 
           SetCurrentArtistsImageNames(null);
+        } 
       }
       catch (Exception ex)
       {
@@ -439,6 +442,8 @@ namespace FanartHandler
           CurrPlayFanart = string.Empty;
           CurrPlayMusicArtist = string.Empty;
           CurrPlayMusicAlbum = string.Empty;
+
+          NeedRunScrapper = false;
         }
 
         SetCurrentArtistsImageNames(null);
