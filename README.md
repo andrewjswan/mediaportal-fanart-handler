@@ -267,4 +267,49 @@ To the team behind the MP Moving Picture plugin. From who I have used some of th
 91919284 - Holiday Fanart Available
 </pre>
 
-Automatically exported from code.google.com/p/mediaportal-fanart-handler
+## Additional settings for displaying pictures. (FanartHandler.xml)
+```xml
+  <section name="OtherPicturesView">
+    <entry name="MaxAwards">10</entry>
+    <entry name="MaxGenres">10</entry>
+    <entry name="MaxStudios">10</entry>
+  </section>
+```
+- MaxAwards - Max awards images per stack
+- MaxGenres - Max genres images per stack
+- MaxStudios - Max studios images per stack
+
+```xml
+  <section name="SpotLight">
+    <entry name="Max">10</entry>
+  </section>
+```
+- Max - Max Windows 10 SpotLight images in MP Thumb folder, The oldest ones are deleted, the new ones are added.
+
+# Experemental function. (FanartHandler.xml)
+## :warning: CAUTION: Use at your own risk
+
+### Clean old unused pictures (not in MP music/music video DB) 
+Suitable for cleaning images that were downloaded while listening to the radio. Or when deleting music from the collection. If the image has not been used for **more than 100 days**, it is subject to cleaning.
+```xml
+  <section name="CleanUp">
+    <entry name="CleanUpOldFiles">yes</entry>
+    <entry name="CleanUpDelete">yes</entry>
+  </section>
+```
+- CleanUpOldFiles - Look for outdated image files.
+- CleanUpDelete - Delete outdated image files, if value **no**, just output them to the FanartHandler log file.
+
+### Find information about Actors, Albums and update the music database. Replacement for MusicInfoHandler 
+```xml
+  <section name="MusicInfo">
+    <entry name="GetArtistInfo">yes</entry>
+    <entry name="GetAlbumInfo">yes</entry>
+    <entry name="InfoLanguage">EN</entry>
+    <entry name="FullScanInfo">yes</entry>
+  </section>
+```
+- GetArtistInfo - Get info for Artists.
+- GetAlbumInfo - Get info for Albums.
+- InfoLanguage - Info language.
+- FullScanInfo - Make full scan of Music DB (Once in 30 days).
