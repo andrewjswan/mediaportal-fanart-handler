@@ -72,7 +72,7 @@ namespace FanartHandler
         if (!dataUpdated)
           return;
         FanartHandlerSetup.Fh.AddToDirectoryTimerQueue("TVSeries");
-        FanartHandlerSetup.Fh.AddToFanartTVTimerQueue(Utils.Category.FanartTVSeries);
+        FanartHandlerSetup.Fh.AddToFanartTVTimerQueue(Utils.SubCategory.FanartTVSeries);
       }
       catch (Exception ex)
       {
@@ -80,7 +80,7 @@ namespace FanartHandler
       }
     }
 
-    internal static Hashtable GetTVSeriesNames(Utils.Category category)
+    internal static Hashtable GetTVSeriesNames(Utils.Category category, Utils.SubCategory subcategory)
     {
       var hashtable = new Hashtable();
 
@@ -99,7 +99,7 @@ namespace FanartHandler
             DBSeries mytv = Helper.getCorrespondingSeries(series[DBOnlineSeries.cID]);
             if (mytv != null)
             {
-              var SeriesName = Utils.GetArtist(mytv[DBSeries.cParsedName], category);
+              var SeriesName = Utils.GetArtist(mytv[DBSeries.cParsedName], category, subcategory);
               string seriesId = mytv[DBSeries.cID];
               // logger.Debug("*** "+seriesId + " - " + SeriesName + " - " + mytv[DBSeries.cParsedName] + " - " + mytv);
               // *** 72860 - Tom And Jerry - Tom And Jerry - Том и Джерри
@@ -121,7 +121,7 @@ namespace FanartHandler
       return hashtable;
     }
 
-    internal static Hashtable GetTVSeries(Utils.Category category)
+    internal static Hashtable GetTVSeries(Utils.Category category, Utils.SubCategory subcategory)
     {
       var hashtable = new Hashtable();
 
@@ -179,7 +179,7 @@ namespace FanartHandler
       string result = string.Empty;
       try
       {
-        var searchName = Utils.GetArtist(tvSeriesName, Utils.Category.TVManual);
+        var searchName = Utils.GetArtist(tvSeriesName, Utils.Category.TV, Utils.SubCategory.TVManual);
         var allSeries = DBOnlineSeries.getAllSeries();
         if (allSeries != null)
         {
@@ -188,7 +188,7 @@ namespace FanartHandler
             DBSeries mytv = Helper.getCorrespondingSeries(series[DBOnlineSeries.cID]);
             if (mytv != null)
             {
-              string seriesName = Utils.GetArtist(mytv[DBSeries.cParsedName], Utils.Category.TVManual); // Tom And Jerry
+              string seriesName = Utils.GetArtist(mytv[DBSeries.cParsedName], Utils.Category.TV, Utils.SubCategory.TVManual); // Tom And Jerry
               string seriesLocalName = mytv.ToString(); // Том и Джерри
               if (seriesName.Equals(searchName, StringComparison.InvariantCultureIgnoreCase) ||
                   seriesLocalName.Equals(searchName, StringComparison.InvariantCultureIgnoreCase))

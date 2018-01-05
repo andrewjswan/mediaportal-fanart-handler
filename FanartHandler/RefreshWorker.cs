@@ -38,19 +38,20 @@ namespace FanartHandler
 
     protected override void OnDoWork(DoWorkEventArgs e)
     {
-      Thread.CurrentThread.Priority = !FanartHandlerSetup.Fh.FHThreadPriority.Equals("Lowest", StringComparison.CurrentCulture) ? ThreadPriority.BelowNormal : ThreadPriority.Lowest;
-      Thread.CurrentThread.Name = "RefreshWorker";
-      Utils.AllocateDelayStop("RefreshWorker-OnDoWork");
-
       if (Utils.GetIsStopping())
+      {
         return;
-
+      }
       if (Utils.iActiveWindow == (int)GUIWindow.Window.WINDOW_INVALID)
       {
         return;
       }
 
       Utils.WaitForDB();
+
+      Thread.CurrentThread.Priority = FanartHandlerSetup.Fh.FHThreadPriority != Utils.Priority.Lowest ? ThreadPriority.BelowNormal : ThreadPriority.Lowest;
+      Thread.CurrentThread.Name = "RefreshWorker";
+      Utils.AllocateDelayStop("RefreshWorker-OnDoWork");
 
       try
       {
@@ -76,7 +77,7 @@ namespace FanartHandler
       try
       {
         /*
-        if (Utils.GetIsStopping() || Interlocked.CompareExchange(ref FanartHandlerSetup.Fh.syncPointProgressChange, 1, 0) != 0)
+        if (Utils.GetIsStopping())
           return;
 
         FanartHandlerSetup.Fh.UpdateDummyControls();
@@ -97,7 +98,6 @@ namespace FanartHandler
         Utils.ReleaseDelayStop("RefreshWorker-OnDoWork");
         FanartHandlerSetup.Fh.UpdateDummyControls();
         FanartHandlerSetup.Fh.SyncPointRefresh = 0;
-        FanartHandlerSetup.Fh.syncPointProgressChange = 0;
       }
       catch (Exception ex)
       {

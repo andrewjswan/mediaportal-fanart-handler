@@ -131,7 +131,7 @@ namespace FanartHandler
         if (!string.IsNullOrEmpty(value))
         {
           _artist = value.Trim();
-          DBArtist = Utils.GetArtist(_artist, Utils.Category.MusicFanartScraped);
+          DBArtist = Utils.GetArtist(_artist);
 
           if (!HasMBID && !string.IsNullOrEmpty(DBArtist))
           {
@@ -264,7 +264,7 @@ namespace FanartHandler
         if (!string.IsNullOrEmpty(value))
         {
           _artist = value.Trim();
-          DBArtist = Utils.GetArtist(_artist, Utils.Category.MusicFanartScraped);
+          DBArtist = Utils.GetArtist(_artist);
 
           if (!HasMBID && !string.IsNullOrEmpty(DBArtist) && !string.IsNullOrEmpty(DBAlbum))
           {
@@ -296,7 +296,7 @@ namespace FanartHandler
         if (!string.IsNullOrEmpty(value))
         {
           _album = value.Trim();
-          DBAlbum = Utils.GetAlbum(_album, Utils.Category.MusicFanartScraped);
+          DBAlbum = Utils.GetAlbum(_album);
 
           if (!HasMBID && !string.IsNullOrEmpty(DBArtist) && !string.IsNullOrEmpty(DBAlbum))
           {
@@ -413,7 +413,6 @@ namespace FanartHandler
     {
       CDs = num;
     }
-
   }
 
   // *** Fanart Album Info
@@ -460,8 +459,8 @@ namespace FanartHandler
       CDs = album.CDs;
       Year = album.Year;
       RecordLabel = album.RecordLabel;
+    }
   }
-}
 
   // *** Fanart Track
   internal class FanartTrack : FanartMusic
@@ -730,7 +729,7 @@ namespace FanartHandler
       { 
         if (string.IsNullOrEmpty(value))
           _imdbid = string.Empty;
-        else if (!value.ToLower().StartsWith("tt"))
+        else if (!value.ToUpperInvariant().StartsWith("TT"))
           _imdbid = string.Empty; 
         else
           _imdbid = value;
@@ -773,6 +772,25 @@ namespace FanartHandler
     {
       Title = title;
       IMDBId = imdbid;
+    }
+  }
+
+  // *** Fanart Movie Collection Info
+  internal class FanartMovieCollectionInfo : FanartMovie
+  {
+    public string Overview { get; set; }
+    public string Poster { get; set; }
+    public string Backdrop { get; set; }
+
+    /// <summary>
+    /// Initializes a new instance of the FanartMovieCollectionInfo class.
+    /// </summary>
+    public FanartMovieCollectionInfo() 
+      : base ()
+    {
+      Overview = string.Empty;
+      Poster = string.Empty;
+      Backdrop = string.Empty;
     }
   }
 

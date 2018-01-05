@@ -36,13 +36,13 @@ namespace FanartHandler
     {
       try
       {
-        if (Utils.GetIsStopping() || Interlocked.CompareExchange(ref FanartHandlerSetup.Fh.SyncPointPictures, 1, 0) != 0)
-          return;
-
         if (!Utils.UseMyPicturesSlideShow)
           return;
 
-        Thread.CurrentThread.Priority = !FanartHandlerSetup.Fh.FHThreadPriority.Equals("Lowest", StringComparison.CurrentCulture) ? ThreadPriority.BelowNormal : ThreadPriority.Lowest;
+        if (Utils.GetIsStopping() || Interlocked.CompareExchange(ref FanartHandlerSetup.Fh.SyncPointPictures, 1, 0) != 0)
+          return;
+
+        Thread.CurrentThread.Priority = FanartHandlerSetup.Fh.FHThreadPriority != Utils.Priority.Lowest ? ThreadPriority.BelowNormal : ThreadPriority.Lowest;
         Thread.CurrentThread.Name = "PicturesWorker";
 
         Utils.AllocateDelayStop("FanartHandler-PicturesScan");
@@ -81,10 +81,10 @@ namespace FanartHandler
         Utils.ReleaseDelayStop("FanartHandler-PicturesScan");
         FanartHandlerSetup.Fh.SyncPointPictures = 0;
 
+        Utils.SetProperty("pictures.scan", "false");
+
         if (Utils.GetIsStopping())
           return;
-
-        Utils.SetProperty("pictures.scan", "false");
 
         /*
         Utils.Shuffle(ref slideShowImages);

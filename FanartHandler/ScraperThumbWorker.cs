@@ -31,13 +31,15 @@ namespace FanartHandler
       try
       {
         if (Utils.GetIsStopping() || Interlocked.CompareExchange(ref FanartHandlerSetup.Fh.SyncPointScraper, 1, 0) != 0)
+        {
           return;
+        }
 
+        Utils.IsScraping = true;
         Utils.WaitForDB();        
 
-        Thread.CurrentThread.Priority = !FanartHandlerSetup.Fh.FHThreadPriority.Equals("Lowest", StringComparison.CurrentCulture) ? ThreadPriority.BelowNormal : ThreadPriority.Lowest;
+        Thread.CurrentThread.Priority = FanartHandlerSetup.Fh.FHThreadPriority != Utils.Priority.Lowest ? ThreadPriority.BelowNormal : ThreadPriority.Lowest;
         Thread.CurrentThread.Name = "ScraperWorker";
-        Utils.IsScraping = true;
         Utils.AllocateDelayStop("FanartHandlerSetup-ThumbScraper");
 
         var strArray = e.Argument as string[];
@@ -67,10 +69,8 @@ namespace FanartHandler
       try
       {
         Utils.ReleaseDelayStop("FanartHandlerSetup-ThumbScraper");
-        FanartHandlerSetup.Fh.SyncPointScraper = 0;
         Utils.ThreadToSleep();
 
-        Utils.IsScraping = false;
         if (!Utils.GetIsStopping())
         {
           Utils.TotArtistsBeingScraped = 0.0;
@@ -82,6 +82,9 @@ namespace FanartHandler
       {
         logger.Error("OnRunWorkerCompleted: " + ex);
       }
+
+      Utils.IsScraping = false;
+      FanartHandlerSetup.Fh.SyncPointScraper = 0;
     }
   }
 }

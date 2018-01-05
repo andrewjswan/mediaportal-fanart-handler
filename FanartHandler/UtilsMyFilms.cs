@@ -14,6 +14,8 @@ using System.Collections;
 using System.IO;
 using System.Runtime.CompilerServices;
 
+using MediaPortal.Video.Database;
+
 namespace FanartHandler
 {
   internal static class UtilsMyFilms
@@ -32,33 +34,11 @@ namespace FanartHandler
 
       try
       {
-        var allFilenames = Utils.GetDbm().GetAllFilenames(Utils.Category.MyFilmsManual);
+        var allFilenames = Utils.GetDbm().GetAllFilenames(Utils.Category.MyFilms, Utils.SubCategory.MyFilmsManual);
         var movielist = new ArrayList();
 
         BaseMesFilms.GetMovies(ref movielist);
-        /*
-        var movielistwithartwork = new List<MFMovie>();
-        foreach (MFMovie movie in movielist)
-        {
-          MFMovie tmpmovie = movie;
-          BaseMesFilms.GetMovieArtworkDetails(ref tmpmovie);
-          movielistwithartwork.Add(tmpmovie);
-        }
 
-        using (var enumerator = movielistwithartwork.GetEnumerator())
-        {
-          while (enumerator.MoveNext())
-          {
-            var current = enumerator.Current;
-            var backdropFullPath = current.Fanart;
-            var ImdbID = current.IMDBNumber.Trim();
-
-            if (!string.IsNullOrWhiteSpace(backdropFullPath) && (allFilenames == null || !allFilenames.Contains(backdropFullPath)))
-              if (File.Exists(backdropFullPath))
-                Utils.GetDbm().LoadFanart(Utils.GetArtist(current.Title, Utils.Category.MyFilmsManual), backdropFullPath, backdropFullPath, Utils.Category.MyFilmsManual, null, Utils.Provider.MyFilms, null, ImdbID);
-          }
-        }
-        */
         foreach (MFMovie movie in movielist)
         {
           MFMovie current = movie;
@@ -69,7 +49,7 @@ namespace FanartHandler
           {
             if (File.Exists(backdropFullPath))
             {
-              Utils.GetDbm().LoadFanart(Utils.GetArtist(current.Title, Utils.Category.MyFilmsManual), null, ImdbID, null, backdropFullPath, backdropFullPath, Utils.Category.MyFilmsManual, Utils.Provider.MyFilms);
+              Utils.GetDbm().LoadFanart(Utils.GetArtist(current.Title, Utils.Category.MyFilms, Utils.SubCategory.MyFilmsManual), null, ImdbID, null, backdropFullPath, backdropFullPath, Utils.Category.MyFilms, Utils.SubCategory.MyFilmsManual, Utils.Provider.MyFilms);
             }
           }
         }
@@ -83,6 +63,58 @@ namespace FanartHandler
       catch (Exception ex)
       {
         logger.Error("GetMyFilmsBackdrops: " + ex);
+      }
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    internal static void GetMyFilmsMoviesList(ref ArrayList movies)
+    {
+      if (!Utils.MyFilmsEnabled)
+        return;
+
+      try
+      {
+        var movielist = new ArrayList();
+
+        BaseMesFilms.GetMovies(ref movielist);
+        if (movielist == null)
+        {
+          return;
+        }
+
+        foreach (MFMovie movie in movielist)
+        {
+          MFMovie current = movie;
+          var ImdbID = string.IsNullOrEmpty(current.IMDBNumber) ? string.Empty : current.IMDBNumber.Trim().ToLowerInvariant().Replace("unknown", string.Empty);
+
+          if (!string.IsNullOrEmpty(ImdbID))
+          {
+            if (!Utils.GetIsStopping())
+            {
+              IMDBMovie details = new IMDBMovie();
+              details.ID = current.ID;
+              details.IMDBNumber = ImdbID;
+              details.TMDBNumber = current.TMDBNumber;
+              details.Title = current.Title;
+              details.Year = current.Year;
+              movies.Add(details);
+            }
+            else
+            {
+              break;
+            }
+          }
+        }
+        if (movielist != null)
+          movielist.Clear();
+      }
+      catch (MissingMethodException ex)
+      {
+        logger.Debug("GetMyFilmsMoviesList: Missing: " + ex);
+      }
+      catch (Exception ex)
+      {
+        logger.Error("GetMyFilmsMoviesList: " + ex);
       }
     }
   }

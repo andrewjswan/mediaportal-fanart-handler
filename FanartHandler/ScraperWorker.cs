@@ -33,14 +33,16 @@ namespace FanartHandler
       try
       {
         if (Utils.GetIsStopping() || Interlocked.CompareExchange(ref FanartHandlerSetup.Fh.SyncPointScraper, 1, 0) != 0)
+        {
           return;
+        }
 
+        Utils.IsScraping = true;
         Utils.WaitForDB();
 
-        Thread.CurrentThread.Priority = !FanartHandlerSetup.Fh.FHThreadPriority.Equals("Lowest", StringComparison.CurrentCulture) ? ThreadPriority.BelowNormal : ThreadPriority.Lowest;
+        Thread.CurrentThread.Priority = FanartHandlerSetup.Fh.FHThreadPriority != Utils.Priority.Lowest ? ThreadPriority.BelowNormal : ThreadPriority.Lowest;
         Thread.CurrentThread.Name = "ScraperWorker";
         TriggerRefresh = false;
-        Utils.IsScraping = true;
 
         Utils.TotArtistsBeingScraped = 0.0;
         Utils.CurrArtistsBeingScraped = 0.0;
@@ -71,14 +73,14 @@ namespace FanartHandler
             Utils.GetDbm().InitialScrapeFanart();
           }
 
-          #region Statistics
-          logger.Debug("InitialScrape statistic for Category:");
-          Utils.GetDbm().GetCategoryStatistic(true);
-          logger.Debug("InitialScrape statistic for Provider:");
-          Utils.GetDbm().GetProviderStatistic(true);
-          logger.Debug("InitialScrape statistic for Actual Music Fanart/Thumbs:");
-          Utils.GetDbm().GetAccessStatistic(true);
-          #endregion
+          if (Utils.AnimatedNeedDownload)
+          {
+            if (Utils.DeleteMissing)
+            {
+              Utils.GetDbm().DeleteOldAnimated();
+            }
+            Utils.GetDbm().InitialScrapeAnimated();
+          }
 
           Utils.GetDbm().DeleteOldLabels();
           
@@ -87,20 +89,43 @@ namespace FanartHandler
             Utils.GetDbm().DeleteOldImages();
           }
 
+          if (Utils.CleanUpFanart || Utils.CleanUpAnimation)
+          {
+            Utils.GetDbm().DeleteExtraFanart();
+          }
+
           if (Utils.GetArtistInfo || Utils.GetAlbumInfo)
           {
             logger.Debug("Run get Music Info in background ...");
             System.Threading.ThreadPool.QueueUserWorkItem(delegate { Utils.GetDbm().GetMusicInfo(); }, null);
           }
+
+          logger.Debug("Run Fanart Statistics in background ...");
+          System.Threading.ThreadPool.QueueUserWorkItem(delegate { Utils.FanartStatistics(); }, null);
         }
         else // Part of ...
         {
-          int vParam = sparams[0];
-          if (Enum.IsDefined(typeof(Utils.Category), vParam))
-          {
-            if (Utils.FanartTVNeedDownload)
+          if (sparams.Length == 2)
+          { 
+            int vParam = sparams[0];  // Category
+            int vsParam = sparams[1]; // SubCategory
+
+            if (Enum.IsDefined(typeof(Utils.Category), vParam))
             {
-              Utils.GetDbm().InitialScrapeFanart((Utils.Category)vParam);
+              if ((Utils.Category)vParam == Utils.Category.FanartTV && Enum.IsDefined(typeof(Utils.SubCategory), vsParam))
+              {
+                if (Utils.FanartTVNeedDownload)
+                {
+                  Utils.GetDbm().InitialScrapeFanart((Utils.SubCategory)vsParam);
+                }
+              }
+              if ((Utils.Category)vParam == Utils.Category.Animated && Enum.IsDefined(typeof(Utils.SubCategory), vsParam))
+              {
+                if (Utils.AnimatedNeedDownload)
+                {
+                  Utils.GetDbm().InitialScrapeAnimated((Utils.SubCategory)vsParam);
+                }
+              }
             }
           }
           else
@@ -126,8 +151,36 @@ namespace FanartHandler
         if (Utils.GetIsStopping())
           return;
 
-        Utils.SetProperty("scraper.percent.completed", string.Empty + e.ProgressPercentage);
-        Utils.SetProperty("scraper.percent.sign", Translation.StatusPercent);
+        Utils.Progress state = e.UserState == null ? Utils.Progress.None : (Utils.Progress)Enum.Parse(typeof(Utils.Progress), e.UserState.ToString());
+        switch (state)
+        {
+          case Utils.Progress.Start:
+          {
+            Utils.SetProperty("scraper.percent.completed", string.Empty);
+            Utils.SetProperty("scraper.percent.sign", "...");
+            break;
+          }
+          case Utils.Progress.LongProgress:
+          {
+            if (e.ProgressPercentage == 0)
+            {
+              Utils.SetProperty("scraper.percent.completed", string.Empty);
+              Utils.SetProperty("scraper.percent.sign", "...");
+            }
+            else
+            {
+              Utils.SetProperty("scraper.percent.completed", Utils.GetLongProgress());
+              Utils.SetProperty("scraper.percent.sign", string.Empty);
+            }
+            break;
+          }
+          default:
+          {
+            Utils.SetProperty("scraper.percent.completed", e.ProgressPercentage.ToString());
+            Utils.SetProperty("scraper.percent.sign", Translation.StatusPercent);
+            break;
+          }
+        }
         Utils.ThreadToSleep();
       }
       catch (Exception ex)
@@ -141,25 +194,36 @@ namespace FanartHandler
       try
       {
         Utils.ReleaseDelayStop("FanartHandlerSetup-StartScraper");
-        FanartHandlerSetup.Fh.SyncPointScraper = 0;
 
-        if (Utils.GetIsStopping())
-          return;
-        Utils.ThreadToSleep();
+        if (!Utils.GetIsStopping())
+        {
+          Utils.ThreadToSleep();
 
-        Utils.IsScraping = false;
-        FanartHandlerSetup.Fh.HideScraperProgressIndicator();
-        Utils.SetProperty("scraper.task", string.Empty);
-        Utils.SetProperty("scraper.percent.completed", string.Empty);
-        Utils.SetProperty("scraper.percent.sign", string.Empty);
+          FanartHandlerSetup.Fh.HideScraperProgressIndicator();
+          Utils.SetProperty("scraper.task", string.Empty);
+          Utils.SetProperty("scraper.percent.completed", string.Empty);
+          Utils.SetProperty("scraper.percent.sign", string.Empty);
 
-        Utils.TotArtistsBeingScraped = 0.0;
-        Utils.CurrArtistsBeingScraped = 0.0;
+          Utils.TotArtistsBeingScraped = 0.0;
+          Utils.CurrArtistsBeingScraped = 0.0;
+
+          if (!FanartHandlerSetup.Fh.FSelected.FanartAvailable)
+          {
+            FanartHandlerSetup.Fh.FSelected.ForceRefreshTickCount();
+          }
+          if (!FanartHandlerSetup.Fh.FSelectedOther.FanartAvailable)
+          {
+            FanartHandlerSetup.Fh.FSelectedOther.ForceRefreshTickCount();
+          }
+        }
       }
       catch (Exception ex)
       {
         logger.Error("OnRunWorkerCompleted: " + ex);
       }
+
+      Utils.IsScraping = false;
+      FanartHandlerSetup.Fh.SyncPointScraper = 0;
     }
   }
 }

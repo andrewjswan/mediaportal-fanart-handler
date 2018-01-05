@@ -273,11 +273,13 @@ To the team behind the MP Moving Picture plugin. From who I have used some of th
     <entry name="MaxAwards">10</entry>
     <entry name="MaxGenres">10</entry>
     <entry name="MaxStudios">10</entry>
+    <entry name="MaxRandomFanart">10</entry>
   </section>
 ```
 - MaxAwards - Max awards images per stack
 - MaxGenres - Max genres images per stack
 - MaxStudios - Max studios images per stack
+- MaxRandomFanart - Max Random Fanart pack images for show, ie if MaxRandomFanart = 10, then Random images for show = 10 * ScraperMaxImages.
 
 ```xml
   <section name="SpotLight">

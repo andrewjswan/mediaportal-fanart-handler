@@ -35,20 +35,19 @@ namespace FanartHandler
   public class FanartHandler
   {
     private readonly Logger logger = LogManager.GetCurrentClassLogger();
-    private string fhThreadPriority = "Lowest";
+    private Utils.Priority fhThreadPriority = Utils.Priority.Lowest;
     private const string LogFileName = "FanartHandler.log";
     private const string OldLogFileName = "FanartHandler.bak";
 
     internal int SyncPointDirectory;
-    internal int SyncPointDirectoryUpdate;
     internal int SyncPointRefresh;
     internal int SyncPointScraper;
     internal int SyncPointPictures;
     internal int SyncPointDefaultBackdrops;
 
-    internal int syncPointProgressChange;
     internal Hashtable DirectoryTimerQueue;
     internal Hashtable FanartTVTimerQueue;
+    internal Hashtable AnimatedTimerQueue;
 
     private Timer refreshTimer;
     private TimerCallback myScraperTimer;
@@ -67,13 +66,15 @@ namespace FanartHandler
     private PicturesWorker MyPicturesWorker;
     private DefaultBackdropWorker MyDefaultBackdropWorker;
 
+    private bool NeedRefreshQueue = false;
+
     internal FileSystemWatcher MyJPGFileWatcher { get; set; }
     // internal FileSystemWatcher MyPNGFileWatcher { get; set; }
     internal FileSystemWatcher MySpotLightFileWatcher { get; set; }
     internal ScraperNowWorker MyScraperNowWorker { get; set; }
     internal ScraperWorker MyScraperWorker { get; set; }
 
-    internal string FHThreadPriority
+    internal Utils.Priority FHThreadPriority
     {
       get { return fhThreadPriority; }
       set { fhThreadPriority = value; }
@@ -125,35 +126,56 @@ namespace FanartHandler
       AddToDirectoryTimerQueue(FileName);
     }
 
+    #region Common Timer Queue
+    internal void RefreshTimerQueue()
+    {
+      if (NeedRefreshQueue)
+      {
+        if (DirectoryTimerQueue.Count > 0)
+        {
+          ProcessDirectoryTimerQueue();
+        }
+        if (FanartTVTimerQueue.Count > 0)
+        {
+          ProcessFanartTVTimerQueue();
+        }
+        if (AnimatedTimerQueue.Count > 0)
+        {
+          ProcessAnimatedTimerQueue();
+        }
+        NeedRefreshQueue = DirectoryTimerQueue.Count > 0 || FanartTVTimerQueue.Count > 0 || AnimatedTimerQueue.Count > 0;
+      }
+    }
+
     internal bool CheckValidWindowIDForFanart()
     {
       return (FPlay.CheckValidWindowIDForFanart() || FPlayOther.CheckValidWindowIDForFanart() || FSelected.CheckValidWindowIDForFanart() || FSelectedOther.CheckValidWindowIDForFanart() || FRandom.CheckValidWindowIDForFanart() || FWeather.CheckValidWindowIDForFanart() || FHoliday.CheckValidWindowIDForFanart());
     }
 
-    #region DirectoryTimerQueue
-    internal bool CheckValidWindowsForDirectoryTimerQueue()
+    internal bool CheckValidWindowsForTimerQueue()
     {
-      var flag = false;
       try
       {
         if (!Utils.GetIsStopping())
         {
-          flag = (CheckValidWindowIDForFanart() && Utils.AllowFanartInActiveWindow());
+          return (CheckValidWindowIDForFanart() && Utils.AllowFanartInActiveWindow());
         }
       }
       catch (Exception ex)
       {
-        logger.Error("CheckValidWindowsForDirectoryTimerQueue: " + ex);
+        logger.Error("CheckValidWindowsForTimerQueue: " + ex);
       }
-      return flag;
+      return false;
     }
+    #endregion
 
+    #region DirectoryTimer Queue
     internal void AddToDirectoryTimerQueue(string param)
     {
       bool flag = false;
       try
       {
-        if (CheckValidWindowsForDirectoryTimerQueue())
+        if (CheckValidWindowsForTimerQueue())
         {
           flag = UpdateDirectoryTimer(param, "None");
         }
@@ -194,7 +216,6 @@ namespace FanartHandler
       }
       catch (Exception ex)
       {
-        SyncPointDirectory = 0;
         logger.Error("UpdateDirectoryTimer: " + ex);
       }
       return false;
@@ -205,7 +226,7 @@ namespace FanartHandler
       var hashtable = new Hashtable();
       foreach (string value in DirectoryTimerQueue.Values)
       {
-        if (CheckValidWindowsForDirectoryTimerQueue())
+        if (CheckValidWindowsForTimerQueue())
         {
           if (UpdateDirectoryTimer(value, "None"))
           {
@@ -225,32 +246,15 @@ namespace FanartHandler
     }
     #endregion
 
-    #region FanartTVTimerQueue
-    internal bool CheckValidWindowsForFanartTVTimerQueue()
-    {
-      var flag = false;
-      try
-      {
-        if (!Utils.GetIsStopping())
-        {
-          flag = (CheckValidWindowIDForFanart() && Utils.AllowFanartInActiveWindow());
-        }
-      }
-      catch (Exception ex)
-      {
-        logger.Error("CheckValidWindowsForFanartTVTimerQueue: " + ex);
-      }
-      return flag;
-    }
-
-    internal void AddToFanartTVTimerQueue(Utils.Category param)
+    #region FanartTVTimer Queue
+    internal void AddToFanartTVTimerQueue(Utils.SubCategory param)
     {
       bool flag = false;
       try
       {
-        if (CheckValidWindowsForFanartTVTimerQueue())
+        if (Utils.AllowFanartInActiveWindow())
         {
-          flag = StartScraper(param);
+          flag = StartScraper(Utils.Category.FanartTV, param);
         }
 
         if (!flag)
@@ -271,20 +275,71 @@ namespace FanartHandler
     private void ProcessFanartTVTimerQueue()
     {
       var hashtable = new Hashtable();
-      foreach (Utils.Category value in FanartTVTimerQueue.Values)
+      foreach (Utils.SubCategory value in FanartTVTimerQueue.Values)
       {
-        if (CheckValidWindowsForFanartTVTimerQueue())
+        if (Utils.AllowFanartInActiveWindow())
         {
-          if (StartScraper(value))
+          if (StartScraper(Utils.Category.FanartTV, value))
           {
             hashtable.Add(value, value);
           }
         }
       }
 
-      foreach (Utils.Category value in hashtable.Values)
+      foreach (Utils.SubCategory value in hashtable.Values)
       {
         FanartTVTimerQueue.Remove(value);
+      }
+
+      if (hashtable != null)
+        hashtable.Clear();
+      hashtable = null;
+    }
+    #endregion
+
+    #region AnimatedTmer Queue
+    internal void AddToAnimatedTimerQueue(Utils.SubCategory param)
+    {
+      bool flag = false;
+      try
+      {
+        if (Utils.AllowFanartInActiveWindow())
+        {
+          flag = StartScraper(Utils.Category.Animated, param);
+        }
+
+        if (!flag)
+        {
+          if (AnimatedTimerQueue.Contains(param))
+          {
+            return;
+          }
+          AnimatedTimerQueue.Add(param, param);
+        }
+      }
+      catch (Exception ex)
+      {
+        logger.Error("AddToAnimatedTimerQueue: " + ex);
+      }
+    }
+
+    private void ProcessAnimatedTimerQueue()
+    {
+      var hashtable = new Hashtable();
+      foreach (Utils.SubCategory value in AnimatedTimerQueue.Values)
+      {
+        if (Utils.AllowFanartInActiveWindow())
+        {
+          if (StartScraper(Utils.Category.Animated, value))
+          {
+            hashtable.Add(value, value);
+          }
+        }
+      }
+
+      foreach (Utils.SubCategory value in hashtable.Values)
+      {
+        AnimatedTimerQueue.Remove(value);
       }
 
       if (hashtable != null)
@@ -300,7 +355,7 @@ namespace FanartHandler
 
       try
       {
-        if (Interlocked.CompareExchange(ref SyncPointRefresh, 1, 0) == 0) // && SyncPointDirectoryUpdate == 0) ajs
+        if (Interlocked.CompareExchange(ref SyncPointRefresh, 1, 0) == 0)
         {
           if (MyRefreshWorker == null)
           {
@@ -318,6 +373,8 @@ namespace FanartHandler
       {
         logger.Error("UpdateImageTimer: " + ex);
       }
+      
+      RefreshTimerQueue();
     }
 
     internal void UpdateScraperTimer(object stateInfo)
@@ -562,15 +619,15 @@ namespace FanartHandler
       FHoliday.ClearCurrProperties();
     }
 
-    public void RefreshRefreshTickCount()
+    public void ForceRefreshTickCount()
     {
-      FPlay.RefreshRefreshTickCount();
-      FPlayOther.RefreshRefreshTickCount();
-      FSelected.RefreshRefreshTickCount();
-      FSelectedOther.RefreshRefreshTickCount();
-      FRandom.RefreshRefreshTickCount();
-      FWeather.RefreshRefreshTickCount();
-      FHoliday.RefreshRefreshTickCount();
+      FPlay.ForceRefreshTickCount();
+      FPlayOther.ForceRefreshTickCount();
+      FSelected.ForceRefreshTickCount();
+      FSelectedOther.ForceRefreshTickCount();
+      FRandom.ForceRefreshTickCount();
+      FWeather.ForceRefreshTickCount();
+      FHoliday.ForceRefreshTickCount();
     }
 
     private void SetupVariables()
@@ -579,13 +636,15 @@ namespace FanartHandler
       
       SyncPointRefresh = 0;
       SyncPointDirectory = 0;
-      SyncPointDirectoryUpdate = 0;
       SyncPointScraper = 0;
       SyncPointPictures = 0;
       SyncPointDefaultBackdrops = 0;
 
+      NeedRefreshQueue = false;
+
       DirectoryTimerQueue = new Hashtable();
       FanartTVTimerQueue = new Hashtable();
+      AnimatedTimerQueue = new Hashtable();
       Utils.DefaultBackdropImages = new Hashtable();
       Utils.SlideShowImages = new Hashtable();
     }
@@ -612,10 +671,13 @@ namespace FanartHandler
         Encoding = "utf-8",
         Layout = "${date:format=dd-MMM-yyyy HH\\:mm\\:ss} ${level:fixedLength=true:padding=5} [${logger:fixedLength=true:padding=20:shortName=true}]: ${message} ${exception:format=tostring}"
       };
+
       loggingConfiguration.AddTarget("fanart-handler", fileTarget);
+
       var settings = new Settings(Config.GetFile((Config.Dir) 10, "MediaPortal.xml"));
       var str = settings.GetValue("general", "ThreadPriority");
-      FHThreadPriority = str == null || !str.Equals("Normal", StringComparison.CurrentCulture) ? (str == null || !str.Equals("BelowNormal", StringComparison.CurrentCulture) ? "BelowNormal" : "Lowest") : "Lowest";
+      FHThreadPriority = str == null || !str.Equals("Normal", StringComparison.CurrentCulture) ? (str == null || !str.Equals("BelowNormal", StringComparison.CurrentCulture) ? Utils.Priority.BelowNormal : Utils.Priority.Lowest) : Utils.Priority.Lowest;
+
       LogLevel minLevel;
       switch ((int) (Level) settings.GetValueAsInt("general", "loglevel", 0))
       {
@@ -632,8 +694,10 @@ namespace FanartHandler
           minLevel = LogLevel.Debug;
           break;
       }
+
       var loggingRule = new LoggingRule("*", minLevel, fileTarget);
       loggingConfiguration.LoggingRules.Add(loggingRule);
+
       LogManager.Configuration = loggingConfiguration;
     }
 
@@ -722,14 +786,14 @@ namespace FanartHandler
         logger.Debug("FanartHandler skin use: ");
         logger.Debug(" Play: " + Utils.Check(FPlay.WindowsUsingFanartPlay.Count > 0) + " Fanart");
         logger.Debug("       " + Utils.Check(FPlayOther.WindowsUsingFanartPlayClearArt.Count > 0) + " ClearArt, " + 
-                                 Utils.Check(FPlayOther.WindowsUsingFanartPlayGenre.Count > 0) + " Genres" +
+                                 Utils.Check(FPlayOther.WindowsUsingFanartPlayGenre.Count > 0) + " Genres, " +
                                  Utils.Check(FPlayOther.WindowsUsingFanartPlayLabel.Count > 0) + " Labels");
         logger.Debug(" Selected: " + Utils.Check(FSelected.WindowsUsingFanartSelectedMusic.Count > 0) + " Music Fanart, " + 
                                      Utils.Check(FSelected.WindowsUsingFanartSelectedMovie.Count > 0) + " Movie Fanart, " +
                                      Utils.Check(FSelected.WindowsUsingFanartSelectedPictures.Count > 0) + " Pictures Fanart, " +
                                      Utils.Check(FSelected.WindowsUsingFanartSelectedScoreCenter.Count > 0) + " ScoreCenter Fanart");
         logger.Debug("           " + Utils.Check(FSelectedOther.WindowsUsingFanartSelectedClearArtMusic.Count > 0) + " Music ClearArt, " + 
-                                     Utils.Check(FSelectedOther.WindowsUsingFanartSelectedGenreMusic.Count > 0) + " Music Genres" +
+                                     Utils.Check(FSelectedOther.WindowsUsingFanartSelectedGenreMusic.Count > 0) + " Music Genres, " +
                                      Utils.Check(FSelectedOther.WindowsUsingFanartSelectedLabelMusic.Count > 0) + " Music Labels");
         logger.Debug("           " + Utils.Check(FSelectedOther.WindowsUsingFanartSelectedStudioMovie.Count > 0) + " Movie Studios, " + 
                                      Utils.Check(FSelectedOther.WindowsUsingFanartSelectedGenreMovie.Count > 0) + " Movie Genres, " +
@@ -737,9 +801,9 @@ namespace FanartHandler
         logger.Debug(" Random: " + Utils.Check(FRandom.WindowsUsingFanartRandom.Count > 0) + " Fanart");
         logger.Debug(" Random Latests: " + Utils.Check(FRandom.WindowsUsingFanartLatestsRandom.Count > 0) + " Fanart");
         logger.Debug(" Weather: " + Utils.Check(FWeather.WindowsUsingFanartWeather.Count > 0) + " Fanart, Season: " + Utils.GetWeatherCurrentSeason().ToString());
-        logger.Debug(" Holiday: " + Utils.Check(FHoliday.WindowsUsingFanartHoliday.Count > 0) + Utils.Check(FHoliday.WindowsUsingFanartHolidayText.Count > 0) + " Fanart, " + Utils.Check(Utils.HolidayShowAllDay) + " All Day, Show: " + Utils.HolidayShow + "min");
+        logger.Debug(" Holiday: " + Utils.Check(FHoliday.WindowsUsingFanartHoliday.Count > 0) + Utils.Check(FHoliday.WindowsUsingFanartHolidayText.Count > 0) + " Fanart, " + Utils.Check(Utils.HolidayShowAllDay) + " All Day, Show: " + Utils.HolidayShow + "min " + "Language: " + Utils.HolidayLanguage);
         //
-        Utils.InitiateDbm("mediaportal");
+        Utils.InitiateDbm(Utils.DB.Start);
         Utils.StopScraper = false;
         Utils.StopScraperInfo = false;
         //
@@ -858,8 +922,11 @@ namespace FanartHandler
         case GUIMessage.MessageType.GUI_MSG_VIDEOINFO_REFRESH:
         {
           logger.Debug("VideoInfo refresh detected: Refreshing video fanarts.");
+
           AddToDirectoryTimerQueue(Utils.FAHSMovies);
-          AddToFanartTVTimerQueue(Utils.Category.FanartTVMovie);
+          AddToFanartTVTimerQueue(Utils.SubCategory.FanartTVMovie);
+          AddToAnimatedTimerQueue(Utils.SubCategory.AnimatedMovie);
+          NeedRefreshQueue = true;
           break;
         }
         /*
@@ -888,7 +955,7 @@ namespace FanartHandler
         if (e.Mode == PowerModes.Resume)
         {
           logger.Info("Fanart Handler: is resuming from standby/hibernate.");
-          Utils.InitiateDbm("mediaportal");
+          Utils.InitiateDbm(Utils.DB.Start);
           FPlayOther.PicturesCache = new Hashtable();
           FSelectedOther.PicturesCache = new Hashtable();
           // StopTasks(false);
@@ -1020,13 +1087,13 @@ namespace FanartHandler
           }
         }
 
-        logger.Debug("Active Window: " + Utils.sActiveWindow + " R: " + Utils.Check(refreshStart) + " | " + Utils.Check(CheckValidWindowIDForFanart()) + " " + Utils.Check(Utils.UseOverlayFanart) + " " + Utils.Check(Utils.AllowFanartInActiveWindow())) ;
-        logger.Debug("               " + Utils.Check(FPlay.CheckValidWindowIDForFanart()) + " " + Utils.Check(FPlayOther.CheckValidWindowIDForFanart()) + " Play, " +
-                                         Utils.Check((g_Player.Playing || g_Player.Paused) && (g_Player.IsCDA || g_Player.IsMusic || g_Player.IsRadio)) + " Player, " +
-                                         Utils.Check(FSelected.CheckValidWindowIDForFanart()) + " " + Utils.Check(FSelectedOther.CheckValidWindowIDForFanart()) + " Selected, " +
-                                         Utils.Check(FRandom.CheckValidWindowIDForFanart()) +  " Random, " + Utils.Check(Utils.ContainsID(FRandom.WindowsUsingFanartLatestsRandom)) +  " Random Latests, " +
-                                         Utils.Check(FWeather.CheckValidWindowIDForFanart()) + " Weather, " +
-                                         Utils.Check(FHoliday.CheckValidWindowIDForFanart()) + " Holiday") ;
+        logger.Debug("Active Window: " + Utils.sActiveWindow + " Refresh: " + Utils.Check(refreshStart) + " -> Window: " + Utils.Check(CheckValidWindowIDForFanart()) + " Overlay: " + Utils.Check(Utils.UseOverlayFanart) + " Allow: " + Utils.Check(Utils.AllowFanartInActiveWindow())) ;
+        logger.Debug(" --- " + Utils.Check(FPlay.CheckValidWindowIDForFanart()) + " " + Utils.Check(FPlayOther.CheckValidWindowIDForFanart()) + " Play, " +
+                               Utils.Check((g_Player.Playing || g_Player.Paused) && (g_Player.IsCDA || g_Player.IsMusic || g_Player.IsRadio)) + " Player, " +
+                               Utils.Check(FSelected.CheckValidWindowIDForFanart()) + " " + Utils.Check(FSelectedOther.CheckValidWindowIDForFanart()) + " Selected, " +
+                               Utils.Check(FRandom.CheckValidWindowIDForFanart()) +  " Random, " + Utils.Check(Utils.ContainsID(FRandom.WindowsUsingFanartLatestsRandom)) +  " Random Latests, " +
+                               Utils.Check(FWeather.CheckValidWindowIDForFanart()) + " Weather, " +
+                               Utils.Check(FHoliday.CheckValidWindowIDForFanart()) + " Holiday") ;
 
         if (refreshStart)
         {
@@ -1084,11 +1151,12 @@ namespace FanartHandler
 
       try
       {
-        RefreshRefreshTickCount();
+        ForceRefreshTickCount();
         ClearCurrProperties();
         CheckRefreshTimer();
-        ProcessDirectoryTimerQueue();
-        ProcessFanartTVTimerQueue();
+
+        NeedRefreshQueue = true;
+        RefreshTimerQueue();
       }
       catch (Exception ex)
       {
@@ -1150,10 +1218,10 @@ namespace FanartHandler
 
     private void StartScraper()
     {
-      StartScraper(Utils.Category.Dummy);
+      StartScraper(Utils.Category.None, Utils.SubCategory.None);
     }
 
-    private bool StartScraper(Utils.Category param)
+    private bool StartScraper(Utils.Category param, Utils.SubCategory subparam)
     {
       try
       {
@@ -1171,13 +1239,13 @@ namespace FanartHandler
           return false;
         }
 
-        if (param == Utils.Category.Dummy)
+        if (param == Utils.Category.None)
         {
           MyScraperWorker.RunWorkerAsync();
         }
         else
         {
-          MyScraperWorker.RunWorkerAsync(new int[1] { (int)param });
+          MyScraperWorker.RunWorkerAsync(new int[2] { (int)param, (int)subparam });
         }
         return true;
       }
@@ -1896,7 +1964,8 @@ namespace FanartHandler
                                   ref bool _flagGenreMovie, ref bool _flagGenreMovieSingle, ref bool _flagGenreMovieAll, ref bool _flagGenreMovieVertical, 
                                   ref bool _flagStudioMovie, ref bool _flagStudioMovieSingle, ref bool _flagStudioMovieAll, ref bool _flagStudioMovieVertical, 
                                   ref bool _flagLabelMusic, ref bool _flagLabelPlay,
-                                  ref bool _flagAwardMovie, ref bool _flagAwardMovieSingle, ref bool _flagAwardMovieAll, ref bool _flagAwardMovieVertical, 
+                                  ref bool _flagAwardMovie, ref bool _flagAwardMovieSingle, ref bool _flagAwardMovieAll, ref bool _flagAwardMovieVertical,
+                                  // ref bool _flagAnimatedMovie,  
                                   ref bool _flagWeather, 
                                   ref bool _flagHoliday, ref bool _flagHolidayText,
                                   ref FanartRandom.SkinFile _skinFile)

@@ -218,74 +218,74 @@ namespace FanartHandler
     #region Refresh Random Image Properties
     public void RefreshRandomMoviesImageProperties(RefreshWorker rw)
     {
-      FillPropertyRandom(Utils.Category.MovieManual, ref currAnyMoviesUser, ref PrevSelectedMoviesUser, "movie.userdef", ref ListAnyMoviesUser);
-      FillPropertyRandom(Utils.Category.MovieScraped, ref currAnyMoviesScraper, ref PrevSelectedMoviesScraper, "movie.scraper", ref ListAnyMoviesScraper);
-      FillPropertyRandom(Utils.Category.MovingPictureManual, ref currAnyMovingPictures, ref PrevSelectedMovingPictures, "movingpicture", ref ListAnyMovingPictures);
-      FillPropertyRandom(Utils.Category.MyFilmsManual, ref currAnyMyFilms, ref PrevSelectedMyFilms, "myfilms.userdef", ref ListAnyMyFilms);
+      FillPropertyRandom(Utils.Category.Movie, Utils.SubCategory.MovieManual, ref currAnyMoviesUser, ref PrevSelectedMoviesUser, "movie.userdef", ref ListAnyMoviesUser);
+      FillPropertyRandom(Utils.Category.Movie, Utils.SubCategory.MovieScraped, ref currAnyMoviesScraper, ref PrevSelectedMoviesScraper, "movie.scraper", ref ListAnyMoviesScraper);
+      FillPropertyRandom(Utils.Category.MovingPicture, Utils.SubCategory.MovingPictureManual, ref currAnyMovingPictures, ref PrevSelectedMovingPictures, "movingpicture", ref ListAnyMovingPictures);
+      FillPropertyRandom(Utils.Category.MyFilms, Utils.SubCategory.MyFilmsManual, ref currAnyMyFilms, ref PrevSelectedMyFilms, "myfilms.userdef", ref ListAnyMyFilms);
       if (rw != null /*&& WindowOpen*/)
         rw.ReportProgress(10, "Movies Updated Properties");
     }
 
     public void RefreshRandomMusicImageProperties(RefreshWorker rw)
     {
-      FillPropertyRandom(Utils.Category.MusicFanartManual, ref currAnyMusicUser, ref PrevSelectedMusicUser, "music.userdef", ref ListAnyMusicUser);
-      FillPropertyRandom(Utils.Category.MusicFanartScraped, ref currAnyMusicScraper, ref PrevSelectedMusicScraper, "music.scraper", ref ListAnyMusicScraper);
+      FillPropertyRandom(Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartManual, ref currAnyMusicUser, ref PrevSelectedMusicUser, "music.userdef", ref ListAnyMusicUser);
+      FillPropertyRandom(Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartScraped, ref currAnyMusicScraper, ref PrevSelectedMusicScraper, "music.scraper", ref ListAnyMusicScraper);
       if (rw != null /*&& WindowOpen*/)
         rw.ReportProgress(10, "Music Updated Properties");
     }
 
     public void RefreshRandomTVImageProperties(RefreshWorker rw)
     {
-      FillPropertyRandom(Utils.Category.TVManual, ref currAnyTVUser, ref PrevSelectedTVUser, "tv.userdef", ref ListAnyTVUser);
+      FillPropertyRandom(Utils.Category.TV, Utils.SubCategory.TVManual, ref currAnyTVUser, ref PrevSelectedTVUser, "tv.userdef", ref ListAnyTVUser);
       if (rw != null /*&& WindowOpen*/)
         rw.ReportProgress(10, "TV Updated Properties");
     }
 
     public void RefreshRandomTVSeriesImageProperties(RefreshWorker rw)
     {
-      FillPropertyRandom(Utils.Category.TVSeriesScraped, ref currAnyTVSeries, ref PrevSelectedTVSeries, "tvseries", ref ListAnyTVSeries);
+      FillPropertyRandom(Utils.Category.TVSeries, Utils.SubCategory.TVSeriesScraped, ref currAnyTVSeries, ref PrevSelectedTVSeries, "tvseries", ref ListAnyTVSeries);
       if (rw != null /*&& WindowOpen*/)
         rw.ReportProgress(10, "TVSeries Updated Properties");
     }
 
     public void RefreshRandomPicturesImageProperties(RefreshWorker rw)
     {
-      FillPropertyRandom(Utils.Category.PictureManual, ref currAnyPicturesUser, ref PrevSelectedPicturesUser, "picture.userdef", ref ListAnyPicturesUser);
+      FillPropertyRandom(Utils.Category.Picture, Utils.SubCategory.PictureManual, ref currAnyPicturesUser, ref PrevSelectedPicturesUser, "picture.userdef", ref ListAnyPicturesUser);
       if (rw != null /*&& WindowOpen*/)
         rw.ReportProgress(10, "Pictures Updated Properties");
     }
 
     public void RefreshRandomGamesImageProperties(RefreshWorker rw)
     {
-      FillPropertyRandom(Utils.Category.GameManual, ref currAnyGamesUser, ref PrevSelectedGamesUser, "games.userdef", ref ListAnyGamesUser);
+      FillPropertyRandom(Utils.Category.Game, Utils.SubCategory.GameManual, ref currAnyGamesUser, ref PrevSelectedGamesUser, "games.userdef", ref ListAnyGamesUser);
       if (rw != null /*&& WindowOpen*/)
         rw.ReportProgress(10, "Games Updated Properties");
     }
 
     public void RefreshRandomScoreCenterImageProperties(RefreshWorker rw)
     {
-      FillPropertyRandom(Utils.Category.SportsManual, ref currAnyScorecenterUser, ref PrevSelectedScorecenterUser, "scorecenter.userdef", ref ListAnyScorecenterUser);
+      FillPropertyRandom(Utils.Category.Sports, Utils.SubCategory.SportsManual, ref currAnyScorecenterUser, ref PrevSelectedScorecenterUser, "scorecenter.userdef", ref ListAnyScorecenterUser);
       if (rw != null /*&& WindowOpen*/)
         rw.ReportProgress(10, "ScoreCenter Updated Properties");
     }
 
     public void RefreshRandomPluginsImageProperties(RefreshWorker rw)
     {
-      FillPropertyRandom(Utils.Category.PluginManual, ref currAnyPluginsUser, ref PrevSelectedPluginsUser, "plugins.userdef", ref ListAnyPluginsUser);
+      FillPropertyRandom(Utils.Category.Plugin, Utils.SubCategory.PluginManual, ref currAnyPluginsUser, ref PrevSelectedPluginsUser, "plugins.userdef", ref ListAnyPluginsUser);
       if (rw != null /*&& WindowOpen*/)
         rw.ReportProgress(10, "PlugIns Updated Properties");
     }
 
     public void RefreshRandomShowTimesImageProperties(RefreshWorker rw)
     {
-      FillPropertyRandom(Utils.Category.ShowTimesManual, ref currAnyShowTimes, ref PrevSelectedShowTimes, "showtimes", ref ListAnyShowTimes);
+      FillPropertyRandom(Utils.Category.ShowTimes, Utils.SubCategory.ShowTimesManual, ref currAnyShowTimes, ref PrevSelectedShowTimes, "showtimes", ref ListAnyShowTimes);
       if (rw != null /*&& WindowOpen*/)
         rw.ReportProgress(10, "ShowTimes Updated Properties");
     }
 
     public void RefreshRandomSpotLightsImageProperties(RefreshWorker rw)
     {
-      FillPropertyRandom(Utils.Category.SpotLightScraped, ref currAnySpotLights, ref PrevSelectedSpotLights, "spotlight", ref ListAnySpotLights);
+      FillPropertyRandom(Utils.Category.SpotLight, Utils.SubCategory.SpotLightScraped, ref currAnySpotLights, ref PrevSelectedSpotLights, "spotlight", ref ListAnySpotLights);
       if (rw != null /*&& WindowOpen*/)
         rw.ReportProgress(15, "SpotLights Updated Properties");
     }
@@ -525,7 +525,7 @@ namespace FanartHandler
       Utils.EmptyAllImages(ref ListLatestsMyFilms);
     }
 
-    private bool SupportsRandomImages(Utils.Category category)
+    private bool SupportsRandomImages(Utils.Category category, Utils.SubCategory subcategory)
     {
       if (WindowsUsingFanartRandom != null)
       {
@@ -534,33 +534,58 @@ namespace FanartHandler
           var skinFile = (SkinFile) WindowsUsingFanartRandom[Utils.sActiveWindow];
           if (skinFile != null)
           {
-            if (category == Utils.Category.GameManual)
+            if (category == Utils.Category.Game)
               return skinFile.UseRandomGamesFanartUser;
-            if (category == Utils.Category.MovieManual)
-              return skinFile.UseRandomMoviesFanartUser;
-            if (category == Utils.Category.MovieScraped)
-              return skinFile.UseRandomMoviesFanartScraper;
-            if (category == Utils.Category.MovingPictureManual)
+            if (category == Utils.Category.Movie)
+              return skinFile.UseRandomMoviesFanartScraper; // skinFile.UseRandomMoviesFanartUser;
+            if (category == Utils.Category.MovingPicture)
               return skinFile.UseRandomMovingPicturesFanart;
-            if (category == Utils.Category.MusicFanartManual)
-              return skinFile.UseRandomMusicFanartUser;
-            if (category == Utils.Category.MusicFanartScraped || category == Utils.Category.MusicFanartAlbum)
-              return skinFile.UseRandomMusicFanartScraper;
-            if (category == Utils.Category.PictureManual)
+            if (category == Utils.Category.MusicFanart)
+              return skinFile.UseRandomMusicFanartScraper; // skinFile.UseRandomMusicFanartUser;
+            if (category == Utils.Category.Picture)
               return skinFile.UseRandomPicturesFanartUser;
-            if (category == Utils.Category.SportsManual)
+            if (category == Utils.Category.Sports)
               return skinFile.UseRandomScoreCenterFanartUser;
-            if (category == Utils.Category.TVSeriesScraped || category == Utils.Category.TVSeriesManual)
+            if (category == Utils.Category.TVSeries)
               return skinFile.UseRandomTVSeriesFanart;
-            if (category == Utils.Category.TVManual)
+            if (category == Utils.Category.TV)
               return skinFile.UseRandomTVFanartUser;
-            if (category == Utils.Category.PluginManual)
+            if (category == Utils.Category.Plugin)
               return skinFile.UseRandomPluginsFanartUser;
-            if (category == Utils.Category.MyFilmsManual)
+            if (category == Utils.Category.MyFilms)
               return skinFile.UseRandomMyFilmsFanart;
-            if (category == Utils.Category.ShowTimesManual)
+            if (category == Utils.Category.ShowTimes)
               return skinFile.UseRandomShowTimesFanart;
-            if (category == Utils.Category.SpotLightScraped)
+            if (category == Utils.Category.SpotLight)
+              return skinFile.UseRandomSpotLightsFanart;
+            //
+            if (subcategory == Utils.SubCategory.GameManual)
+              return skinFile.UseRandomGamesFanartUser;
+            if (subcategory == Utils.SubCategory.MovieManual)
+              return skinFile.UseRandomMoviesFanartUser;
+            if (subcategory == Utils.SubCategory.MovieScraped)
+              return skinFile.UseRandomMoviesFanartScraper;
+            if (subcategory == Utils.SubCategory.MovingPictureManual)
+              return skinFile.UseRandomMovingPicturesFanart;
+            if (subcategory == Utils.SubCategory.MusicFanartManual)
+              return skinFile.UseRandomMusicFanartUser;
+            if (subcategory == Utils.SubCategory.MusicFanartScraped || subcategory == Utils.SubCategory.MusicFanartAlbum)
+              return skinFile.UseRandomMusicFanartScraper;
+            if (subcategory == Utils.SubCategory.PictureManual)
+              return skinFile.UseRandomPicturesFanartUser;
+            if (subcategory == Utils.SubCategory.SportsManual)
+              return skinFile.UseRandomScoreCenterFanartUser;
+            if (subcategory == Utils.SubCategory.TVSeriesScraped || subcategory == Utils.SubCategory.TVSeriesManual)
+              return skinFile.UseRandomTVSeriesFanart;
+            if (subcategory == Utils.SubCategory.TVManual)
+              return skinFile.UseRandomTVFanartUser;
+            if (subcategory == Utils.SubCategory.PluginManual)
+              return skinFile.UseRandomPluginsFanartUser;
+            if (subcategory == Utils.SubCategory.MyFilmsManual)
+              return skinFile.UseRandomMyFilmsFanart;
+            if (subcategory == Utils.SubCategory.ShowTimesManual)
+              return skinFile.UseRandomShowTimesFanart;
+            if (subcategory == Utils.SubCategory.SpotLightScraped)
               return skinFile.UseRandomSpotLightsFanart;
           }
         }
@@ -618,7 +643,7 @@ namespace FanartHandler
       return (UtilsLatestMediaHandler.GetLatestsUpdate(category) < UtilsLatestMediaHandler.GetLatestsMediaHandlerUpdate(category));
     }
 
-    public string GetRandomFilename(ref int iFilePrev, ref string sFileNamePrev, Utils.Category category)
+    public string GetRandomFilename(ref int iFilePrev, ref string sFileNamePrev, Utils.Category category, Utils.SubCategory subcategory)
     {
       var result = string.Empty;
       // logger.Debug("*** GetRandomFilename: "+iFilePrev+" - "+sFileNamePrev+" - "+category);
@@ -627,7 +652,7 @@ namespace FanartHandler
       {
         if (!Utils.GetIsStopping())
         {
-          Hashtable htAny = Utils.GetDbm().GetAnyFanart(category);
+          Hashtable htAny = Utils.GetDbm().GetAnyFanart(category, subcategory);
           if (htAny != null)
           {
             if (htAny.Count > 0)
@@ -693,20 +718,20 @@ namespace FanartHandler
       // var stopwatch = System.Diagnostics.Stopwatch.StartNew();
       try
       {
-        Parallel.Invoke(() => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.PictureManual, FullUpdate); },
-                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.MovieManual, FullUpdate); },
-                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.MovieScraped, FullUpdate); },
-                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.MusicFanartManual, FullUpdate); },
-                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.MusicFanartScraped, FullUpdate); },
-                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.TVSeriesScraped, FullUpdate); },
-                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.MovingPictureManual, FullUpdate); },
-                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.TVManual, FullUpdate); },
-                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.GameManual, FullUpdate); },
-                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.SportsManual, FullUpdate); },
-                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.PluginManual, FullUpdate); },
-                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.MyFilmsManual, FullUpdate); }, 
-                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.ShowTimesManual, FullUpdate); }, 
-                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.SpotLightScraped, FullUpdate); });
+        Parallel.Invoke(() => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.Picture, Utils.SubCategory.PictureManual, FullUpdate); },
+                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.Movie, Utils.SubCategory.MovieManual, FullUpdate); },
+                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.Movie, Utils.SubCategory.MovieScraped, FullUpdate); },
+                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartManual, FullUpdate); },
+                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartScraped, FullUpdate); },
+                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.TVSeries, Utils.SubCategory.TVSeriesScraped, FullUpdate); },
+                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.MovingPicture, Utils.SubCategory.MovingPictureManual, FullUpdate); },
+                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.TV, Utils.SubCategory.TVManual, FullUpdate); },
+                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.Game, Utils.SubCategory.GameManual, FullUpdate); },
+                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.Sports, Utils.SubCategory.SportsManual, FullUpdate); },
+                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.Plugin, Utils.SubCategory.PluginManual, FullUpdate); },
+                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.MyFilms, Utils.SubCategory.MyFilmsManual, FullUpdate); }, 
+                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.ShowTimes, Utils.SubCategory.ShowTimesManual, FullUpdate); }, 
+                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.SpotLight, Utils.SubCategory.SpotLightScraped, FullUpdate); });
       }
       catch { }
       // stopwatch.Stop();
@@ -752,7 +777,7 @@ namespace FanartHandler
       RefreshTickCount = 0;
     }
 
-    public void RefreshRefreshTickCount()
+    public void ForceRefreshTickCount()
     {
       RefreshTickCount = Utils.MaxRefreshTickCount;
     }
@@ -778,13 +803,13 @@ namespace FanartHandler
         propertiesRandom.Clear();
     }
 
-    private void FillPropertyRandom(Utils.Category category, ref string prevImage, ref int iFilePrev, string propertyname, ref ArrayList al)
+    private void FillPropertyRandom(Utils.Category category, Utils.SubCategory subcategory, ref string prevImage, ref int iFilePrev, string propertyname, ref ArrayList al)
     {
       // var stopwatch = System.Diagnostics.Stopwatch.StartNew();
       var randomFilename = string.Empty;
-      if (SupportsRandomImages(category))
+      if (SupportsRandomImages(category, subcategory))
       {
-        randomFilename = GetRandomFilename(ref iFilePrev, ref prevImage, category);
+        randomFilename = GetRandomFilename(ref iFilePrev, ref prevImage, category, subcategory);
       }
       else
       {

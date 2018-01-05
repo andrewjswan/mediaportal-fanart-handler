@@ -514,7 +514,7 @@ namespace FanartHandler
 
           if (Utils.ScraperMusicPlaying && (FanartHandlerSetup.Fh.MyScraperNowWorker != null && FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh))
           {
-            RefreshRefreshTickCount();
+            ForceRefreshTickCount();
             FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh = false;
           }
 
@@ -581,7 +581,7 @@ namespace FanartHandler
       RefreshTickCount = 0;
     }
 
-    public void RefreshRefreshTickCount()
+    public void ForceRefreshTickCount()
     {
       RefreshTickCount = Utils.MaxRefreshTickCount;
     }

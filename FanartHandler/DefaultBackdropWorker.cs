@@ -32,20 +32,19 @@ namespace FanartHandler
     {
       try
       {
-        if (Utils.GetIsStopping() || Interlocked.CompareExchange(ref FanartHandlerSetup.Fh.SyncPointDefaultBackdrops, 1, 0) != 0)
-          return;
-
         if (!Utils.UseDefaultBackdrop)
           return;
 
-        Thread.CurrentThread.Priority = !FanartHandlerSetup.Fh.FHThreadPriority.Equals("Lowest", StringComparison.CurrentCulture) ? ThreadPriority.BelowNormal : ThreadPriority.Lowest;
+        if (Utils.GetIsStopping() || Interlocked.CompareExchange(ref FanartHandlerSetup.Fh.SyncPointDefaultBackdrops, 1, 0) != 0)
+          return;
+
+        Thread.CurrentThread.Priority = FanartHandlerSetup.Fh.FHThreadPriority != Utils.Priority.Lowest ? ThreadPriority.BelowNormal : ThreadPriority.Lowest;
         Thread.CurrentThread.Name = "DefaultBackdropWorker";
 
         Utils.AllocateDelayStop("FanartHandler-DefaultBackdropScan");
         Utils.SetProperty("defaultbackdrop.scan", "true");
 
         InitDefaultBackdrops();
-
       }
       catch (Exception ex)
       {
@@ -76,10 +75,10 @@ namespace FanartHandler
         Utils.ReleaseDelayStop("FanartHandler-DefaultBackdropScan");
         FanartHandlerSetup.Fh.SyncPointDefaultBackdrops = 0;
 
+        Utils.SetProperty("defaultbackdrop.scan", "false");
+
         if (Utils.GetIsStopping())
           return;
-
-        Utils.SetProperty("defaultbackdrop.scan", "false");
 
         logger.Debug("Default backdrops "+Utils.Check(Utils.UseDefaultBackdrop)+" found: " + Utils.DefaultBackdropImages.Count);
       }

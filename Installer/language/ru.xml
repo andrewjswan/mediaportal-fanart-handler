@@ -7,11 +7,14 @@
  <!-- Scrape -->
   <string Field="ScrapeInitial">Сканирование</string>
   <string Field="ScrapeInitialFanart">Сканирование (фан-арт)</string>
+  <string Field="ScrapeInitialAnimated">Сканирование (анимация)</string>
   <string Field="ScrapeNowPlaying">Сканирование</string>
   <string Field="ScrapeInitializing">Инициализация</string>
 
  <!-- CleanUp -->
   <string Field="CleanupImages">Очистка изображений</string>
+  <string Field="CleanupFanartImages">Очистка изображений (фан-арт)</string>
+  <string Field="CleanupAnimatedImages">Очистка изображений (анимация)</string>
 
  <!-- Delete -->
   <string Field="DeleteMissing">Удаляем лишнее</string>
@@ -25,6 +28,7 @@
   <string Field="FHAlbums">Альбомы</string>
   <string Field="FHVideos">Видео</string>
   <string Field="FHSeries">Сериалы</string>
+  <string Field="FHLabels">Лейблы звукозаписи</string>
 
   <string Field="FHSlideshow">Слайдшоу при проигрывании</string>
 </strings>

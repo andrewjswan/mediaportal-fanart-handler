@@ -1,8 +1,24 @@
-<?xml version="1.0" encoding="us-ascii"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Holidays>
 	<Holiday name="New Year's Day" shortname="NewYear">
 		<Month>1</Month>
 		<Day>1</Day>
+		<NameRU>Новый год!</NameRU>
+	</Holiday>
+	<Holiday name="National Science Fiction Day" shortname="ScienceFiction">
+		<Month>1</Month>
+		<Day>2</Day>
+		<NameRU>Международный день научной фантастики</NameRU>
+	</Holiday>
+	<Holiday name="Christmas Day" shortname="Christmas">
+		<Month>1</Month>
+		<Day>7</Day>
+		<NameRU>Рождество</NameRU>
+	</Holiday>
+	<Holiday name="Malanka - Schedry vecher" shortname="NewYear">
+		<Month>1</Month>
+		<Day>13</Day>
+		<NameRU>Маланка - Щедрый вечер - Старый Новый год</NameRU>
 	</Holiday>
 	<Holiday name="Martin Luther King's Birthday">
 		<Month>1</Month>
@@ -23,6 +39,7 @@
 	<Holiday name="Groundhog Day">
 		<Month>2</Month>
 		<Day>2</Day>
+		<NameRU>День сурка</NameRU>
 	</Holiday>
 	<Holiday name="Lincoln's Birthday (Traditional)">
 		<Month>2</Month>
@@ -31,6 +48,7 @@
 	<Holiday name="Valentine's Day"  shortname="Valentines">
 		<Month>2</Month>
 		<Day>14</Day>
+		<NameRU>День святого Валентина</NameRU>
 	</Holiday>
 	<Holiday name="Washington's Birthday (Traditional)">
 		<Month>2</Month>
@@ -39,23 +57,28 @@
 	<Holiday name="St. Patrick's Day" shortname="StPatricks">
 		<Month>3</Month>
 		<Day>17</Day>
+		<NameRU>День святого Патрика</NameRU>
 	</Holiday>
 	<Holiday name="Easter">
 		<Easter />
+		<NameRU>Пасха</NameRU>
 	</Holiday>
 	<Holiday name="Good Friday">
 		<DaysAfterHoliday Holiday="Easter">
 			<Days>-2</Days>
 		</DaysAfterHoliday>
+		<NameRU>Великая пятница</NameRU>
 	</Holiday>
 	<Holiday name="Ash Wednesday">
 		<DaysAfterHoliday Holiday="Good Friday">
 			<Days>-44</Days>
 		</DaysAfterHoliday>
+		<NameRU>Пепельная среда</NameRU>
 	</Holiday>
 	<Holiday name="April Fool's Day" shortname="AprilFools">
 		<Month>4</Month>
 		<Day>1</Day>
+		<NameRU>День дураков</NameRU>
 	</Holiday>
 	<Holiday name="Administrative Assistants' Day">
 		<LastFullWeekOfMonth>
@@ -122,7 +145,7 @@
 		<Month>7</Month>
 		<Day>4</Day>
 	</Holiday>
-    <Holiday name="System Administrator Appreciation Day" shortname="SysAdminDay">
+        <Holiday name="System Administrator Appreciation Day" shortname="SysAdminDay">
 		<Month>7</Month>
 		<DayOfWeek>5</DayOfWeek>
 		<WeekOfMonth>5</WeekOfMonth>
@@ -140,6 +163,9 @@
 	<Holiday name="The Emoticon's Birthday" shortname="EmoticonsBirthday">
 		<Month>9</Month>
 		<Day>19</Day>
+	</Holiday>
+	<Holiday name="Day of the Programmer" shortname="ProgrammerDay">
+		<DayOfYear>256</DayOfYear>
 	</Holiday>
 	<Holiday name="United Nations Day">
 		<Month>10</Month>
@@ -180,8 +206,11 @@
 	<Holiday name="Christmas Day" shortname="Christmas">
 		<Month>12</Month>
 		<Day>25</Day>
+		<NameRU>Рождество</NameRU>
 	</Holiday>
-	<Holiday name="Day of the Programmer" shortname="ProgrammerDay">
-		<DayOfYear>256</DayOfYear>
+	<Holiday name="New Year's race to us..." shortname="LastDay">
+		<Month>12</Month>
+		<Day>31</Day>
+		<NameRU>Новый год к нам мчится...</NameRU>
 	</Holiday>
 </Holidays>

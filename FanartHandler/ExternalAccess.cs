@@ -23,14 +23,14 @@ namespace FanartHandler
     {
     }
 
-    internal static void InvokeScraperCompleted(string type, string artist)
+    internal static void InvokeScraperCompleted(string type, string subtype, string artist)
     {
       try
       {
         if (ScraperCompleted == null)
           return;
 
-        ScraperCompleted(type, artist);
+        ScraperCompleted(type + "-" + subtype, artist);
       }
       catch (Exception ex)
       {
@@ -40,7 +40,7 @@ namespace FanartHandler
 
     public Hashtable GetFanart(string artist, string album, string type)
     {
-      return Utils.GetDbm().GetFanart(artist, album, Utils.Category.MusicFanartScraped, true);
+      return Utils.GetDbm().GetFanart(artist, album, Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartScraped, true);
     }
 
     public static string GetMyVideoFanart(string title)
@@ -48,8 +48,8 @@ namespace FanartHandler
       var str = string.Empty;
       try
       {
-        title = Utils.GetArtist(title, Utils.Category.MovieScraped);
-        var fanart = Utils.GetDbm().GetFanart(title, null, Utils.Category.MovieScraped, true);
+        title = Utils.GetArtist(title, Utils.Category.Movie, Utils.SubCategory.MovieScraped);
+        var fanart = Utils.GetDbm().GetFanart(title, null, Utils.Category.Movie, Utils.SubCategory.MovieScraped, true);
         if (fanart != null)
         {
           if (fanart.Count > 0)
@@ -81,13 +81,13 @@ namespace FanartHandler
       var hashtable = new Hashtable();
       try
       {
-        string tvshow = Utils.GetArtist(show, Utils.Category.TVManual);
+        string tvshow = Utils.GetArtist(show, Utils.Category.TV, Utils.SubCategory.TVManual);
         string tvshowid = UtilsTVSeries.GetTVSeriesID(tvshow);
         if (!string.IsNullOrEmpty(tvshowid))
         {
           tvshow = tvshow + "|" + tvshowid;
         }
-        var values = Utils.GetDbm().GetFanart(tvshow, null, Utils.Category.TVManual, false).Values;
+        var values = Utils.GetDbm().GetFanart(tvshow, null, Utils.Category.TV, Utils.SubCategory.TVManual, false).Values;
         var num = 0;
         foreach (FanartImage fanartImage in values)
         {
@@ -112,7 +112,7 @@ namespace FanartHandler
       var str = string.Empty;
       try
       {
-        str = Utils.GetArtist(_artist, Utils.Category.MusicFanartScraped);
+        str = Utils.GetArtist(_artist);
       }
       catch (Exception ex)
       {
@@ -123,29 +123,33 @@ namespace FanartHandler
 
     public static bool ScrapeFanart(string artist, string album)
     {
-      var flag = true;
       try
       {
         if (!Utils.IsScraping)
         {
-          if (!Utils.GetIsStopping() && Interlocked.CompareExchange(ref FanartHandlerSetup.Fh.SyncPointScraper, 1, 0) == 0)
+          if (!Utils.GetIsStopping())
           {
-            Utils.AllocateDelayStop("FanartHandlerSetup-StartScraperExternal");
-            Utils.IsScraping = true;
-            Utils.GetDbm().ArtistAlbumScrape(artist, album);
-            Utils.IsScraping = false;
+            if (Interlocked.CompareExchange(ref FanartHandlerSetup.Fh.SyncPointScraper, 1, 0) == 0)
+            {
+              Utils.IsScraping = true;
+              Utils.AllocateDelayStop("FanartHandlerSetup-StartScraperExternal");
+
+              Utils.GetDbm().ArtistAlbumScrape(artist, album);
+
+              Utils.ReleaseDelayStop("FanartHandlerSetup-StartScraperExternal");
+              Utils.IsScraping = false;
+              FanartHandlerSetup.Fh.SyncPointScraper = 0;
+
+              return true;
+            }
           }
-          else
-            flag = false;
         }
       }
       catch (Exception ex)
       {
         logger.Error("ScrapeFanart: " + ex);
       }
-      FanartHandlerSetup.Fh.SyncPointScraper = 0;
-      Utils.ReleaseDelayStop("FanartHandlerSetup-StartScraperExternal");
-      return flag;
+      return false;
     }
 
     public static Hashtable GetMusicFanartForLatestMedia(string Artist, string AlbumArtist, string Album)
@@ -177,16 +181,16 @@ namespace FanartHandler
             artist = AlbumArtist;
 
         if (!string.IsNullOrEmpty(artist))
-          artist = Utils.GetArtist(artist, Utils.Category.MusicFanartScraped);
+          artist = Utils.GetArtist(artist);
         if (!string.IsNullOrEmpty(album))
-          album = Utils.GetAlbum(album, Utils.Category.MusicFanartScraped);
+          album = Utils.GetAlbum(album);
 
         if (string.IsNullOrEmpty(artist))
           return null;
 
         // logger.Debug("*** Artist: "+artist+" Album: "+album);
         var fanart1 = new Hashtable();
-        Utils.GetFanart(ref fanart1, artist, album, Utils.Category.MusicFanartScraped, true);
+        Utils.GetFanart(ref fanart1, artist, album, Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartScraped, true);
 
         var num = 0;
         if (fanart1 != null && fanart1.Count > 0)

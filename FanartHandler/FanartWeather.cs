@@ -10,8 +10,6 @@ using FHNLog.NLog;
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 
 namespace FanartHandler
 {
@@ -96,7 +94,7 @@ namespace FanartHandler
         if (Utils.GetIsStopping())
           return;
 
-        var SelectedItem = Utils.GetWeather(string.Empty + Utils.GetProperty("#WorldWeather.TodayIconNumber"));
+        var SelectedItem = Utils.GetWeather(Utils.GetProperty("#WorldWeather.TodayIconNumber"));
 
         if (!string.IsNullOrWhiteSpace(SelectedItem))
         {
@@ -114,10 +112,10 @@ namespace FanartHandler
               FanartAvailable = false;
             }
 
-            newFanart = GetFilename(string.Empty + Utils.GetWeatherCurrentSeason().ToString() + SelectedItem, null, ref CurrWeather, ref PrevWeather, Utils.Category.Weather, flag);
+            newFanart = GetFilename(Utils.GetWeatherCurrentSeason().ToString() + SelectedItem, null, ref CurrWeather, ref PrevWeather, Utils.Category.Weather, flag);
             if (string.IsNullOrEmpty(newFanart))
             {
-              newFanart = GetFilename(string.Empty + SelectedItem, null, ref CurrWeather, ref PrevWeather, Utils.Category.Weather, flag);
+              newFanart = GetFilename(SelectedItem, null, ref CurrWeather, ref PrevWeather, Utils.Category.Weather, flag);
             }
 
             if (!string.IsNullOrEmpty(newFanart))
@@ -132,18 +130,19 @@ namespace FanartHandler
               if (DoShowImageOne)
               {
                 Utils.AddProperty(ref propertiesWeather, "weather.backdrop1", newFanart, ref ListWeather);
-                // logger.Debug("*** Image 1: " + newFanart);
+                // logger.Debug("*** Image 1: " + SelectedItem + " - " + newFanart);
               }
               else
               {
                 Utils.AddProperty(ref propertiesWeather, "weather.backdrop2", newFanart, ref ListWeather);
-                // logger.Debug("*** Image 2: " + newFanart);
+                // logger.Debug("*** Image 2: " + SelectedItem + " - "  + newFanart);
               }
             }
             else
             {
               Utils.AddProperty(ref propertiesWeather, "weather.backdrop1", string.Empty, ref ListWeather);
               Utils.AddProperty(ref propertiesWeather, "weather.backdrop2", string.Empty, ref ListWeather);
+              // logger.Debug("*** Image 1,2: " + SelectedItem + " - " + "Empty");
             }
             CurrWeather = SelectedItem;
             ResetRefreshTickCount();
@@ -157,6 +156,7 @@ namespace FanartHandler
 
           Utils.AddProperty(ref propertiesWeather, "weather.backdrop1", string.Empty, ref ListWeather);
           Utils.AddProperty(ref propertiesWeather, "weather.backdrop2", string.Empty, ref ListWeather);
+          // logger.Debug("*** Image 1,2: Empty");
 
           SetCurrentSelectedImageNames(null, Utils.Category.Weather);
 
@@ -267,12 +267,12 @@ namespace FanartHandler
       {
         if (!Utils.GetIsStopping())
         {
-          key = Utils.GetArtist(key, category);
+          key = Utils.GetArtist(key, category, Utils.SubCategory.None);
           var filenames = GetCurrentSelectedImageNames(category);
 
           if (newArtist || filenames == null || filenames.Count == 0)
           {
-            Utils.GetFanart(ref filenames, key, key2, category, false);
+            Utils.GetFanart(ref filenames, key, key2, category, Utils.SubCategory.None, false);
             if (iFilePrev == -1)
               Utils.Shuffle(ref filenames);
 
@@ -340,7 +340,7 @@ namespace FanartHandler
       RefreshTickCount = 0;
     }
 
-    public void RefreshRefreshTickCount()
+    public void ForceRefreshTickCount()
     {
       RefreshTickCount = Utils.MaxRefreshTickCount;
     }
@@ -390,7 +390,7 @@ namespace FanartHandler
         GUIControl.HideControl(Utils.iActiveWindow, 91919282);
         DoShowImageOne = true;
         ControlImageVisible = 0;
-        // logger.Debug("*** Hide all fanart [91919281,91919282]... ");
+        // logger.Debug("*** Hide all weather fanart [91919281,91919282]... ");
       }
     }
 
@@ -400,7 +400,7 @@ namespace FanartHandler
       {
         GUIControl.ShowControl(Utils.iActiveWindow, 91919283);
         ControlVisible = 1;
-        // logger.Debug("*** Show fanart [91919283]...");
+        // logger.Debug("*** Show weather fanart [91919283]...");
       }
     }
 
@@ -410,7 +410,7 @@ namespace FanartHandler
       {
         GUIControl.HideControl(Utils.iActiveWindow, 91919283);
         ControlVisible = 0;
-        // logger.Debug("*** Hide fanart [91919283]...");
+        // logger.Debug("*** Hide weather fanart [91919283]...");
       }
     }
 
@@ -422,7 +422,7 @@ namespace FanartHandler
         GUIControl.HideControl(Utils.iActiveWindow, 91919282);
         DoShowImageOne = false;
         ControlImageVisible = 1;
-        // logger.Debug("*** First fanart [91919281] visible ...");
+        // logger.Debug("*** First weather fanart [91919281] visible ...");
       }
       else
       {
@@ -438,7 +438,7 @@ namespace FanartHandler
         GUIControl.HideControl(Utils.iActiveWindow, 91919281);
         DoShowImageOne = true;
         ControlImageVisible = 1;
-        // logger.Debug("*** Second fanart [91919282] visible ...");
+        // logger.Debug("*** Second weather fanart [91919282] visible ...");
       }
       else
       {

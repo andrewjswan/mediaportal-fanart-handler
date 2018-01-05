@@ -90,6 +90,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>External\MyFilms.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>External\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="NLog">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>External\NLog.dll</HintPath>
@@ -165,6 +168,7 @@
     <Compile Include="SplashPane.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="TheMovieDB.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="FanartHandlerConfig.cs">
       <SubType>Form</SubType>
@@ -182,6 +186,7 @@
     <Compile Include="Logos.cs" />
     <Compile Include="Translation.cs" />
     <Compile Include="ComparingImages.cs" />
+    <Compile Include="Animated.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="FanartHandlerConfig.resx">

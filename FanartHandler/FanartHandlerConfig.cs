@@ -56,13 +56,7 @@ namespace FanartHandler
     private TabPage tabPage1;
     private TabControl tabControl2;
     private TabPage tabPage6;
-    private Label label13;
-    private Label label12;
-    private ComboBox comboBoxScraperInterval;
     private CheckBox CheckBoxDeleteMissing;
-    private Label label7;
-    private Label label6;
-    private ComboBox comboBoxMaxImages;
     private CheckBox checkBoxScraperMusicPlaying;
     private CheckBox checkBoxEnableScraperMPDatabase;
     private TabPage tabPage7;
@@ -144,20 +138,6 @@ namespace FanartHandler
     private CheckBox checkBoxAddAdditionalSeparators;
     private GroupBox groupBoxGUI;
     private CheckBox checkBoxShowDummyItems;
-    private GroupBox groupBoxFanartTV;
-    private ComboBox comboBoxFanartTVLanguage;
-    private CheckBox checkBoxFanartTVLanguageToAny;
-    private Label labelFanartTVLanguage;
-    private CheckBox checkBoxMusicBannerDownload;
-    private CheckBox checkBoxMusicClearArtDownload;
-    private CheckBox checkBoxMusicCDArtDownload;
-    private CheckBox checkBoxMoviesClearArtDownload;
-    private CheckBox checkBoxMoviesCDArtDownload;
-    private CheckBox checkBoxMoviesClearLogoDownload;
-    private CheckBox checkBoxMoviesBannerDownload;
-    private Label labelFanartTVPersonalAPIKey;
-    private TextBox edtFanartTVPersonalAPIKey;
-    private LinkLabel labelGetFanartTVPersonalAPIKey;
     private GroupBox groupBoxProviders;
     private CheckBox checkBoxFanartTV;
     private CheckBox checkBoxHtBackdrops;
@@ -180,9 +160,36 @@ namespace FanartHandler
     private TextBox textBoxMyPicturesSlideShowFolders;
     private Label labelSlideShowFolders;
     private CheckBox checkBoxMyPicturesSlideShow;
+    private CheckBox checkBoxUseAnimated;
+    private TabPage tabPage9;
+    private GroupBox groupBoxFanartTV;
+    private CheckBox checkBoxMusicRecordLabel;
     private CheckBox checkBoxSeriesClearLogoDownload;
     private CheckBox checkBoxSeriesBannerDownload;
     private CheckBox checkBoxSeriesClearArtDownload;
+    private CheckBox checkBoxMoviesCDArtDownload;
+    private CheckBox checkBoxMoviesClearLogoDownload;
+    private CheckBox checkBoxMoviesBannerDownload;
+    private CheckBox checkBoxFanartTVLanguageToAny;
+    private Label labelFanartTVLanguage;
+    private ComboBox comboBoxFanartTVLanguage;
+    private CheckBox checkBoxMoviesClearArtDownload;
+    private CheckBox checkBoxMusicCDArtDownload;
+    private CheckBox checkBoxMusicBannerDownload;
+    private CheckBox checkBoxMusicClearArtDownload;
+    private Label labelFanartTVPersonalAPIKey;
+    private TextBox edtFanartTVPersonalAPIKey;
+    private LinkLabel labelGetFanartTVPersonalAPIKey;
+    private Label label13;
+    private Label label12;
+    private ComboBox comboBoxScraperInterval;
+    private Label label7;
+    private ComboBox comboBoxMaxImages;
+    private Label label6;
+    private GroupBox groupBoxAnimated;
+    private CheckBox checkBoxAnimatedBackground;
+    private CheckBox checkBoxAnimatedPoster;
+    private CheckBox checkBoxSpotLight;
     private Button button12;
 
     static FanartHandlerConfig()
@@ -240,7 +247,7 @@ namespace FanartHandler
       set { toolStripStatusLabelToolTip.Text = value; }
     }
 
-    private void UpdateProgressBars (bool Fanart, bool Init, bool Full = false) 
+    private void UpdateProgressBars(bool Fanart, bool Init, bool Full = false) 
     {
       if (Fanart)
       {
@@ -372,10 +379,13 @@ namespace FanartHandler
       checkBoxLastFM.Checked = Utils.UseLastFM;
       checkBoxCoverArtArchive.Checked = Utils.UseCoverArtArchive;
       checkBoxUseTheAudioDB.Checked = Utils.UseTheAudioDB;
+      checkBoxUseAnimated.Checked = Utils.UseAnimated;
+      checkBoxSpotLight.Checked = Utils.UseSpotLight;
       //
       checkBoxMusicClearArtDownload.Checked = Utils.MusicClearArtDownload;
       checkBoxMusicBannerDownload.Checked = Utils.MusicBannerDownload;
       checkBoxMusicCDArtDownload.Checked = Utils.MusicCDArtDownload;
+      checkBoxMusicRecordLabel.Checked = Utils.MusicLabelDownload;
       checkBoxMoviesClearArtDownload.Checked = Utils.MoviesClearArtDownload;
       checkBoxMoviesBannerDownload.Checked = Utils.MoviesBannerDownload;
       checkBoxMoviesClearLogoDownload.Checked = Utils.MoviesClearLogoDownload;
@@ -384,6 +394,9 @@ namespace FanartHandler
       checkBoxSeriesClearArtDownload.Checked = Utils.SeriesClearArtDownload;
       checkBoxSeriesBannerDownload.Checked = Utils.SeriesBannerDownload;
       checkBoxSeriesClearLogoDownload.Checked = Utils.SeriesClearLogoDownload;
+      //
+      checkBoxAnimatedPoster.Checked = Utils.AnimatedMoviesPosterDownload;
+      checkBoxAnimatedBackground.Checked = Utils.AnimatedMoviesBackgroundDownload;
       //
       if (string.IsNullOrEmpty(Utils.FanartTVLanguage))
         comboBoxFanartTVLanguage.SelectedIndex = 0;
@@ -440,10 +453,13 @@ namespace FanartHandler
        Utils.UseLastFM = checkBoxLastFM.Checked;
        Utils.UseCoverArtArchive = checkBoxCoverArtArchive.Checked;
        Utils.UseTheAudioDB = checkBoxUseTheAudioDB.Checked;
+       Utils.UseAnimated = checkBoxUseAnimated.Checked;
+       Utils.UseSpotLight = checkBoxSpotLight.Checked;
        //
        Utils.MusicClearArtDownload = checkBoxMusicClearArtDownload.Checked;
        Utils.MusicBannerDownload = checkBoxMusicBannerDownload.Checked;
        Utils.MusicCDArtDownload = checkBoxMusicCDArtDownload.Checked;
+       Utils.MusicLabelDownload = checkBoxMusicRecordLabel.Checked;
        Utils.MoviesClearArtDownload = checkBoxMoviesClearArtDownload.Checked;
        Utils.MoviesBannerDownload = checkBoxMoviesBannerDownload.Checked;
        Utils.MoviesClearLogoDownload = checkBoxMoviesClearLogoDownload.Checked;
@@ -452,6 +468,9 @@ namespace FanartHandler
        Utils.SeriesClearArtDownload = checkBoxSeriesClearArtDownload.Checked;
        Utils.SeriesBannerDownload = checkBoxSeriesBannerDownload.Checked;
        Utils.SeriesClearLogoDownload = checkBoxSeriesClearLogoDownload.Checked;
+       //
+       Utils.AnimatedMoviesPosterDownload = checkBoxAnimatedPoster.Checked;
+       Utils.AnimatedMoviesBackgroundDownload = checkBoxAnimatedBackground.Checked;
        //
        KeyValuePair<string, string> selectedPair = (KeyValuePair<string, string>)comboBoxFanartTVLanguage.SelectedItem;
        Utils.FanartTVLanguage = selectedPair.Key.Trim();
@@ -786,12 +805,12 @@ namespace FanartHandler
           if (Utils.GetDbm().IsImageProtectedByUser(str).Equals("False"))
             MediaPortal.Util.Utils.FileDelete(str);
         }
-        Utils.GetDbm().DeleteAllFanart(Utils.Category.MusicFanartScraped);
+        Utils.GetDbm().DeleteAllFanart(Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartScraped);
         //
         dataGridViewFanart.ClearSelection();
         myDataTableFanart.Rows.Clear();
         //
-        Utils.SetupFilenames(Utils.FAHSMusic, "*.jpg", Utils.Category.MusicFanartScraped, null, Utils.Provider.Local);
+        Utils.SetupFilenames(Utils.FAHSMusic, "*.jpg", Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartScraped, null, Utils.Provider.Local);
         UpdateFanartTableOnStartup(1);
         //
         myDataTableFanart.AcceptChanges();
@@ -872,7 +891,7 @@ namespace FanartHandler
             else
               break;
           }
-          Utils.GetDbm().DeleteAllFanart(Utils.Category.MusicAlbumThumbScraped);
+          Utils.GetDbm().DeleteAllFanart(Utils.Category.MusicAlbum, Utils.SubCategory.MusicAlbumThumbScraped);
         }
         // var path2 = Config.GetFolder((Config.Dir) 6) + "\\Music\\Artists";
         logger.Debug("DeleteAllThumbsImages: Try to delete thumbs in "+Utils.FAHMusicArtists);
@@ -903,13 +922,13 @@ namespace FanartHandler
             else
               break;
           }
-          Utils.GetDbm().DeleteAllFanart(Utils.Category.MusicArtistThumbScraped);
+          Utils.GetDbm().DeleteAllFanart(Utils.Category.MusicArtist, Utils.SubCategory.MusicArtistThumbScraped);
         }
         dataGridViewThumbs.ClearSelection();
         myDataTableThumbs.Rows.Clear();
         //
-        Utils.SetupFilenames(Utils.FAHMusicArtists, "*L.jpg", Utils.Category.MusicArtistThumbScraped, null, Utils.Provider.Local);
-        Utils.SetupFilenames(Utils.FAHMusicAlbums, "*L.jpg", Utils.Category.MusicAlbumThumbScraped, null, Utils.Provider.Local);
+        Utils.SetupFilenames(Utils.FAHMusicArtists, "*L.jpg", Utils.Category.MusicArtist, Utils.SubCategory.MusicArtistThumbScraped, null, Utils.Provider.Local);
+        Utils.SetupFilenames(Utils.FAHMusicAlbums, "*L.jpg", Utils.Category.MusicAlbum, Utils.SubCategory.MusicAlbumThumbScraped, null, Utils.Provider.Local);
         //
         UpdateThumbnailTable(0);
         //
@@ -993,15 +1012,18 @@ namespace FanartHandler
         if (dialogResult != DialogResult.Yes)
           return;
 
-        foreach (var path in Directory.GetFiles((GetCategoryFromComboFilter(comboBox2.SelectedItem.ToString()) == Utils.Category.Weather ? Utils.FAHUDWeather : Utils.FAHUDFolder + (string) comboBox2.SelectedItem), "*.jpg"))
+        Utils.Category category = GetCategoryFromComboFilter(comboBox2.SelectedItem.ToString());
+        Utils.SubCategory subcategory = GetSubCategoryFromComboFilter(comboBox2.SelectedItem.ToString());
+
+        foreach (var path in Directory.GetFiles(category == Utils.Category.Weather ? Utils.FAHUDWeather : Utils.FAHUDFolder + (string) comboBox2.SelectedItem, "*.jpg"))
           if (!Utils.GetFileName(path).ToLower(CultureInfo.CurrentCulture).StartsWith("default", StringComparison.CurrentCulture) && Utils.GetDbm().IsImageProtectedByUser(path).Equals("False"))
             MediaPortal.Util.Utils.FileDelete(path);
-        Utils.GetDbm().DeleteAllFanart(GetCategoryFromComboFilter(comboBox2.SelectedItem.ToString()));
+        Utils.GetDbm().DeleteAllFanart(category, subcategory);
 
         dataGridViewUserManaged.ClearSelection();
         myDataTableUserManaged.Rows.Clear();
         //
-        Utils.SetupFilenames((GetCategoryFromComboFilter(comboBox2.SelectedItem.ToString()) == Utils.Category.Weather ? Utils.FAHUDWeather : Utils.FAHUDFolder + (string) comboBox2.SelectedItem), "*.jpg", GetCategoryFromComboFilter(comboBox2.SelectedItem.ToString()), null, Utils.Provider.Local);
+        Utils.SetupFilenames(category == Utils.Category.Weather ? Utils.FAHUDWeather : Utils.FAHUDFolder + (string) comboBox2.SelectedItem, "*.jpg", category, subcategory, null, Utils.Provider.Local);
         UpdateFanartUserManagedTable();
         //
         myDataTableUserManaged.AcceptChanges();
@@ -1074,7 +1096,7 @@ namespace FanartHandler
           return;
 
         if (dialogResult == DialogResult.No)
-          Utils.GetDbm().UpdateTimeStamp(null, null, Utils.Category.Dummy, false, true);
+          Utils.GetDbm().UpdateTimeStamp(null, null, Utils.Category.Dummy, Utils.SubCategory.None, false, true);
       }
 
       StartScrape();
@@ -1095,9 +1117,9 @@ namespace FanartHandler
 
           if (Utils.UseFanart)
           {
-            Utils.SetupFilenames(Utils.FAHUDMusic, "*.jpg", Utils.Category.MusicFanartManual, null, Utils.Provider.Local);
-            Utils.SetupFilenames(Utils.FAHUDMusicAlbum, "*.jpg", Utils.Category.MusicFanartAlbum, null, Utils.Provider.Local);
-            Utils.SetupFilenames(Utils.FAHSMusic, "*.jpg", Utils.Category.MusicFanartScraped, null, Utils.Provider.Local);
+            Utils.SetupFilenames(Utils.FAHUDMusic, "*.jpg", Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartManual, null, Utils.Provider.Local);
+            Utils.SetupFilenames(Utils.FAHUDMusicAlbum, "*.jpg", Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartAlbum, null, Utils.Provider.Local);
+            Utils.SetupFilenames(Utils.FAHSMusic, "*.jpg", Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartScraped, null, Utils.Provider.Local);
           }
 
           dataGridViewFanart.Enabled = false;
@@ -1450,9 +1472,9 @@ namespace FanartHandler
           var str1 = path;
           var fileName = Utils.GetFileName(str1);
           var str2 = fileName.IndexOf("L.") <= 0 ? fileName.Substring(0, fileName.LastIndexOf(".")) : fileName.Substring(0, fileName.LastIndexOf("L."));
-          row["Artist"] = Utils.GetArtist(str2, Utils.Category.MusicAlbumThumbScraped);
+          row["Artist"] = Utils.GetArtist(str2, Utils.Category.MusicAlbum, Utils.SubCategory.MusicAlbumThumbScraped);
           if (str2.IndexOf("-", StringComparison.CurrentCulture) > 0)
-            row["Album"] = Utils.GetAlbum(str2, Utils.Category.MusicAlbumThumbScraped);
+            row["Album"] = Utils.GetAlbum(str2, Utils.Category.MusicAlbum, Utils.SubCategory.MusicAlbumThumbScraped);
           else
             row["Album"] = string.Empty;
           row["Type"] = (string.IsNullOrEmpty(row["Album"].ToString().Trim()) ? "Artist" : "Album");
@@ -1479,7 +1501,8 @@ namespace FanartHandler
       {
         dataGridViewExternal.ClearSelection();
         myDataTableExternal.Rows.Clear();
-        var userManagedTable = Utils.GetDbm().GetDataForConfigUserManagedTable(0,GetCategoryFromExtComboFilter(comboBox3.SelectedItem.ToString()).ToString());
+        var userManagedTable = Utils.GetDbm().GetDataForConfigUserManagedTable(0,GetCategoryFromExtComboFilter(comboBox3.SelectedItem.ToString()).ToString(),
+                                                                                 GetSubCategoryFromExtComboFilter(comboBox3.SelectedItem.ToString()).ToString());
         if (userManagedTable != null && userManagedTable.Rows.Count > 0)
         {
           var num = 0;
@@ -1514,8 +1537,8 @@ namespace FanartHandler
         dataGridViewUserManaged.ClearSelection();
         myDataTableUserManaged.Rows.Clear();
         var sqLiteResultSet = (comboBox2.SelectedItem == null)
-                               ? Utils.GetDbm().GetDataForConfigUserManagedTable(0,"GameManual")
-                               : Utils.GetDbm().GetDataForConfigUserManagedTable(0,GetCategoryFromComboFilter(comboBox2.SelectedItem.ToString()).ToString());
+                               ? Utils.GetDbm().GetDataForConfigUserManagedTable(0, "Game", "GameManual")
+                               : Utils.GetDbm().GetDataForConfigUserManagedTable(0, GetCategoryFromComboFilter(comboBox2.SelectedItem.ToString()).ToString(), GetSubCategoryFromComboFilter(comboBox2.SelectedItem.ToString()).ToString());
         if (sqLiteResultSet != null && sqLiteResultSet.Rows.Count > 0)
         {
           var num = 0;
@@ -1598,26 +1621,26 @@ namespace FanartHandler
       if (comboBox1 == null)
         return;
 
-      var category = new Utils.Category[2];
+      var category = new Utils.SubCategory[2];
       if (comboBox1.SelectedItem.ToString().Equals("Artists and Albums"))
       {
-        category[0] = Utils.Category.MusicAlbumThumbScraped;
-        category[1] = Utils.Category.MusicArtistThumbScraped;
+        category[0] = Utils.SubCategory.MusicAlbumThumbScraped;
+        category[1] = Utils.SubCategory.MusicArtistThumbScraped;
       }
       else if (comboBox1.SelectedItem.ToString().Equals("Albums"))
-        category = new Utils.Category[1]
+        category = new Utils.SubCategory[1]
         {
-          Utils.Category.MusicAlbumThumbScraped
+          Utils.SubCategory.MusicAlbumThumbScraped
         };
       else if (comboBox1.SelectedItem.ToString().Equals("Artists"))
-        category = new Utils.Category[1]
+        category = new Utils.SubCategory[1]
         {
-          Utils.Category.MusicArtistThumbScraped
+          Utils.SubCategory.MusicArtistThumbScraped
         };
       UpdateThumbnailTableOnStartup(category, startCount);
     }
 
-    public void UpdateThumbnailTableOnStartup(Utils.Category[] category, int sqlStartVal)
+    public void UpdateThumbnailTableOnStartup(Utils.SubCategory[] category, int sqlStartVal)
     {
       if (dataGridViewThumbs == null || myDataTableThumbs == null)
         return;
@@ -1646,9 +1669,9 @@ namespace FanartHandler
                 row["Artist"] = field4;
                 row["Album"] = field5;
                 var str = string.Empty;
-                if (field3.Equals(((object) Utils.Category.MusicAlbumThumbScraped).ToString()))
+                if (field3.Equals(Utils.Category.MusicAlbum.ToString()))
                   str = "Album";
-                else if (field3.Equals(((object) Utils.Category.MusicArtistThumbScraped).ToString()))
+                else if (field3.Equals(Utils.Category.MusicArtist.ToString()))
                   str = "Artist";
                 row["Type"] = str;
                 row["Locked"] = field2;
@@ -1747,7 +1770,7 @@ namespace FanartHandler
         isScraping = true;
         if (Utils.UseSelectedMusicFanart)
         {
-          ImportLocalFanart(Utils.Category.MusicFanartScraped);
+          ImportLocalFanart(Utils.SubCategory.MusicFanartScraped);
           FanartHandlerSetup.Fh.UpdateDirectoryTimer(Utils.FAHUDMusic, "Fanart");
           UpdateFanartTableOnStartup(1);
         }
@@ -1759,7 +1782,7 @@ namespace FanartHandler
       }
     }
 
-    private void ImportLocalFanart(Utils.Category category)
+    private void ImportLocalFanart(Utils.SubCategory category)
     {
       try
       {
@@ -1776,39 +1799,30 @@ namespace FanartHandler
 
         foreach (var str1 in openFileDialog.FileNames)
         {
-          var artist = Utils.GetArtist(str1, category);
+          var artist = Utils.GetArtist(str1, Utils.Category.None, category);
           string str2;
-          if (category == Utils.Category.MusicFanartManual)
-            // str2 = folder + (object) "\\Skin FanArt\\UserDef\\music\\" + artist + " (" + random.Next(10000, 99999) + ").jpg";
+          if (category == Utils.SubCategory.MusicFanartManual)
             str2 = Path.Combine(Utils.FAHUDMusic, artist + " (" + random.Next(10000, 99999) + ").jpg");
-          else if (category == Utils.Category.MusicFanartScraped)
-            // str2 = folder + (object) "\\Skin FanArt\\Scraper\\music\\" + artist + " (" + random.Next(10000, 99999) + ").jpg";
+          else if (category == Utils.SubCategory.MusicFanartScraped)
             str2 = Path.Combine(Utils.FAHSMusic, artist + " (" + random.Next(10000, 99999) + ").jpg");
-          else if (category == Utils.Category.MovieScraped)
-            // str2 = folder + (object) "\\Skin FanArt\\Scraper\\movies\\" + artist + " (" + random.Next(10000, 99999) + ").jpg";
+          else if (category == Utils.SubCategory.MovieScraped)
             str2 = Path.Combine(Utils.FAHSMovies, artist + " (" + random.Next(10000, 99999) + ").jpg");
-          else if (category == Utils.Category.MovieManual)
-            // str2 = folder + (object) "\\Skin FanArt\\UserDef\\movies\\" + artist + " (" + random.Next(10000, 99999) + ").jpg";
+          else if (category == Utils.SubCategory.MovieManual)
             str2 = Path.Combine(Utils.FAHUDMovies, artist + " (" + random.Next(10000, 99999) + ").jpg");
-          else if (category == Utils.Category.GameManual)
-            // str2 = folder + (object) "\\Skin FanArt\\UserDef\\games\\" + artist + " (" + random.Next(10000, 99999) + ").jpg";
+          else if (category == Utils.SubCategory.GameManual)
             str2 = Path.Combine(Utils.FAHUDGames, artist + " (" + random.Next(10000, 99999) + ").jpg");
-          else if (category == Utils.Category.PictureManual)
-            // str2 = folder + (object) "\\Skin FanArt\\UserDef\\pictures\\" + artist + " (" + random.Next(10000, 99999) + ").jpg";
+          else if (category == Utils.SubCategory.PictureManual)
             str2 = Path.Combine(Utils.FAHUDPictures, artist + " (" + random.Next(10000, 99999) + ").jpg");
-          else if (category == Utils.Category.PluginManual)
-            // str2 = folder + (object) "\\Skin FanArt\\UserDef\\plugins\\" + artist + " (" + random.Next(10000, 99999) + ").jpg";
+          else if (category == Utils.SubCategory.PluginManual)
             str2 = Path.Combine(Utils.FAHUDPlugins, artist + " (" + random.Next(10000, 99999) + ").jpg");
-          else if (category == Utils.Category.TVManual)
-            // str2 = folder + (object) "\\Skin FanArt\\UserDef\\tv\\" + artist + " (" + random.Next(10000, 99999) + ").jpg";
+          else if (category == Utils.SubCategory.TVManual)
             str2 = Path.Combine(Utils.FAHUDTV, artist + " (" + random.Next(10000, 99999) + ").jpg");
           else
-            // str2 = folder + (object) "\\Skin FanArt\\UserDef\\scorecenter\\" + artist + " (" + random.Next(10000, 99999) + ").jpg";
             str2 = Path.Combine(Utils.FAHUDScorecenter, artist + " (" + random.Next(10000, 99999) + ").jpg");
           if (!Path.GetDirectoryName(str1).Equals(Path.GetDirectoryName(str2)))
             File.Copy(str1, str2);
           //
-          if ((category == Utils.Category.MusicFanartScraped) || (category == Utils.Category.MovieScraped))
+          if ((category == Utils.SubCategory.MusicFanartScraped) || (category == Utils.SubCategory.MovieScraped))
           { }
           else
             FanartHandlerSetup.Fh.UpdateDirectoryTimer(str2, "UserManaged");
@@ -1909,31 +1923,71 @@ namespace FanartHandler
     private Utils.Category GetCategoryFromComboFilter(string s)
     {
       if (s.Equals("Games"))
-        return Utils.Category.GameManual;
+        return Utils.Category.Game;
       if (s.Equals("Movies"))
-        return Utils.Category.MovieManual;
+        return Utils.Category.Movie;
       if (s.Equals("Music"))
-        return Utils.Category.MusicFanartManual;
+        return Utils.Category.MusicFanart;
       if (s.Equals("Pictures"))
-        return Utils.Category.PictureManual;
+        return Utils.Category.Picture;
       if (s.Equals("Plugins"))
-        return Utils.Category.PluginManual;
+        return Utils.Category.Plugin;
       if (s.Equals("Weather"))
         return Utils.Category.Weather;
-      return s.Equals("Scorecenter") ? Utils.Category.SportsManual : Utils.Category.TVManual;
+      if (s.Equals("Holiday"))
+        return Utils.Category.Holiday;
+      if (s.Equals("Scorecenter"))
+        return Utils.Category.Sports;
+      if (s.Equals("TV"))
+        return Utils.Category.TV;
+      return Utils.Category.None;
+    }
+    private Utils.SubCategory GetSubCategoryFromComboFilter(string s)
+    {
+      if (s.Equals("Games"))
+        return Utils.SubCategory.GameManual;
+      if (s.Equals("Movies"))
+        return Utils.SubCategory.MovieManual;
+      if (s.Equals("Music"))
+        return Utils.SubCategory.MusicFanartManual;
+      if (s.Equals("Pictures"))
+        return Utils.SubCategory.PictureManual;
+      if (s.Equals("Plugins"))
+        return Utils.SubCategory.PluginManual;
+      if (s.Equals("Scorecenter"))
+        return Utils.SubCategory.SportsManual;
+      if (s.Equals("TV"))
+        return Utils.SubCategory.TVManual;
+      return Utils.SubCategory.None;
     }
 
     private static Utils.Category GetCategoryFromExtComboFilter(string s)
     {
       if (s.Equals("MovingPictures"))
-        return Utils.Category.MovingPictureManual;
+        return Utils.Category.MovingPicture;
       if (s.Equals("MyFilms"))
-        return Utils.Category.MyFilmsManual;
+        return Utils.Category.MyFilms;
       if (s.Equals("MyVideos"))
-        return Utils.Category.MovieScraped;
+        return Utils.Category.Movie;
       if (s.Equals("ShowTimes"))
-        return Utils.Category.ShowTimesManual;
-      return Utils.Category.TVSeriesScraped;
+        return Utils.Category.ShowTimes;
+      if (s.Equals("TVSeries"))
+        return Utils.Category.TVSeries;
+      return Utils.Category.None;
+    }
+    private static Utils.SubCategory GetSubCategoryFromExtComboFilter(string s)
+    {
+      if (s.Equals("MovingPictures"))
+        return Utils.SubCategory.MovingPictureManual;
+      if (s.Equals("MyFilms"))
+        return Utils.SubCategory.MyFilmsManual;
+      if (s.Equals("MyVideos"))
+        return Utils.SubCategory.MovieScraped;
+      if (s.Equals("ShowTimes"))
+        return Utils.SubCategory.ShowTimesManual;
+      if (s.Equals("TVSeries"))
+        return Utils.SubCategory.TVSeriesScraped;
+      return Utils.SubCategory.None;
     }
 
     private void button18_Click(object sender, EventArgs e)
@@ -1943,7 +1997,7 @@ namespace FanartHandler
 
       try
       {
-        ImportLocalFanart(GetCategoryFromComboFilter(comboBox2.SelectedItem.ToString()));
+        ImportLocalFanart(GetSubCategoryFromComboFilter(comboBox2.SelectedItem.ToString()));
       }
       catch (Exception ex)
       {
@@ -2037,7 +2091,7 @@ namespace FanartHandler
         var fileName = openFileDialog.FileName;
         if (doInsert)
         {
-          Utils.GetDbm().LoadFanart(dataGridViewFanart.CurrentRow.Cells[0].Value.ToString(), null, null, null, fileName, fileName, Utils.Category.MusicFanartManual, Utils.Provider.Local);
+          Utils.GetDbm().LoadFanart(dataGridViewFanart.CurrentRow.Cells[0].Value.ToString(), null, null, null, fileName, fileName, Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartManual, Utils.Provider.Local);
           var row = myDataTableFanart.NewRow();
           row["Artist"] = dataGridViewFanart.CurrentRow.Cells[0].Value.ToString();
           row["Enabled"] = "True";
@@ -2050,7 +2104,7 @@ namespace FanartHandler
         else
         {
           dataGridViewFanart.CurrentRow.Cells[4].Value = fileName;
-          Utils.GetDbm().LoadFanart(dataGridViewFanart.CurrentRow.Cells[0].Value.ToString(), null, null, null, fileName, fileName, Utils.Category.MusicFanartManual, Utils.Provider.Local);
+          Utils.GetDbm().LoadFanart(dataGridViewFanart.CurrentRow.Cells[0].Value.ToString(), null, null, null, fileName, fileName, Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartManual, Utils.Provider.Local);
           var str2 = dataGridViewFanart.CurrentRow.Cells[5].Value.ToString();
           if (File.Exists(str2))
           {
@@ -2260,8 +2314,6 @@ namespace FanartHandler
       this.button45 = new System.Windows.Forms.Button();
       this.checkBoxEnableScraperMPDatabase = new System.Windows.Forms.CheckBox();
       this.checkBoxScraperMusicPlaying = new System.Windows.Forms.CheckBox();
-      this.comboBoxMaxImages = new System.Windows.Forms.ComboBox();
-      this.comboBoxScraperInterval = new System.Windows.Forms.ComboBox();
       this.CheckBoxDeleteMissing = new System.Windows.Forms.CheckBox();
       this.comboBoxMinResolution = new System.Windows.Forms.ComboBox();
       this.checkBoxAspectRatio = new System.Windows.Forms.CheckBox();
@@ -2299,6 +2351,34 @@ namespace FanartHandler
       this.dataGridViewThumbs = new System.Windows.Forms.DataGridView();
       this.tabPage1 = new System.Windows.Forms.TabPage();
       this.tabControl2 = new System.Windows.Forms.TabControl();
+      this.tabPage9 = new System.Windows.Forms.TabPage();
+      this.groupBoxAnimated = new System.Windows.Forms.GroupBox();
+      this.checkBoxAnimatedBackground = new System.Windows.Forms.CheckBox();
+      this.checkBoxAnimatedPoster = new System.Windows.Forms.CheckBox();
+      this.groupBoxFanartTV = new System.Windows.Forms.GroupBox();
+      this.checkBoxMusicRecordLabel = new System.Windows.Forms.CheckBox();
+      this.checkBoxSeriesClearLogoDownload = new System.Windows.Forms.CheckBox();
+      this.checkBoxSeriesBannerDownload = new System.Windows.Forms.CheckBox();
+      this.checkBoxSeriesClearArtDownload = new System.Windows.Forms.CheckBox();
+      this.checkBoxMoviesCDArtDownload = new System.Windows.Forms.CheckBox();
+      this.checkBoxMoviesClearLogoDownload = new System.Windows.Forms.CheckBox();
+      this.checkBoxMoviesBannerDownload = new System.Windows.Forms.CheckBox();
+      this.checkBoxFanartTVLanguageToAny = new System.Windows.Forms.CheckBox();
+      this.labelFanartTVLanguage = new System.Windows.Forms.Label();
+      this.comboBoxFanartTVLanguage = new System.Windows.Forms.ComboBox();
+      this.checkBoxMoviesClearArtDownload = new System.Windows.Forms.CheckBox();
+      this.checkBoxMusicCDArtDownload = new System.Windows.Forms.CheckBox();
+      this.checkBoxMusicBannerDownload = new System.Windows.Forms.CheckBox();
+      this.checkBoxMusicClearArtDownload = new System.Windows.Forms.CheckBox();
+      this.labelFanartTVPersonalAPIKey = new System.Windows.Forms.Label();
+      this.edtFanartTVPersonalAPIKey = new System.Windows.Forms.TextBox();
+      this.labelGetFanartTVPersonalAPIKey = new System.Windows.Forms.LinkLabel();
+      this.label13 = new System.Windows.Forms.Label();
+      this.label12 = new System.Windows.Forms.Label();
+      this.comboBoxScraperInterval = new System.Windows.Forms.ComboBox();
+      this.label7 = new System.Windows.Forms.Label();
+      this.comboBoxMaxImages = new System.Windows.Forms.ComboBox();
+      this.label6 = new System.Windows.Forms.Label();
       this.tabPage2 = new System.Windows.Forms.TabPage();
       this.tabControl3 = new System.Windows.Forms.TabControl();
       this.tabPage5 = new System.Windows.Forms.TabPage();
@@ -2307,10 +2387,6 @@ namespace FanartHandler
       this.groupBox3 = new System.Windows.Forms.GroupBox();
       this.tabPage6 = new System.Windows.Forms.TabPage();
       this.checkBoxAddAdditionalSeparators = new System.Windows.Forms.CheckBox();
-      this.label13 = new System.Windows.Forms.Label();
-      this.label12 = new System.Windows.Forms.Label();
-      this.label7 = new System.Windows.Forms.Label();
-      this.label6 = new System.Windows.Forms.Label();
       this.tabPage7 = new System.Windows.Forms.TabPage();
       this.button9 = new System.Windows.Forms.Button();
       this.button10 = new System.Windows.Forms.Button();
@@ -2328,21 +2404,9 @@ namespace FanartHandler
       this.tabPage8 = new System.Windows.Forms.TabPage();
       this.groupBoxGUI = new System.Windows.Forms.GroupBox();
       this.checkBoxShowDummyItems = new System.Windows.Forms.CheckBox();
-      this.groupBoxFanartTV = new System.Windows.Forms.GroupBox();
-      this.checkBoxMoviesCDArtDownload = new System.Windows.Forms.CheckBox();
-      this.checkBoxMoviesClearLogoDownload = new System.Windows.Forms.CheckBox();
-      this.checkBoxMoviesBannerDownload = new System.Windows.Forms.CheckBox();
-      this.checkBoxFanartTVLanguageToAny = new System.Windows.Forms.CheckBox();
-      this.labelFanartTVLanguage = new System.Windows.Forms.Label();
-      this.comboBoxFanartTVLanguage = new System.Windows.Forms.ComboBox();
-      this.checkBoxMoviesClearArtDownload = new System.Windows.Forms.CheckBox();
-      this.checkBoxMusicCDArtDownload = new System.Windows.Forms.CheckBox();
-      this.checkBoxMusicBannerDownload = new System.Windows.Forms.CheckBox();
-      this.checkBoxMusicClearArtDownload = new System.Windows.Forms.CheckBox();
-      this.labelFanartTVPersonalAPIKey = new System.Windows.Forms.Label();
-      this.edtFanartTVPersonalAPIKey = new System.Windows.Forms.TextBox();
-      this.labelGetFanartTVPersonalAPIKey = new System.Windows.Forms.LinkLabel();
       this.groupBoxProviders = new System.Windows.Forms.GroupBox();
+      this.checkBoxSpotLight = new System.Windows.Forms.CheckBox();
+      this.checkBoxUseAnimated = new System.Windows.Forms.CheckBox();
       this.label8 = new System.Windows.Forms.Label();
       this.button6 = new System.Windows.Forms.Button();
       this.progressBarScraper = new System.Windows.Forms.ProgressBar();
@@ -2368,9 +2432,6 @@ namespace FanartHandler
       this.toolStripStatusLabelToolTip = new System.Windows.Forms.ToolStripStatusLabel();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.timerProgress = new System.Windows.Forms.Timer(this.components);
-      this.checkBoxSeriesClearLogoDownload = new System.Windows.Forms.CheckBox();
-      this.checkBoxSeriesBannerDownload = new System.Windows.Forms.CheckBox();
-      this.checkBoxSeriesClearArtDownload = new System.Windows.Forms.CheckBox();
       this.tabPage13.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.dataGridViewUserManaged)).BeginInit();
@@ -2382,6 +2443,9 @@ namespace FanartHandler
       ((System.ComponentModel.ISupportInitialize)(this.dataGridViewThumbs)).BeginInit();
       this.tabPage1.SuspendLayout();
       this.tabControl2.SuspendLayout();
+      this.tabPage9.SuspendLayout();
+      this.groupBoxAnimated.SuspendLayout();
+      this.groupBoxFanartTV.SuspendLayout();
       this.tabPage2.SuspendLayout();
       this.tabControl3.SuspendLayout();
       this.tabPage5.SuspendLayout();
@@ -2398,7 +2462,6 @@ namespace FanartHandler
       this.tabControl1.SuspendLayout();
       this.tabPage8.SuspendLayout();
       this.groupBoxGUI.SuspendLayout();
-      this.groupBoxFanartTV.SuspendLayout();
       this.groupBoxProviders.SuspendLayout();
       this.groupBoxScrape.SuspendLayout();
       this.groupBoxShow.SuspendLayout();
@@ -2717,25 +2780,6 @@ namespace FanartHandler
       this.checkBoxScraperMusicPlaying.Text = "Enable Automatic Download Of Music Fanart For Artists Now Being Played";
       this.toolTip.SetToolTip(this.checkBoxScraperMusicPlaying, resources.GetString("checkBoxScraperMusicPlaying.ToolTip"));
       this.checkBoxScraperMusicPlaying.UseVisualStyleBackColor = true;
-      // 
-      // comboBoxMaxImages
-      // 
-      this.comboBoxMaxImages.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.comboBoxMaxImages.FormattingEnabled = true;
-      this.comboBoxMaxImages.Location = new System.Drawing.Point(115, 79);
-      this.comboBoxMaxImages.Name = "comboBoxMaxImages";
-      this.comboBoxMaxImages.Size = new System.Drawing.Size(134, 21);
-      this.comboBoxMaxImages.TabIndex = 3;
-      this.comboBoxMaxImages.SelectedIndexChanged += new System.EventHandler(this.comboBoxMaxImages_SelectedIndexChanged);
-      // 
-      // comboBoxScraperInterval
-      // 
-      this.comboBoxScraperInterval.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.comboBoxScraperInterval.FormattingEnabled = true;
-      this.comboBoxScraperInterval.Location = new System.Drawing.Point(115, 113);
-      this.comboBoxScraperInterval.Name = "comboBoxScraperInterval";
-      this.comboBoxScraperInterval.Size = new System.Drawing.Size(134, 21);
-      this.comboBoxScraperInterval.TabIndex = 6;
       // 
       // CheckBoxDeleteMissing
       // 
@@ -3219,6 +3263,7 @@ namespace FanartHandler
       this.tabControl2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.tabControl2.Controls.Add(this.tabPage9);
       this.tabControl2.Controls.Add(this.tabPage2);
       this.tabControl2.Controls.Add(this.tabPage3);
       this.tabControl2.Controls.Add(this.tabPage4);
@@ -3228,405 +3273,67 @@ namespace FanartHandler
       this.tabControl2.Size = new System.Drawing.Size(938, 483);
       this.tabControl2.TabIndex = 15;
       // 
-      // tabPage2
+      // tabPage9
       // 
-      this.tabPage2.Controls.Add(this.tabControl3);
-      this.tabPage2.Location = new System.Drawing.Point(4, 22);
-      this.tabPage2.Name = "tabPage2";
-      this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage2.Size = new System.Drawing.Size(930, 457);
-      this.tabPage2.TabIndex = 4;
-      this.tabPage2.Text = "Music Fanart";
-      this.tabPage2.UseVisualStyleBackColor = true;
+      this.tabPage9.Controls.Add(this.groupBoxAnimated);
+      this.tabPage9.Controls.Add(this.groupBoxFanartTV);
+      this.tabPage9.Controls.Add(this.label13);
+      this.tabPage9.Controls.Add(this.label12);
+      this.tabPage9.Controls.Add(this.comboBoxScraperInterval);
+      this.tabPage9.Controls.Add(this.label7);
+      this.tabPage9.Controls.Add(this.comboBoxMaxImages);
+      this.tabPage9.Controls.Add(this.label6);
+      this.tabPage9.Location = new System.Drawing.Point(4, 22);
+      this.tabPage9.Name = "tabPage9";
+      this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
+      this.tabPage9.Size = new System.Drawing.Size(930, 457);
+      this.tabPage9.TabIndex = 4;
+      this.tabPage9.Text = "Fanart";
+      this.tabPage9.UseVisualStyleBackColor = true;
       // 
-      // tabControl3
+      // groupBoxAnimated
       // 
-      this.tabControl3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.tabControl3.Controls.Add(this.tabPage5);
-      this.tabControl3.Controls.Add(this.tabPage6);
-      this.tabControl3.Controls.Add(this.tabPage7);
-      this.tabControl3.Location = new System.Drawing.Point(6, 6);
-      this.tabControl3.Name = "tabControl3";
-      this.tabControl3.SelectedIndex = 0;
-      this.tabControl3.Size = new System.Drawing.Size(921, 452);
-      this.tabControl3.TabIndex = 0;
+      this.groupBoxAnimated.Controls.Add(this.checkBoxAnimatedBackground);
+      this.groupBoxAnimated.Controls.Add(this.checkBoxAnimatedPoster);
+      this.groupBoxAnimated.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold);
+      this.groupBoxAnimated.Location = new System.Drawing.Point(8, 289);
+      this.groupBoxAnimated.Name = "groupBoxAnimated";
+      this.groupBoxAnimated.Size = new System.Drawing.Size(532, 58);
+      this.groupBoxAnimated.TabIndex = 15;
+      this.groupBoxAnimated.TabStop = false;
+      this.groupBoxAnimated.Text = "Animated";
       // 
-      // tabPage5
+      // checkBoxAnimatedBackground
       // 
-      this.tabPage5.Controls.Add(this.groupBox1);
-      this.tabPage5.Controls.Add(this.groupBox3);
-      this.tabPage5.Location = new System.Drawing.Point(4, 22);
-      this.tabPage5.Name = "tabPage5";
-      this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage5.Size = new System.Drawing.Size(913, 426);
-      this.tabPage5.TabIndex = 0;
-      this.tabPage5.Text = "Fanart Settings";
-      this.tabPage5.UseVisualStyleBackColor = true;
+      this.checkBoxAnimatedBackground.AutoSize = true;
+      this.checkBoxAnimatedBackground.Checked = true;
+      this.checkBoxAnimatedBackground.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.checkBoxAnimatedBackground.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.checkBoxAnimatedBackground.Location = new System.Drawing.Point(195, 23);
+      this.checkBoxAnimatedBackground.Name = "checkBoxAnimatedBackground";
+      this.checkBoxAnimatedBackground.Size = new System.Drawing.Size(211, 20);
+      this.checkBoxAnimatedBackground.TabIndex = 12;
+      this.checkBoxAnimatedBackground.Text = "Movies Background Download";
+      this.checkBoxAnimatedBackground.UseVisualStyleBackColor = true;
       // 
-      // groupBox1
+      // checkBoxAnimatedPoster
       // 
-      this.groupBox1.Controls.Add(this.checkBoxSkipMPThumbsIfFanartAvailble);
-      this.groupBox1.Controls.Add(this.checkBoxThumbsDisabled);
-      this.groupBox1.Controls.Add(this.label1);
-      this.groupBox1.Controls.Add(this.checkBoxThumbsArtist);
-      this.groupBox1.Controls.Add(this.checkBoxThumbsAlbum);
-      this.groupBox1.Controls.Add(this.checkBoxXFactorFanart);
-      this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.groupBox1.Location = new System.Drawing.Point(6, 7);
-      this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new System.Drawing.Size(469, 182);
-      this.groupBox1.TabIndex = 0;
-      this.groupBox1.TabStop = false;
-      this.groupBox1.Text = "Music Fanart Options";
-      // 
-      // label1
-      // 
-      this.label1.AutoSize = true;
-      this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.label1.Location = new System.Drawing.Point(6, 26);
-      this.label1.Name = "label1";
-      this.label1.Size = new System.Drawing.Size(209, 16);
-      this.label1.TabIndex = 0;
-      this.label1.Text = "Select Music Fanart Sources:";
-      // 
-      // groupBox3
-      // 
-      this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.groupBox3.Controls.Add(this.checkBoxEnableMusicFanart);
-      this.groupBox3.Controls.Add(this.CheckBoxUseGenreFanart);
-      this.groupBox3.Controls.Add(this.CheckBoxScanMusicFoldersForFanart);
-      this.groupBox3.Controls.Add(this.edtMusicFoldersArtistAlbumRegex);
-      this.groupBox3.Controls.Add(this.CheckBoxUseDefaultBackdrop);
-      this.groupBox3.Controls.Add(this.edtDefaultBackdropMask);
-      this.groupBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold);
-      this.groupBox3.Location = new System.Drawing.Point(481, 7);
-      this.groupBox3.Name = "groupBox3";
-      this.groupBox3.Size = new System.Drawing.Size(425, 182);
-      this.groupBox3.TabIndex = 1;
-      this.groupBox3.TabStop = false;
-      this.groupBox3.Text = "Music Plugins Fanart Options";
-      // 
-      // tabPage6
-      // 
-      this.tabPage6.Controls.Add(this.checkBoxAddAdditionalSeparators);
-      this.tabPage6.Controls.Add(this.label13);
-      this.tabPage6.Controls.Add(this.label12);
-      this.tabPage6.Controls.Add(this.checkBoxEnableScraperMPDatabase);
-      this.tabPage6.Controls.Add(this.comboBoxScraperInterval);
-      this.tabPage6.Controls.Add(this.checkBoxScraperMusicPlaying);
-      this.tabPage6.Controls.Add(this.label7);
-      this.tabPage6.Controls.Add(this.comboBoxMaxImages);
-      this.tabPage6.Controls.Add(this.label6);
-      this.tabPage6.Location = new System.Drawing.Point(4, 22);
-      this.tabPage6.Name = "tabPage6";
-      this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage6.Size = new System.Drawing.Size(913, 426);
-      this.tabPage6.TabIndex = 1;
-      this.tabPage6.Text = "Scraper Settings";
-      this.tabPage6.UseVisualStyleBackColor = true;
-      // 
-      // checkBoxAddAdditionalSeparators
-      // 
-      this.checkBoxAddAdditionalSeparators.AutoSize = true;
-      this.checkBoxAddAdditionalSeparators.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.checkBoxAddAdditionalSeparators.Location = new System.Drawing.Point(15, 146);
-      this.checkBoxAddAdditionalSeparators.Name = "checkBoxAddAdditionalSeparators";
-      this.checkBoxAddAdditionalSeparators.Size = new System.Drawing.Size(185, 20);
-      this.checkBoxAddAdditionalSeparators.TabIndex = 8;
-      this.checkBoxAddAdditionalSeparators.Text = "Add Additional Separators";
-      this.checkBoxAddAdditionalSeparators.UseVisualStyleBackColor = true;
-      // 
-      // label13
-      // 
-      this.label13.AutoSize = true;
-      this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.label13.Location = new System.Drawing.Point(255, 114);
-      this.label13.Name = "label13";
-      this.label13.Size = new System.Drawing.Size(52, 16);
-      this.label13.TabIndex = 7;
-      this.label13.Text = "(Hours)";
-      // 
-      // label12
-      // 
-      this.label12.AutoSize = true;
-      this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.label12.Location = new System.Drawing.Point(12, 114);
-      this.label12.Name = "label12";
-      this.label12.Size = new System.Drawing.Size(102, 16);
-      this.label12.TabIndex = 5;
-      this.label12.Text = "Scraper Interval";
-      // 
-      // label7
-      // 
-      this.label7.AutoSize = true;
-      this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.label7.Location = new System.Drawing.Point(12, 80);
-      this.label7.Name = "label7";
-      this.label7.Size = new System.Drawing.Size(97, 16);
-      this.label7.TabIndex = 2;
-      this.label7.Text = "Download Max";
-      // 
-      // label6
-      // 
-      this.label6.AutoSize = true;
-      this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.label6.Location = new System.Drawing.Point(255, 80);
-      this.label6.Name = "label6";
-      this.label6.Size = new System.Drawing.Size(109, 16);
-      this.label6.TabIndex = 4;
-      this.label6.Text = "Images Per Artist";
-      // 
-      // tabPage7
-      // 
-      this.tabPage7.Controls.Add(this.button9);
-      this.tabPage7.Controls.Add(this.button10);
-      this.tabPage7.Controls.Add(this.button1);
-      this.tabPage7.Controls.Add(this.button45);
-      this.tabPage7.Controls.Add(this.buttonChFanartMBID);
-      this.tabPage7.Controls.Add(this.button40);
-      this.tabPage7.Controls.Add(this.label30);
-      this.tabPage7.Controls.Add(this.button5);
-      this.tabPage7.Controls.Add(this.button4);
-      this.tabPage7.Controls.Add(this.button3);
-      this.tabPage7.Controls.Add(this.pictureBox1);
-      this.tabPage7.Controls.Add(this.button2);
-      this.tabPage7.Controls.Add(this.dataGridViewFanart);
-      this.tabPage7.Location = new System.Drawing.Point(4, 22);
-      this.tabPage7.Name = "tabPage7";
-      this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage7.Size = new System.Drawing.Size(913, 426);
-      this.tabPage7.TabIndex = 2;
-      this.tabPage7.Text = "Manage Fanart";
-      this.tabPage7.UseVisualStyleBackColor = true;
-      // 
-      // button9
-      // 
-      this.button9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.button9.Location = new System.Drawing.Point(6, 309);
-      this.button9.Name = "button9";
-      this.button9.Size = new System.Drawing.Size(81, 23);
-      this.button9.TabIndex = 10;
-      this.button9.Text = "Previous 500";
-      this.button9.UseVisualStyleBackColor = true;
-      this.button9.Visible = false;
-      this.button9.Click += new System.EventHandler(this.button9_Click);
-      // 
-      // button10
-      // 
-      this.button10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.button10.Location = new System.Drawing.Point(93, 309);
-      this.button10.Name = "button10";
-      this.button10.Size = new System.Drawing.Size(61, 23);
-      this.button10.TabIndex = 11;
-      this.button10.Text = "Next 500";
-      this.button10.UseVisualStyleBackColor = true;
-      this.button10.Visible = false;
-      this.button10.Click += new System.EventHandler(this.button10_Click);
-      // 
-      // label30
-      // 
-      this.label30.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.label30.AutoSize = true;
-      this.label30.BackColor = System.Drawing.Color.Transparent;
-      this.label30.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.label30.ForeColor = System.Drawing.Color.Teal;
-      this.label30.Location = new System.Drawing.Point(726, 402);
-      this.label30.Name = "label30";
-      this.label30.Size = new System.Drawing.Size(0, 13);
-      this.label30.TabIndex = 12;
-      // 
-      // pictureBox1
-      // 
-      this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-      this.pictureBox1.Location = new System.Drawing.Point(722, 308);
-      this.pictureBox1.Name = "pictureBox1";
-      this.pictureBox1.Size = new System.Drawing.Size(183, 112);
-      this.pictureBox1.TabIndex = 2;
-      this.pictureBox1.TabStop = false;
-      // 
-      // dataGridViewFanart
-      // 
-      this.dataGridViewFanart.AllowUserToAddRows = false;
-      this.dataGridViewFanart.AllowUserToResizeColumns = false;
-      this.dataGridViewFanart.AllowUserToResizeRows = false;
-      this.dataGridViewFanart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.dataGridViewFanart.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-      this.dataGridViewFanart.CausesValidation = false;
-      this.dataGridViewFanart.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-      this.dataGridViewFanart.Location = new System.Drawing.Point(6, 9);
-      this.dataGridViewFanart.MultiSelect = false;
-      this.dataGridViewFanart.Name = "dataGridViewFanart";
-      this.dataGridViewFanart.ReadOnly = true;
-      this.dataGridViewFanart.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-      this.dataGridViewFanart.ShowCellErrors = false;
-      this.dataGridViewFanart.ShowCellToolTips = false;
-      this.dataGridViewFanart.ShowEditingIcon = false;
-      this.dataGridViewFanart.ShowRowErrors = false;
-      this.dataGridViewFanart.Size = new System.Drawing.Size(901, 293);
-      this.dataGridViewFanart.TabIndex = 0;
-      this.dataGridViewFanart.VirtualMode = true;
-      this.dataGridViewFanart.SelectionChanged += new System.EventHandler(this.dataGridViewFanart_SelectionChanged);
-      this.dataGridViewFanart.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridViewFanart_KeyDown);
-      // 
-      // tabPage3
-      // 
-      this.tabPage3.Controls.Add(this.tabControl6);
-      this.tabPage3.Location = new System.Drawing.Point(4, 22);
-      this.tabPage3.Name = "tabPage3";
-      this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage3.Size = new System.Drawing.Size(930, 457);
-      this.tabPage3.TabIndex = 5;
-      this.tabPage3.Text = "Music Thumbnails";
-      this.tabPage3.UseVisualStyleBackColor = true;
-      // 
-      // tabPage4
-      // 
-      this.tabPage4.Controls.Add(this.button12);
-      this.tabPage4.Controls.Add(this.label4);
-      this.tabPage4.Controls.Add(this.comboBox3);
-      this.tabPage4.Controls.Add(this.button7);
-      this.tabPage4.Controls.Add(this.pictureBox2);
-      this.tabPage4.Controls.Add(this.dataGridViewExternal);
-      this.tabPage4.Location = new System.Drawing.Point(4, 22);
-      this.tabPage4.Name = "tabPage4";
-      this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage4.Size = new System.Drawing.Size(930, 457);
-      this.tabPage4.TabIndex = 6;
-      this.tabPage4.Text = "External Handled Fanart";
-      this.tabPage4.UseVisualStyleBackColor = true;
-      // 
-      // button12
-      // 
-      this.button12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.button12.Location = new System.Drawing.Point(561, 371);
-      this.button12.Name = "button12";
-      this.button12.Size = new System.Drawing.Size(174, 22);
-      this.button12.TabIndex = 27;
-      this.button12.Text = "Cleanup Missing Fanart [C]";
-      this.button12.UseVisualStyleBackColor = true;
-      this.button12.Click += new System.EventHandler(this.CleanupMissing_Click);
-      // 
-      // label4
-      // 
-      this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.label4.AutoSize = true;
-      this.label4.Location = new System.Drawing.Point(6, 343);
-      this.label4.Name = "label4";
-      this.label4.Size = new System.Drawing.Size(80, 13);
-      this.label4.TabIndex = 1;
-      this.label4.Text = "Filter (Category)";
-      // 
-      // comboBox3
-      // 
-      this.comboBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.comboBox3.FormattingEnabled = true;
-      this.comboBox3.Location = new System.Drawing.Point(6, 362);
-      this.comboBox3.Name = "comboBox3";
-      this.comboBox3.Size = new System.Drawing.Size(242, 21);
-      this.comboBox3.TabIndex = 2;
-      this.comboBox3.SelectedIndexChanged += new System.EventHandler(this.comboBox3_SelectedIndexChanged);
-      // 
-      // pictureBox2
-      // 
-      this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.pictureBox2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-      this.pictureBox2.Location = new System.Drawing.Point(742, 341);
-      this.pictureBox2.Name = "pictureBox2";
-      this.pictureBox2.Size = new System.Drawing.Size(182, 110);
-      this.pictureBox2.TabIndex = 26;
-      this.pictureBox2.TabStop = false;
-      // 
-      // dataGridViewExternal
-      // 
-      this.dataGridViewExternal.AllowUserToAddRows = false;
-      this.dataGridViewExternal.AllowUserToResizeColumns = false;
-      this.dataGridViewExternal.AllowUserToResizeRows = false;
-      this.dataGridViewExternal.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.dataGridViewExternal.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-      this.dataGridViewExternal.CausesValidation = false;
-      this.dataGridViewExternal.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-      this.dataGridViewExternal.Location = new System.Drawing.Point(3, 6);
-      this.dataGridViewExternal.MultiSelect = false;
-      this.dataGridViewExternal.Name = "dataGridViewExternal";
-      this.dataGridViewExternal.ReadOnly = true;
-      this.dataGridViewExternal.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-      this.dataGridViewExternal.ShowCellErrors = false;
-      this.dataGridViewExternal.ShowCellToolTips = false;
-      this.dataGridViewExternal.ShowEditingIcon = false;
-      this.dataGridViewExternal.ShowRowErrors = false;
-      this.dataGridViewExternal.Size = new System.Drawing.Size(921, 329);
-      this.dataGridViewExternal.TabIndex = 0;
-      this.dataGridViewExternal.VirtualMode = true;
-      this.dataGridViewExternal.SelectionChanged += new System.EventHandler(this.dataGridViewExternal_SelectionChanged);
-      // 
-      // tabControl1
-      // 
-      this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.tabControl1.Controls.Add(this.tabPage8);
-      this.tabControl1.Controls.Add(this.tabPage1);
-      this.tabControl1.Controls.Add(this.tabPage13);
-      this.tabControl1.Controls.Add(this.tabPageMyPicturesSlideShow);
-      this.tabControl1.Location = new System.Drawing.Point(12, 12);
-      this.tabControl1.Name = "tabControl1";
-      this.tabControl1.SelectedIndex = 0;
-      this.tabControl1.Size = new System.Drawing.Size(955, 518);
-      this.tabControl1.TabIndex = 1;
-      // 
-      // tabPage8
-      // 
-      this.tabPage8.Controls.Add(this.groupBoxGUI);
-      this.tabPage8.Controls.Add(this.groupBoxFanartTV);
-      this.tabPage8.Controls.Add(this.groupBoxProviders);
-      this.tabPage8.Controls.Add(this.groupBoxScrape);
-      this.tabPage8.Controls.Add(this.groupBoxShow);
-      this.tabPage8.Controls.Add(this.groupBoxResolution);
-      this.tabPage8.Location = new System.Drawing.Point(4, 22);
-      this.tabPage8.Name = "tabPage8";
-      this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage8.Size = new System.Drawing.Size(947, 492);
-      this.tabPage8.TabIndex = 0;
-      this.tabPage8.Text = "General Options";
-      this.tabPage8.UseVisualStyleBackColor = true;
-      // 
-      // groupBoxGUI
-      // 
-      this.groupBoxGUI.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.groupBoxGUI.Controls.Add(this.checkBoxShowDummyItems);
-      this.groupBoxGUI.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold);
-      this.groupBoxGUI.Location = new System.Drawing.Point(514, 212);
-      this.groupBoxGUI.Name = "groupBoxGUI";
-      this.groupBoxGUI.Size = new System.Drawing.Size(417, 65);
-      this.groupBoxGUI.TabIndex = 4;
-      this.groupBoxGUI.TabStop = false;
-      this.groupBoxGUI.Text = "GUI";
-      // 
-      // checkBoxShowDummyItems
-      // 
-      this.checkBoxShowDummyItems.AutoSize = true;
-      this.checkBoxShowDummyItems.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.checkBoxShowDummyItems.Location = new System.Drawing.Point(12, 29);
-      this.checkBoxShowDummyItems.Name = "checkBoxShowDummyItems";
-      this.checkBoxShowDummyItems.Size = new System.Drawing.Size(144, 20);
-      this.checkBoxShowDummyItems.TabIndex = 0;
-      this.checkBoxShowDummyItems.Text = "Show Dummy Items";
-      this.checkBoxShowDummyItems.UseVisualStyleBackColor = true;
-      this.checkBoxShowDummyItems.CheckedChanged += new System.EventHandler(this.checkBoxShowDummyItems_CheckedChanged);
+      this.checkBoxAnimatedPoster.AutoSize = true;
+      this.checkBoxAnimatedPoster.Checked = true;
+      this.checkBoxAnimatedPoster.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.checkBoxAnimatedPoster.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.checkBoxAnimatedPoster.Location = new System.Drawing.Point(13, 23);
+      this.checkBoxAnimatedPoster.Name = "checkBoxAnimatedPoster";
+      this.checkBoxAnimatedPoster.Size = new System.Drawing.Size(177, 20);
+      this.checkBoxAnimatedPoster.TabIndex = 11;
+      this.checkBoxAnimatedPoster.Text = "Movies Poster Download";
+      this.checkBoxAnimatedPoster.UseVisualStyleBackColor = true;
       // 
       // groupBoxFanartTV
       // 
       this.groupBoxFanartTV.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.groupBoxFanartTV.Controls.Add(this.checkBoxMusicRecordLabel);
       this.groupBoxFanartTV.Controls.Add(this.checkBoxSeriesClearLogoDownload);
       this.groupBoxFanartTV.Controls.Add(this.checkBoxSeriesBannerDownload);
       this.groupBoxFanartTV.Controls.Add(this.checkBoxSeriesClearArtDownload);
@@ -3644,12 +3351,64 @@ namespace FanartHandler
       this.groupBoxFanartTV.Controls.Add(this.edtFanartTVPersonalAPIKey);
       this.groupBoxFanartTV.Controls.Add(this.labelGetFanartTVPersonalAPIKey);
       this.groupBoxFanartTV.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold);
-      this.groupBoxFanartTV.Location = new System.Drawing.Point(17, 283);
+      this.groupBoxFanartTV.Location = new System.Drawing.Point(8, 86);
       this.groupBoxFanartTV.Name = "groupBoxFanartTV";
       this.groupBoxFanartTV.Size = new System.Drawing.Size(914, 197);
-      this.groupBoxFanartTV.TabIndex = 5;
+      this.groupBoxFanartTV.TabIndex = 14;
       this.groupBoxFanartTV.TabStop = false;
       this.groupBoxFanartTV.Text = "Fanart.TV";
+      // 
+      // checkBoxMusicRecordLabel
+      // 
+      this.checkBoxMusicRecordLabel.AutoSize = true;
+      this.checkBoxMusicRecordLabel.Checked = true;
+      this.checkBoxMusicRecordLabel.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.checkBoxMusicRecordLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.checkBoxMusicRecordLabel.Location = new System.Drawing.Point(669, 89);
+      this.checkBoxMusicRecordLabel.Name = "checkBoxMusicRecordLabel";
+      this.checkBoxMusicRecordLabel.Size = new System.Drawing.Size(211, 20);
+      this.checkBoxMusicRecordLabel.TabIndex = 16;
+      this.checkBoxMusicRecordLabel.Text = "Music Record Label Download";
+      this.checkBoxMusicRecordLabel.UseVisualStyleBackColor = true;
+      // 
+      // checkBoxSeriesClearLogoDownload
+      // 
+      this.checkBoxSeriesClearLogoDownload.AutoSize = true;
+      this.checkBoxSeriesClearLogoDownload.Checked = true;
+      this.checkBoxSeriesClearLogoDownload.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.checkBoxSeriesClearLogoDownload.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.checkBoxSeriesClearLogoDownload.Location = new System.Drawing.Point(416, 141);
+      this.checkBoxSeriesClearLogoDownload.Name = "checkBoxSeriesClearLogoDownload";
+      this.checkBoxSeriesClearLogoDownload.Size = new System.Drawing.Size(196, 20);
+      this.checkBoxSeriesClearLogoDownload.TabIndex = 15;
+      this.checkBoxSeriesClearLogoDownload.Text = "Series ClearLogo Download";
+      this.checkBoxSeriesClearLogoDownload.UseVisualStyleBackColor = true;
+      // 
+      // checkBoxSeriesBannerDownload
+      // 
+      this.checkBoxSeriesBannerDownload.AutoSize = true;
+      this.checkBoxSeriesBannerDownload.Checked = true;
+      this.checkBoxSeriesBannerDownload.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.checkBoxSeriesBannerDownload.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.checkBoxSeriesBannerDownload.Location = new System.Drawing.Point(416, 115);
+      this.checkBoxSeriesBannerDownload.Name = "checkBoxSeriesBannerDownload";
+      this.checkBoxSeriesBannerDownload.Size = new System.Drawing.Size(176, 20);
+      this.checkBoxSeriesBannerDownload.TabIndex = 14;
+      this.checkBoxSeriesBannerDownload.Text = "Series Banner Download";
+      this.checkBoxSeriesBannerDownload.UseVisualStyleBackColor = true;
+      // 
+      // checkBoxSeriesClearArtDownload
+      // 
+      this.checkBoxSeriesClearArtDownload.AutoSize = true;
+      this.checkBoxSeriesClearArtDownload.Checked = true;
+      this.checkBoxSeriesClearArtDownload.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.checkBoxSeriesClearArtDownload.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.checkBoxSeriesClearArtDownload.Location = new System.Drawing.Point(416, 89);
+      this.checkBoxSeriesClearArtDownload.Name = "checkBoxSeriesClearArtDownload";
+      this.checkBoxSeriesClearArtDownload.Size = new System.Drawing.Size(181, 20);
+      this.checkBoxSeriesClearArtDownload.TabIndex = 13;
+      this.checkBoxSeriesClearArtDownload.Text = "Series ClearArt Download";
+      this.checkBoxSeriesClearArtDownload.UseVisualStyleBackColor = true;
       // 
       // checkBoxMoviesCDArtDownload
       // 
@@ -3802,10 +3561,418 @@ namespace FanartHandler
       this.labelGetFanartTVPersonalAPIKey.TabStop = true;
       this.labelGetFanartTVPersonalAPIKey.Text = "Get Personal API key";
       // 
+      // label13
+      // 
+      this.label13.AutoSize = true;
+      this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label13.Location = new System.Drawing.Point(261, 53);
+      this.label13.Name = "label13";
+      this.label13.Size = new System.Drawing.Size(52, 16);
+      this.label13.TabIndex = 13;
+      this.label13.Text = "(Hours)";
+      // 
+      // label12
+      // 
+      this.label12.AutoSize = true;
+      this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label12.Location = new System.Drawing.Point(18, 53);
+      this.label12.Name = "label12";
+      this.label12.Size = new System.Drawing.Size(102, 16);
+      this.label12.TabIndex = 11;
+      this.label12.Text = "Scraper Interval";
+      // 
+      // comboBoxScraperInterval
+      // 
+      this.comboBoxScraperInterval.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.comboBoxScraperInterval.FormattingEnabled = true;
+      this.comboBoxScraperInterval.Location = new System.Drawing.Point(121, 52);
+      this.comboBoxScraperInterval.Name = "comboBoxScraperInterval";
+      this.comboBoxScraperInterval.Size = new System.Drawing.Size(134, 21);
+      this.comboBoxScraperInterval.TabIndex = 12;
+      // 
+      // label7
+      // 
+      this.label7.AutoSize = true;
+      this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label7.Location = new System.Drawing.Point(18, 19);
+      this.label7.Name = "label7";
+      this.label7.Size = new System.Drawing.Size(97, 16);
+      this.label7.TabIndex = 8;
+      this.label7.Text = "Download Max";
+      // 
+      // comboBoxMaxImages
+      // 
+      this.comboBoxMaxImages.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.comboBoxMaxImages.FormattingEnabled = true;
+      this.comboBoxMaxImages.Location = new System.Drawing.Point(121, 18);
+      this.comboBoxMaxImages.Name = "comboBoxMaxImages";
+      this.comboBoxMaxImages.Size = new System.Drawing.Size(134, 21);
+      this.comboBoxMaxImages.TabIndex = 9;
+      // 
+      // label6
+      // 
+      this.label6.AutoSize = true;
+      this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label6.Location = new System.Drawing.Point(261, 19);
+      this.label6.Name = "label6";
+      this.label6.Size = new System.Drawing.Size(146, 16);
+      this.label6.TabIndex = 10;
+      this.label6.Text = "Images per Fanart type";
+      // 
+      // tabPage2
+      // 
+      this.tabPage2.Controls.Add(this.tabControl3);
+      this.tabPage2.Location = new System.Drawing.Point(4, 22);
+      this.tabPage2.Name = "tabPage2";
+      this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+      this.tabPage2.Size = new System.Drawing.Size(930, 457);
+      this.tabPage2.TabIndex = 5;
+      this.tabPage2.Text = "Music Fanart";
+      this.tabPage2.UseVisualStyleBackColor = true;
+      // 
+      // tabControl3
+      // 
+      this.tabControl3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.tabControl3.Controls.Add(this.tabPage5);
+      this.tabControl3.Controls.Add(this.tabPage6);
+      this.tabControl3.Controls.Add(this.tabPage7);
+      this.tabControl3.Location = new System.Drawing.Point(6, 6);
+      this.tabControl3.Name = "tabControl3";
+      this.tabControl3.SelectedIndex = 0;
+      this.tabControl3.Size = new System.Drawing.Size(921, 452);
+      this.tabControl3.TabIndex = 0;
+      // 
+      // tabPage5
+      // 
+      this.tabPage5.Controls.Add(this.groupBox1);
+      this.tabPage5.Controls.Add(this.groupBox3);
+      this.tabPage5.Location = new System.Drawing.Point(4, 22);
+      this.tabPage5.Name = "tabPage5";
+      this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
+      this.tabPage5.Size = new System.Drawing.Size(913, 426);
+      this.tabPage5.TabIndex = 0;
+      this.tabPage5.Text = "Fanart Settings";
+      this.tabPage5.UseVisualStyleBackColor = true;
+      // 
+      // groupBox1
+      // 
+      this.groupBox1.Controls.Add(this.checkBoxSkipMPThumbsIfFanartAvailble);
+      this.groupBox1.Controls.Add(this.checkBoxThumbsDisabled);
+      this.groupBox1.Controls.Add(this.label1);
+      this.groupBox1.Controls.Add(this.checkBoxThumbsArtist);
+      this.groupBox1.Controls.Add(this.checkBoxThumbsAlbum);
+      this.groupBox1.Controls.Add(this.checkBoxXFactorFanart);
+      this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.groupBox1.Location = new System.Drawing.Point(6, 7);
+      this.groupBox1.Name = "groupBox1";
+      this.groupBox1.Size = new System.Drawing.Size(469, 182);
+      this.groupBox1.TabIndex = 0;
+      this.groupBox1.TabStop = false;
+      this.groupBox1.Text = "Music Fanart Options";
+      // 
+      // label1
+      // 
+      this.label1.AutoSize = true;
+      this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label1.Location = new System.Drawing.Point(6, 26);
+      this.label1.Name = "label1";
+      this.label1.Size = new System.Drawing.Size(209, 16);
+      this.label1.TabIndex = 0;
+      this.label1.Text = "Select Music Fanart Sources:";
+      // 
+      // groupBox3
+      // 
+      this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.groupBox3.Controls.Add(this.checkBoxEnableMusicFanart);
+      this.groupBox3.Controls.Add(this.CheckBoxUseGenreFanart);
+      this.groupBox3.Controls.Add(this.CheckBoxScanMusicFoldersForFanart);
+      this.groupBox3.Controls.Add(this.edtMusicFoldersArtistAlbumRegex);
+      this.groupBox3.Controls.Add(this.CheckBoxUseDefaultBackdrop);
+      this.groupBox3.Controls.Add(this.edtDefaultBackdropMask);
+      this.groupBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold);
+      this.groupBox3.Location = new System.Drawing.Point(481, 7);
+      this.groupBox3.Name = "groupBox3";
+      this.groupBox3.Size = new System.Drawing.Size(425, 182);
+      this.groupBox3.TabIndex = 1;
+      this.groupBox3.TabStop = false;
+      this.groupBox3.Text = "Music Plugins Fanart Options";
+      // 
+      // tabPage6
+      // 
+      this.tabPage6.Controls.Add(this.checkBoxAddAdditionalSeparators);
+      this.tabPage6.Controls.Add(this.checkBoxEnableScraperMPDatabase);
+      this.tabPage6.Controls.Add(this.checkBoxScraperMusicPlaying);
+      this.tabPage6.Location = new System.Drawing.Point(4, 22);
+      this.tabPage6.Name = "tabPage6";
+      this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
+      this.tabPage6.Size = new System.Drawing.Size(913, 426);
+      this.tabPage6.TabIndex = 1;
+      this.tabPage6.Text = "Scraper Settings";
+      this.tabPage6.UseVisualStyleBackColor = true;
+      // 
+      // checkBoxAddAdditionalSeparators
+      // 
+      this.checkBoxAddAdditionalSeparators.AutoSize = true;
+      this.checkBoxAddAdditionalSeparators.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.checkBoxAddAdditionalSeparators.Location = new System.Drawing.Point(15, 72);
+      this.checkBoxAddAdditionalSeparators.Name = "checkBoxAddAdditionalSeparators";
+      this.checkBoxAddAdditionalSeparators.Size = new System.Drawing.Size(185, 20);
+      this.checkBoxAddAdditionalSeparators.TabIndex = 8;
+      this.checkBoxAddAdditionalSeparators.Text = "Add Additional Separators";
+      this.checkBoxAddAdditionalSeparators.UseVisualStyleBackColor = true;
+      // 
+      // tabPage7
+      // 
+      this.tabPage7.Controls.Add(this.button9);
+      this.tabPage7.Controls.Add(this.button10);
+      this.tabPage7.Controls.Add(this.button1);
+      this.tabPage7.Controls.Add(this.button45);
+      this.tabPage7.Controls.Add(this.buttonChFanartMBID);
+      this.tabPage7.Controls.Add(this.button40);
+      this.tabPage7.Controls.Add(this.label30);
+      this.tabPage7.Controls.Add(this.button5);
+      this.tabPage7.Controls.Add(this.button4);
+      this.tabPage7.Controls.Add(this.button3);
+      this.tabPage7.Controls.Add(this.pictureBox1);
+      this.tabPage7.Controls.Add(this.button2);
+      this.tabPage7.Controls.Add(this.dataGridViewFanart);
+      this.tabPage7.Location = new System.Drawing.Point(4, 22);
+      this.tabPage7.Name = "tabPage7";
+      this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
+      this.tabPage7.Size = new System.Drawing.Size(913, 426);
+      this.tabPage7.TabIndex = 2;
+      this.tabPage7.Text = "Manage Fanart";
+      this.tabPage7.UseVisualStyleBackColor = true;
+      // 
+      // button9
+      // 
+      this.button9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.button9.Location = new System.Drawing.Point(6, 309);
+      this.button9.Name = "button9";
+      this.button9.Size = new System.Drawing.Size(81, 23);
+      this.button9.TabIndex = 10;
+      this.button9.Text = "Previous 500";
+      this.button9.UseVisualStyleBackColor = true;
+      this.button9.Visible = false;
+      this.button9.Click += new System.EventHandler(this.button9_Click);
+      // 
+      // button10
+      // 
+      this.button10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.button10.Location = new System.Drawing.Point(93, 309);
+      this.button10.Name = "button10";
+      this.button10.Size = new System.Drawing.Size(61, 23);
+      this.button10.TabIndex = 11;
+      this.button10.Text = "Next 500";
+      this.button10.UseVisualStyleBackColor = true;
+      this.button10.Visible = false;
+      this.button10.Click += new System.EventHandler(this.button10_Click);
+      // 
+      // label30
+      // 
+      this.label30.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.label30.AutoSize = true;
+      this.label30.BackColor = System.Drawing.Color.Transparent;
+      this.label30.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.label30.ForeColor = System.Drawing.Color.Teal;
+      this.label30.Location = new System.Drawing.Point(726, 402);
+      this.label30.Name = "label30";
+      this.label30.Size = new System.Drawing.Size(0, 13);
+      this.label30.TabIndex = 12;
+      // 
+      // pictureBox1
+      // 
+      this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+      this.pictureBox1.Location = new System.Drawing.Point(722, 308);
+      this.pictureBox1.Name = "pictureBox1";
+      this.pictureBox1.Size = new System.Drawing.Size(183, 112);
+      this.pictureBox1.TabIndex = 2;
+      this.pictureBox1.TabStop = false;
+      // 
+      // dataGridViewFanart
+      // 
+      this.dataGridViewFanart.AllowUserToAddRows = false;
+      this.dataGridViewFanart.AllowUserToResizeColumns = false;
+      this.dataGridViewFanart.AllowUserToResizeRows = false;
+      this.dataGridViewFanart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.dataGridViewFanart.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+      this.dataGridViewFanart.CausesValidation = false;
+      this.dataGridViewFanart.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+      this.dataGridViewFanart.Location = new System.Drawing.Point(6, 9);
+      this.dataGridViewFanart.MultiSelect = false;
+      this.dataGridViewFanart.Name = "dataGridViewFanart";
+      this.dataGridViewFanart.ReadOnly = true;
+      this.dataGridViewFanart.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+      this.dataGridViewFanart.ShowCellErrors = false;
+      this.dataGridViewFanart.ShowCellToolTips = false;
+      this.dataGridViewFanart.ShowEditingIcon = false;
+      this.dataGridViewFanart.ShowRowErrors = false;
+      this.dataGridViewFanart.Size = new System.Drawing.Size(901, 293);
+      this.dataGridViewFanart.TabIndex = 0;
+      this.dataGridViewFanart.VirtualMode = true;
+      this.dataGridViewFanart.SelectionChanged += new System.EventHandler(this.dataGridViewFanart_SelectionChanged);
+      this.dataGridViewFanart.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridViewFanart_KeyDown);
+      // 
+      // tabPage3
+      // 
+      this.tabPage3.Controls.Add(this.tabControl6);
+      this.tabPage3.Location = new System.Drawing.Point(4, 22);
+      this.tabPage3.Name = "tabPage3";
+      this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+      this.tabPage3.Size = new System.Drawing.Size(930, 457);
+      this.tabPage3.TabIndex = 6;
+      this.tabPage3.Text = "Music Thumbnails";
+      this.tabPage3.UseVisualStyleBackColor = true;
+      // 
+      // tabPage4
+      // 
+      this.tabPage4.Controls.Add(this.button12);
+      this.tabPage4.Controls.Add(this.label4);
+      this.tabPage4.Controls.Add(this.comboBox3);
+      this.tabPage4.Controls.Add(this.button7);
+      this.tabPage4.Controls.Add(this.pictureBox2);
+      this.tabPage4.Controls.Add(this.dataGridViewExternal);
+      this.tabPage4.Location = new System.Drawing.Point(4, 22);
+      this.tabPage4.Name = "tabPage4";
+      this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+      this.tabPage4.Size = new System.Drawing.Size(930, 457);
+      this.tabPage4.TabIndex = 7;
+      this.tabPage4.Text = "External Handled Fanart";
+      this.tabPage4.UseVisualStyleBackColor = true;
+      // 
+      // button12
+      // 
+      this.button12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.button12.Location = new System.Drawing.Point(561, 371);
+      this.button12.Name = "button12";
+      this.button12.Size = new System.Drawing.Size(174, 22);
+      this.button12.TabIndex = 27;
+      this.button12.Text = "Cleanup Missing Fanart [C]";
+      this.button12.UseVisualStyleBackColor = true;
+      this.button12.Click += new System.EventHandler(this.CleanupMissing_Click);
+      // 
+      // label4
+      // 
+      this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.label4.AutoSize = true;
+      this.label4.Location = new System.Drawing.Point(6, 343);
+      this.label4.Name = "label4";
+      this.label4.Size = new System.Drawing.Size(80, 13);
+      this.label4.TabIndex = 1;
+      this.label4.Text = "Filter (Category)";
+      // 
+      // comboBox3
+      // 
+      this.comboBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.comboBox3.FormattingEnabled = true;
+      this.comboBox3.Location = new System.Drawing.Point(6, 362);
+      this.comboBox3.Name = "comboBox3";
+      this.comboBox3.Size = new System.Drawing.Size(242, 21);
+      this.comboBox3.TabIndex = 2;
+      this.comboBox3.SelectedIndexChanged += new System.EventHandler(this.comboBox3_SelectedIndexChanged);
+      // 
+      // pictureBox2
+      // 
+      this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.pictureBox2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+      this.pictureBox2.Location = new System.Drawing.Point(742, 341);
+      this.pictureBox2.Name = "pictureBox2";
+      this.pictureBox2.Size = new System.Drawing.Size(182, 110);
+      this.pictureBox2.TabIndex = 26;
+      this.pictureBox2.TabStop = false;
+      // 
+      // dataGridViewExternal
+      // 
+      this.dataGridViewExternal.AllowUserToAddRows = false;
+      this.dataGridViewExternal.AllowUserToResizeColumns = false;
+      this.dataGridViewExternal.AllowUserToResizeRows = false;
+      this.dataGridViewExternal.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.dataGridViewExternal.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+      this.dataGridViewExternal.CausesValidation = false;
+      this.dataGridViewExternal.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+      this.dataGridViewExternal.Location = new System.Drawing.Point(3, 6);
+      this.dataGridViewExternal.MultiSelect = false;
+      this.dataGridViewExternal.Name = "dataGridViewExternal";
+      this.dataGridViewExternal.ReadOnly = true;
+      this.dataGridViewExternal.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+      this.dataGridViewExternal.ShowCellErrors = false;
+      this.dataGridViewExternal.ShowCellToolTips = false;
+      this.dataGridViewExternal.ShowEditingIcon = false;
+      this.dataGridViewExternal.ShowRowErrors = false;
+      this.dataGridViewExternal.Size = new System.Drawing.Size(921, 329);
+      this.dataGridViewExternal.TabIndex = 0;
+      this.dataGridViewExternal.VirtualMode = true;
+      this.dataGridViewExternal.SelectionChanged += new System.EventHandler(this.dataGridViewExternal_SelectionChanged);
+      // 
+      // tabControl1
+      // 
+      this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.tabControl1.Controls.Add(this.tabPage8);
+      this.tabControl1.Controls.Add(this.tabPage1);
+      this.tabControl1.Controls.Add(this.tabPage13);
+      this.tabControl1.Controls.Add(this.tabPageMyPicturesSlideShow);
+      this.tabControl1.Location = new System.Drawing.Point(12, 12);
+      this.tabControl1.Name = "tabControl1";
+      this.tabControl1.SelectedIndex = 0;
+      this.tabControl1.Size = new System.Drawing.Size(955, 518);
+      this.tabControl1.TabIndex = 1;
+      // 
+      // tabPage8
+      // 
+      this.tabPage8.Controls.Add(this.groupBoxGUI);
+      this.tabPage8.Controls.Add(this.groupBoxProviders);
+      this.tabPage8.Controls.Add(this.groupBoxScrape);
+      this.tabPage8.Controls.Add(this.groupBoxShow);
+      this.tabPage8.Controls.Add(this.groupBoxResolution);
+      this.tabPage8.Location = new System.Drawing.Point(4, 22);
+      this.tabPage8.Name = "tabPage8";
+      this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
+      this.tabPage8.Size = new System.Drawing.Size(947, 492);
+      this.tabPage8.TabIndex = 0;
+      this.tabPage8.Text = "General Options";
+      this.tabPage8.UseVisualStyleBackColor = true;
+      // 
+      // groupBoxGUI
+      // 
+      this.groupBoxGUI.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.groupBoxGUI.Controls.Add(this.checkBoxShowDummyItems);
+      this.groupBoxGUI.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold);
+      this.groupBoxGUI.Location = new System.Drawing.Point(514, 212);
+      this.groupBoxGUI.Name = "groupBoxGUI";
+      this.groupBoxGUI.Size = new System.Drawing.Size(417, 65);
+      this.groupBoxGUI.TabIndex = 4;
+      this.groupBoxGUI.TabStop = false;
+      this.groupBoxGUI.Text = "GUI";
+      // 
+      // checkBoxShowDummyItems
+      // 
+      this.checkBoxShowDummyItems.AutoSize = true;
+      this.checkBoxShowDummyItems.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.checkBoxShowDummyItems.Location = new System.Drawing.Point(12, 29);
+      this.checkBoxShowDummyItems.Name = "checkBoxShowDummyItems";
+      this.checkBoxShowDummyItems.Size = new System.Drawing.Size(144, 20);
+      this.checkBoxShowDummyItems.TabIndex = 0;
+      this.checkBoxShowDummyItems.Text = "Show Dummy Items";
+      this.checkBoxShowDummyItems.UseVisualStyleBackColor = true;
+      this.checkBoxShowDummyItems.CheckedChanged += new System.EventHandler(this.checkBoxShowDummyItems_CheckedChanged);
+      // 
       // groupBoxProviders
       // 
       this.groupBoxProviders.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.groupBoxProviders.Controls.Add(this.checkBoxSpotLight);
+      this.groupBoxProviders.Controls.Add(this.checkBoxUseAnimated);
       this.groupBoxProviders.Controls.Add(this.label8);
       this.groupBoxProviders.Controls.Add(this.button6);
       this.groupBoxProviders.Controls.Add(this.progressBarScraper);
@@ -3821,6 +3988,32 @@ namespace FanartHandler
       this.groupBoxProviders.TabIndex = 2;
       this.groupBoxProviders.TabStop = false;
       this.groupBoxProviders.Text = "Providers";
+      // 
+      // checkBoxSpotLight
+      // 
+      this.checkBoxSpotLight.AutoSize = true;
+      this.checkBoxSpotLight.Checked = true;
+      this.checkBoxSpotLight.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.checkBoxSpotLight.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.checkBoxSpotLight.Location = new System.Drawing.Point(172, 81);
+      this.checkBoxSpotLight.Name = "checkBoxSpotLight";
+      this.checkBoxSpotLight.Size = new System.Drawing.Size(151, 20);
+      this.checkBoxSpotLight.TabIndex = 19;
+      this.checkBoxSpotLight.Text = "SpotLight (W10 Only)";
+      this.checkBoxSpotLight.UseVisualStyleBackColor = true;
+      // 
+      // checkBoxUseAnimated
+      // 
+      this.checkBoxUseAnimated.AutoSize = true;
+      this.checkBoxUseAnimated.Checked = true;
+      this.checkBoxUseAnimated.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.checkBoxUseAnimated.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.checkBoxUseAnimated.Location = new System.Drawing.Point(172, 52);
+      this.checkBoxUseAnimated.Name = "checkBoxUseAnimated";
+      this.checkBoxUseAnimated.Size = new System.Drawing.Size(84, 20);
+      this.checkBoxUseAnimated.TabIndex = 18;
+      this.checkBoxUseAnimated.Text = "Animated";
+      this.checkBoxUseAnimated.UseVisualStyleBackColor = true;
       // 
       // label8
       // 
@@ -4076,45 +4269,6 @@ namespace FanartHandler
       this.timerProgress.Interval = 500;
       this.timerProgress.Tick += new System.EventHandler(this.timerProgress_Tick);
       // 
-      // checkBoxSeriesClearLogoDownload
-      // 
-      this.checkBoxSeriesClearLogoDownload.AutoSize = true;
-      this.checkBoxSeriesClearLogoDownload.Checked = true;
-      this.checkBoxSeriesClearLogoDownload.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.checkBoxSeriesClearLogoDownload.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.checkBoxSeriesClearLogoDownload.Location = new System.Drawing.Point(416, 141);
-      this.checkBoxSeriesClearLogoDownload.Name = "checkBoxSeriesClearLogoDownload";
-      this.checkBoxSeriesClearLogoDownload.Size = new System.Drawing.Size(196, 20);
-      this.checkBoxSeriesClearLogoDownload.TabIndex = 15;
-      this.checkBoxSeriesClearLogoDownload.Text = "Series ClearLogo Download";
-      this.checkBoxSeriesClearLogoDownload.UseVisualStyleBackColor = true;
-      // 
-      // checkBoxSeriesBannerDownload
-      // 
-      this.checkBoxSeriesBannerDownload.AutoSize = true;
-      this.checkBoxSeriesBannerDownload.Checked = true;
-      this.checkBoxSeriesBannerDownload.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.checkBoxSeriesBannerDownload.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.checkBoxSeriesBannerDownload.Location = new System.Drawing.Point(416, 115);
-      this.checkBoxSeriesBannerDownload.Name = "checkBoxSeriesBannerDownload";
-      this.checkBoxSeriesBannerDownload.Size = new System.Drawing.Size(176, 20);
-      this.checkBoxSeriesBannerDownload.TabIndex = 14;
-      this.checkBoxSeriesBannerDownload.Text = "Series Banner Download";
-      this.checkBoxSeriesBannerDownload.UseVisualStyleBackColor = true;
-      // 
-      // checkBoxSeriesClearArtDownload
-      // 
-      this.checkBoxSeriesClearArtDownload.AutoSize = true;
-      this.checkBoxSeriesClearArtDownload.Checked = true;
-      this.checkBoxSeriesClearArtDownload.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.checkBoxSeriesClearArtDownload.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.checkBoxSeriesClearArtDownload.Location = new System.Drawing.Point(416, 89);
-      this.checkBoxSeriesClearArtDownload.Name = "checkBoxSeriesClearArtDownload";
-      this.checkBoxSeriesClearArtDownload.Size = new System.Drawing.Size(181, 20);
-      this.checkBoxSeriesClearArtDownload.TabIndex = 13;
-      this.checkBoxSeriesClearArtDownload.Text = "Series ClearArt Download";
-      this.checkBoxSeriesClearArtDownload.UseVisualStyleBackColor = true;
-      // 
       // FanartHandlerConfig
       // 
       this.ClientSize = new System.Drawing.Size(979, 562);
@@ -4143,6 +4297,12 @@ namespace FanartHandler
       ((System.ComponentModel.ISupportInitialize)(this.dataGridViewThumbs)).EndInit();
       this.tabPage1.ResumeLayout(false);
       this.tabControl2.ResumeLayout(false);
+      this.tabPage9.ResumeLayout(false);
+      this.tabPage9.PerformLayout();
+      this.groupBoxAnimated.ResumeLayout(false);
+      this.groupBoxAnimated.PerformLayout();
+      this.groupBoxFanartTV.ResumeLayout(false);
+      this.groupBoxFanartTV.PerformLayout();
       this.tabPage2.ResumeLayout(false);
       this.tabControl3.ResumeLayout(false);
       this.tabPage5.ResumeLayout(false);
@@ -4165,8 +4325,6 @@ namespace FanartHandler
       this.tabPage8.ResumeLayout(false);
       this.groupBoxGUI.ResumeLayout(false);
       this.groupBoxGUI.PerformLayout();
-      this.groupBoxFanartTV.ResumeLayout(false);
-      this.groupBoxFanartTV.PerformLayout();
       this.groupBoxProviders.ResumeLayout(false);
       this.groupBoxProviders.PerformLayout();
       this.groupBoxScrape.ResumeLayout(false);
@@ -4246,6 +4404,7 @@ namespace FanartHandler
       comboBox2.Items.Add("Scorecenter");
       comboBox2.Items.Add("TV");
       comboBox2.Items.Add("Weather");
+      comboBox2.Items.Add("Holiday");
       comboBox2.SelectedItem = "Games";
       //
       comboBox3.Enabled = true;
@@ -4377,7 +4536,7 @@ namespace FanartHandler
       Utils.InitFolders();
       Utils.LoadSettings();
       Utils.SetupDirectories();
-      Utils.InitiateDbm("config");
+      Utils.InitiateDbm(Utils.DB.StartConfig);
       Utils.StopScraper = false;
       //
     }

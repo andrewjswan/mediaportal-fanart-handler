@@ -12,10 +12,8 @@ using FHNLog.NLog;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Threading;
 
 namespace FanartHandler
 {
@@ -256,7 +254,7 @@ namespace FanartHandler
           // My Pictures SlideShow
           if (Utils.UseMyPicturesSlideShow)
           {
-            bool MyPicturesSlideShowEnabled = Utils.GetProperty("#skin.fanarthandler.pictures.slideshow.enabled").Equals("true", StringComparison.CurrentCultureIgnoreCase);
+            bool MyPicturesSlideShowEnabled = Utils.GetProperty("#skin.fanarthandler.pictures.slideshow.enabled").ToLower().Equals("true", StringComparison.CurrentCultureIgnoreCase);
             if (MyPicturesSlideShowEnabled)
             {
               FileName = Utils.GetRandomSlideShowImages(ref CurrPlayFanart, ref PrevPlayMusic);
@@ -265,12 +263,12 @@ namespace FanartHandler
           if (string.IsNullOrEmpty(FileName))
           {
             // Artist
-            FileName = GetFilename(CurrentTrackTag, CurrentAlbumTag, ref CurrPlayFanart, ref PrevPlayMusic, Utils.Category.MusicFanartScraped, NewArtist, true);
+            FileName = GetFilename(CurrentTrackTag, CurrentAlbumTag, ref CurrPlayFanart, ref PrevPlayMusic, Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartScraped, NewArtist, true);
             if (string.IsNullOrEmpty(FileName))
             {
               // Genre
               if (!string.IsNullOrEmpty(CurrentGenreTag) && Utils.UseGenreFanart)
-                FileName = GetFilename(Utils.GetGenres(CurrentGenreTag), null,  ref CurrPlayFanart, ref PrevPlayMusic, Utils.Category.MusicFanartScraped, NewArtist, true);
+                FileName = GetFilename(Utils.GetGenres(CurrentGenreTag), null,  ref CurrPlayFanart, ref PrevPlayMusic, Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartScraped, NewArtist, true);
               if (string.IsNullOrEmpty(FileName))
               {
                 // Random
@@ -329,7 +327,7 @@ namespace FanartHandler
 
           if (Utils.ScraperMusicPlaying && (FanartHandlerSetup.Fh.MyScraperNowWorker != null && FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh))
           {
-            RefreshRefreshTickCount();
+            ForceRefreshTickCount();
             SetCurrentArtistsImageNames(null);
             FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh = false;
           }
@@ -350,6 +348,12 @@ namespace FanartHandler
             if (NeedRunScrapper)
             {
               NeedRunScrapper = !FanartHandlerSetup.Fh.StartScraperNowPlaying(fmp);
+              /*
+              if (NeedRunScrapper)
+              {
+                logger.Debug("*** NowPlaying Scraper IsBusy, wait ...");
+              }
+              */
             }
 
             RefreshMusicPlayingProperties();
@@ -380,21 +384,21 @@ namespace FanartHandler
       }
     }
 
-    internal string GetFilename(string key, string key2, ref string currFile, ref int iFilePrev, Utils.Category category, bool newArtist, bool isMusic)
+    internal string GetFilename(string key, string key2, ref string currFile, ref int iFilePrev, Utils.Category category, Utils.SubCategory subcategory, bool newArtist, bool isMusic)
     {
       var result = string.Empty;
       try
       {
         if (!Utils.GetIsStopping())
         {
-          key = Utils.GetArtist(key, category);
-          key2 = isMusic ? Utils.GetAlbum(key2, category) : null;
+          key = Utils.GetArtist(key, category, subcategory);
+          key2 = isMusic ? Utils.GetAlbum(key2, category, subcategory) : null;
           // logger.Debug("*** GetFilename: " + key + " --- " + (key2 == null ? "null" : key2));
           var filenames = GetCurrentArtistsImageNames();
 
           if (newArtist || filenames == null || filenames.Count == 0)
           {
-            Utils.GetFanart(ref filenames, key, key2, category, isMusic);
+            Utils.GetFanart(ref filenames, key, key2, category, subcategory, isMusic);
             if (iFilePrev == -1)
             { 
               Utils.Shuffle(ref filenames);
@@ -473,7 +477,7 @@ namespace FanartHandler
       RefreshTickCount = 0;
     }
 
-    public void RefreshRefreshTickCount()
+    public void ForceRefreshTickCount()
     {
       RefreshTickCount = Utils.MaxRefreshTickCount;
     }

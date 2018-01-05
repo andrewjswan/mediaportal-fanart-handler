@@ -7,11 +7,14 @@
  <!-- Scrape -->
   <string Field="ScrapeInitial">Initial Scrape</string>
   <string Field="ScrapeInitialFanart">Initial Scrape (Fanart.TV)</string>
+  <string Field="ScrapeInitialAnimated">Initial Scrape (Animated)</string>
   <string Field="ScrapeNowPlaying">Now Playing Scrape</string>
   <string Field="ScrapeInitializing">Initializing</string>
 
  <!-- CleanUp -->
   <string Field="CleanupImages">Cleanup images</string>
+  <string Field="CleanupFanartImages">Cleanup images (Fanart.TV)</string>
+  <string Field="CleanupAnimatedImages">Cleanup images (Animated)</string>
 
  <!-- Delete -->
   <string Field="DeleteMissing">Delete missing entries</string>

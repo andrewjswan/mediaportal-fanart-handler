@@ -189,12 +189,12 @@ namespace FanartHandler
             {
               CurrHolidayFanart = string.Empty;
               PrevHoliday = -1;
-              SetCurrentSelectedImageNames(null, Utils.Category.Holiday);
+              SetCurrentSelectedImageNames(null, Utils.Category.Holiday, Utils.SubCategory.None);
               FanartAvailable = false;
               logger.Debug("Holiday: "+CurrHolidayText);
             }
 
-            newFanart = GetFilename(SelectedItem, null, ref CurrHoliday, ref PrevHoliday, Utils.Category.Holiday, flag);
+            newFanart = GetFilename(SelectedItem, null, ref CurrHoliday, ref PrevHoliday, Utils.Category.Holiday, Utils.SubCategory.None, flag);
 
             if (!string.IsNullOrEmpty(newFanart))
             {
@@ -232,7 +232,7 @@ namespace FanartHandler
           Utils.AddProperty(ref propertiesHoliday, "holiday.backdrop1", string.Empty, ref ListHoliday);
           Utils.AddProperty(ref propertiesHoliday, "holiday.backdrop2", string.Empty, ref ListHoliday);
 
-          SetCurrentSelectedImageNames(null, Utils.Category.Holiday);
+          SetCurrentSelectedImageNames(null, Utils.Category.Holiday, Utils.SubCategory.None);
 
           FanartAvailable = false;
         }
@@ -320,7 +320,7 @@ namespace FanartHandler
     }
 
     #region Hash
-    public Hashtable GetCurrentSelectedImageNames(Utils.Category category)
+    public Hashtable GetCurrentSelectedImageNames(Utils.Category category, Utils.SubCategory subcategory)
     {
       if (CurrentSelectedImageNames == null)
       {
@@ -329,9 +329,10 @@ namespace FanartHandler
 
       lock (CurrentSelectedImageNames)
       {
-        if (CurrentSelectedImageNames.ContainsKey(category))
+        string cat = string.Format("{0}:{1}",category.ToString(), subcategory.ToString());
+        if (CurrentSelectedImageNames.ContainsKey(cat))
         {
-          return (Hashtable)CurrentSelectedImageNames[category];
+          return (Hashtable)CurrentSelectedImageNames[cat];
         }
         else
         {
@@ -340,7 +341,7 @@ namespace FanartHandler
       }
     }
 
-    public void SetCurrentSelectedImageNames(Hashtable ht, Utils.Category category)
+    public void SetCurrentSelectedImageNames(Hashtable ht, Utils.Category category, Utils.SubCategory subcategory)
     {
       if (CurrentSelectedImageNames == null)
       {
@@ -355,33 +356,34 @@ namespace FanartHandler
         }
         else
         {
-          if (CurrentSelectedImageNames.ContainsKey(category))
+          string cat = string.Format("{0}:{1}",category.ToString(), subcategory.ToString());
+          if (CurrentSelectedImageNames.ContainsKey(cat))
           {
-            CurrentSelectedImageNames.Remove(category);
+            CurrentSelectedImageNames.Remove(cat);
           }
-          CurrentSelectedImageNames.Add(category, ht);
+          CurrentSelectedImageNames.Add(cat, ht);
         }
       }
     }
     #endregion
 
-    internal string GetFilename(string key, string key2, ref string currFile, ref int iFilePrev, Utils.Category category, bool newArtist)
+    internal string GetFilename(string key, string key2, ref string currFile, ref int iFilePrev, Utils.Category category, Utils.SubCategory subcategory, bool newArtist)
     {
       var result = string.Empty;
       try
       {
         if (!Utils.GetIsStopping())
         {
-          key = Utils.GetArtist(key, category);
-          var filenames = GetCurrentSelectedImageNames(category);
+          key = Utils.GetArtist(key, category, subcategory);
+          var filenames = GetCurrentSelectedImageNames(category, subcategory);
 
           if (newArtist || filenames == null || filenames.Count == 0)
           {
-            Utils.GetFanart(ref filenames, key, key2, category, false);
+            Utils.GetFanart(ref filenames, key, key2, category, subcategory, false);
             if (iFilePrev == -1)
               Utils.Shuffle(ref filenames);
 
-            SetCurrentSelectedImageNames(filenames, category);
+            SetCurrentSelectedImageNames(filenames, category, subcategory);
           }
 
           if (filenames != null)
@@ -394,7 +396,7 @@ namespace FanartHandler
           }
         }
         else
-          SetCurrentSelectedImageNames(null, category);
+          SetCurrentSelectedImageNames(null, category, subcategory);
       }
       catch (Exception ex)
       {
@@ -418,7 +420,7 @@ namespace FanartHandler
       PrevHoliday = -1;
       EmptyCurrHolidayProperties();
       Utils.EmptyAllImages(ref ListHoliday);
-      SetCurrentSelectedImageNames(null, Utils.Category.Holiday);
+      SetCurrentSelectedImageNames(null, Utils.Category.Holiday, Utils.SubCategory.None);
       IsSelectedHoliday = false;
     }
 
@@ -454,7 +456,7 @@ namespace FanartHandler
       RefreshTickCount = 0;
     }
 
-    public void RefreshRefreshTickCount()
+    public void ForceRefreshTickCount()
     {
       RefreshTickCount = Utils.MaxRefreshTickCount;
     }

@@ -220,11 +220,14 @@ namespace FanartHandler
     // Scrape
     public static string ScrapeInitial = "Initial Scrape";
     public static string ScrapeInitialFanart = "Scrape (Fanart.TV)";
+    public static string ScrapeInitialAnimated = "Scrape (Animated)";
     public static string ScrapeNowPlaying = "Now Playing Scrape";
     public static string ScrapeInitializing = "Initializing";
 
     // CleanUp
     public static string CleanupImages = "Cleanup images";
+    public static string CleanupFanartImages = "Cleanup images";
+    public static string CleanupAnimatedImages = "Cleanup images";
 
     // Delete 
     public static string DeleteMissing = "Delete missing entries";

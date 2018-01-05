@@ -12,8 +12,11 @@ using MediaPortal.Plugins.MovingPictures.Database;
 using FHNLog.NLog;
 
 using System;
+using System.Collections;
 using System.IO;
 using System.Runtime.CompilerServices;
+
+using MediaPortal.Video.Database;
 
 namespace FanartHandler
 {
@@ -66,6 +69,7 @@ namespace FanartHandler
 
         FanartHandlerSetup.Fh.AddToDirectoryTimerQueue("MovingPictures");
         // FanartHandlerSetup.Fh.AddToFanartTVTimerQueue(Utils.Category.FanartTVMovie);
+        // FanartHandlerSetup.Fh.AddToAnimatedTimerQueue(Utils.SubCategory.AnimatedMovie);
       }
       catch (Exception ex)
       {
@@ -86,7 +90,7 @@ namespace FanartHandler
         {
           return;
         }
-        var allFilenames = Utils.GetDbm().GetAllFilenames(Utils.Category.MovingPictureManual);
+        var allFilenames = Utils.GetDbm().GetAllFilenames(Utils.Category.MovingPicture, Utils.SubCategory.MovingPictureManual);
 
         using (var enumerator = all.GetEnumerator())
         {
@@ -100,7 +104,7 @@ namespace FanartHandler
             {
               if (File.Exists(backdropFullPath))
               {
-                Utils.GetDbm().LoadFanart(Utils.GetArtist(current.Title, Utils.Category.MovingPictureManual), null, ImdbID, null, backdropFullPath, backdropFullPath, Utils.Category.MovingPictureManual, Utils.Provider.MovingPictures);
+                Utils.GetDbm().LoadFanart(Utils.GetArtist(current.Title, Utils.Category.MovingPicture, Utils.SubCategory.MovingPictureManual), null, ImdbID, null, backdropFullPath, backdropFullPath, Utils.Category.MovingPicture, Utils.SubCategory.MovingPictureManual, Utils.Provider.MovingPictures);
               }
             }
 
@@ -109,7 +113,7 @@ namespace FanartHandler
             {
               if (File.Exists(backdropFullPath))
               {
-                Utils.GetDbm().LoadFanart(Utils.GetArtist(current.Title, Utils.Category.MovingPictureManual), null, ImdbID, null, backdropFullPath, backdropFullPath, Utils.Category.MovingPictureManual, Utils.Provider.MovingPictures);
+                Utils.GetDbm().LoadFanart(Utils.GetArtist(current.Title, Utils.Category.MovingPicture, Utils.SubCategory.MovingPictureManual), null, ImdbID, null, backdropFullPath, backdropFullPath, Utils.Category.MovingPicture, Utils.SubCategory.MovingPictureManual, Utils.Provider.MovingPictures);
               }
             }
           }
@@ -126,6 +130,59 @@ namespace FanartHandler
       catch (Exception ex)
       {
         logger.Error("GetMovingPicturesBackdrops: " + ex);
+      }
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    internal static void GetMovingPicturesMoviesList(ref ArrayList movies)
+    {
+      if (!Utils.MovingPicturesEnabled)
+        return;
+
+      try
+      {
+        var all = DBMovieInfo.GetAll();
+        if (all == null)
+        {
+          return;
+        }
+
+        using (var enumerator = all.GetEnumerator())
+        {
+          while (enumerator.MoveNext())
+          {
+            var current = enumerator.Current;
+            var ImdbID = string.IsNullOrEmpty(current.ImdbID) ? string.Empty : current.ImdbID.Trim().ToLowerInvariant().Replace("unknown", string.Empty);
+
+            if (!string.IsNullOrEmpty(ImdbID))
+            {
+              if (!Utils.GetIsStopping())
+              {
+                IMDBMovie details = new IMDBMovie();
+                details.ID = (int)current.ID;
+                details.IMDBNumber = ImdbID;
+                details.TMDBNumber = string.Empty;
+                details.Title = current.Title;
+                details.Year = current.Year;
+                movies.Add(details);
+              }
+              else
+              {
+                break;
+              }
+            }
+          }
+        }
+        if (all != null)
+          all.Clear();
+      }
+      catch (MissingMethodException ex)
+      {
+        logger.Debug("GetMovingPicturesMoviesList: Missing: " + ex);
+      }
+      catch (Exception ex)
+      {
+        logger.Error("GetMovingPicturesMoviesList: " + ex);
       }
     }
   }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- https://github.com/andrewjswan/mediaportal.images.genres/tree/master/genres/characters -->
 <characters>
     <character name="bond">007</character>
@@ -71,6 +71,18 @@
     <character name="spidey super stories">spider-man</character>
     <character name="blade">vampire</character>
     <character name="the 33">mine</character>
+    <character name="star wars">luke skywalker|darth vader|r2-d2|c3po|star wars rebel|star wars empire</character>
+    <character name="muppet">cookie-monster</character>
+    <character name="space odyssey">hal-9000</character>
+    <character name="warcraft">orc</character>
+    <character name="halloween">jack-o-lantern</character>
+    <character name="it">pennywise</character>
+    <character name="need for speed">steering-wheel</character>
+    <character name="furious">steering-wheel</character>
+    <character name="fast five">steering-wheel</character>
+    <character name="turbo-charged prelude">steering-wheel</character>
+    <character name="los bandoleros">steering-wheel</character>
+    <character name="legends of tomorrow">firestorm</character>
     <!-- RUSSIAN -->
     <character name="мост">bridge</character>
     <!-- GERMAN -->
