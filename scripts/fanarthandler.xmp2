@@ -424,6 +424,47 @@
           <Items />
         </Files>
       </GroupItem>
+      <GroupItem Name="Libraries">
+        <ParentGroup />
+        <DisplayName>Libraries</DisplayName>
+        <DefaulChecked>true</DefaulChecked>
+        <Description>Libraries</Description>
+        <Files>
+          <Items>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>NeverOverwrite</UpdateOption>
+              <LocalFileName>..\External\Newtonsoft.Json.dll</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{50f53661-d682-47cc-8271-d212a8aa3299}-Newtonsoft.Json.dll</ZipFileName>
+              <DestinationFilename>%Base%\Newtonsoft.Json.dll</DestinationFilename>
+            </FileItem>
+          </Items>
+        </Files>
+      </GroupItem>
+      <GroupItem Name="Scripts">
+        <ParentGroup />
+        <DisplayName>Scripts</DisplayName>
+        <DefaulChecked>true</DefaulChecked>
+        <Description>Scripts</Description>
+        <Files>
+          <Items>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\Scripts\Awards_EN.csscript</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{bc94c216-5695-46c3-9a97-a08479855ca5}-Awards_EN.csscript</ZipFileName>
+              <DestinationFilename>%Config%\FanartHandler\Scripts\Awards_EN.csscript</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Installer\Scripts\Awards_RU.csscript</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{9438b845-82d4-4ba7-9987-f7bf7d24901c}-Awards_RU.csscript</ZipFileName>
+              <DestinationFilename>%Config%\FanartHandler\Scripts\Awards_RU.csscript</DestinationFilename>
+            </FileItem>
+          </Items>
+        </Files>
+      </GroupItem>
     </Items>
   </Groups>
   <Sections>
@@ -752,10 +793,14 @@ ajs</Value>
        * push random images from selected folders
 
 </ExtensionDescription>
-    <VersionDescription>* Fix for Studios with /</VersionDescription>
+    <VersionDescription>Internal rework
+Internal DB rework
+Bug fixes
+Animated support
+And more</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-{VERSION}.MPE1</OnlineLocation>
-    <ReleaseDate>2017-11-21T15:04:24</ReleaseDate>
+    <ReleaseDate>2018-04-03T15:04:24</ReleaseDate>
     <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios</Tags>
     <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
     <Params>
@@ -1148,6 +1193,27 @@ ajs</Value>
         <LocalFileName>..\Installer\language\de.xml</LocalFileName>
         <ZipFileName>Installer{CopyFile}\{c61bbe6c-1c7e-497b-95e6-c810f35972c1}-de.xml</ZipFileName>
         <DestinationFilename>%Language%\FanartHandler\de.xml</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>NeverOverwrite</UpdateOption>
+        <LocalFileName>..\External\Newtonsoft.Json.dll</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{50f53661-d682-47cc-8271-d212a8aa3299}-Newtonsoft.Json.dll</ZipFileName>
+        <DestinationFilename>%Base%\Newtonsoft.Json.dll</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\Scripts\Awards_EN.csscript</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{bc94c216-5695-46c3-9a97-a08479855ca5}-Awards_EN.csscript</ZipFileName>
+        <DestinationFilename>%Config%\FanartHandler\Scripts\Awards_EN.csscript</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Installer\Scripts\Awards_RU.csscript</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{9438b845-82d4-4ba7-9987-f7bf7d24901c}-Awards_RU.csscript</ZipFileName>
+        <DestinationFilename>%Config%\FanartHandler\Scripts\Awards_RU.csscript</DestinationFilename>
       </FileItem>
       <FileItem InstallType="CopyFile" SystemFile="true" Modified="true">
         <Param1 />

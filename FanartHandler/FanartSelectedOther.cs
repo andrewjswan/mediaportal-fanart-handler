@@ -1,5 +1,5 @@
 // Type: FanartHandler.FanartSelectedOther
-// Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
+// Assembly: FanartHandler, Version=4.0.3.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 
 extern alias FHNLog;
@@ -203,6 +203,11 @@ namespace FanartHandler
         var album = string.Empty;
         var genre = Utils.GetProperty("#music.genre").Replace(" / ", "|").Replace(", ", "|");
         var discID = Utils.GetProperty("#music.discid");
+        var year = Utils.GetDecades(Utils.GetProperty("#music.year"));
+        if (!string.IsNullOrEmpty(year))
+        {
+          genre = year + "|" + genre;
+        }
         var SelectedItem = Utils.GetMusicArtistFromListControl(ref album);
 
         // logger.Debug("*** SelectedItem/CurrSelectedMusicArtist: "+SelectedItem+ "/"+CurrSelectedMusicArtist+ " Album/CurrSelectedMusicAlbum: "+album+"/"+CurrSelectedMusicAlbum);
@@ -540,7 +545,7 @@ namespace FanartHandler
 
             if (fa.RecordLabel.IsEmpty)
             {
-              fa.RecordLabel.SetRecordLabelFromDB(Utils.GetDbm().GetLabelIdNameForAlbum(fa.DBArtist, fa.DBAlbum));
+              fa.RecordLabel.SetRecordLabelFromDB(Utils.DBm.GetLabelIdNameForAlbum(fa.DBArtist, fa.DBAlbum));
             }
 
             string label = fa.RecordLabel.GetFileName();

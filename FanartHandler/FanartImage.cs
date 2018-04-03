@@ -1,5 +1,5 @@
 ﻿// Type: FanartHandler.FanartImage
-// Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
+// Assembly: FanartHandler, Version=4.0.3.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 
 namespace FanartHandler
@@ -135,7 +135,7 @@ namespace FanartHandler
 
           if (!HasMBID && !string.IsNullOrEmpty(DBArtist))
           {
-            Id = Utils.GetDbm().GetDBMusicBrainzID(DBArtist, null);
+            Id = Utils.DBm.GetDBMusicBrainzID(DBArtist, null);
           }
         }
         else
@@ -268,11 +268,11 @@ namespace FanartHandler
 
           if (!HasMBID && !string.IsNullOrEmpty(DBArtist) && !string.IsNullOrEmpty(DBAlbum))
           {
-            Id = Utils.GetDbm().GetDBMusicBrainzID(DBArtist, DBAlbum);
+            Id = Utils.DBm.GetDBMusicBrainzID(DBArtist, DBAlbum);
           }
           if (HasMBID)
           {
-            RecordLabel.SetRecordLabelFromDB(Utils.GetDbm().GetLabelIdNameForAlbum(Id));
+            RecordLabel.SetRecordLabelFromDB(Utils.DBm.GetLabelIdNameForAlbum(Id));
           }
         }
         else
@@ -300,11 +300,11 @@ namespace FanartHandler
 
           if (!HasMBID && !string.IsNullOrEmpty(DBArtist) && !string.IsNullOrEmpty(DBAlbum))
           {
-            Id = Utils.GetDbm().GetDBMusicBrainzID(DBArtist, DBAlbum);
+            Id = Utils.DBm.GetDBMusicBrainzID(DBArtist, DBAlbum);
           }
           if (HasMBID)
           {
-            RecordLabel.SetRecordLabelFromDB(Utils.GetDbm().GetLabelIdNameForAlbum(Id));
+            RecordLabel.SetRecordLabelFromDB(Utils.DBm.GetLabelIdNameForAlbum(Id));
           }
         }
         else
@@ -775,22 +775,49 @@ namespace FanartHandler
     }
   }
 
-  // *** Fanart Movie Collection Info
-  internal class FanartMovieCollectionInfo : FanartMovie
+  // *** Fanart Movie Collection
+  internal class FanartMovieCollection : FanartMovie
   {
-    public string Overview { get; set; }
-    public string Poster { get; set; }
-    public string Backdrop { get; set; }
+    public new string Title 
+    {
+      get
+      {
+        return base.Title;
+      }
+      set
+      {
+        if (!string.IsNullOrEmpty(value))
+        {
+          base.Title = value.Trim();
+          DBTitle = Utils.GetArtist(value, Utils.Category.Movie, Utils.SubCategory.MovieScraped);
+        }
+        else
+        {
+          base.Title = string.Empty;
+          DBTitle = string.Empty;
+        }
+      }
+    }
+    public string DBTitle { get; set; }
+
+    public bool HasTitle
+    {
+      get { return !string.IsNullOrEmpty(Title); }
+    }
 
     /// <summary>
-    /// Initializes a new instance of the FanartMovieCollectionInfo class.
+    /// Initializes a new instance of the FanartMovieCollection class.
     /// </summary>
-    public FanartMovieCollectionInfo() 
+    public FanartMovieCollection() 
       : base ()
     {
-      Overview = string.Empty;
-      Poster = string.Empty;
-      Backdrop = string.Empty;
+      Title = string.Empty;
+    }
+
+    public FanartMovieCollection(string title)
+      : base()
+    {
+      Title = title;
     }
   }
 

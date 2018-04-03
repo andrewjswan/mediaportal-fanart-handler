@@ -1,5 +1,5 @@
 ﻿// Type: FanartHandler.UtilsMyFilms
-// Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
+// Assembly: FanartHandler, Version=4.0.3.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 extern alias FHNLog;
 
@@ -34,7 +34,7 @@ namespace FanartHandler
 
       try
       {
-        var allFilenames = Utils.GetDbm().GetAllFilenames(Utils.Category.MyFilms, Utils.SubCategory.MyFilmsManual);
+        var allFilenames = Utils.DBm.GetAllFilenames(Utils.Category.MyFilms, Utils.SubCategory.MyFilmsManual);
         var movielist = new ArrayList();
 
         BaseMesFilms.GetMovies(ref movielist);
@@ -49,7 +49,7 @@ namespace FanartHandler
           {
             if (File.Exists(backdropFullPath))
             {
-              Utils.GetDbm().LoadFanart(Utils.GetArtist(current.Title, Utils.Category.MyFilms, Utils.SubCategory.MyFilmsManual), null, ImdbID, null, backdropFullPath, backdropFullPath, Utils.Category.MyFilms, Utils.SubCategory.MyFilmsManual, Utils.Provider.MyFilms);
+              Utils.DBm.LoadFanart(Utils.GetArtist(current.Title, Utils.Category.MyFilms, Utils.SubCategory.MyFilmsManual), null, ImdbID, null, backdropFullPath, backdropFullPath, Utils.Category.MyFilms, Utils.SubCategory.MyFilmsManual, Utils.Provider.MyFilms);
             }
           }
         }

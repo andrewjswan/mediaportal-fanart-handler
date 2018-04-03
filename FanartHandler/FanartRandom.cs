@@ -1,5 +1,5 @@
 ﻿// Type: FanartHandler.FanartRandom
-// Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
+// Assembly: FanartHandler, Version=4.0.3.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 
 extern alias FHNLog;
@@ -652,7 +652,7 @@ namespace FanartHandler
       {
         if (!Utils.GetIsStopping())
         {
-          Hashtable htAny = Utils.GetDbm().GetAnyFanart(category, subcategory);
+          Hashtable htAny = Utils.DBm.GetAnyFanart(category, subcategory);
           if (htAny != null)
           {
             if (htAny.Count > 0)
@@ -684,7 +684,7 @@ namespace FanartHandler
       {
         if (!Utils.GetIsStopping())
         {
-          Hashtable htAny = Utils.GetDbm().GetAnyLatestsFanart(category);
+          Hashtable htAny = Utils.DBm.GetAnyLatestsFanart(category);
           if (htAny != null)
           {
             if (htAny.Count > 0)
@@ -718,20 +718,20 @@ namespace FanartHandler
       // var stopwatch = System.Diagnostics.Stopwatch.StartNew();
       try
       {
-        Parallel.Invoke(() => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.Picture, Utils.SubCategory.PictureManual, FullUpdate); },
-                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.Movie, Utils.SubCategory.MovieManual, FullUpdate); },
-                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.Movie, Utils.SubCategory.MovieScraped, FullUpdate); },
-                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartManual, FullUpdate); },
-                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartScraped, FullUpdate); },
-                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.TVSeries, Utils.SubCategory.TVSeriesScraped, FullUpdate); },
-                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.MovingPicture, Utils.SubCategory.MovingPictureManual, FullUpdate); },
-                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.TV, Utils.SubCategory.TVManual, FullUpdate); },
-                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.Game, Utils.SubCategory.GameManual, FullUpdate); },
-                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.Sports, Utils.SubCategory.SportsManual, FullUpdate); },
-                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.Plugin, Utils.SubCategory.PluginManual, FullUpdate); },
-                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.MyFilms, Utils.SubCategory.MyFilmsManual, FullUpdate); }, 
-                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.ShowTimes, Utils.SubCategory.ShowTimesManual, FullUpdate); }, 
-                        () => { Utils.GetDbm().RefreshAnyFanart(Utils.Category.SpotLight, Utils.SubCategory.SpotLightScraped, FullUpdate); });
+        Parallel.Invoke(() => { Utils.DBm.RefreshAnyFanart(Utils.Category.Picture, Utils.SubCategory.PictureManual, FullUpdate); },
+                        () => { Utils.DBm.RefreshAnyFanart(Utils.Category.Movie, Utils.SubCategory.MovieManual, FullUpdate); },
+                        () => { Utils.DBm.RefreshAnyFanart(Utils.Category.Movie, Utils.SubCategory.MovieScraped, FullUpdate); },
+                        () => { Utils.DBm.RefreshAnyFanart(Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartManual, FullUpdate); },
+                        () => { Utils.DBm.RefreshAnyFanart(Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartScraped, FullUpdate); },
+                        () => { Utils.DBm.RefreshAnyFanart(Utils.Category.TVSeries, Utils.SubCategory.TVSeriesScraped, FullUpdate); },
+                        () => { Utils.DBm.RefreshAnyFanart(Utils.Category.MovingPicture, Utils.SubCategory.MovingPictureManual, FullUpdate); },
+                        () => { Utils.DBm.RefreshAnyFanart(Utils.Category.TV, Utils.SubCategory.TVManual, FullUpdate); },
+                        () => { Utils.DBm.RefreshAnyFanart(Utils.Category.Game, Utils.SubCategory.GameManual, FullUpdate); },
+                        () => { Utils.DBm.RefreshAnyFanart(Utils.Category.Sports, Utils.SubCategory.SportsManual, FullUpdate); },
+                        () => { Utils.DBm.RefreshAnyFanart(Utils.Category.Plugin, Utils.SubCategory.PluginManual, FullUpdate); },
+                        () => { Utils.DBm.RefreshAnyFanart(Utils.Category.MyFilms, Utils.SubCategory.MyFilmsManual, FullUpdate); }, 
+                        () => { Utils.DBm.RefreshAnyFanart(Utils.Category.ShowTimes, Utils.SubCategory.ShowTimesManual, FullUpdate); }, 
+                        () => { Utils.DBm.RefreshAnyFanart(Utils.Category.SpotLight, Utils.SubCategory.SpotLightScraped, FullUpdate); });
       }
       catch { }
       // stopwatch.Stop();
@@ -754,12 +754,12 @@ namespace FanartHandler
       // var stopwatch = System.Diagnostics.Stopwatch.StartNew();
       try
       {
-        Parallel.Invoke(() => { Utils.GetDbm().RefreshAnyLatestsFanart(Utils.Latests.Music, FullUpdate); },
-                        () => { Utils.GetDbm().RefreshAnyLatestsFanart(Utils.Latests.MvCentral, FullUpdate); },
-                        () => { Utils.GetDbm().RefreshAnyLatestsFanart(Utils.Latests.Movies, FullUpdate); },
-                        () => { Utils.GetDbm().RefreshAnyLatestsFanart(Utils.Latests.MovingPictures, FullUpdate); },
-                        () => { Utils.GetDbm().RefreshAnyLatestsFanart(Utils.Latests.TVSeries, FullUpdate); },
-                        () => { Utils.GetDbm().RefreshAnyLatestsFanart(Utils.Latests.MyFilms, FullUpdate); });
+        Parallel.Invoke(() => { Utils.DBm.RefreshAnyLatestsFanart(Utils.Latests.Music, FullUpdate); },
+                        () => { Utils.DBm.RefreshAnyLatestsFanart(Utils.Latests.MvCentral, FullUpdate); },
+                        () => { Utils.DBm.RefreshAnyLatestsFanart(Utils.Latests.Movies, FullUpdate); },
+                        () => { Utils.DBm.RefreshAnyLatestsFanart(Utils.Latests.MovingPictures, FullUpdate); },
+                        () => { Utils.DBm.RefreshAnyLatestsFanart(Utils.Latests.TVSeries, FullUpdate); },
+                        () => { Utils.DBm.RefreshAnyLatestsFanart(Utils.Latests.MyFilms, FullUpdate); });
       }
       catch { }
       // stopwatch.Stop();
@@ -1027,7 +1027,7 @@ namespace FanartHandler
 
     public void EmptyAllRandomProperties()
     {
-      if ((Utils.GetDbm().HtAnyFanart != null) && (Utils.GetDbm().HtAnyFanart.Count > 0))
+      if ((Utils.DBm.HtAnyFanart != null) && (Utils.DBm.HtAnyFanart.Count > 0))
       {
         return;
       }
@@ -1078,8 +1078,8 @@ namespace FanartHandler
     {
       if ((Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID) && (ControlImageVisible != 0))
       {
-        GUIControl.HideControl(Utils.iActiveWindow, 91919297);
-        GUIControl.HideControl(Utils.iActiveWindow, 91919298);
+        Utils.HideControl(Utils.iActiveWindow, 91919297);
+        Utils.HideControl(Utils.iActiveWindow, 91919298);
         DoShowImageOneRandom = true;
         ControlImageVisible = 0;
         // logger.Debug("*** Random hide all images - 91919297, 91919298");
@@ -1090,7 +1090,7 @@ namespace FanartHandler
     {
       if ((Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID) && (ControlVisible != 1))
       {
-        GUIControl.ShowControl(Utils.iActiveWindow, 91919299);
+        Utils.ShowControl(Utils.iActiveWindow, 91919299);
         ControlVisible = 1;
         // logger.Debug("*** Random fanart available - 91919299");
       }
@@ -1100,7 +1100,7 @@ namespace FanartHandler
     {
       if ((Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID) && (ControlVisible != 0))
       {
-        GUIControl.HideControl(Utils.iActiveWindow, 91919299);
+        Utils.HideControl(Utils.iActiveWindow, 91919299);
         ControlVisible = 0;
         // logger.Debug("*** Random fanart not available - 91919299");
       }
@@ -1110,8 +1110,8 @@ namespace FanartHandler
     {
       if (Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
       {
-        GUIControl.ShowControl(Utils.iActiveWindow, 91919297);
-        GUIControl.HideControl(Utils.iActiveWindow, 91919298);
+        Utils.ShowControl(Utils.iActiveWindow, 91919297);
+        Utils.HideControl(Utils.iActiveWindow, 91919298);
         DoShowImageOneRandom = false;
         ControlImageVisible = 1;
         // logger.Debug("*** Random show image 1 - 91919297");
@@ -1126,8 +1126,8 @@ namespace FanartHandler
     {
       if (Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
       {
-        GUIControl.ShowControl(Utils.iActiveWindow, 91919298);
-        GUIControl.HideControl(Utils.iActiveWindow, 91919297);
+        Utils.ShowControl(Utils.iActiveWindow, 91919298);
+        Utils.HideControl(Utils.iActiveWindow, 91919297);
         DoShowImageOneRandom = true;
         ControlImageVisible = 1;
         // logger.Debug("*** Random show image 2 - 91919298");

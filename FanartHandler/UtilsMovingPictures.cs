@@ -1,5 +1,5 @@
 ﻿// Type: FanartHandler.UtilsMovingPictures
-// Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
+// Assembly: FanartHandler, Version=4.0.3.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 
 extern alias FHNLog;
@@ -90,7 +90,7 @@ namespace FanartHandler
         {
           return;
         }
-        var allFilenames = Utils.GetDbm().GetAllFilenames(Utils.Category.MovingPicture, Utils.SubCategory.MovingPictureManual);
+        var allFilenames = Utils.DBm.GetAllFilenames(Utils.Category.MovingPicture, Utils.SubCategory.MovingPictureManual);
 
         using (var enumerator = all.GetEnumerator())
         {
@@ -104,7 +104,7 @@ namespace FanartHandler
             {
               if (File.Exists(backdropFullPath))
               {
-                Utils.GetDbm().LoadFanart(Utils.GetArtist(current.Title, Utils.Category.MovingPicture, Utils.SubCategory.MovingPictureManual), null, ImdbID, null, backdropFullPath, backdropFullPath, Utils.Category.MovingPicture, Utils.SubCategory.MovingPictureManual, Utils.Provider.MovingPictures);
+                Utils.DBm.LoadFanart(Utils.GetArtist(current.Title, Utils.Category.MovingPicture, Utils.SubCategory.MovingPictureManual), null, ImdbID, null, backdropFullPath, backdropFullPath, Utils.Category.MovingPicture, Utils.SubCategory.MovingPictureManual, Utils.Provider.MovingPictures);
               }
             }
 
@@ -113,7 +113,7 @@ namespace FanartHandler
             {
               if (File.Exists(backdropFullPath))
               {
-                Utils.GetDbm().LoadFanart(Utils.GetArtist(current.Title, Utils.Category.MovingPicture, Utils.SubCategory.MovingPictureManual), null, ImdbID, null, backdropFullPath, backdropFullPath, Utils.Category.MovingPicture, Utils.SubCategory.MovingPictureManual, Utils.Provider.MovingPictures);
+                Utils.DBm.LoadFanart(Utils.GetArtist(current.Title, Utils.Category.MovingPicture, Utils.SubCategory.MovingPictureManual), null, ImdbID, null, backdropFullPath, backdropFullPath, Utils.Category.MovingPicture, Utils.SubCategory.MovingPictureManual, Utils.Provider.MovingPictures);
               }
             }
           }

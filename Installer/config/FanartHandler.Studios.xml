@@ -162,6 +162,7 @@
   <studio name="Global Asylum The">Asylum</studio>
   <studio name="Global Asylum, The">Asylum</studio>
   <studio name="The Global Asylum">Asylum</studio>
+  <studio name="Amazon Studios">Amazon</studio>
   <studio name="Atlantic Film AB">Atlantic Film</studio>
   <studio name="Atlas Entertainment">Atlas Film</studio>
   <studio name="Atlas Film Company">Atlas Film</studio>
@@ -476,6 +477,12 @@
   <studio name="eleven a music company">Eleven</studio>
   <studio name="Elevenmedia">Eleven</studio>
   <studio name="Elfte Babelsberg Film">Babelsberg Film</studio>
+  <studio name="Toro Pictures El">El Toro</studio>
+  <studio name="Toro Pictures, El">El Toro</studio>
+  <studio name="Toro Pictures">El Toro</studio>
+  <studio name="ElToro">El Toro</studio>
+  <studio name="ElToro Pictures">El Toro</studio>
+  <studio name="El Toro Pictures">El Toro</studio>
   <studio name="Emmedia">EM Media</studio>
   <studio name="Emmett/Furla Films">Emmett Furla Films</studio>
   <studio name="End Game Productions Inc.">End Game</studio>
@@ -551,6 +558,7 @@
   <studio name="Gaumont Company">Gaumont</studio>
   <studio name="Gaumont International">Gaumont</studio>
   <studio name="Geffen Pictures">Geffen</studio>
+  <studio name="Genre Films">Kinberg Genre</studio>
   <studio name="Ghibli International">Ghibli</studio>
   <studio name="Ghost House">GhostHouse</studio>
   <studio name="GhostHouse Pictures">GhostHouse</studio>
@@ -625,6 +633,8 @@
   <studio name="Huahua Film &amp; Media Culture - Huahua Media">huahua</studio>
   <studio name="Huahua Film and Media Culture - Huahua Media">huahua</studio>
   <studio name="hulu presents">hulu</studio>
+  <studio name="Huayi Brothers">Huayi Brothers Media</studio>
+  <studio name="Huayi Brothers Pictures">Huayi Brothers Media</studio>
   <studio name="Hyde Park Entertainment">Hyde Park Films</studio>
   <studio name="Icelandic Filmcompany The">Icelandic Filmcompany</studio>
   <studio name="Icelandic Filmcompany, The">Icelandic Filmcompany</studio>
@@ -653,6 +663,8 @@
   <studio name="Infinite Frameworks Studios">Infinite Frameworks</studio>
   <studio name="Insight Film Studios">Insight Film Releasing</studio>
   <studio name="Intermedia Films">Intermedia</studio>
+  <studio name="Ingenious Film">Ingenious Media</studio>
+  <studio name="Ingenious Film Partners">Ingenious Media</studio>
   <studio name="ITI Film Studio">ITI</studio>
   <studio name="ITV News">ITV</studio>
   <studio name="ITV-1">ITV1</studio>
@@ -1329,9 +1341,6 @@
   <studio name="The Independent Film Channel">The Independent Film Channel</studio>
   <studio name="Independent Film Channel The">The Independent Film Channel</studio>
   <studio name="Independent Film Channel, The">The Independent Film Channel</studio>
-  <studio name="The Mark Gordon Company">The Mark Gordon Company</studio>
-  <studio name="Mark Gordon Company The">The Mark Gordon Company</studio>
-  <studio name="Mark Gordon Company, The">The Mark Gordon Company</studio>
   <studio name="The Mob Film Company">The Mob Film Company</studio>
   <studio name="Mob Film Company The">The Mob Film Company</studio>
   <studio name="Mob Film Company, The">The Mob Film Company</studio>
@@ -1536,6 +1545,9 @@
   <studio name="Walt Disney Studio Archives The">Walt Disney</studio>
   <studio name="Walt Disney Studio Archives, The">Walt Disney</studio>
   <studio name="The Walt Disney Studio Archives">Walt Disney</studio>
+  <studio name="Уолт Дисней">Walt Disney</studio>
+  <studio name="Уолт Дисней Компани">Walt Disney</studio>
+  <studio name="Уолт Дисней Компани СНГ">Walt Disney</studio>
   <studio name="Walt Disney Feature Animation">Walt Disney Animation Studios</studio>
   <studio name="Walt Disney Home Entertainment">Walt Disney Home Video</studio>
   <studio name="Walt Disney Animation Canada">Disney</studio>
@@ -1756,11 +1768,15 @@
   <studio name="Парадиз студия">Парадиз</studio>
   <studio name="Саспенс Філмс">Suspense Films</studio>
   <studio name="Гостелерадио">Госкино</studio>
+  <studio name="Дикий">Wild</studio>
   <studio name="Студия Горького">Киностудия Горького</studio>
   <studio name="Ідас філм">Idas Film</studio>
   <studio name="Идас филм">Idas Film</studio>
   <studio name="Идасом филм">Idas Film</studio>
   <studio name="Киностудия им. Горького">Киностудия Горького</studio>
+  <studio name="Киностудия им. М. Горького">Киностудия Горького</studio>
+  <studio name="Kinostudiya imeni Gorkogo">Киностудия Горького</studio>
+  <studio name="Kinostudiya imeni M. Gorkogo">Киностудия Горького</studio>
   <studio name="Тбилисская киностудия">Грузия-фильм</studio>
   <studio name="Третий Рим">3rome</studio>
   <studio name="КароПремьер">Каро-Премьер</studio>
@@ -1790,6 +1806,8 @@
   <studio name="Пиманов и партнеры">Пиманов</studio>
   <studio name="Пиманов Фильм">Пиманов</studio>
   <studio name="Pimanov Film">Пиманов</studio>
+  <studio name="Кинокомпания «Водород»">Кинокомпания Водород</studio>
+  <studio name="Кинокомпания &quot;Водород&quot;">Кинокомпания Водород</studio>
   <studio name="Кинокомпания Небо">Небо</studio>
   <studio name="Кинокомпания «Небо»">Небо</studio>
   <studio name="Кинокомпания &quot;Небо&quot;">Небо</studio>
@@ -1798,6 +1816,9 @@
   <studio name="Кинокомпания «Царь»">Царь</studio>
   <studio name="Кинокомпания &quot;Царь&quot;">Царь</studio>
   <studio name="Кинокомпания Царь Pictures">Царь</studio>
+  <studio name="КиноКластер">KinoKlaster</studio>
+  <studio name="Кино Кластер">KinoKlaster</studio>
+  <studio name="Kino Klaster">KinoKlaster</studio>
   <studio name="Царь Pictures">Царь</studio>
   <studio name="Czar Pictures">Царь</studio>
   <studio name="Марс Медиа Энтертейнмент">Марс Медиа</studio>
@@ -1818,6 +1839,8 @@
   <studio name="Студия Казахфильм">Казахфильм</studio>
   <studio name="Творческое объединение Экран">Экран</studio>
   <studio name="ТО Экран">Экран</studio>
+  <studio name="Телеканал «РОССИЯ 1»">Россия 1</studio>
+  <studio name="Телеканал &quot;РОССИЯ 1&quot;">Россия 1</studio>
   <studio name="Film.UA">Film UA</studio>
   <studio name="Central Partnership">Централ Партнершип</studio>
   <studio name="Централ Партнершип Classic">Централ Партнершип</studio>

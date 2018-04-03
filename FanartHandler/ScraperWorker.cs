@@ -1,5 +1,5 @@
 ﻿// Type: FanartHandler.ScraperWorker
-// Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
+// Assembly: FanartHandler, Version=4.0.3.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 
 extern alias FHNLog;
@@ -60,44 +60,50 @@ namespace FanartHandler
           if (Utils.DeleteMissing)
           {
             Utils.SetProperty("scraper.task", Translation.DeleteMissing);
-            logger.Info("Synchronised fanart database: Removed " + Utils.GetDbm().DeleteRecordsWhereFileIsMissing() + " entries.");
+            logger.Info("Synchronised fanart database: Removed " + Utils.DBm.DeleteRecordsWhereFileIsMissing() + " entries.");
           }
-          Utils.GetDbm().InitialScrape();
+          Utils.DBm.InitialScrape();
 
           if (Utils.FanartTVNeedDownload)
           {
             if (Utils.DeleteMissing)
             {
-              Utils.GetDbm().DeleteOldFanartTV();
+              Utils.DBm.DeleteOldFanartTV();
             }
-            Utils.GetDbm().InitialScrapeFanart();
+            Utils.DBm.InitialScrapeFanart();
           }
 
           if (Utils.AnimatedNeedDownload)
           {
             if (Utils.DeleteMissing)
             {
-              Utils.GetDbm().DeleteOldAnimated();
+              Utils.DBm.DeleteOldAnimated();
             }
-            Utils.GetDbm().InitialScrapeAnimated();
+            Utils.DBm.InitialScrapeAnimated();
           }
 
-          Utils.GetDbm().DeleteOldLabels();
+          Utils.DBm.DeleteOldLabels();
           
           if (Utils.CleanUpOldFiles)
           {
-            Utils.GetDbm().DeleteOldImages();
+            Utils.DBm.DeleteOldImages();
           }
 
           if (Utils.CleanUpFanart || Utils.CleanUpAnimation)
           {
-            Utils.GetDbm().DeleteExtraFanart();
+            Utils.DBm.DeleteExtraFanart();
           }
 
           if (Utils.GetArtistInfo || Utils.GetAlbumInfo)
           {
             logger.Debug("Run get Music Info in background ...");
-            System.Threading.ThreadPool.QueueUserWorkItem(delegate { Utils.GetDbm().GetMusicInfo(); }, null);
+            System.Threading.ThreadPool.QueueUserWorkItem(delegate { Utils.DBm.GetMusicInfo(); }, null);
+          }
+
+          if (Utils.GetMoviesAwards)
+          {
+            logger.Debug("Run get Movies Awards in background ...");
+            System.Threading.ThreadPool.QueueUserWorkItem(delegate { Utils.DBm.GetMoviesInfo(); }, null);
           }
 
           logger.Debug("Run Fanart Statistics in background ...");
@@ -116,14 +122,14 @@ namespace FanartHandler
               {
                 if (Utils.FanartTVNeedDownload)
                 {
-                  Utils.GetDbm().InitialScrapeFanart((Utils.SubCategory)vsParam);
+                  Utils.DBm.InitialScrapeFanart((Utils.SubCategory)vsParam);
                 }
               }
               if ((Utils.Category)vParam == Utils.Category.Animated && Enum.IsDefined(typeof(Utils.SubCategory), vsParam))
               {
                 if (Utils.AnimatedNeedDownload)
                 {
-                  Utils.GetDbm().InitialScrapeAnimated((Utils.SubCategory)vsParam);
+                  Utils.DBm.InitialScrapeAnimated((Utils.SubCategory)vsParam);
                 }
               }
             }

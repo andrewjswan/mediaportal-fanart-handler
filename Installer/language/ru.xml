@@ -27,6 +27,7 @@
   <string Field="FHArtists">Исполнители</string>
   <string Field="FHAlbums">Альбомы</string>
   <string Field="FHVideos">Видео</string>
+  <string Field="FHCollections">Коллекции фильмов</string>
   <string Field="FHSeries">Сериалы</string>
   <string Field="FHLabels">Лейблы звукозаписи</string>
 

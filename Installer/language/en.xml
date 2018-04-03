@@ -27,7 +27,9 @@
   <string Field="FHArtists">Artists</string>
   <string Field="FHAlbums">Albums</string>
   <string Field="FHVideos">Videos</string>
+  <string Field="FHCollections">Collections</string>
   <string Field="FHSeries">Series</string>
+  <string Field="FHLabels">Music Record Labels</string>
 
   <string Field="FHSlideshow">Fanart Handler Slideshow</string>
 

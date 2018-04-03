@@ -1,5 +1,5 @@
 // Type: FanartHandler.FanartSelectedOther
-// Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
+// Assembly: FanartHandler, Version=4.0.3.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 
 extern alias FHNLog;
@@ -509,8 +509,8 @@ namespace FanartHandler
     {
       if ((Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID) && (ControlImageVisible != 0))
       {
-        GUIControl.HideControl(Utils.iActiveWindow, 91919285);
-        GUIControl.HideControl(Utils.iActiveWindow, 91919286);
+        Utils.HideControl(Utils.iActiveWindow, 91919285);
+        Utils.HideControl(Utils.iActiveWindow, 91919286);
         DoShowImageOne = true;
         ControlImageVisible = 0;
         // logger.Debug("*** Hide all fanart [91919285,91919286]... ");
@@ -521,7 +521,7 @@ namespace FanartHandler
     {
       if ((Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID) && (ControlVisible != 1))
       {
-        GUIControl.ShowControl(Utils.iActiveWindow, 91919284);
+        Utils.ShowControl(Utils.iActiveWindow, 91919284);
         ControlVisible = 1;
         // logger.Debug("*** Show fanart [91919284]...");
       }
@@ -531,7 +531,7 @@ namespace FanartHandler
     {
       if ((Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID) && (ControlVisible != 0))
       {
-        GUIControl.HideControl(Utils.iActiveWindow, 91919284);
+        Utils.HideControl(Utils.iActiveWindow, 91919284);
         ControlVisible = 0;
         // logger.Debug("*** Hide fanart [91919284]...");
       }
@@ -541,8 +541,8 @@ namespace FanartHandler
     {
       if (Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
       {
-        GUIControl.ShowControl(Utils.iActiveWindow, 91919285);
-        GUIControl.HideControl(Utils.iActiveWindow, 91919286);
+        Utils.ShowControl(Utils.iActiveWindow, 91919285);
+        Utils.HideControl(Utils.iActiveWindow, 91919286);
         DoShowImageOne = false;
         ControlImageVisible = 1;
         // logger.Debug("*** First fanart [91919285] visible ...");
@@ -557,8 +557,8 @@ namespace FanartHandler
     {
       if (Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
       {
-        GUIControl.ShowControl(Utils.iActiveWindow, 91919286);
-        GUIControl.HideControl(Utils.iActiveWindow, 91919285);
+        Utils.ShowControl(Utils.iActiveWindow, 91919286);
+        Utils.HideControl(Utils.iActiveWindow, 91919285);
         DoShowImageOne = true;
         ControlImageVisible = 1;
         // logger.Debug("*** Second fanart [91919286] visible ...");

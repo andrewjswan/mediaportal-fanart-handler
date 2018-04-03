@@ -1,5 +1,5 @@
 ﻿// Type: FanartHandler.FanartPlaying
-// Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
+// Assembly: FanartHandler, Version=4.0.3.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 
 extern alias FHNLog;
@@ -516,8 +516,8 @@ namespace FanartHandler
     {
       if ((Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID) && (ControlImageVisible != 0))
       {
-        GUIControl.HideControl(Utils.iActiveWindow, 91919295);
-        GUIControl.HideControl(Utils.iActiveWindow, 91919296);
+        Utils.HideControl(Utils.iActiveWindow, 91919295);
+        Utils.HideControl(Utils.iActiveWindow, 91919296);
         DoShowImageOnePlay = true;
         ControlImageVisible = 0;
       }
@@ -527,7 +527,7 @@ namespace FanartHandler
     {
       if ((Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID) && (ControlVisible != 1))
       {
-        GUIControl.ShowControl(Utils.iActiveWindow, 91919294);
+        Utils.ShowControl(Utils.iActiveWindow, 91919294);
         ControlVisible = 1;
       }
     }
@@ -536,7 +536,7 @@ namespace FanartHandler
     {
       if ((Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID) && (ControlVisible != 0))
       {
-        GUIControl.HideControl(Utils.iActiveWindow, 91919294);
+        Utils.HideControl(Utils.iActiveWindow, 91919294);
         ControlVisible = 0;
       }
     }
@@ -545,8 +545,8 @@ namespace FanartHandler
     {
       if (Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
       {
-        GUIControl.ShowControl(Utils.iActiveWindow, 91919295);
-        GUIControl.HideControl(Utils.iActiveWindow, 91919296);
+        Utils.ShowControl(Utils.iActiveWindow, 91919295);
+        Utils.HideControl(Utils.iActiveWindow, 91919296);
         DoShowImageOnePlay = false;
         ControlImageVisible = 1;
       }
@@ -560,8 +560,8 @@ namespace FanartHandler
     {
       if (Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
       {
-        GUIControl.ShowControl(Utils.iActiveWindow, 91919296);
-        GUIControl.HideControl(Utils.iActiveWindow, 91919295);
+        Utils.ShowControl(Utils.iActiveWindow, 91919296);
+        Utils.HideControl(Utils.iActiveWindow, 91919295);
         DoShowImageOnePlay = true;
         ControlImageVisible = 1;
       }

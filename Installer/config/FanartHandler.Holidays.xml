@@ -25,6 +25,10 @@
 		<DayOfWeek>1</DayOfWeek>
 		<WeekOfMonth>3</WeekOfMonth>
 	</Holiday>
+	<Holiday name="World Beatles Day" shortname="Beatles">
+		<Month>1</Month>
+		<Day>16</Day>
+	</Holiday>
 	<Holiday name="Inauguration Day">
 		<Month>1</Month>
 		<Day>20</Day>
@@ -45,7 +49,7 @@
 		<Month>2</Month>
 		<Day>12</Day>
 	</Holiday>
-	<Holiday name="Valentine's Day"  shortname="Valentines">
+	<Holiday name="Valentine's Day" shortname="Valentines">
 		<Month>2</Month>
 		<Day>14</Day>
 		<NameRU>День святого Валентина</NameRU>
@@ -53,6 +57,11 @@
 	<Holiday name="Washington's Birthday (Traditional)">
 		<Month>2</Month>
 		<Day>22</Day>
+	</Holiday>
+	<Holiday name="Pi Day" shortname="PiDay">
+		<Month>3</Month>
+		<Day>14</Day>
+		<NameRU>День числа Пи</NameRU>
 	</Holiday>
 	<Holiday name="St. Patrick's Day" shortname="StPatricks">
 		<Month>3</Month>

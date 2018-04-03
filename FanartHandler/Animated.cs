@@ -1,5 +1,5 @@
 // Type: FanartHandler.Animated
-// Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
+// Assembly: FanartHandler, Version=4.0.3.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 
 extern alias FHNLog;
@@ -119,7 +119,7 @@ namespace FanartHandler
 
     public bool DownloadCatalog()
     {
-      if (File.Exists(CatalogFullFilename) && !Utils.GetDbm().NeedGetDummyInfo(Utils.Scrapper.ScrapeAnimated))
+      if (File.Exists(CatalogFullFilename) && !Utils.DBm.NeedGetDummyInfo(Utils.Scrapper.ScrapeAnimated))
       {
         return true;
       }
@@ -129,7 +129,7 @@ namespace FanartHandler
         WebClient wc = new WebClient();
         wc.DownloadFile(string.Format(AnimatedURL, CatalogFilename), CatalogFullFilename);
 
-        Utils.GetDbm().InsertDummyInfoItem(Utils.Scrapper.ScrapeAnimated);
+        Utils.DBm.InsertDummyInfoItem(Utils.Scrapper.ScrapeAnimated);
         logger.Debug("Animated: DownloadCatalog - Downloaded.");
         return true;
       }

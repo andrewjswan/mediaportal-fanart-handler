@@ -1,5 +1,5 @@
 ﻿// Type: FanartHandler.Translation
-// Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
+// Assembly: FanartHandler, Version=4.0.3.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 
 extern alias FHNLog;
@@ -240,6 +240,7 @@ namespace FanartHandler
     public static string FHArtists = "Artists";
     public static string FHAlbums = "Albums";
     public static string FHVideos = "Videos";
+    public static string FHCollections = "Collections";
     public static string FHSeries = "Series";
     public static string FHLabels = "Music Record Labels";
 

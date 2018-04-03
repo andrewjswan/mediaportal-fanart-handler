@@ -1,0 +1,636 @@
+﻿//css_reference "core.dll";
+//css_reference "utils.dll";
+//css_reference "Newtonsoft.Json.dll";
+//css_reference "plugins\process\FanartHandler.dll";
+
+using FanartHandler;
+
+using MediaPortal.GUI.Library;
+using MediaPortal.Util;
+
+using Newtonsoft.Json;
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text.RegularExpressions;
+using System.Web;
+
+internal class AwardsGrabber : Grabbers.Movies.IAwardsGrabber
+{
+  const string strGrabber = "FH:KP/IMDB";
+  const string strGrabberVersion = "20180227.I";
+
+  string Grabbers.Movies.IAwardsGrabber.GetName()
+  {
+    return "KP/IMDB Grabber v" + strGrabberVersion; 
+  }
+
+  string Grabbers.Movies.IAwardsGrabber.GetMovieAwards(string imdbid, string tmdbid, string localid)
+  {
+    if (string.IsNullOrEmpty(imdbid) && string.IsNullOrEmpty(localid))
+    {
+      return string.Empty;
+    }
+
+    string kinopoiskID = string.Empty;
+    if (!string.IsNullOrEmpty(localid))
+    {
+      // Get Kinopoisk ID from Local DB Id
+      string rx_pattern = @"KP(?<kpid>\d{3,})\b";
+      kinopoiskID = ParseSingleValue(localid, rx_pattern, "kpid", true);
+      if (!string.IsNullOrEmpty(kinopoiskID))
+      {
+        GrabbersLog.Debug("{0} Kinopoisk ID: Found {1}", strGrabber, kinopoiskID);
+      }
+    }
+    GrabbersLog.Info("{0} Version: {1}", strGrabber, strGrabberVersion);
+    GrabbersLog.Debug("{0} Get awards start: IMDBId {1}/{2}", strGrabber, imdbid, kinopoiskID);
+
+    string awards = string.Empty;
+    try
+    {
+      awards = GetKinopoiskAwards(kinopoiskID);
+      if (GRABBER_ADD_IMDBAWARDS || string.IsNullOrEmpty(awards))
+      {
+        string imdbAwards = GetAwardsIMDB(imdbid);
+        if (GRABBER_ADD_IMDBAWARDS && !string.IsNullOrEmpty(awards))
+        {
+          awards = awards + "\n\n" + imdbAwards;
+        }
+        else
+        {
+          awards = imdbAwards;
+        }
+      }
+    }
+    catch (Exception ex)
+    {
+      GrabbersLog.Error("{0} Exception for lookup of {1} err:{2}/{3} stack:{4}", strGrabber, imdbid, kinopoiskID, ex.Message, ex.StackTrace);
+      awards = string.Empty;
+    }
+
+    GrabbersLog.Debug("{0} Search ended. IMDBId {1}/{2}: found: {3}", strGrabber, imdbid, kinopoiskID, !string.IsNullOrEmpty(awards));
+    return awards;
+  }
+
+  #region GRABBER Parameters
+
+  public const bool GRABBER_ADD_IMDBAWARDS = true; // Add IMDB Awards bottom to Kinopoisk Awards
+
+  #endregion GRABBER Parameters
+
+  #region IMDB Parameters
+
+  private const string IMDB_BaseUrl = "http://www.imdb.com/title/{0}/";
+
+  #endregion IMDB Parameters
+
+  #region IMDB Const
+
+  public const string IMDB_Awards = IMDB_BaseUrl + "awards";
+
+  #endregion IMDB Const
+
+  #region Kinopoisk Parameters
+
+  private const string KP_BaseUrl = "https://ext.kinopoisk.ru/ios/5.0.0/";
+  private const string KP_Agent = "Android client(4.4 / api19), ru.kinopoisk/4.2.0 (55)";
+  private const string KP_Android = "19";
+  private const string KP_Plex = "2.0.0";
+
+  #endregion Kinopoisk Parameters
+
+  #region Kinopoisk Const
+
+  public const string KP_Awards = KP_BaseUrl + "getKPAwards?filmID=";
+
+  #endregion Kinopoisk Const
+
+  #region IMDB Methods
+
+  private static string GetAwardsIMDB(string IMDBID)
+  {
+    // Awards MP1-4846
+    try
+    {
+      string _awardsURL = string.Format(IMDB_Awards, IMDBID);
+      string _awardsPage = GetWebServerResponse(_awardsURL);
+      if (string.IsNullOrEmpty(_awardsPage))
+      {
+        return string.Empty;
+      }
+
+      string _awardsList = string.Empty;
+
+      string rx_awards_mainblock = @"<h3>(?<award>[^<]+?)<a href=..event[^>]+?class=.event_year[^>]+?>(?<awardyear>[^<]+?)<(?<block>[\s\S]+?)<\/table>";
+      string rx_awards_listWblock = @"<tr>[\s\S]+?>^(?!Nomin(?:ated|ee))|(W(?:on|inner))<\/b(?<block>[\s\S]+?)<\/tr";
+      string rx_awards_listNblock = @"<tr>[\s\S]+?>^(?!W(?:on|inner))|(Nomin(?:ated|ee))<\/b(?<block>[\s\S]+?)<\/tr";
+      string rx_awards_line = @"award_category.>(?<award>[^<]+?)<[\s\S]+?award_description.>(?<what>[^<]+?)(?:<br.?\/>)?(?<who><[\s\S]+?)<\/td>";
+      _awardsPage = HttpUtility.HtmlDecode(_awardsPage);
+
+      ArrayList awardsList = Parse(_awardsPage, rx_awards_mainblock);
+      if (awardsList != null && awardsList.Count > 0)
+      {
+        for (int i = 0; i < awardsList.Count; i++)
+        {
+          Hashtable awardMain = (Hashtable)awardsList[i];
+          string awardMainName = (string)awardMain["award"] + " " + (string)awardMain["awardyear"];
+          string awardMainBlock = (string)awardMain["block"];
+          awardMainName = awardMainName.Trim().Replace("\n", string.Empty);
+          awardMainName = Utils.stripHTMLtags(awardMainName);
+
+          if (!string.IsNullOrEmpty(awardMainBlock))
+          {
+            _awardsList = _awardsList + "* " + awardMainName + "\n";
+            // Winner
+            ArrayList awardsWList = Parse(awardMainBlock, rx_awards_listWblock);
+            if (awardsWList != null && awardsWList.Count > 0)
+            {
+              for (int k = 0; k < awardsWList.Count; k++)
+              {
+                Hashtable awardWMain = (Hashtable)awardsWList[k];
+                string awardWMainBlock = (string)awardWMain["block"];
+                if (!string.IsNullOrEmpty(awardWMainBlock))
+                {
+                  _awardsList = _awardsList + "Won:\n";
+                  ArrayList awardsWListLines = Parse(awardWMainBlock, rx_awards_line);
+                  if (awardsWListLines != null && awardsWListLines.Count > 0)
+                  {
+                    for (int j = 0; j < awardsWListLines.Count; j++)
+                    {
+                      Hashtable awardLine = (Hashtable)awardsWListLines[j];
+                      string awardLineName = (string)awardLine["award"];
+                      string awardLineWho = (string)awardLine["who"];
+                      string awardLineWhat = (string)awardLine["what"];
+                      if (!string.IsNullOrEmpty(awardLineName))
+                      {
+                        awardLineName = awardLineName.Trim().Replace("\n", string.Empty);
+                        awardLineName = Utils.stripHTMLtags(awardLineName);
+                        awardLineName = Regex.Replace(awardLineName, @"[ ]{2,}", " ").Trim();
+                      }
+                      else
+                      {
+                        awardLineName = string.Empty;
+                      }
+                      if (!string.IsNullOrEmpty(awardLineWho))
+                      {
+                        awardLineWho = awardLineWho.Trim().Replace("\n", string.Empty).Replace("</a>", ", ");
+                        awardLineWho = Utils.stripHTMLtags(awardLineWho);
+                        awardLineWho = Regex.Replace(awardLineWho, @"[ ]{2,}", " ").Trim();
+                      }
+                      else
+                      {
+                        awardLineWho = string.Empty;
+                      }
+                      if (!string.IsNullOrEmpty(awardLineWhat))
+                      {
+                        awardLineWhat = awardLineWhat.Trim().Replace("\n", string.Empty);
+                        awardLineWhat = Utils.stripHTMLtags(awardLineWhat);
+                        awardLineWhat = Regex.Replace(awardLineWhat, @"[ ]{2,}", " ").Trim();
+                      }
+                      else
+                      {
+                        awardLineWhat = string.Empty;
+                      }
+                      if (!string.IsNullOrEmpty(awardLineName))
+                      {
+                        _awardsList = _awardsList + "- " + awardLineName + (string.IsNullOrEmpty(awardLineWho) ? string.Empty : " - " + awardLineWho) + (string.IsNullOrEmpty(awardLineWhat) ? string.Empty : " - " + awardLineWhat) + "\n";
+                        GrabbersLog.Debug("{4} Award (W): {0} - {1} {2} {3}", awardMainName, awardLineName, awardLineWho, awardLineWhat, strGrabber);
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            // Nominate
+            ArrayList awardsNList = Parse(awardMainBlock, rx_awards_listNblock);
+            if (awardsNList != null && awardsNList.Count > 0)
+            {
+              for (int k = 0; k < awardsNList.Count; k++)
+              {
+                Hashtable awardNMain = (Hashtable)awardsNList[k];
+                string awardNMainBlock = (string)awardNMain["block"];
+                if (!string.IsNullOrEmpty(awardNMainBlock))
+                {
+                  _awardsList = _awardsList + "Nominated:\n";
+                  ArrayList awardsNListLines = Parse(awardNMainBlock, rx_awards_line);
+                  if (awardsNListLines != null && awardsNListLines.Count > 0)
+                  {
+                    for (int j = 0; j < awardsNListLines.Count; j++)
+                    {
+                      Hashtable awardLine = (Hashtable)awardsNListLines[j];
+                      string awardLineName = (string)awardLine["award"];
+                      string awardLineWho = (string)awardLine["who"];
+                      string awardLineWhat = (string)awardLine["what"];
+                      if (!string.IsNullOrEmpty(awardLineName))
+                      {
+                        awardLineName = awardLineName.Trim().Replace("\n", string.Empty);
+                        awardLineName = Utils.stripHTMLtags(awardLineName);
+                        awardLineName = Regex.Replace(awardLineName, @"[ ]{2,}", " ").Trim();
+                      }
+                      else
+                      {
+                        awardLineName = string.Empty;
+                      }
+                      if (!string.IsNullOrEmpty(awardLineWho))
+                      {
+                        awardLineWho = awardLineWho.Trim().Replace("\n", string.Empty).Replace("</a>", ", ");
+                        awardLineWho = Utils.stripHTMLtags(awardLineWho);
+                        awardLineWho = Regex.Replace(awardLineWho, @"[ ]{2,}", " ").Trim();
+                      }
+                      else
+                      {
+                        awardLineWho = string.Empty;
+                      }
+                      if (!string.IsNullOrEmpty(awardLineWhat))
+                      {
+                        awardLineWhat = awardLineWhat.Trim().Replace("\n", string.Empty);
+                        awardLineWhat = Utils.stripHTMLtags(awardLineWhat);
+                        awardLineWhat = Regex.Replace(awardLineWhat, @"[ ]{2,}", " ").Trim();
+                      }
+                      else
+                      {
+                        awardLineWhat = string.Empty;
+                      }
+                      if (!string.IsNullOrEmpty(awardLineName))
+                      {
+                        _awardsList = _awardsList + "- " + awardLineName + (string.IsNullOrEmpty(awardLineWho) ? string.Empty : " - " + awardLineWho) + (string.IsNullOrEmpty(awardLineWhat) ? string.Empty : " - " + awardLineWhat) + "\n";
+                        GrabbersLog.Debug("{4} Award (N): {0} - {1} {2} {3}", awardMainName, awardLineName, awardLineWho, awardLineWhat, strGrabber);
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      
+      if (!string.IsNullOrEmpty(_awardsList))
+      {
+        return "Awards:\n" + _awardsList; // MP1-4846
+      }
+    }
+    catch (Exception ex)
+    {
+      GrabbersLog.Error("{0} IMDB Script GetAwards error: {1}", strGrabber, ex.Message);
+    }
+    return string.Empty;
+  }
+
+  #endregion IMDB Methods
+
+  #region Kinopoisk Methods
+
+  private static string MakeKinopoiskUrl(string method, string query)
+  {
+    return method + Uri.EscapeDataString(query);
+  }
+
+  public static string GetKinopoiskAwards(string url)
+  {
+    if (string.IsNullOrEmpty(url))
+    {
+      return string.Empty;
+    }
+
+    string json = string.Empty;
+    try
+    {
+      string sRequest = MakeKinopoiskUrl(KP_Awards, url);
+      json = GetKinopoiskResponse(sRequest);
+    }
+    catch
+    {
+      json = string.Empty;
+    }
+
+    if (string.IsNullOrEmpty(json))
+    {
+      return string.Empty;
+    }
+
+    // GrabbersLog.Debug("{0} GetKinopoiskAwards url = {1}, sResponseDetails = {2}", strGrabber, url, json);
+    try
+    {
+      KPAwardsData AwardsData = JsonConvert.DeserializeObject<KPAwardsData>(json);
+      if (AwardsData == null || AwardsData.Data == null || AwardsData.Data.Awards == null || AwardsData.Data.Awards.Count <= 0)
+      {
+        return string.Empty;
+      }
+      string _awardsList = string.Empty; 
+      foreach (object award in AwardsData.Data.Awards)
+      {
+        string awardname = string.Empty;
+        string awardline = award.ToString();
+        string pattern = @"({[^""]+?"")([^""]+?)("":\s\[)";
+
+        Match match = Regex.Match(awardline, pattern, RegexOptions.IgnoreCase);
+        if (match.Success)
+        {
+          awardname = match.Groups[2].Value;
+          awardline = Regex.Replace(awardline, pattern, "$1awards$3");
+
+          KPAward kp_award = JsonConvert.DeserializeObject<KPAward>(awardline);
+          if (kp_award != null && kp_award.Awards != null && kp_award.Awards.Count > 0)
+          {
+            string strWon = string.Empty;
+            string strNom = string.Empty;
+
+            _awardsList = _awardsList + awardname + "\n"; 
+
+            foreach (KPAwardData awarddata in kp_award.Awards)
+            {
+              if (awarddata.IsNomination == 0)
+              {
+                strWon = strWon + "- " + awarddata.Title + (!string.IsNullOrEmpty(awarddata.SubTitle) ? " - " + awarddata.SubTitle : string.Empty) + "\n";
+                GrabbersLog.Debug("{0} Kinopoisk Award (W): {1} - {2} {3}", strGrabber, awardname, awarddata.Title, awarddata.SubTitle);
+              }
+              else
+              {
+                strNom = strNom + "- " + awarddata.Title + (!string.IsNullOrEmpty(awarddata.SubTitle) ? " - " + awarddata.SubTitle : string.Empty) + "\n";
+                GrabbersLog.Debug("{0} Kinopoisk Award (N): {1} - {2} {3}", strGrabber, awardname, awarddata.Title, awarddata.SubTitle);
+              }
+            }
+
+            if (!string.IsNullOrEmpty(strWon))
+            {
+              _awardsList = _awardsList + "Победитель:\n" + strWon;
+            }
+            if (!string.IsNullOrEmpty(strNom))
+            {
+              _awardsList = _awardsList + "Номинации:\n" + strNom;
+            }
+          }
+        }
+      }
+
+      if (!string.IsNullOrEmpty(_awardsList))
+      {
+        return "Награды:\n" + _awardsList;
+      }
+    }
+    catch { }
+
+    return string.Empty;
+  }
+
+  #endregion Kinopoisk Methods
+
+  #region Regex Parsers
+
+  private static string ParseSingleValue(string input, string pattern, string name, bool htmlDecode) 
+  {
+    string result = string.Empty;
+      
+    ArrayList values = Parse(input, pattern);
+    if (values.Count > 0) 
+    {
+      result = (string)((Hashtable)values[0])[name];
+    }
+    result = htmlDecode ? HttpUtility.HtmlDecode(result) : result;
+    return string.IsNullOrEmpty(result) ? string.Empty : result.Trim();
+  }
+
+  private static int ParseSingleIntValue(string input, string pattern, string name) 
+  {
+    int intValue = 0;
+    string value = ParseSingleValue(input, pattern, name, true);
+
+    if (!string.IsNullOrEmpty(value)) 
+    {
+      value = value.Replace(".", string.Empty);
+      value = value.Replace(",", string.Empty);
+      if (value.StartsWith("0x") || value.StartsWith("x")) 
+      {
+        int.TryParse(Regex.Replace(value, @"0?x", string.Empty), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out intValue);
+      } 
+      else 
+      {
+        int.TryParse(value, out intValue);
+      }
+    }
+    return intValue;
+  }
+
+  private static float ParseSingleFloatValue(string input, string pattern, string name) 
+  {
+    float floatValue = 0.0F;
+    string value = ParseSingleValue(input, pattern, name, true);
+    if (!string.IsNullOrEmpty(value)) 
+    {
+      value = value.Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
+      value = value.Replace(",", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
+      float.TryParse(value, out floatValue);
+    }
+    return floatValue;
+  }
+
+  private static ArrayList Parse(string input, string pattern)
+  {
+    ArrayList keyedMatches = new ArrayList();
+    try
+    {
+      Regex regEx = new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+      MatchCollection matches = regEx.Matches(input);
+
+      // write matches and groups to variables
+      foreach (Match currMatch in matches)
+      {
+        // store the groups in the match
+        if (currMatch.Groups.Count > 1)
+        {
+          Hashtable groupings = new Hashtable();
+          for (int i = 1; i < currMatch.Groups.Count; i++)
+          {
+            groupings.Add(regEx.GroupNameFromNumber(i), currMatch.Groups[i].Value.Trim());
+          }
+          keyedMatches.Add(groupings);
+        }
+      }
+    }
+    catch (Exception e)
+    {
+      GrabbersLog.Error("{0}: Regex expression failed! Exception: {1}", strGrabber, e.Message);
+      GrabbersLog.Error(e);
+    }
+    return keyedMatches;
+  }
+
+  #endregion
+
+  #region Web
+
+  private static string GetWebServerResponse(string srequest)
+  {
+    GrabbersLog.Debug("{0} GetWebServerResponse: {1}", strGrabber, srequest);
+    string sReturn = string.Empty;
+    System.Net.HttpWebRequest oHttpWebRequest;
+    try
+    {
+      oHttpWebRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(srequest);
+      oHttpWebRequest.Timeout = 5000;
+      oHttpWebRequest.Method = System.Net.WebRequestMethods.Http.Get;
+      string uu = "BCYmcFe4PTBQ8nEoIcCgT5AJwPk7BAOCg5XsQrvqKyvxEUpEB6KqjE0Uv_pqnPChVCCnD8vgTK3UtK7FGCdw39E2j-Fb5MWegRLgbNA2rFWeYUJbbXhRyUaxqGuuW3AZb1grBhmGMxhDJyH5ntFDj1X1Ejh_jqR6BaQUk6P16AN1EMPstTSBIqxVW08QEqMKQgsK75y8_s1Ss9tyDfZpLZzCWhO5qftGUn3_bbw_DBF6sTZDo6xK-zy88VZ8cws-D30P";
+      string id = "BCYobsJMWRwG55i2yGvVuZe7v5twryi7KSxLglDHw2wVcI1rMq0OjHVT7duPo5NNHKDDVFBTVjJM4PoMonlTB_q9NvMCs-wB78Y1hGjdgCLX0SEEC2Y6BD4E3Z6cIoMwlhTDFSprYlxMqjEsFGYwWzVp1oIUYkZQ0kgpX_MvBrEh-fU";
+      string cookieHeader = string.Format("uu={0}; id={1}", uu, id);
+      oHttpWebRequest.Headers.Add("Cookie", cookieHeader);
+      oHttpWebRequest.Headers.Add("Accept-Language", "en-US,en;q=0.5");
+      System.Net.HttpWebResponse oResponse = (System.Net.HttpWebResponse)oHttpWebRequest.GetResponse();
+
+      using (System.IO.StreamReader sr = new System.IO.StreamReader(oResponse.GetResponseStream()))
+      {
+        sReturn = sr.ReadToEnd();
+      }
+      oResponse.Close();
+    }
+    catch { }
+    finally
+    {
+      oHttpWebRequest = null;
+    }
+    return sReturn;
+  }
+
+  private static string GetKinopoiskResponse(string url)
+  {
+    // GrabbersLog.Debug("{0} GetKinopoiskResponse: {1}", strGrabber, url);
+
+    string plexurl = "http://plex.filmingdata.com/reqh";
+    string plexxs = string.Empty;
+    string plexxt = string.Empty;
+
+    System.Net.HttpWebRequest webRequest;
+    try
+    {
+      webRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(plexurl);
+      webRequest.Headers.Clear();
+      webRequest.Timeout = 5000;
+      webRequest.Method = System.Net.WebRequestMethods.Http.Head;
+
+      webRequest.Headers.Add("Pragma", "no-cache");
+      webRequest.Headers.Add("Cache-Control", "no-cache");
+
+      webRequest.Headers.Add("X-Kinopoisk-Url", url);
+      webRequest.Headers.Add("X-Server-ID", KP_Plex);
+      using (System.Net.WebResponse webResponse = webRequest.GetResponse())
+      {
+        plexxs = webResponse.Headers["x-signature"];
+        plexxt = webResponse.Headers["x-timestamp"];
+        webResponse.Close();
+      }
+    }
+    catch
+    {
+      plexxs = string.Empty;
+      plexxt = string.Empty;
+    }
+    finally
+    {
+      webRequest = null;
+    }
+    // GrabbersLog.Debug("{0} GetKinopoiskResponse: {1} - {2}", strGrabber, plexxs, plexxt);
+
+    if (string.IsNullOrEmpty(plexxs) || string.IsNullOrEmpty(plexxt))
+    {
+      return string.Empty;
+    }
+
+    string sReturn = string.Empty;
+    System.Net.HttpWebRequest oHttpWebRequest;
+    try
+    {
+      oHttpWebRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(url);
+      oHttpWebRequest.Headers.Clear();
+      oHttpWebRequest.Timeout = 5000;
+      oHttpWebRequest.Method = System.Net.WebRequestMethods.Http.Get;
+
+      oHttpWebRequest.Accept = "application/json";
+      oHttpWebRequest.UserAgent = KP_Agent;
+
+      oHttpWebRequest.Headers.Add("device", "android");
+      oHttpWebRequest.Headers.Add("Android-Api-Version", KP_Android);
+
+      // oHttpWebRequest.Headers.Add("Image-Scale", "1");
+      // oHttpWebRequest.Headers.Add("countryID", "2");
+      // oHttpWebRequest.Headers.Add("cityID", "1");
+      // oHttpWebRequest.Headers.Add("Content-Lang", API_LANG_URL);
+
+      string cd = DateTime.Now.ToString("HH:mm dd.MM.yyyy");
+      oHttpWebRequest.Headers.Add("clientDate", cd);
+
+      oHttpWebRequest.Headers.Add("X-SIGNATURE", plexxs);
+      oHttpWebRequest.Headers.Add("X-TIMESTAMP", plexxt);
+
+      System.Net.HttpWebResponse oResponse = (System.Net.HttpWebResponse)oHttpWebRequest.GetResponse();
+
+      using (System.IO.StreamReader sr = new System.IO.StreamReader(oResponse.GetResponseStream()))
+      {
+        sReturn = sr.ReadToEnd();
+      }
+      oResponse.Close();
+    }
+    catch (Exception ex)
+    {
+      GrabbersLog.Debug("{0} GetKinopoiskResponse: Exception: {1}", strGrabber, ex);
+    }
+    finally
+    {
+      oHttpWebRequest = null;
+    }
+    return sReturn;
+  }
+
+  #endregion Web
+
+  #region Kinopoisk API Struct
+
+  public class KPAwardsData
+  {
+    [JsonProperty("resultCode")]
+    public int ResultCode { get; set; }
+
+    [JsonProperty("message")]
+    public string Message { get; set; }
+
+    [JsonProperty("data")]
+    public KPAwardsLine Data { get; set; }
+  }
+
+  public class KPAwardsLine
+  {
+    [JsonProperty("class")]
+    public string Class { get; set; }
+
+    [JsonProperty("items")]
+    public List<object> Awards { get; set; }
+  }
+
+  public class KPAward
+  {
+    [JsonProperty("awards")]
+    public List<KPAwardData> Awards { get; set; }
+  }
+
+  public class KPAwardData
+  {
+    [JsonProperty("title")]
+    public string Title { get; set; }
+
+    [JsonProperty("image")]
+    public string Image { get; set; }
+
+    [JsonProperty("subTitle")]
+    public string SubTitle { get; set; }
+
+    [JsonProperty("peopleID")]
+    public string PeopleId { get; set; }
+
+    [JsonProperty("isNomination")]
+    public int IsNomination { get; set; }
+  }
+
+  #endregion Kinopoisk API Struct
+}

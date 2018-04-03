@@ -1,5 +1,5 @@
 // Type: FanartHandler.FanartSelected
-// Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
+// Assembly: FanartHandler, Version=4.0.3.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 
 extern alias FHNLog;
@@ -305,6 +305,13 @@ namespace FanartHandler
             }
 
             newFanart = GetFilename(SelectedItem, album, ref CurrSelectedMusic, ref PrevSelectedMusic, Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartScraped, flag, true);
+            // UserDef 
+            /*
+            if (newFanart.Length == 0)
+            {
+              newFanart = GetFilename(Utils.GetGenres(genre), null, ref CurrSelectedMusic, ref PrevSelectedMusic, Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartManual, flag, true);
+            }
+            */
             // Genre
             if (newFanart.Length == 0 && !string.IsNullOrEmpty(genre) && Utils.UseGenreFanart)
             {
@@ -979,8 +986,8 @@ namespace FanartHandler
     {
       if ((Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID) && (ControlImageVisible != 0))
       {
-        GUIControl.HideControl(Utils.iActiveWindow, 91919291);
-        GUIControl.HideControl(Utils.iActiveWindow, 91919292);
+        Utils.HideControl(Utils.iActiveWindow, 91919291);
+        Utils.HideControl(Utils.iActiveWindow, 91919292);
         DoShowImageOne = true;
         ControlImageVisible = 0;
         // logger.Debug("*** Hide all fanart [91919291,91919292]... ");
@@ -991,7 +998,7 @@ namespace FanartHandler
     {
       if ((Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID) && (ControlVisible != 1))
       {
-        GUIControl.ShowControl(Utils.iActiveWindow, 91919293);
+        Utils.ShowControl(Utils.iActiveWindow, 91919293);
         ControlVisible = 1;
         // logger.Debug("*** Show fanart [91919293]...");
       }
@@ -1001,7 +1008,7 @@ namespace FanartHandler
     {
       if ((Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID) && (ControlVisible != 0))
       {
-        GUIControl.HideControl(Utils.iActiveWindow, 91919293);
+        Utils.HideControl(Utils.iActiveWindow, 91919293);
         ControlVisible = 0;
         // logger.Debug("*** Hide fanart [91919293]...");
       }
@@ -1011,8 +1018,8 @@ namespace FanartHandler
     {
       if (Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
       {
-        GUIControl.ShowControl(Utils.iActiveWindow, 91919291);
-        GUIControl.HideControl(Utils.iActiveWindow, 91919292);
+        Utils.ShowControl(Utils.iActiveWindow, 91919291);
+        Utils.HideControl(Utils.iActiveWindow, 91919292);
         DoShowImageOne = false;
         ControlImageVisible = 1;
         // logger.Debug("*** First fanart [91919291] visible ...");
@@ -1027,8 +1034,8 @@ namespace FanartHandler
     {
       if (Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
       {
-        GUIControl.ShowControl(Utils.iActiveWindow, 91919292);
-        GUIControl.HideControl(Utils.iActiveWindow, 91919291);
+        Utils.ShowControl(Utils.iActiveWindow, 91919292);
+        Utils.HideControl(Utils.iActiveWindow, 91919291);
         DoShowImageOne = true;
         ControlImageVisible = 1;
         // logger.Debug("*** Second fanart [91919292] visible ...");

@@ -1,5 +1,5 @@
 ﻿// Type: FanartHandler.FanartHandler
-// Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
+// Assembly: FanartHandler, Version=4.0.3.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
  
 extern alias FHNLog;
@@ -38,6 +38,8 @@ namespace FanartHandler
     private Utils.Priority fhThreadPriority = Utils.Priority.Lowest;
     private const string LogFileName = "FanartHandler.log";
     private const string OldLogFileName = "FanartHandler.bak";
+
+    private static readonly object Locker = new object();
 
     internal int SyncPointDirectory;
     internal int SyncPointRefresh;
@@ -651,7 +653,7 @@ namespace FanartHandler
 
     private void InitLogger()
     {
-      var loggingConfiguration = LogManager.Configuration ?? new LoggingConfiguration();
+      LoggingConfiguration loggingConfiguration = LogManager.Configuration ?? new LoggingConfiguration();
       try
       {
         var fileInfo = new FileInfo(Config.GetFile((Config.Dir)1, LogFileName));
@@ -665,37 +667,41 @@ namespace FanartHandler
       }
       catch { }
 
-      var fileTarget = new FileTarget()
+      FileTarget fileTarget = new FileTarget()
       {
         FileName = Config.GetFile((Config.Dir)1, LogFileName),
+        Name = "fanart-handler",
         Encoding = "utf-8",
         Layout = "${date:format=dd-MMM-yyyy HH\\:mm\\:ss} ${level:fixedLength=true:padding=5} [${logger:fixedLength=true:padding=20:shortName=true}]: ${message} ${exception:format=tostring}"
       };
-
       loggingConfiguration.AddTarget("fanart-handler", fileTarget);
 
-      var settings = new Settings(Config.GetFile((Config.Dir) 10, "MediaPortal.xml"));
-      var str = settings.GetValue("general", "ThreadPriority");
+      Settings settings = new Settings(Config.GetFile((Config.Dir) 10, "MediaPortal.xml"));
+      string str = settings.GetValue("general", "ThreadPriority");
       FHThreadPriority = str == null || !str.Equals("Normal", StringComparison.CurrentCulture) ? (str == null || !str.Equals("BelowNormal", StringComparison.CurrentCulture) ? Utils.Priority.BelowNormal : Utils.Priority.Lowest) : Utils.Priority.Lowest;
 
-      LogLevel minLevel;
+      LogLevel logLevel;
       switch ((int) (Level) settings.GetValueAsInt("general", "loglevel", 0))
       {
         case 0:
-          minLevel = LogLevel.Error;
+          logLevel = LogLevel.Error;
           break;
         case 1:
-          minLevel = LogLevel.Warn;
+          logLevel = LogLevel.Warn;
           break;
         case 2:
-          minLevel = LogLevel.Info;
+          logLevel = LogLevel.Info;
           break;
         default:
-          minLevel = LogLevel.Debug;
+          logLevel = LogLevel.Debug;
           break;
       }
+      #if DEBUG
+      logLevel = LogLevel.Debug;
+      #endif
 
-      var loggingRule = new LoggingRule("*", minLevel, fileTarget);
+      // var loggingRule = new LoggingRule("*", logLevel, fileTarget);
+      LoggingRule loggingRule = new LoggingRule("FanartHandler.*", logLevel, fileTarget);
       loggingConfiguration.LoggingRules.Add(loggingRule);
 
       LogManager.Configuration = loggingConfiguration;
@@ -710,7 +716,7 @@ namespace FanartHandler
         //
         InitLogger();
         //
-        logger.Info("Fanart Handler is starting.");
+        logger.Info("Fanart Handler is starting...");
         logger.Info("Fanart Handler version is " + Utils.GetAllVersionNumber());
         //
         Translation.Init();
@@ -806,12 +812,14 @@ namespace FanartHandler
         Utils.InitiateDbm(Utils.DB.Start);
         Utils.StopScraper = false;
         Utils.StopScraperInfo = false;
+        Utils.StopScraperMovieInfo = false;
         //
         AddToDirectoryTimerQueue("All");
         //
         SystemEvents.PowerModeChanged += new PowerModeChangedEventHandler(OnSystemPowerModeChanged);
         //
         GUIWindowManager.OnActivateWindow += new GUIWindowManager.WindowActivationHandler(GuiWindowManagerOnActivateWindow);
+        GUIWindowManager.OnDeActivateWindow += new GUIWindowManager.WindowActivationHandler(GuiWindowManagerOnDeActivateWindow);
         GUIWindowManager.Receivers += new SendMessageHandler(GUIWindowManager_OnNewMessage);
         //
         g_Player.PlayBackStarted += new g_Player.StartedHandler(OnPlayBackStarted);
@@ -846,15 +854,15 @@ namespace FanartHandler
         HideDummyControls();
         InitRandomProperties();
         //
-        logger.Info("Fanart Handler is started.");
         logger.Debug("Current Culture: {0}", CultureInfo.CurrentCulture.Name);
+        logger.Info("Fanart Handler is started.");
       }
       catch (Exception ex)
       {
         logger.Error("Start: " + ex);
       }
       Utils.iActiveWindow = GUIWindowManager.ActiveWindow;
-      GuiWindowManagerOnActivateWindow(Utils.iActiveWindow);
+      System.Threading.ThreadPool.QueueUserWorkItem(delegate { OnActivateTask(Utils.iActiveWindow); }, null);
     }
 
     private void SetupConfigFile()
@@ -917,6 +925,11 @@ namespace FanartHandler
 
     private void GUIWindowManager_OnNewMessage(GUIMessage message)
     {
+      System.Threading.ThreadPool.QueueUserWorkItem(delegate { OnMessageTasks(message); }, null);
+    }
+
+    private void OnMessageTasks(GUIMessage message)
+    {
       switch (message.Message)
       {
         case GUIMessage.MessageType.GUI_MSG_VIDEOINFO_REFRESH:
@@ -967,8 +980,8 @@ namespace FanartHandler
           if (e.Mode != PowerModes.Suspend)
             return;
           logger.Info("Fanart Handler: is suspending/hibernating...");
-          if (Utils.GetDbm() != null)
-            Utils.GetDbm().Close();
+          if (Utils.DBm != null)
+            Utils.DBm.Close();
           // StopTasks(true);
           FPlayOther.PicturesCache = null;
           FSelectedOther.PicturesCache = null;
@@ -1140,7 +1153,7 @@ namespace FanartHandler
       {
         System.Threading.ThreadPool.QueueUserWorkItem(delegate { FRandom.RefreshRandomFilenames(); }, null);
         System.Threading.ThreadPool.QueueUserWorkItem(delegate { FRandom.RefreshRandomLatestsFilenames(); }, null);
-        System.Threading.ThreadPool.QueueUserWorkItem(delegate { Utils.GetDbm().UpdateWidthHeightRatio(); }, null);
+        System.Threading.ThreadPool.QueueUserWorkItem(delegate { Utils.DBm.UpdateWidthHeightRatio(); }, null);
       }
       catch { }
     }
@@ -1151,16 +1164,37 @@ namespace FanartHandler
 
       try
       {
-        ForceRefreshTickCount();
-        ClearCurrProperties();
-        CheckRefreshTimer();
-
-        NeedRefreshQueue = true;
-        RefreshTimerQueue();
+        logger.Debug("Activate Window: " + Utils.sActiveWindow) ;
+        System.Threading.ThreadPool.QueueUserWorkItem(delegate { OnActivateTask(activeWindowId); }, null);
       }
       catch (Exception ex)
       {
         logger.Error("GuiWindowManagerOnActivateWindow: " + ex);
+      }
+    }
+    
+    internal void GuiWindowManagerOnDeActivateWindow(int deActiveWindowId)
+    {
+      Utils.iActiveWindow = (int)GUIWindow.Window.WINDOW_INVALID;
+    }
+
+    internal void OnActivateTask(int activeWindowId)
+    {
+      try
+      {
+        lock (Locker)
+        {
+          ForceRefreshTickCount();
+          ClearCurrProperties();
+          CheckRefreshTimer();
+
+          NeedRefreshQueue = true;
+          RefreshTimerQueue();
+        }
+      }
+      catch (Exception ex)
+      {
+        logger.Error("OnActivateTask: " + ex);
       }
     }
 
@@ -1319,10 +1353,12 @@ namespace FanartHandler
       try
       {
         Utils.SetIsStopping(true);
-        if (Utils.GetDbm() != null)
+        if (Utils.DBm != null)
           Utils.StopScraper = true;
-        if (Utils.GetDbm() != null)
+        if (Utils.DBm != null)
           Utils.StopScraperInfo = true;
+        if (Utils.DBm != null)
+          Utils.StopScraperMovieInfo = true;
 
         try
         {
@@ -1337,6 +1373,7 @@ namespace FanartHandler
 
         // ISSUE: method pointer
         GUIWindowManager.OnActivateWindow -= new GUIWindowManager.WindowActivationHandler(GuiWindowManagerOnActivateWindow);
+        GUIWindowManager.OnDeActivateWindow -= new GUIWindowManager.WindowActivationHandler(GuiWindowManagerOnDeActivateWindow);
         GUIWindowManager.Receivers -= new SendMessageHandler(GUIWindowManager_OnNewMessage);
         g_Player.PlayBackStarted -= new g_Player.StartedHandler(OnPlayBackStarted);
         g_Player.PlayBackEnded -= new g_Player.EndedHandler(OnPlayBackEnded);
@@ -1405,8 +1442,8 @@ namespace FanartHandler
           MyDefaultBackdropWorker.CancelAsync();
           MyDefaultBackdropWorker.Dispose();
         }
-        if (Utils.GetDbm() != null)
-          Utils.GetDbm().Close();
+        if (Utils.DBm != null)
+          Utils.DBm.Close();
 
         if (FPlay != null)
           FPlay.EmptyAllPlayImages();
@@ -1456,7 +1493,7 @@ namespace FanartHandler
     {
       if (Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
       {
-        GUIControl.ShowControl(Utils.iActiveWindow, 91919280);
+        Utils.ShowControl(Utils.iActiveWindow, 91919280);
       }
     }
 
@@ -1464,7 +1501,7 @@ namespace FanartHandler
     {
       if (Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
       {
-        GUIControl.HideControl(Utils.iActiveWindow, 91919280);
+        Utils.HideControl(Utils.iActiveWindow, 91919280);
       }
       EmptyGlobalProperties();
     }

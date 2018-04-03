@@ -1,5 +1,5 @@
 // Type: FanartHandler.FanartHandlerConfig
-// Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
+// Assembly: FanartHandler, Version=4.0.3.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 
 extern alias FHNLog;
@@ -190,6 +190,14 @@ namespace FanartHandler
     private CheckBox checkBoxAnimatedBackground;
     private CheckBox checkBoxAnimatedPoster;
     private CheckBox checkBoxSpotLight;
+    private GroupBox groupBoxCollection;
+    private CheckBox checkBoxCollectionBackground;
+    private CheckBox checkBoxCollectionPoster;
+    private CheckBox checkBoxUseTheMovieDB;
+    private CheckBox checkBoxCollectionCDArtDownload;
+    private CheckBox checkBoxCollectionClearLogoDownload;
+    private CheckBox checkBoxCollectionBannerDownload;
+    private CheckBox checkBoxCollectionClearArtDownload;
     private Button button12;
 
     static FanartHandlerConfig()
@@ -215,7 +223,7 @@ namespace FanartHandler
         StopScraper();
         Utils.StopScraperInfo = true;
         StopThumbScraper("True");
-        Utils.GetDbm().Close();
+        Utils.DBm.Close();
       }
       catch { }
       if (disposing && components != null)
@@ -247,7 +255,7 @@ namespace FanartHandler
       set { toolStripStatusLabelToolTip.Text = value; }
     }
 
-    private void UpdateProgressBars(bool Fanart, bool Init, bool Full = false) 
+    private void UpdateProgressBars(bool Fanart, bool Init, bool Full = false)
     {
       if (Fanart)
       {
@@ -294,9 +302,9 @@ namespace FanartHandler
         toolStripProgressBar.Value = progressBarThumbs.Value;
       }
 
-      toolStripStatusLabelToolTip.Text = string.IsNullOrEmpty(Utils.GetDbm().CurrTextBeingScraped) ? "-" : Utils.GetDbm().CurrTextBeingScraped.Replace("&","&&").Trim();
+      toolStripStatusLabelToolTip.Text = string.IsNullOrEmpty(Utils.DBm.CurrTextBeingScraped) ? "-" : Utils.DBm.CurrTextBeingScraped.Replace("&", "&&").Trim();
       int i = Utils.Percent(toolStripProgressBar.Value, toolStripProgressBar.Maximum);
-      toolStripStatusLabel.Text = (i == 0) ? "-" : i.ToString()+"%";
+      toolStripStatusLabel.Text = (i == 0) ? "-" : i.ToString() + "%";
       statusStrip.Refresh();
     }
 
@@ -305,24 +313,24 @@ namespace FanartHandler
       var loggingConfiguration = LogManager.Configuration ?? new LoggingConfiguration();
       try
       {
-        var fileInfo = new FileInfo(Config.GetFile((Config.Dir) 1, LogFileName));
+        var fileInfo = new FileInfo(Config.GetFile((Config.Dir)1, LogFileName));
         if (fileInfo.Exists)
         {
-          if (File.Exists(Config.GetFile((Config.Dir) 1, OldLogFileName)))
-            File.Delete(Config.GetFile((Config.Dir) 1, OldLogFileName));
-          fileInfo.CopyTo(Config.GetFile((Config.Dir) 1, OldLogFileName));
+          if (File.Exists(Config.GetFile((Config.Dir)1, OldLogFileName)))
+            File.Delete(Config.GetFile((Config.Dir)1, OldLogFileName));
+          fileInfo.CopyTo(Config.GetFile((Config.Dir)1, OldLogFileName));
           fileInfo.Delete();
         }
       }
       catch { }
 
       var fileTarget = new FileTarget();
-      fileTarget.FileName = Config.GetFile((Config.Dir) 1, LogFileName);
+      fileTarget.FileName = Config.GetFile((Config.Dir)1, LogFileName);
       fileTarget.Encoding = "utf-8";
       fileTarget.Layout = "${date:format=dd-MMM-yyyy HH\\:mm\\:ss} ${level:fixedLength=true:padding=5} [${logger:fixedLength=true:padding=20:shortName=true}]: ${message} ${exception:format=tostring}";
       loggingConfiguration.AddTarget("fanart-handler", fileTarget);
       LogLevel minLevel;
-      switch ((int) (Level) new Settings(Config.GetFile((Config.Dir) 10, "MediaPortal.xml")).GetValueAsInt("general", "loglevel", 0))
+      switch ((int)(Level)new Settings(Config.GetFile((Config.Dir)10, "MediaPortal.xml")).GetValueAsInt("general", "loglevel", 0))
       {
         case 0:
           minLevel = LogLevel.Error;
@@ -381,6 +389,7 @@ namespace FanartHandler
       checkBoxUseTheAudioDB.Checked = Utils.UseTheAudioDB;
       checkBoxUseAnimated.Checked = Utils.UseAnimated;
       checkBoxSpotLight.Checked = Utils.UseSpotLight;
+      checkBoxUseTheMovieDB.Checked = Utils.UseTheMovieDB;
       //
       checkBoxMusicClearArtDownload.Checked = Utils.MusicClearArtDownload;
       checkBoxMusicBannerDownload.Checked = Utils.MusicBannerDownload;
@@ -397,6 +406,14 @@ namespace FanartHandler
       //
       checkBoxAnimatedPoster.Checked = Utils.AnimatedMoviesPosterDownload;
       checkBoxAnimatedBackground.Checked = Utils.AnimatedMoviesBackgroundDownload;
+      //
+      checkBoxCollectionPoster.Checked = Utils.MoviesCollectionPosterDownload;
+      checkBoxCollectionBackground.Checked = Utils.MoviesCollectionBackgroundDownload;
+      checkBoxCollectionClearArtDownload.Checked = Utils.MoviesCollectionClearArtDownload;
+      checkBoxCollectionBannerDownload.Checked = Utils.MoviesCollectionBannerDownload;
+      checkBoxCollectionClearLogoDownload.Checked = Utils.MoviesCollectionClearLogoDownload;
+      checkBoxCollectionCDArtDownload.Checked = Utils.MoviesCollectionCDArtDownload;
+      // Utils.MoviesFanartNameAsMediaportal
       //
       if (string.IsNullOrEmpty(Utils.FanartTVLanguage))
         comboBoxFanartTVLanguage.SelectedIndex = 0;
@@ -418,78 +435,88 @@ namespace FanartHandler
 
     private void UpdateSettings()
     {
-       Utils.UseFanart = checkBoxXFactorFanart.Checked;
-       Utils.UseAlbum = checkBoxThumbsAlbum.Checked;
-       Utils.UseArtist = checkBoxThumbsArtist.Checked;
-       Utils.SkipWhenHighResAvailable = checkBoxSkipMPThumbsIfFanartAvailble.Checked;
-       Utils.DisableMPTumbsForRandom = checkBoxThumbsDisabled.Checked;
-       Utils.UseSelectedMusicFanart = checkBoxEnableMusicFanart.Checked;
-       Utils.UseSelectedOtherFanart = checkBoxEnableVideoFanart.Checked;
-       Utils.ImageInterval = comboBoxInterval.SelectedItem.ToString();
-       Utils.MinResolution = comboBoxMinResolution.SelectedItem.ToString();
-       Utils.ScraperMaxImages = comboBoxMaxImages.SelectedItem.ToString();
-       Utils.ScraperMusicPlaying = checkBoxScraperMusicPlaying.Checked;
-       Utils.ScraperMPDatabase = checkBoxEnableScraperMPDatabase.Checked;
-       Utils.ScraperInterval = comboBoxScraperInterval.SelectedItem.ToString();
-       Utils.UseAspectRatio = checkBoxAspectRatio.Checked;
-       Utils.ScrapeThumbnails = checkBox1.Checked;
-       Utils.ScrapeThumbnailsAlbum = checkBox9.Checked;
-       Utils.DoNotReplaceExistingThumbs = checkBox8.Checked;
-       Utils.UseGenreFanart = CheckBoxUseGenreFanart.Checked;
-       Utils.ScanMusicFoldersForFanart = CheckBoxScanMusicFoldersForFanart.Checked;
-       Utils.MusicFoldersArtistAlbumRegex = edtMusicFoldersArtistAlbumRegex.Text.Trim();
-       Utils.UseDefaultBackdrop = CheckBoxUseDefaultBackdrop.Checked;
-       Utils.DefaultBackdropMask = edtDefaultBackdropMask.Text.Trim();
-       Utils.DeleteMissing = CheckBoxDeleteMissing.Checked;
-       Utils.FanartTVPersonalAPIKey = edtFanartTVPersonalAPIKey.Text.Trim();
-       Utils.UseHighDefThumbnails = checkBoxUseHighDefThumbnails.Checked;
-       Utils.UseMinimumResolutionForDownload = CheckBoxUseMinimumResolutionForDownload.Checked;
-       //
-       Utils.ShowDummyItems = checkBoxShowDummyItems.Checked;
-       Utils.AddAdditionalSeparators = checkBoxAddAdditionalSeparators.Checked;
-       //
-       Utils.UseFanartTV = checkBoxFanartTV.Checked;
-       Utils.UseHtBackdrops = checkBoxHtBackdrops.Checked;
-       Utils.UseLastFM = checkBoxLastFM.Checked;
-       Utils.UseCoverArtArchive = checkBoxCoverArtArchive.Checked;
-       Utils.UseTheAudioDB = checkBoxUseTheAudioDB.Checked;
-       Utils.UseAnimated = checkBoxUseAnimated.Checked;
-       Utils.UseSpotLight = checkBoxSpotLight.Checked;
-       //
-       Utils.MusicClearArtDownload = checkBoxMusicClearArtDownload.Checked;
-       Utils.MusicBannerDownload = checkBoxMusicBannerDownload.Checked;
-       Utils.MusicCDArtDownload = checkBoxMusicCDArtDownload.Checked;
-       Utils.MusicLabelDownload = checkBoxMusicRecordLabel.Checked;
-       Utils.MoviesClearArtDownload = checkBoxMoviesClearArtDownload.Checked;
-       Utils.MoviesBannerDownload = checkBoxMoviesBannerDownload.Checked;
-       Utils.MoviesClearLogoDownload = checkBoxMoviesClearLogoDownload.Checked;
-       Utils.MoviesCDArtDownload = checkBoxMoviesCDArtDownload.Checked;
-       // Utils.MoviesFanartNameAsMediaportal
-       Utils.SeriesClearArtDownload = checkBoxSeriesClearArtDownload.Checked;
-       Utils.SeriesBannerDownload = checkBoxSeriesBannerDownload.Checked;
-       Utils.SeriesClearLogoDownload = checkBoxSeriesClearLogoDownload.Checked;
-       //
-       Utils.AnimatedMoviesPosterDownload = checkBoxAnimatedPoster.Checked;
-       Utils.AnimatedMoviesBackgroundDownload = checkBoxAnimatedBackground.Checked;
-       //
-       KeyValuePair<string, string> selectedPair = (KeyValuePair<string, string>)comboBoxFanartTVLanguage.SelectedItem;
-       Utils.FanartTVLanguage = selectedPair.Key.Trim();
-       Utils.FanartTVLanguageToAny = checkBoxFanartTVLanguageToAny.Checked;
-       //
-       // Slideshow
-       Utils.UseMyPicturesSlideShow = checkBoxMyPicturesSlideShow.Checked;
-       Utils.MyPicturesSlideShowFolders.Clear();
-       foreach (var folder in textBoxMyPicturesSlideShowFolders.Lines)
-       {
-         if (!string.IsNullOrEmpty(folder))
-           Utils.MyPicturesSlideShowFolders.Add(folder);
-       }
+      Utils.UseFanart = checkBoxXFactorFanart.Checked;
+      Utils.UseAlbum = checkBoxThumbsAlbum.Checked;
+      Utils.UseArtist = checkBoxThumbsArtist.Checked;
+      Utils.SkipWhenHighResAvailable = checkBoxSkipMPThumbsIfFanartAvailble.Checked;
+      Utils.DisableMPTumbsForRandom = checkBoxThumbsDisabled.Checked;
+      Utils.UseSelectedMusicFanart = checkBoxEnableMusicFanart.Checked;
+      Utils.UseSelectedOtherFanart = checkBoxEnableVideoFanart.Checked;
+      Utils.ImageInterval = comboBoxInterval.SelectedItem.ToString();
+      Utils.MinResolution = comboBoxMinResolution.SelectedItem.ToString();
+      Utils.ScraperMaxImages = comboBoxMaxImages.SelectedItem.ToString();
+      Utils.ScraperMusicPlaying = checkBoxScraperMusicPlaying.Checked;
+      Utils.ScraperMPDatabase = checkBoxEnableScraperMPDatabase.Checked;
+      Utils.ScraperInterval = comboBoxScraperInterval.SelectedItem.ToString();
+      Utils.UseAspectRatio = checkBoxAspectRatio.Checked;
+      Utils.ScrapeThumbnails = checkBox1.Checked;
+      Utils.ScrapeThumbnailsAlbum = checkBox9.Checked;
+      Utils.DoNotReplaceExistingThumbs = checkBox8.Checked;
+      Utils.UseGenreFanart = CheckBoxUseGenreFanart.Checked;
+      Utils.ScanMusicFoldersForFanart = CheckBoxScanMusicFoldersForFanart.Checked;
+      Utils.MusicFoldersArtistAlbumRegex = edtMusicFoldersArtistAlbumRegex.Text.Trim();
+      Utils.UseDefaultBackdrop = CheckBoxUseDefaultBackdrop.Checked;
+      Utils.DefaultBackdropMask = edtDefaultBackdropMask.Text.Trim();
+      Utils.DeleteMissing = CheckBoxDeleteMissing.Checked;
+      Utils.FanartTVPersonalAPIKey = edtFanartTVPersonalAPIKey.Text.Trim();
+      Utils.UseHighDefThumbnails = checkBoxUseHighDefThumbnails.Checked;
+      Utils.UseMinimumResolutionForDownload = CheckBoxUseMinimumResolutionForDownload.Checked;
+      //
+      Utils.ShowDummyItems = checkBoxShowDummyItems.Checked;
+      Utils.AddAdditionalSeparators = checkBoxAddAdditionalSeparators.Checked;
+      //
+      Utils.UseFanartTV = checkBoxFanartTV.Checked;
+      Utils.UseHtBackdrops = checkBoxHtBackdrops.Checked;
+      Utils.UseLastFM = checkBoxLastFM.Checked;
+      Utils.UseCoverArtArchive = checkBoxCoverArtArchive.Checked;
+      Utils.UseTheAudioDB = checkBoxUseTheAudioDB.Checked;
+      Utils.UseAnimated = checkBoxUseAnimated.Checked;
+      Utils.UseSpotLight = checkBoxSpotLight.Checked;
+      Utils.UseTheMovieDB = checkBoxUseTheMovieDB.Checked;
+      //
+      Utils.MusicClearArtDownload = checkBoxMusicClearArtDownload.Checked;
+      Utils.MusicBannerDownload = checkBoxMusicBannerDownload.Checked;
+      Utils.MusicCDArtDownload = checkBoxMusicCDArtDownload.Checked;
+      Utils.MusicLabelDownload = checkBoxMusicRecordLabel.Checked;
+      Utils.MoviesClearArtDownload = checkBoxMoviesClearArtDownload.Checked;
+      Utils.MoviesBannerDownload = checkBoxMoviesBannerDownload.Checked;
+      Utils.MoviesClearLogoDownload = checkBoxMoviesClearLogoDownload.Checked;
+      Utils.MoviesCDArtDownload = checkBoxMoviesCDArtDownload.Checked;
+      // Utils.MoviesFanartNameAsMediaportal
+      Utils.SeriesClearArtDownload = checkBoxSeriesClearArtDownload.Checked;
+      Utils.SeriesBannerDownload = checkBoxSeriesBannerDownload.Checked;
+      Utils.SeriesClearLogoDownload = checkBoxSeriesClearLogoDownload.Checked;
+      //
+      Utils.AnimatedMoviesPosterDownload = checkBoxAnimatedPoster.Checked;
+      Utils.AnimatedMoviesBackgroundDownload = checkBoxAnimatedBackground.Checked;
+      //
+      Utils.MoviesCollectionPosterDownload = checkBoxCollectionPoster.Checked;
+      Utils.MovieDBCollectionPosterDownload = checkBoxCollectionPoster.Checked;
+      Utils.MoviesCollectionBackgroundDownload = checkBoxCollectionBackground.Checked;
+      Utils.MovieDBCollectionBackgroundDownload = checkBoxCollectionBackground.Checked;
+      Utils.MoviesCollectionClearArtDownload = checkBoxCollectionClearArtDownload.Checked;
+      Utils.MoviesCollectionBannerDownload = checkBoxCollectionBannerDownload.Checked;
+      Utils.MoviesCollectionClearLogoDownload = checkBoxCollectionClearLogoDownload.Checked;
+      Utils.MoviesCollectionCDArtDownload = checkBoxCollectionCDArtDownload.Checked;
+      //
+      KeyValuePair<string, string> selectedPair = (KeyValuePair<string, string>)comboBoxFanartTVLanguage.SelectedItem;
+      Utils.FanartTVLanguage = selectedPair.Key.Trim();
+      Utils.FanartTVLanguageToAny = checkBoxFanartTVLanguageToAny.Checked;
+      //
+      // Slideshow
+      Utils.UseMyPicturesSlideShow = checkBoxMyPicturesSlideShow.Checked;
+      Utils.MyPicturesSlideShowFolders.Clear();
+      foreach (var folder in textBoxMyPicturesSlideShowFolders.Lines)
+      {
+        if (!string.IsNullOrEmpty(folder))
+          Utils.MyPicturesSlideShowFolders.Add(folder);
+      }
     }
 
     private void FanartHandlerConfig_Load(object sender, EventArgs e)
     {
       SyncPointTableUpdate = 0;
-      lastID = 0;                         
+      lastID = 0;
 
       SplashPane.ShowSplashScreen();
       SplashPane.IncrementProgressBar(10);
@@ -589,20 +616,20 @@ namespace FanartHandler
       {
         UpdateSettings();
         Utils.SaveSettings();
-        MessageBox.Show("Settings is stored in memory. Make sure to press Ok when exiting MP Configuration. "+
+        MessageBox.Show("Settings is stored in memory. Make sure to press Ok when exiting MP Configuration. " +
                         "Pressing Cancel when exiting MP Configuration will result in these setting NOT being saved!", "Settings", MessageBoxButtons.OK, MessageBoxIcon.Information);
       }
       else
       {
-        MessageBox.Show("Error: You have to select at least on of the checkboxes under headline \"Selected Fanart Sources\". "+
-                        "Also you cannot disable both album and artist thumbs if you also have disabled fanart. "+
-                        "If you do not want to use fanart you still have to check at least one of the checkboxes and the disable the plugin.",  "Settings", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+        MessageBox.Show("Error: You have to select at least on of the checkboxes under headline \"Selected Fanart Sources\". " +
+                        "Also you cannot disable both album and artist thumbs if you also have disabled fanart. " +
+                        "If you do not want to use fanart you still have to check at least one of the checkboxes and the disable the plugin.", "Settings", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
       }
     }
 
     private void FilterThumbGrid(int startCount)
     {
-      if (dataGridViewThumbs == null || myDataTableThumbs == null) 
+      if (dataGridViewThumbs == null || myDataTableThumbs == null)
         return;
 
       try
@@ -631,10 +658,10 @@ namespace FanartHandler
       {
         if (dataGridViewFanart != null && dataGridViewFanart.RowCount > 0)
         {
-          var dataGridViewView = (DataGridView) sender;
+          var dataGridViewView = (DataGridView)sender;
           if (File.Exists(dataGridViewFanart[5, dataGridViewView.CurrentRow.Index].Value.ToString()))
           {
-            var bitmap1 = (Bitmap) Utils.LoadImageFastFromFile(dataGridViewFanart[5, dataGridViewView.CurrentRow.Index].Value.ToString());
+            var bitmap1 = (Bitmap)Utils.LoadImageFastFromFile(dataGridViewFanart[5, dataGridViewView.CurrentRow.Index].Value.ToString());
             label30.Text = string.Concat(new object[4] { "Resolution: ", bitmap1.Width, "x", bitmap1.Height });
             var size = new Size(182, 110);
             var bitmap2 = new Bitmap(bitmap1, size.Width, size.Height);
@@ -664,11 +691,11 @@ namespace FanartHandler
       {
         if (dataGridViewThumbs != null && dataGridViewThumbs.RowCount > 0)
         {
-          var dataGridViewView = (DataGridView) sender;
+          var dataGridViewView = (DataGridView)sender;
           var str = dataGridViewThumbs[5, dataGridViewView.CurrentRow.Index].Value.ToString();
           if (File.Exists(str))
           {
-            var bitmap1 = (Bitmap) Utils.LoadImageFastFromFile(str);
+            var bitmap1 = (Bitmap)Utils.LoadImageFastFromFile(str);
             label33.Text = string.Concat(new object[4] { "Resolution: ", bitmap1.Width, "x", bitmap1.Height });
             var size = new Size(110, 110);
             var bitmap2 = new Bitmap(bitmap1, size.Width, size.Height);
@@ -698,7 +725,7 @@ namespace FanartHandler
       {
         if (dataGridViewUserManaged != null && dataGridViewUserManaged.RowCount > 0)
         {
-          var bitmap1 = (Bitmap) Utils.LoadImageFastFromFile(dataGridViewUserManaged[4, ((DataGridView) sender).CurrentRow.Index].Value.ToString());
+          var bitmap1 = (Bitmap)Utils.LoadImageFastFromFile(dataGridViewUserManaged[4, ((DataGridView)sender).CurrentRow.Index].Value.ToString());
           var size = new Size(182, 110);
           var bitmap2 = new Bitmap(bitmap1, size.Width, size.Height);
           var graphics = Graphics.FromImage(bitmap2);
@@ -724,10 +751,10 @@ namespace FanartHandler
       {
         if (dataGridViewExternal != null && dataGridViewExternal.RowCount > 0)
         {
-          var dataGridViewView = (DataGridView) sender;
+          var dataGridViewView = (DataGridView)sender;
           if (File.Exists(dataGridViewExternal[4, dataGridViewView.CurrentRow.Index].Value.ToString()))
           {
-            var bitmap1 = (Bitmap) Utils.LoadImageFastFromFile(dataGridViewExternal[4, dataGridViewView.CurrentRow.Index].Value.ToString());
+            var bitmap1 = (Bitmap)Utils.LoadImageFastFromFile(dataGridViewExternal[4, dataGridViewView.CurrentRow.Index].Value.ToString());
             var size = new Size(182, 110);
             var bitmap2 = new Bitmap(bitmap1, size.Width, size.Height);
             var graphics = Graphics.FromImage(bitmap2);
@@ -774,7 +801,7 @@ namespace FanartHandler
 
         pictureBox1.Image = null;
         var str = dataGridViewFanart.CurrentRow.Cells[5].Value.ToString();
-        Utils.GetDbm().DeleteImage(str);
+        Utils.DBm.DeleteImage(str);
         if (File.Exists(str))
           MediaPortal.Util.Utils.FileDelete(str);
         if (!doRemove)
@@ -794,7 +821,7 @@ namespace FanartHandler
         var dialogResult = MessageBox.Show("Are you sure you want to delete all fanart? This will cause all fanart stored in your music fanart folder to be deleted.", "Delete All Music Fanart", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2);
         if (dialogResult == DialogResult.No)
         {
-          var num1 = (int) MessageBox.Show("Operation was aborted!", "Delete All Music Fanart", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+          var num1 = (int)MessageBox.Show("Operation was aborted!", "Delete All Music Fanart", MessageBoxButtons.OK, MessageBoxIcon.Stop);
         }
         if (dialogResult != DialogResult.Yes)
           return;
@@ -802,10 +829,10 @@ namespace FanartHandler
         lastID = 0;
         foreach (var str in Directory.GetFiles(Utils.FAHSMusic, "*.jpg"))
         {
-          if (Utils.GetDbm().IsImageProtectedByUser(str).Equals("False"))
+          if (!Utils.DBm.IsImageProtectedByUser(str))
             MediaPortal.Util.Utils.FileDelete(str);
         }
-        Utils.GetDbm().DeleteAllFanart(Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartScraped);
+        Utils.DBm.DeleteAllFanart(Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartScraped);
         //
         dataGridViewFanart.ClearSelection();
         myDataTableFanart.Rows.Clear();
@@ -814,7 +841,7 @@ namespace FanartHandler
         UpdateFanartTableOnStartup(1);
         //
         myDataTableFanart.AcceptChanges();
-        var num2 = (int) MessageBox.Show("Done!", "Delete All Music Fanart", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        var num2 = (int)MessageBox.Show("Done!", "Delete All Music Fanart", MessageBoxButtons.OK, MessageBoxIcon.Information);
       }
       catch (Exception ex)
       {
@@ -830,18 +857,18 @@ namespace FanartHandler
           return;
 
         var str = dataGridViewThumbs.CurrentRow.Cells[5].Value.ToString(); // Image name
-        if (Utils.GetDbm().IsImageProtectedByUser(str).Equals("False"))
+        if (!Utils.DBm.IsImageProtectedByUser(str))
         {
           pictureBox9.Image = null;
-          Utils.GetDbm().DeleteImage(str);
+          Utils.DBm.DeleteImage(str);
           if (File.Exists(str))
             MediaPortal.Util.Utils.FileDelete(str);
           if (str.IndexOf("L.") > 0)
           {
-            str = str.Replace("L.","."); 
+            str = str.Replace("L.", ".");
             if (File.Exists(str))
               MediaPortal.Util.Utils.FileDelete(str);
-          }  
+          }
 
           if (!doRemove)
             return;
@@ -849,7 +876,7 @@ namespace FanartHandler
         }
         else
         {
-          var num = (int) MessageBox.Show("Unable to delete a thumbnail that you have locked. Please unlock first.", "Delete", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+          var num = (int)MessageBox.Show("Unable to delete a thumbnail that you have locked. Please unlock first.", "Delete", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
         }
       }
       catch (Exception ex)
@@ -863,66 +890,66 @@ namespace FanartHandler
       try
       {
         // var path1 = Config.GetFolder((Config.Dir) 6) + "\\Music\\Albums";
-        logger.Debug("DeleteAllThumbsImages: Try to delete thumbs in "+Utils.FAHMusicAlbums);
+        logger.Debug("DeleteAllThumbsImages: Try to delete thumbs in " + Utils.FAHMusicAlbums);
         if (Directory.Exists(Utils.FAHMusicAlbums))
         {
           foreach (var fileInfo in new DirectoryInfo(Utils.FAHMusicAlbums).GetFiles("*L.jpg", SearchOption.AllDirectories))
           {
             if (!Utils.GetIsStopping())
             {
-              if (Utils.GetDbm().IsImageProtectedByUser(fileInfo.FullName).Equals("False"))
+              if (!Utils.DBm.IsImageProtectedByUser(fileInfo.FullName))
               {
                 var thumbFile = fileInfo.FullName;
 
-                logger.Debug("DeleteAllThumbsImages: Try to delete: "+thumbFile);
-                Utils.GetDbm().DeleteImage(thumbFile);
+                logger.Debug("DeleteAllThumbsImages: Try to delete: " + thumbFile);
+                Utils.DBm.DeleteImage(thumbFile);
                 if (File.Exists(thumbFile))
                   MediaPortal.Util.Utils.FileDelete(thumbFile);
                 if (thumbFile.IndexOf("L.") > 0)
                 {
-                  thumbFile = thumbFile.Replace("L.","."); 
+                  thumbFile = thumbFile.Replace("L.", ".");
                   if (File.Exists(thumbFile))
                     MediaPortal.Util.Utils.FileDelete(thumbFile);
-                }  
+                }
               }
               else
-                logger.Debug("DeleteAllThumbsImages: Protected by user: "+fileInfo.FullName);
+                logger.Debug("DeleteAllThumbsImages: Protected by user: " + fileInfo.FullName);
             }
             else
               break;
           }
-          Utils.GetDbm().DeleteAllFanart(Utils.Category.MusicAlbum, Utils.SubCategory.MusicAlbumThumbScraped);
+          Utils.DBm.DeleteAllFanart(Utils.Category.MusicAlbum, Utils.SubCategory.MusicAlbumThumbScraped);
         }
         // var path2 = Config.GetFolder((Config.Dir) 6) + "\\Music\\Artists";
-        logger.Debug("DeleteAllThumbsImages: Try to delete thumbs in "+Utils.FAHMusicArtists);
+        logger.Debug("DeleteAllThumbsImages: Try to delete thumbs in " + Utils.FAHMusicArtists);
         if (Directory.Exists(Utils.FAHMusicArtists))
         {
           foreach (var fileInfo in new DirectoryInfo(Utils.FAHMusicArtists).GetFiles("*L.jpg", SearchOption.AllDirectories))
           {
             if (!Utils.GetIsStopping())
             {
-              if (Utils.GetDbm().IsImageProtectedByUser(fileInfo.FullName).Equals("False"))
+              if (!Utils.DBm.IsImageProtectedByUser(fileInfo.FullName))
               {
                 var thumbFile = fileInfo.FullName;
 
-                logger.Debug("DeleteAllThumbsImages: Try to delete: "+thumbFile);
-                Utils.GetDbm().DeleteImage(thumbFile);
+                logger.Debug("DeleteAllThumbsImages: Try to delete: " + thumbFile);
+                Utils.DBm.DeleteImage(thumbFile);
                 if (File.Exists(thumbFile))
                   MediaPortal.Util.Utils.FileDelete(thumbFile);
                 if (thumbFile.IndexOf("L.") > 0)
                 {
-                  thumbFile = thumbFile.Replace("L.","."); 
+                  thumbFile = thumbFile.Replace("L.", ".");
                   if (File.Exists(thumbFile))
                     MediaPortal.Util.Utils.FileDelete(thumbFile);
-                }  
+                }
               }
               else
-                logger.Debug("DeleteAllThumbsImages: Protected by user: "+fileInfo.FullName);
+                logger.Debug("DeleteAllThumbsImages: Protected by user: " + fileInfo.FullName);
             }
             else
               break;
           }
-          Utils.GetDbm().DeleteAllFanart(Utils.Category.MusicArtist, Utils.SubCategory.MusicArtistThumbScraped);
+          Utils.DBm.DeleteAllFanart(Utils.Category.MusicArtist, Utils.SubCategory.MusicArtistThumbScraped);
         }
         dataGridViewThumbs.ClearSelection();
         myDataTableThumbs.Rows.Clear();
@@ -954,8 +981,8 @@ namespace FanartHandler
     {
       try
       {
-        var num = (int) MessageBox.Show("Successfully synchronised your fanart database. "+
-                                        "Removed " + Utils.GetDbm().DeleteRecordsWhereFileIsMissing() + " entries from your fanart database.", "Cleanup", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        var num = (int)MessageBox.Show("Successfully synchronised your fanart database. " +
+                                        "Removed " + Utils.DBm.DeleteRecordsWhereFileIsMissing() + " entries from your fanart database.", "Cleanup", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
       }
       catch (Exception ex)
       {
@@ -984,9 +1011,9 @@ namespace FanartHandler
 
         pictureBox5.Image = null;
         var str = dataGridViewUserManaged.CurrentRow.Cells[4].Value.ToString(); // Image file
-        if (Utils.GetDbm().IsImageProtectedByUser(str).Equals("False"))
+        if (!Utils.DBm.IsImageProtectedByUser(str))
         {
-          Utils.GetDbm().DeleteImage(str);
+          Utils.DBm.DeleteImage(str);
           if (File.Exists(str))
             MediaPortal.Util.Utils.FileDelete(str);
           dataGridViewUserManaged.Rows.Remove(dataGridViewUserManaged.CurrentRow);
@@ -1002,12 +1029,12 @@ namespace FanartHandler
     {
       try
       {
-        var dialogResult = MessageBox.Show("Are you sure you want to delete all ["+(string) comboBox2.SelectedItem+"] fanart? "+
-                                           "This will cause all fanart stored in your game fanart folder to be deleted.", 
+        var dialogResult = MessageBox.Show("Are you sure you want to delete all [" + (string)comboBox2.SelectedItem + "] fanart? " +
+                                           "This will cause all fanart stored in your game fanart folder to be deleted.",
                                            "Delete All Users Fanart", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
         if (dialogResult == DialogResult.No)
         {
-          var num1 = (int) MessageBox.Show("Operation was aborted!", "Delete All Users Fanart", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+          var num1 = (int)MessageBox.Show("Operation was aborted!", "Delete All Users Fanart", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
         }
         if (dialogResult != DialogResult.Yes)
           return;
@@ -1015,19 +1042,19 @@ namespace FanartHandler
         Utils.Category category = GetCategoryFromComboFilter(comboBox2.SelectedItem.ToString());
         Utils.SubCategory subcategory = GetSubCategoryFromComboFilter(comboBox2.SelectedItem.ToString());
 
-        foreach (var path in Directory.GetFiles(category == Utils.Category.Weather ? Utils.FAHUDWeather : Utils.FAHUDFolder + (string) comboBox2.SelectedItem, "*.jpg"))
-          if (!Utils.GetFileName(path).ToLower(CultureInfo.CurrentCulture).StartsWith("default", StringComparison.CurrentCulture) && Utils.GetDbm().IsImageProtectedByUser(path).Equals("False"))
+        foreach (var path in Directory.GetFiles(category == Utils.Category.Weather ? Utils.FAHUDWeather : Utils.FAHUDFolder + (string)comboBox2.SelectedItem, "*.jpg"))
+          if (!Utils.GetFileName(path).ToLower(CultureInfo.CurrentCulture).StartsWith("default", StringComparison.CurrentCulture) && !Utils.DBm.IsImageProtectedByUser(path))
             MediaPortal.Util.Utils.FileDelete(path);
-        Utils.GetDbm().DeleteAllFanart(category, subcategory);
+        Utils.DBm.DeleteAllFanart(category, subcategory);
 
         dataGridViewUserManaged.ClearSelection();
         myDataTableUserManaged.Rows.Clear();
         //
-        Utils.SetupFilenames(category == Utils.Category.Weather ? Utils.FAHUDWeather : Utils.FAHUDFolder + (string) comboBox2.SelectedItem, "*.jpg", category, subcategory, null, Utils.Provider.Local);
+        Utils.SetupFilenames(category == Utils.Category.Weather ? Utils.FAHUDWeather : Utils.FAHUDFolder + (string)comboBox2.SelectedItem, "*.jpg", category, subcategory, null, Utils.Provider.Local);
         UpdateFanartUserManagedTable();
         //
         myDataTableUserManaged.AcceptChanges();
-        var num2 = (int) MessageBox.Show("Done!", "Delete All Users Fanart", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        var num2 = (int)MessageBox.Show("Done!", "Delete All Users Fanart", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
       }
       catch (Exception ex)
       {
@@ -1091,12 +1118,12 @@ namespace FanartHandler
     {
       if (!isScraping)
       {
-        var dialogResult = MessageBox.Show("Update pictures [Yes], or Full Scan [No]?", "Scrape fanart pictures", MessageBoxButtons.YesNoCancel,  MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
+        var dialogResult = MessageBox.Show("Update pictures [Yes], or Full Scan [No]?", "Scrape fanart pictures", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
         if (dialogResult == DialogResult.Cancel)
           return;
 
         if (dialogResult == DialogResult.No)
-          Utils.GetDbm().UpdateTimeStamp(null, null, Utils.Category.Dummy, Utils.SubCategory.None, false, true);
+          Utils.DBm.UpdateTimeStamp(null, null, Utils.Category.Dummy, Utils.SubCategory.None, false, true);
       }
 
       StartScrape();
@@ -1322,7 +1349,7 @@ namespace FanartHandler
         Thread.Sleep(3000);
 
         isScraping = false;
-        if (Utils.GetDbm() != null)
+        if (Utils.DBm != null)
         {
           Utils.TotArtistsBeingScraped = 0.0;
           Utils.CurrArtistsBeingScraped = 0.0;
@@ -1336,17 +1363,17 @@ namespace FanartHandler
           UpdateProgressBars(true, true);
 
         if (button2 != null)
-        button2.Enabled = true;
+          button2.Enabled = true;
         if (button3 != null)
-        button3.Enabled = true;
+          button3.Enabled = true;
         if (button4 != null)
-        button4.Enabled = true;
+          button4.Enabled = true;
         if (button5 != null)
-        button5.Enabled = true;
+          button5.Enabled = true;
         if (button9 != null)
-        button9.Enabled = true;
+          button9.Enabled = true;
         if (button10 != null)
-        button10.Enabled = true;
+          button10.Enabled = true;
         if (button6 != null)
         {
           button6.Enabled = true;
@@ -1383,7 +1410,7 @@ namespace FanartHandler
 
         Thread.Sleep(3000);
         isScraping = false;
-        if (Utils.GetDbm() != null)
+        if (Utils.DBm != null)
         {
           Utils.TotArtistsBeingScraped = 0.0;
           Utils.CurrArtistsBeingScraped = 0.0;
@@ -1478,7 +1505,7 @@ namespace FanartHandler
           else
             row["Album"] = string.Empty;
           row["Type"] = (string.IsNullOrEmpty(row["Album"].ToString().Trim()) ? "Artist" : "Album");
-          row["Locked"] = Utils.GetDbm().IsImageProtectedByUser(str1);
+          row["Locked"] = (Utils.DBm.IsImageProtectedByUser(str1) ? "True" : "False");
           row["Image"] = fileName;
           row["Image Path"] = path;
           myDataTableThumbs.Rows.Add(row);
@@ -1501,7 +1528,7 @@ namespace FanartHandler
       {
         dataGridViewExternal.ClearSelection();
         myDataTableExternal.Rows.Clear();
-        var userManagedTable = Utils.GetDbm().GetDataForConfigUserManagedTable(0,GetCategoryFromExtComboFilter(comboBox3.SelectedItem.ToString()).ToString(),
+        var userManagedTable = Utils.DBm.GetDataForConfigUserManagedTable(0, GetCategoryFromExtComboFilter(comboBox3.SelectedItem.ToString()).ToString(),
                                                                                  GetSubCategoryFromExtComboFilter(comboBox3.SelectedItem.ToString()).ToString());
         if (userManagedTable != null && userManagedTable.Rows.Count > 0)
         {
@@ -1516,7 +1543,8 @@ namespace FanartHandler
             row["Image Path"] = userManagedTable.GetField(num, 2);
             Convert.ToInt32(userManagedTable.GetField(num, 4), CultureInfo.CurrentCulture);
             myDataTableExternal.Rows.Add(row);
-            checked { ++num; }
+            checked
+            { ++num; }
           }
         }
       }
@@ -1537,8 +1565,8 @@ namespace FanartHandler
         dataGridViewUserManaged.ClearSelection();
         myDataTableUserManaged.Rows.Clear();
         var sqLiteResultSet = (comboBox2.SelectedItem == null)
-                               ? Utils.GetDbm().GetDataForConfigUserManagedTable(0, "Game", "GameManual")
-                               : Utils.GetDbm().GetDataForConfigUserManagedTable(0, GetCategoryFromComboFilter(comboBox2.SelectedItem.ToString()).ToString(), GetSubCategoryFromComboFilter(comboBox2.SelectedItem.ToString()).ToString());
+                               ? Utils.DBm.GetDataForConfigUserManagedTable(0, "Game", "GameManual")
+                               : Utils.DBm.GetDataForConfigUserManagedTable(0, GetCategoryFromComboFilter(comboBox2.SelectedItem.ToString()).ToString(), GetSubCategoryFromComboFilter(comboBox2.SelectedItem.ToString()).ToString());
         if (sqLiteResultSet != null && sqLiteResultSet.Rows.Count > 0)
         {
           var num = 0;
@@ -1552,7 +1580,8 @@ namespace FanartHandler
             row["Image Path"] = sqLiteResultSet.GetField(num, 2);
             Convert.ToInt32(sqLiteResultSet.GetField(num, 4), CultureInfo.CurrentCulture);
             myDataTableUserManaged.Rows.Add(row);
-            checked { ++num; }
+            checked
+            { ++num; }
           }
         }
       }
@@ -1581,7 +1610,7 @@ namespace FanartHandler
             if (lastID < 0)
               lastID = 0;
 
-            var forConfigTableScan = Utils.GetDbm().GetDataForConfigTableScan(lastID);
+            var forConfigTableScan = Utils.DBm.GetDataForConfigTableScan(lastID);
             var num1 = 0;
             if (forConfigTableScan != null && forConfigTableScan.Rows.Count > 0)
             {
@@ -1595,13 +1624,16 @@ namespace FanartHandler
                 row["Locked"] = forConfigTableScan.GetField(num2, 4);
                 row["Image"] = Utils.GetFileName(forConfigTableScan.GetField(num2, 3));
                 row["Image Path"] = forConfigTableScan.GetField(num2, 3);
-                try {
+                try
+                {
                   num1 = Convert.ToInt32(forConfigTableScan.GetField(num2, 5), CultureInfo.CurrentCulture);
-                } catch { }
+                }
+                catch { }
                 if (num1 > lastID)
                   lastID = num1;
                 myDataTableFanart.Rows.Add(row);
-                checked { ++num2; }
+                checked
+                { ++num2; }
               }
             }
           }
@@ -1616,7 +1648,7 @@ namespace FanartHandler
       }
     }
 
-    public void UpdateThumbnailTable(int startCount) 
+    public void UpdateThumbnailTable(int startCount)
     {
       if (comboBox1 == null)
         return;
@@ -1651,7 +1683,7 @@ namespace FanartHandler
         myDataTableThumbs.Rows.Clear();
         if (Interlocked.CompareExchange(ref SyncPointTableUpdate, 1, 0) == 0 && !isStopping)
         {
-          var thumbImages = Utils.GetDbm().GetThumbImages(category, sqlStartVal);
+          var thumbImages = Utils.DBm.GetThumbImages(category, sqlStartVal);
           if (thumbImages != null && thumbImages.Rows.Count > 0)
           {
             var num = 0;
@@ -1679,7 +1711,8 @@ namespace FanartHandler
                 row["Image Path"] = field1;
                 myDataTableThumbs.Rows.Add(row);
               }
-              checked { ++num; }
+              checked
+              { ++num; }
             }
           }
         }
@@ -1713,7 +1746,7 @@ namespace FanartHandler
         // *** Begin: ajs: try to find configuration exception
         sqlStartVal = 0;
         // *** End: ajs: try to find configuration exception
-        var dataForConfigTable = Utils.GetDbm().GetDataForConfigTable(sqlStartVal);
+        var dataForConfigTable = Utils.DBm.GetDataForConfigTable(sqlStartVal);
         if (dataForConfigTable != null && dataForConfigTable.Rows.Count > 0)
         {
           var num1 = 0;
@@ -1729,14 +1762,17 @@ namespace FanartHandler
             row["Image Path"] = dataForConfigTable.GetField(num1, 3);
             if (!string.IsNullOrWhiteSpace(dataForConfigTable.GetField(num1, 4)))
             {
-              try {
+              try
+              {
                 num2 = Convert.ToInt32(dataForConfigTable.GetField(num1, 5), CultureInfo.CurrentCulture);
-              } catch { }
+              }
+              catch { }
               if (num2 > lastID)
                 lastID = num2;
             }
             myDataTableFanart.Rows.Add(row);
-            checked { ++num1; }
+            checked
+            { ++num1; }
           }
         }
         dataGridViewFanart.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
@@ -1849,12 +1885,12 @@ namespace FanartHandler
         var str = dataGridViewThumbs.CurrentRow.Cells[3].Value.ToString();       // Lock
         if (str != null && str.Equals("True", StringComparison.CurrentCulture))
         {
-          Utils.GetDbm().SetImageProtectedByUser(diskImage, false);
+          Utils.DBm.SetImageProtectedByUser(diskImage, false);
           dataGridViewThumbs.Rows[dataGridViewThumbs.CurrentRow.Index].Cells[3].Value = "False";
         }
         else
         {
-          Utils.GetDbm().SetImageProtectedByUser(diskImage, true);
+          Utils.DBm.SetImageProtectedByUser(diskImage, true);
           dataGridViewThumbs.Rows[dataGridViewThumbs.CurrentRow.Index].Cells[3].Value = "True";
         }
       }
@@ -1880,12 +1916,12 @@ namespace FanartHandler
         var str = dataGridViewFanart.CurrentRow.Cells[1].Value.ToString();       // Enabled
         if (str != null && str.Equals("True", StringComparison.CurrentCulture))
         {
-          Utils.GetDbm().EnableImage(diskImage, false);
+          Utils.DBm.EnableImage(diskImage, false);
           dataGridViewFanart.Rows[dataGridViewFanart.CurrentRow.Index].Cells[1].Value = "False";
         }
         else
         {
-          Utils.GetDbm().EnableImage(diskImage, true);
+          Utils.DBm.EnableImage(diskImage, true);
           dataGridViewFanart.Rows[dataGridViewFanart.CurrentRow.Index].Cells[1].Value = "True";
         }
       }
@@ -1905,12 +1941,12 @@ namespace FanartHandler
         var str = dataGridViewUserManaged.CurrentRow.Cells[1].Value.ToString();       // Enabled
         if (str != null && str.Equals("True", StringComparison.CurrentCulture))
         {
-          Utils.GetDbm().EnableForRandomImage(diskImage, false);
+          Utils.DBm.EnableForRandomImage(diskImage, false);
           dataGridViewUserManaged.Rows[dataGridViewUserManaged.CurrentRow.Index].Cells[1].Value = "False";
         }
         else
         {
-          Utils.GetDbm().EnableForRandomImage(diskImage, true);
+          Utils.DBm.EnableForRandomImage(diskImage, true);
           dataGridViewUserManaged.Rows[dataGridViewUserManaged.CurrentRow.Index].Cells[1].Value = "True";
         }
       }
@@ -2014,17 +2050,17 @@ namespace FanartHandler
 
         var dbartist = dataGridViewThumbs.CurrentRow.Cells[0].Value.ToString().Trim();
         var dbalbum = dataGridViewThumbs.CurrentRow.Cells[1].Value.ToString().Trim();
-        var dbmbid = Utils.GetDbm().GetDBMusicBrainzID(dbartist, dbalbum);
+        var dbmbid = Utils.DBm.GetDBMusicBrainzID(dbartist, dbalbum);
 
-        var newmbid = Prompt.ShowDialog("Change MBID:","For ["+dbartist+" - "+dbalbum+"]", dbmbid).Trim();
+        var newmbid = Prompt.ShowDialog("Change MBID:", "For [" + dbartist + " - " + dbalbum + "]", dbmbid).Trim();
         var flag = false;
 
         if (newmbid.Equals(dbmbid, StringComparison.CurrentCulture))
           return;
         if (!string.IsNullOrEmpty(newmbid) && ((newmbid.Length > 10) || (newmbid.Trim().Equals("<none>", StringComparison.CurrentCulture))))
-          flag = Utils.GetDbm().ChangeDBMusicBrainzID(dbartist, dbalbum, dbmbid, newmbid);
+          flag = Utils.DBm.ChangeDBMusicBrainzID(dbartist, dbalbum, dbmbid, newmbid);
 
-        logger.Debug("Change MBID ["+dbartist+"/"+dbalbum+"] "+dbmbid+" -> "+newmbid);
+        logger.Debug("Change MBID [" + dbartist + "/" + dbalbum + "] " + dbmbid + " -> " + newmbid);
         if (flag)
           MessageBox.Show("Done!", "MBID Changed!", MessageBoxButtons.OK, MessageBoxIcon.Information);
         else
@@ -2044,18 +2080,18 @@ namespace FanartHandler
           return;
 
         var dbartist = dataGridViewFanart.CurrentRow.Cells[0].Value.ToString().Trim();
-        var dbalbum = (string) null;
-        var dbmbid = Utils.GetDbm().GetDBMusicBrainzID(dbartist, dbalbum);
+        var dbalbum = (string)null;
+        var dbmbid = Utils.DBm.GetDBMusicBrainzID(dbartist, dbalbum);
 
-        var newmbid = Prompt.ShowDialog("Change MBID:","For ["+dbartist+"]", dbmbid).Trim();
+        var newmbid = Prompt.ShowDialog("Change MBID:", "For [" + dbartist + "]", dbmbid).Trim();
         var flag = false;
 
         if (newmbid.Equals(dbmbid, StringComparison.CurrentCulture))
           return;
         if (!string.IsNullOrEmpty(newmbid) && ((newmbid.Length > 10) || (newmbid.Trim().Equals("<none>", StringComparison.CurrentCulture))))
-          flag = Utils.GetDbm().ChangeDBMusicBrainzID(dbartist, dbalbum, dbmbid, newmbid);
+          flag = Utils.DBm.ChangeDBMusicBrainzID(dbartist, dbalbum, dbmbid, newmbid);
 
-        logger.Debug("Change MBID ["+dbartist+"] "+dbmbid+" -> "+newmbid);
+        logger.Debug("Change MBID [" + dbartist + "] " + dbmbid + " -> " + newmbid);
         if (flag)
           MessageBox.Show("Done!", "MBID Changed!", MessageBoxButtons.OK, MessageBoxIcon.Information);
         else
@@ -2091,7 +2127,7 @@ namespace FanartHandler
         var fileName = openFileDialog.FileName;
         if (doInsert)
         {
-          Utils.GetDbm().LoadFanart(dataGridViewFanart.CurrentRow.Cells[0].Value.ToString(), null, null, null, fileName, fileName, Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartManual, Utils.Provider.Local);
+          Utils.DBm.LoadFanart(dataGridViewFanart.CurrentRow.Cells[0].Value.ToString(), null, null, null, fileName, fileName, Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartManual, Utils.Provider.Local);
           var row = myDataTableFanart.NewRow();
           row["Artist"] = dataGridViewFanart.CurrentRow.Cells[0].Value.ToString();
           row["Enabled"] = "True";
@@ -2099,16 +2135,16 @@ namespace FanartHandler
           row["Locked"] = "False";
           row["Image"] = Utils.GetFileName(fileName);
           row["Image Path"] = fileName;
-          myDataTableFanart.Rows.InsertAt(row, checked (dataGridViewFanart.CurrentRow.Index + 1));
+          myDataTableFanart.Rows.InsertAt(row, checked(dataGridViewFanart.CurrentRow.Index + 1));
         }
         else
         {
           dataGridViewFanart.CurrentRow.Cells[4].Value = fileName;
-          Utils.GetDbm().LoadFanart(dataGridViewFanart.CurrentRow.Cells[0].Value.ToString(), null, null, null, fileName, fileName, Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartManual, Utils.Provider.Local);
+          Utils.DBm.LoadFanart(dataGridViewFanart.CurrentRow.Cells[0].Value.ToString(), null, null, null, fileName, fileName, Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartManual, Utils.Provider.Local);
           var str2 = dataGridViewFanart.CurrentRow.Cells[5].Value.ToString();
           if (File.Exists(str2))
           {
-            var bitmap1 = (Bitmap) Utils.LoadImageFastFromFile(str2);
+            var bitmap1 = (Bitmap)Utils.LoadImageFastFromFile(str2);
             label30.Text = string.Concat(new object[4]
             {
               "Resolution: ",
@@ -2161,12 +2197,12 @@ namespace FanartHandler
         var str = dataGridViewFanart.CurrentRow.Cells[2].Value.ToString();
         if (str != null && str.Equals("True", StringComparison.CurrentCulture))
         {
-          Utils.GetDbm().EnableForRandomImage(diskImage, false);
+          Utils.DBm.EnableForRandomImage(diskImage, false);
           dataGridViewFanart.Rows[dataGridViewFanart.CurrentRow.Index].Cells[2].Value = "False";
         }
         else
         {
-          Utils.GetDbm().EnableForRandomImage(diskImage, true);
+          Utils.DBm.EnableForRandomImage(diskImage, true);
           dataGridViewFanart.Rows[dataGridViewFanart.CurrentRow.Index].Cells[2].Value = "True";
         }
       }
@@ -2198,12 +2234,12 @@ namespace FanartHandler
         var str = dataGridViewExternal.CurrentRow.Cells[1].Value.ToString();       // Random
         if (str != null && str.Equals("True", StringComparison.CurrentCulture))
         {
-          Utils.GetDbm().EnableForRandomImage(diskImage, false);
+          Utils.DBm.EnableForRandomImage(diskImage, false);
           dataGridViewExternal.Rows[dataGridViewExternal.CurrentRow.Index].Cells[1].Value = "False";
         }
         else
         {
-          Utils.GetDbm().EnableForRandomImage(diskImage, true);
+          Utils.DBm.EnableForRandomImage(diskImage, true);
           dataGridViewExternal.Rows[dataGridViewExternal.CurrentRow.Index].Cells[1].Value = "True";
         }
       }
@@ -2215,7 +2251,7 @@ namespace FanartHandler
 
     private void button8_Click(object sender, EventArgs e)
     {
-      myDataTableThumbsCount = checked (myDataTableThumbsCount - 500);
+      myDataTableThumbsCount = checked(myDataTableThumbsCount - 500);
       if (myDataTableThumbsCount < 0)
         myDataTableThumbsCount = 0;
       FilterThumbGrid(myDataTableThumbsCount);
@@ -2227,14 +2263,14 @@ namespace FanartHandler
 
     private void buttonNext_Click(object sender, EventArgs e)
     {
-      myDataTableThumbsCount = checked (myDataTableThumbsCount + 500);
+      myDataTableThumbsCount = checked(myDataTableThumbsCount + 500);
       FilterThumbGrid(myDataTableThumbsCount);
       button8.Enabled = true;
     }
 
     private void button9_Click(object sender, EventArgs e)
     {
-      myDataTableFanartCount = checked (myDataTableFanartCount - 500);
+      myDataTableFanartCount = checked(myDataTableFanartCount - 500);
       if (myDataTableFanartCount <= 0)
         myDataTableFanartCount = 1;
       UpdateFanartTableOnStartup(myDataTableFanartCount);
@@ -2250,7 +2286,7 @@ namespace FanartHandler
 
     private void button10_Click(object sender, EventArgs e)
     {
-      myDataTableFanartCount = checked (myDataTableFanartCount + 500);
+      myDataTableFanartCount = checked(myDataTableFanartCount + 500);
       if (myDataTableFanartCount <= 0)
         myDataTableFanartCount = 1;
       UpdateFanartTableOnStartup(myDataTableFanartCount);
@@ -2263,10 +2299,10 @@ namespace FanartHandler
 
     private void checkBoxShowDummyItems_CheckedChanged(object sender, EventArgs e)
     {
-        UpdateFanartTableOnStartup(1);
-        UpdateThumbnailTable(0);
-        UpdateFanartUserManagedTable();
-        UpdateFanartExternalTable();
+      UpdateFanartTableOnStartup(1);
+      UpdateThumbnailTable(0);
+      UpdateFanartUserManagedTable();
+      UpdateFanartExternalTable();
     }
 
     private void timerProgress_Tick(object sender, EventArgs e)
@@ -2275,13 +2311,13 @@ namespace FanartHandler
         UpdateProgressBars(false, false);
 
       int i = Utils.Percent(toolStripProgressBar.Value, toolStripProgressBar.Maximum);
-      toolStripStatusLabel.Text = (i == 0) ? "-" : i.ToString()+"%";
+      toolStripStatusLabel.Text = (i == 0) ? "-" : i.ToString() + "%";
     }
 
     private void labelGetFanartTVPersonalAPIKey_LinkClicked(object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
     {
-        // Navigate to a URL.
-        System.Diagnostics.Process.Start("https://fanart.tv/?mymail=17744&k=ecb615a5720121199c56fea1471a4a02&t=fanart.tv%2Fget-an-api-key%2F&c=0&s=1");
+      // Navigate to a URL.
+      System.Diagnostics.Process.Start("https://fanart.tv/?mymail=17744&k=ecb615a5720121199c56fea1471a4a02&t=fanart.tv%2Fget-an-api-key%2F&c=0&s=1");
     }
 
     private void InitializeComponent()
@@ -2352,6 +2388,13 @@ namespace FanartHandler
       this.tabPage1 = new System.Windows.Forms.TabPage();
       this.tabControl2 = new System.Windows.Forms.TabControl();
       this.tabPage9 = new System.Windows.Forms.TabPage();
+      this.groupBoxCollection = new System.Windows.Forms.GroupBox();
+      this.checkBoxCollectionCDArtDownload = new System.Windows.Forms.CheckBox();
+      this.checkBoxCollectionClearLogoDownload = new System.Windows.Forms.CheckBox();
+      this.checkBoxCollectionBannerDownload = new System.Windows.Forms.CheckBox();
+      this.checkBoxCollectionClearArtDownload = new System.Windows.Forms.CheckBox();
+      this.checkBoxCollectionBackground = new System.Windows.Forms.CheckBox();
+      this.checkBoxCollectionPoster = new System.Windows.Forms.CheckBox();
       this.groupBoxAnimated = new System.Windows.Forms.GroupBox();
       this.checkBoxAnimatedBackground = new System.Windows.Forms.CheckBox();
       this.checkBoxAnimatedPoster = new System.Windows.Forms.CheckBox();
@@ -2405,6 +2448,7 @@ namespace FanartHandler
       this.groupBoxGUI = new System.Windows.Forms.GroupBox();
       this.checkBoxShowDummyItems = new System.Windows.Forms.CheckBox();
       this.groupBoxProviders = new System.Windows.Forms.GroupBox();
+      this.checkBoxUseTheMovieDB = new System.Windows.Forms.CheckBox();
       this.checkBoxSpotLight = new System.Windows.Forms.CheckBox();
       this.checkBoxUseAnimated = new System.Windows.Forms.CheckBox();
       this.label8 = new System.Windows.Forms.Label();
@@ -2444,6 +2488,7 @@ namespace FanartHandler
       this.tabPage1.SuspendLayout();
       this.tabControl2.SuspendLayout();
       this.tabPage9.SuspendLayout();
+      this.groupBoxCollection.SuspendLayout();
       this.groupBoxAnimated.SuspendLayout();
       this.groupBoxFanartTV.SuspendLayout();
       this.tabPage2.SuspendLayout();
@@ -3275,6 +3320,7 @@ namespace FanartHandler
       // 
       // tabPage9
       // 
+      this.tabPage9.Controls.Add(this.groupBoxCollection);
       this.tabPage9.Controls.Add(this.groupBoxAnimated);
       this.tabPage9.Controls.Add(this.groupBoxFanartTV);
       this.tabPage9.Controls.Add(this.label13);
@@ -3291,6 +3337,100 @@ namespace FanartHandler
       this.tabPage9.Text = "Fanart";
       this.tabPage9.UseVisualStyleBackColor = true;
       // 
+      // groupBoxCollection
+      // 
+      this.groupBoxCollection.Controls.Add(this.checkBoxCollectionCDArtDownload);
+      this.groupBoxCollection.Controls.Add(this.checkBoxCollectionClearLogoDownload);
+      this.groupBoxCollection.Controls.Add(this.checkBoxCollectionBannerDownload);
+      this.groupBoxCollection.Controls.Add(this.checkBoxCollectionClearArtDownload);
+      this.groupBoxCollection.Controls.Add(this.checkBoxCollectionBackground);
+      this.groupBoxCollection.Controls.Add(this.checkBoxCollectionPoster);
+      this.groupBoxCollection.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold);
+      this.groupBoxCollection.Location = new System.Drawing.Point(8, 353);
+      this.groupBoxCollection.Name = "groupBoxCollection";
+      this.groupBoxCollection.Size = new System.Drawing.Size(914, 98);
+      this.groupBoxCollection.TabIndex = 16;
+      this.groupBoxCollection.TabStop = false;
+      this.groupBoxCollection.Text = "Collection";
+      // 
+      // checkBoxCollectionCDArtDownload
+      // 
+      this.checkBoxCollectionCDArtDownload.AutoSize = true;
+      this.checkBoxCollectionCDArtDownload.Checked = true;
+      this.checkBoxCollectionCDArtDownload.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.checkBoxCollectionCDArtDownload.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.checkBoxCollectionCDArtDownload.Location = new System.Drawing.Point(669, 52);
+      this.checkBoxCollectionCDArtDownload.Name = "checkBoxCollectionCDArtDownload";
+      this.checkBoxCollectionCDArtDownload.Size = new System.Drawing.Size(126, 20);
+      this.checkBoxCollectionCDArtDownload.TabIndex = 16;
+      this.checkBoxCollectionCDArtDownload.Text = "CDArt Download";
+      this.checkBoxCollectionCDArtDownload.UseVisualStyleBackColor = true;
+      // 
+      // checkBoxCollectionClearLogoDownload
+      // 
+      this.checkBoxCollectionClearLogoDownload.AutoSize = true;
+      this.checkBoxCollectionClearLogoDownload.Checked = true;
+      this.checkBoxCollectionClearLogoDownload.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.checkBoxCollectionClearLogoDownload.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.checkBoxCollectionClearLogoDownload.Location = new System.Drawing.Point(416, 52);
+      this.checkBoxCollectionClearLogoDownload.Name = "checkBoxCollectionClearLogoDownload";
+      this.checkBoxCollectionClearLogoDownload.Size = new System.Drawing.Size(154, 20);
+      this.checkBoxCollectionClearLogoDownload.TabIndex = 15;
+      this.checkBoxCollectionClearLogoDownload.Text = "ClearLogo Download";
+      this.checkBoxCollectionClearLogoDownload.UseVisualStyleBackColor = true;
+      // 
+      // checkBoxCollectionBannerDownload
+      // 
+      this.checkBoxCollectionBannerDownload.AutoSize = true;
+      this.checkBoxCollectionBannerDownload.Checked = true;
+      this.checkBoxCollectionBannerDownload.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.checkBoxCollectionBannerDownload.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.checkBoxCollectionBannerDownload.Location = new System.Drawing.Point(195, 52);
+      this.checkBoxCollectionBannerDownload.Name = "checkBoxCollectionBannerDownload";
+      this.checkBoxCollectionBannerDownload.Size = new System.Drawing.Size(134, 20);
+      this.checkBoxCollectionBannerDownload.TabIndex = 14;
+      this.checkBoxCollectionBannerDownload.Text = "Banner Download";
+      this.checkBoxCollectionBannerDownload.UseVisualStyleBackColor = true;
+      // 
+      // checkBoxCollectionClearArtDownload
+      // 
+      this.checkBoxCollectionClearArtDownload.AutoSize = true;
+      this.checkBoxCollectionClearArtDownload.Checked = true;
+      this.checkBoxCollectionClearArtDownload.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.checkBoxCollectionClearArtDownload.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.checkBoxCollectionClearArtDownload.Location = new System.Drawing.Point(13, 52);
+      this.checkBoxCollectionClearArtDownload.Name = "checkBoxCollectionClearArtDownload";
+      this.checkBoxCollectionClearArtDownload.Size = new System.Drawing.Size(139, 20);
+      this.checkBoxCollectionClearArtDownload.TabIndex = 13;
+      this.checkBoxCollectionClearArtDownload.Text = "ClearArt Download";
+      this.checkBoxCollectionClearArtDownload.UseVisualStyleBackColor = true;
+      // 
+      // checkBoxCollectionBackground
+      // 
+      this.checkBoxCollectionBackground.AutoSize = true;
+      this.checkBoxCollectionBackground.Checked = true;
+      this.checkBoxCollectionBackground.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.checkBoxCollectionBackground.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.checkBoxCollectionBackground.Location = new System.Drawing.Point(195, 23);
+      this.checkBoxCollectionBackground.Name = "checkBoxCollectionBackground";
+      this.checkBoxCollectionBackground.Size = new System.Drawing.Size(164, 20);
+      this.checkBoxCollectionBackground.TabIndex = 12;
+      this.checkBoxCollectionBackground.Text = "Background Download";
+      this.checkBoxCollectionBackground.UseVisualStyleBackColor = true;
+      // 
+      // checkBoxCollectionPoster
+      // 
+      this.checkBoxCollectionPoster.AutoSize = true;
+      this.checkBoxCollectionPoster.Checked = true;
+      this.checkBoxCollectionPoster.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.checkBoxCollectionPoster.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.checkBoxCollectionPoster.Location = new System.Drawing.Point(13, 23);
+      this.checkBoxCollectionPoster.Name = "checkBoxCollectionPoster";
+      this.checkBoxCollectionPoster.Size = new System.Drawing.Size(130, 20);
+      this.checkBoxCollectionPoster.TabIndex = 11;
+      this.checkBoxCollectionPoster.Text = "Poster Download";
+      this.checkBoxCollectionPoster.UseVisualStyleBackColor = true;
+      // 
       // groupBoxAnimated
       // 
       this.groupBoxAnimated.Controls.Add(this.checkBoxAnimatedBackground);
@@ -3298,7 +3438,7 @@ namespace FanartHandler
       this.groupBoxAnimated.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold);
       this.groupBoxAnimated.Location = new System.Drawing.Point(8, 289);
       this.groupBoxAnimated.Name = "groupBoxAnimated";
-      this.groupBoxAnimated.Size = new System.Drawing.Size(532, 58);
+      this.groupBoxAnimated.Size = new System.Drawing.Size(914, 58);
       this.groupBoxAnimated.TabIndex = 15;
       this.groupBoxAnimated.TabStop = false;
       this.groupBoxAnimated.Text = "Animated";
@@ -3971,6 +4111,7 @@ namespace FanartHandler
       // 
       this.groupBoxProviders.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.groupBoxProviders.Controls.Add(this.checkBoxUseTheMovieDB);
       this.groupBoxProviders.Controls.Add(this.checkBoxSpotLight);
       this.groupBoxProviders.Controls.Add(this.checkBoxUseAnimated);
       this.groupBoxProviders.Controls.Add(this.label8);
@@ -3988,6 +4129,19 @@ namespace FanartHandler
       this.groupBoxProviders.TabIndex = 2;
       this.groupBoxProviders.TabStop = false;
       this.groupBoxProviders.Text = "Providers";
+      // 
+      // checkBoxUseTheMovieDB
+      // 
+      this.checkBoxUseTheMovieDB.AutoSize = true;
+      this.checkBoxUseTheMovieDB.Checked = true;
+      this.checkBoxUseTheMovieDB.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.checkBoxUseTheMovieDB.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.checkBoxUseTheMovieDB.Location = new System.Drawing.Point(172, 107);
+      this.checkBoxUseTheMovieDB.Name = "checkBoxUseTheMovieDB";
+      this.checkBoxUseTheMovieDB.Size = new System.Drawing.Size(107, 20);
+      this.checkBoxUseTheMovieDB.TabIndex = 20;
+      this.checkBoxUseTheMovieDB.Text = "TheMovieDB";
+      this.checkBoxUseTheMovieDB.UseVisualStyleBackColor = true;
       // 
       // checkBoxSpotLight
       // 
@@ -4299,6 +4453,8 @@ namespace FanartHandler
       this.tabControl2.ResumeLayout(false);
       this.tabPage9.ResumeLayout(false);
       this.tabPage9.PerformLayout();
+      this.groupBoxCollection.ResumeLayout(false);
+      this.groupBoxCollection.PerformLayout();
       this.groupBoxAnimated.ResumeLayout(false);
       this.groupBoxAnimated.PerformLayout();
       this.groupBoxFanartTV.ResumeLayout(false);
@@ -4420,30 +4576,30 @@ namespace FanartHandler
       comboBoxFanartTVLanguage.DataSource = null;
       comboBoxFanartTVLanguage.Items.Clear();
       List<KeyValuePair<string, string>> Languages = new List<KeyValuePair<string, string>>();
-      Languages.Add(new KeyValuePair<string, string>("",  "All"));
-      Languages.Add(new KeyValuePair<string, string>("en","English"));
-      Languages.Add(new KeyValuePair<string, string>("ru","Russian"));
-      Languages.Add(new KeyValuePair<string, string>("fr","French"));
-      Languages.Add(new KeyValuePair<string, string>("de","German"));
-      Languages.Add(new KeyValuePair<string, string>("ja","Japanese"));
-      Languages.Add(new KeyValuePair<string, string>("zh","Chinese"));
-      Languages.Add(new KeyValuePair<string, string>("es","Spanish"));
-      Languages.Add(new KeyValuePair<string, string>("it","Italian"));
-      Languages.Add(new KeyValuePair<string, string>("pt","Portuguese"));
-      Languages.Add(new KeyValuePair<string, string>("sv","Swedish"));
-      Languages.Add(new KeyValuePair<string, string>("nl","Dutch"));
-      Languages.Add(new KeyValuePair<string, string>("ar","Arabic"));
-      Languages.Add(new KeyValuePair<string, string>("ko","Korean"));
-      Languages.Add(new KeyValuePair<string, string>("no","Norwegian"));
-      Languages.Add(new KeyValuePair<string, string>("hu","Hungarian"));
-      Languages.Add(new KeyValuePair<string, string>("da","Danish"));
-      Languages.Add(new KeyValuePair<string, string>("hi","Hindi"));
-      Languages.Add(new KeyValuePair<string, string>("is","Icelandic"));
-      Languages.Add(new KeyValuePair<string, string>("pl","Polish"));
-      Languages.Add(new KeyValuePair<string, string>("he","Hebrew (modern)"));
-      Languages.Add(new KeyValuePair<string, string>("bg","Bulgarian"));
-      Languages.Add(new KeyValuePair<string, string>("fi","Finnish"));
-      Languages.Add(new KeyValuePair<string, string>("xx","Unknown"));
+      Languages.Add(new KeyValuePair<string, string>("", "All"));
+      Languages.Add(new KeyValuePair<string, string>("en", "English"));
+      Languages.Add(new KeyValuePair<string, string>("ru", "Russian"));
+      Languages.Add(new KeyValuePair<string, string>("fr", "French"));
+      Languages.Add(new KeyValuePair<string, string>("de", "German"));
+      Languages.Add(new KeyValuePair<string, string>("ja", "Japanese"));
+      Languages.Add(new KeyValuePair<string, string>("zh", "Chinese"));
+      Languages.Add(new KeyValuePair<string, string>("es", "Spanish"));
+      Languages.Add(new KeyValuePair<string, string>("it", "Italian"));
+      Languages.Add(new KeyValuePair<string, string>("pt", "Portuguese"));
+      Languages.Add(new KeyValuePair<string, string>("sv", "Swedish"));
+      Languages.Add(new KeyValuePair<string, string>("nl", "Dutch"));
+      Languages.Add(new KeyValuePair<string, string>("ar", "Arabic"));
+      Languages.Add(new KeyValuePair<string, string>("ko", "Korean"));
+      Languages.Add(new KeyValuePair<string, string>("no", "Norwegian"));
+      Languages.Add(new KeyValuePair<string, string>("hu", "Hungarian"));
+      Languages.Add(new KeyValuePair<string, string>("da", "Danish"));
+      Languages.Add(new KeyValuePair<string, string>("hi", "Hindi"));
+      Languages.Add(new KeyValuePair<string, string>("is", "Icelandic"));
+      Languages.Add(new KeyValuePair<string, string>("pl", "Polish"));
+      Languages.Add(new KeyValuePair<string, string>("he", "Hebrew (modern)"));
+      Languages.Add(new KeyValuePair<string, string>("bg", "Bulgarian"));
+      Languages.Add(new KeyValuePair<string, string>("fi", "Finnish"));
+      Languages.Add(new KeyValuePair<string, string>("xx", "Unknown"));
       comboBoxFanartTVLanguage.DataSource = new BindingSource(Languages, null);
       comboBoxFanartTVLanguage.ValueMember = "Key";
       comboBoxFanartTVLanguage.DisplayMember = "Value";
@@ -4516,9 +4672,9 @@ namespace FanartHandler
 
     private void InitFanartHandlerConfig()
     {
-      try                                 
-      {                                   
-        InitLogger();                     
+      try
+      {
+        InitLogger();
       }
       catch (Exception ex)
       {
@@ -4557,9 +4713,9 @@ namespace FanartHandler
       prompt.FormBorderStyle = FormBorderStyle.FixedDialog;
       prompt.Text = caption;
       prompt.StartPosition = FormStartPosition.CenterScreen;
-      Label textLabel = new Label() { Left = 50, Top=20, Width=400, Text=text };
-      TextBox textBox = new TextBox() { Left = 50, Top=50, Width=400, Text=deftext };
-      Button confirmation = new Button() { Text = "Ok", Left=350, Width=100, Top=80 };
+      Label textLabel = new Label() { Left = 50, Top = 20, Width = 400, Text = text };
+      TextBox textBox = new TextBox() { Left = 50, Top = 50, Width = 400, Text = deftext };
+      Button confirmation = new Button() { Text = "Ok", Left = 350, Width = 100, Top = 80 };
       confirmation.Click += (sender, e) => { prompt.Close(); };
       prompt.Controls.Add(textBox);
       prompt.Controls.Add(confirmation);

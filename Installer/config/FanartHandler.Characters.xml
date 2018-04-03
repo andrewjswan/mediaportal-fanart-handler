@@ -71,7 +71,7 @@
     <character name="spidey super stories">spider-man</character>
     <character name="blade">vampire</character>
     <character name="the 33">mine</character>
-    <character name="star wars">luke skywalker|darth vader|r2-d2|c3po|star wars rebel|star wars empire</character>
+    <character name="star wars">luke skywalker|darth vader|yoda|r2-d2|c3po|star wars rebel|star wars empire</character>
     <character name="muppet">cookie-monster</character>
     <character name="space odyssey">hal-9000</character>
     <character name="warcraft">orc</character>
@@ -83,6 +83,44 @@
     <character name="turbo-charged prelude">steering-wheel</character>
     <character name="los bandoleros">steering-wheel</character>
     <character name="legends of tomorrow">firestorm</character>
+    <character name="backdraft">fireman</character>
+    <character name="firehouse dog">fireman</character>
+    <character name="fireproof">fireman</character>
+    <character name="only the brave">fireman</character>
+    <character name="coco">skeleton</character>
+    <character name="28 days later">biohazard</character>
+    <character name="i am legend">biohazard</character>
+    <character name="twelve monkeys">cyberpunk|biohazard</character>
+    <character name="resident evil">biohazard</character>
+    <character name="the happening">biohazard</character>
+    <character name="altered carbon">cyberpunk</character>
+    <character name="blade runner">cyberpunk</character>
+    <character name="gattaca">cyberpunk</character>
+    <character name="total recall">cyberpunk</character>
+    <character name="metropolis">cyberpunk</character>
+    <character name="equilibrium">cyberpunk</character>
+    <character name="the fifth element">cyberpunk|air element|fire element|water element|earth element</character>
+    <character name="the running man">cyberpunk</character>
+    <character name="dredd">cyberpunk</character>
+    <character name="the thirteenth floor">cyberpunk</character>
+    <character name="akira">cyberpunk</character>
+    <character name="ghost in the shell">cyberpunk</character>
+    <character name="i robot">cyberpunk</character>
+    <character name="i, robot">cyberpunk</character>
+    <character name="surrogates">cyberpunk</character>
+    <character name="repo men">cyberpunk</character>
+    <character name="johnny mnemonic">cyberpunk</character>
+    <character name="new rose hotel">cyberpunk</character>
+    <character name="matrix">matrix|neo|trinity|morpheus|agent smith</character>
+    <character name="tron">identity-disc</character>
+    <character name="the league of extraordinary gentlemen">steampunk</character>
+    <character name="van helsing">steampunk</character>
+    <character name="wild wild west">steampunk</character>
+    <character name="howl's moving castle">steampunk</character>
+    <character name="the illusionist">steampunk</character>
+    <character name="doctor who">tardis</character>
+    <!-- UKRAINE -->
+    <character name="киборги">ukraine|helmet</character>
     <!-- RUSSIAN -->
     <character name="мост">bridge</character>
     <!-- GERMAN -->

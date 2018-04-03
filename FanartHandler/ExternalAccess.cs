@@ -1,5 +1,5 @@
 ﻿// Type: FanartHandler.ExternalAccess
-// Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
+// Assembly: FanartHandler, Version=4.0.3.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 
 extern alias FHNLog;
@@ -40,7 +40,7 @@ namespace FanartHandler
 
     public Hashtable GetFanart(string artist, string album, string type)
     {
-      return Utils.GetDbm().GetFanart(artist, album, Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartScraped, true);
+      return Utils.DBm.GetFanart(artist, album, Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartScraped, true);
     }
 
     public static string GetMyVideoFanart(string title)
@@ -49,7 +49,7 @@ namespace FanartHandler
       try
       {
         title = Utils.GetArtist(title, Utils.Category.Movie, Utils.SubCategory.MovieScraped);
-        var fanart = Utils.GetDbm().GetFanart(title, null, Utils.Category.Movie, Utils.SubCategory.MovieScraped, true);
+        var fanart = Utils.DBm.GetFanart(title, null, Utils.Category.Movie, Utils.SubCategory.MovieScraped, true);
         if (fanart != null)
         {
           if (fanart.Count > 0)
@@ -87,8 +87,26 @@ namespace FanartHandler
         {
           tvshow = tvshow + "|" + tvshowid;
         }
-        var values = Utils.GetDbm().GetFanart(tvshow, null, Utils.Category.TV, Utils.SubCategory.TVManual, false).Values;
-        var num = 0;
+
+        var values = Utils.DBm.GetFanart(tvshow, null, Utils.Category.TV, Utils.SubCategory.None, false).Values;
+        if (values == null || values.Count == 0)
+        {
+          values = Utils.DBm.GetFanart(tvshow, null, Utils.Category.TVSeries, Utils.SubCategory.None, false).Values;
+        }
+        if (values == null || values.Count == 0)
+        {
+          values = Utils.DBm.GetFanart(tvshow, null, Utils.Category.Movie, Utils.SubCategory.None, false).Values;
+        }
+        if (values == null || values.Count == 0)
+        {
+          values = Utils.DBm.GetFanart(tvshow, null, Utils.Category.MovingPicture, Utils.SubCategory.None, false).Values;
+        }
+        if (values == null || values.Count == 0)
+        {
+          values = Utils.DBm.GetFanart(tvshow, null, Utils.Category.MyFilms, Utils.SubCategory.None, false).Values;
+        }
+
+        int num = 0;
         foreach (FanartImage fanartImage in values)
         {
           if (num < 2)
@@ -134,7 +152,7 @@ namespace FanartHandler
               Utils.IsScraping = true;
               Utils.AllocateDelayStop("FanartHandlerSetup-StartScraperExternal");
 
-              Utils.GetDbm().ArtistAlbumScrape(artist, album);
+              Utils.DBm.ArtistAlbumScrape(artist, album);
 
               Utils.ReleaseDelayStop("FanartHandlerSetup-StartScraperExternal");
               Utils.IsScraping = false;
@@ -263,6 +281,27 @@ namespace FanartHandler
       string result = scraper.LastFMGetAlbum(artist, track);
       scraper = null;
       return result;
+    }
+
+    public static string GetAnimatedForLatestMedia(string key1, string key2, string key3, string category)
+    {
+      if (string.IsNullOrEmpty(category))
+        return string.Empty ;
+
+      Utils.Animated animatedType = Utils.Animated.None;
+      if (!Enum.TryParse(category, out animatedType))
+        return string.Empty;
+      if (!Enum.IsDefined(typeof(Utils.Animated), animatedType))  
+        return string.Empty;
+
+      var filename = Utils.GetAnimatedFileName(key1, key2, key3, animatedType);
+
+      if (!string.IsNullOrEmpty(filename) && File.Exists(filename))
+      {
+        return filename;
+      }
+
+      return string.Empty;
     }
 
     public delegate void ScraperCompletedHandler(string type, string artist);

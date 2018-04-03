@@ -1,5 +1,5 @@
 // Type: FanartHandler.FanartSelectedOther
-// Assembly: FanartHandler, Version=4.0.2.0, Culture=neutral, PublicKeyToken=null
+// Assembly: FanartHandler, Version=4.0.3.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 
 extern alias FHNLog;
@@ -267,7 +267,7 @@ namespace FanartHandler
       {
         if (!Utils.GetIsStopping())
         {
-          key = Utils.GetArtist(key, category, Utils.SubCategory.None);
+          key = Utils.GetArtist(key, category);
           var filenames = GetCurrentSelectedImageNames(category);
 
           if (newArtist || filenames == null || filenames.Count == 0)
@@ -386,8 +386,8 @@ namespace FanartHandler
     {
       if ((Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID) && (ControlImageVisible != 0))
       {
-        GUIControl.HideControl(Utils.iActiveWindow, 91919281);
-        GUIControl.HideControl(Utils.iActiveWindow, 91919282);
+        Utils.HideControl(Utils.iActiveWindow, 91919281);
+        Utils.HideControl(Utils.iActiveWindow, 91919282);
         DoShowImageOne = true;
         ControlImageVisible = 0;
         // logger.Debug("*** Hide all weather fanart [91919281,91919282]... ");
@@ -398,7 +398,7 @@ namespace FanartHandler
     {
       if ((Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID) && (ControlVisible != 1))
       {
-        GUIControl.ShowControl(Utils.iActiveWindow, 91919283);
+        Utils.ShowControl(Utils.iActiveWindow, 91919283);
         ControlVisible = 1;
         // logger.Debug("*** Show weather fanart [91919283]...");
       }
@@ -408,7 +408,7 @@ namespace FanartHandler
     {
       if ((Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID) && (ControlVisible != 0))
       {
-        GUIControl.HideControl(Utils.iActiveWindow, 91919283);
+        Utils.HideControl(Utils.iActiveWindow, 91919283);
         ControlVisible = 0;
         // logger.Debug("*** Hide weather fanart [91919283]...");
       }
@@ -418,8 +418,8 @@ namespace FanartHandler
     {
       if (Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
       {
-        GUIControl.ShowControl(Utils.iActiveWindow, 91919281);
-        GUIControl.HideControl(Utils.iActiveWindow, 91919282);
+        Utils.ShowControl(Utils.iActiveWindow, 91919281);
+        Utils.HideControl(Utils.iActiveWindow, 91919282);
         DoShowImageOne = false;
         ControlImageVisible = 1;
         // logger.Debug("*** First weather fanart [91919281] visible ...");
@@ -434,8 +434,8 @@ namespace FanartHandler
     {
       if (Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
       {
-        GUIControl.ShowControl(Utils.iActiveWindow, 91919282);
-        GUIControl.HideControl(Utils.iActiveWindow, 91919281);
+        Utils.ShowControl(Utils.iActiveWindow, 91919282);
+        Utils.HideControl(Utils.iActiveWindow, 91919281);
         DoShowImageOne = true;
         ControlImageVisible = 1;
         // logger.Debug("*** Second weather fanart [91919282] visible ...");
