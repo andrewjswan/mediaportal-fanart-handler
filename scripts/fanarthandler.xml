@@ -136,7 +136,7 @@
 </ExtensionDescription>
         <VersionDescription>Compatibility with MediaPortal 1.12</VersionDescription>
         <DevelopmentStatus>Stable</DevelopmentStatus>
-        <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-4.0.2.204.mpe1</OnlineLocation>
+        <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-4.0.2.204.mpe1</OnlineLocation>
         <ReleaseDate>2015-08-04T23:39:09.6171556+03:00</ReleaseDate>
         <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper</Tags>
         <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
@@ -305,7 +305,7 @@
 </ExtensionDescription>
         <VersionDescription>Compatibility with MediaPortal 1.12</VersionDescription>
         <DevelopmentStatus>Stable</DevelopmentStatus>
-        <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-4.0.2.207.mpe1</OnlineLocation>
+        <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-4.0.2.207.mpe1</OnlineLocation>
         <ReleaseDate>2015-08-14T21:25:38.2903737+03:00</ReleaseDate>
         <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper</Tags>
         <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
@@ -475,7 +475,7 @@
         <VersionDescription>+ Add Localization for Fanart Handler properties
 * Fix compatibility with LatestMediaHandler-2.3.0.40</VersionDescription>
         <DevelopmentStatus>Stable</DevelopmentStatus>
-        <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-4.0.2.212.mpe1</OnlineLocation>
+        <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-4.0.2.212.mpe1</OnlineLocation>
         <ReleaseDate>2015-09-23T19:30:11.758931+03:00</ReleaseDate>
         <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper</Tags>
         <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
@@ -654,7 +654,7 @@
 + Add property
 #fanarthandler.scraper.percent.sign</VersionDescription>
         <DevelopmentStatus>Stable</DevelopmentStatus>
-        <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-4.0.2.213.mpe1</OnlineLocation>
+        <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-4.0.2.213.mpe1</OnlineLocation>
         <ReleaseDate>2015-09-26T11:41:35.1060426+03:00</ReleaseDate>
         <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper</Tags>
         <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
@@ -831,7 +831,7 @@
 </ExtensionDescription>
         <VersionDescription>* small internal fixes</VersionDescription>
         <DevelopmentStatus>Stable</DevelopmentStatus>
-        <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-4.0.2.214.mpe1</OnlineLocation>
+        <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-4.0.2.214.mpe1</OnlineLocation>
         <ReleaseDate>2015-10-01T22:53:19.519135+03:00</ReleaseDate>
         <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper</Tags>
         <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
@@ -1008,7 +1008,7 @@
 </ExtensionDescription>
         <VersionDescription>* small internal fixes</VersionDescription>
         <DevelopmentStatus>Stable</DevelopmentStatus>
-        <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-4.0.2.215.mpe1</OnlineLocation>
+        <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-4.0.2.215.mpe1</OnlineLocation>
         <ReleaseDate>2015-10-05T23:27:29.1771155+03:00</ReleaseDate>
         <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper</Tags>
         <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
@@ -1193,7 +1193,7 @@
 If Slide show activated (#fanarthandler.pictures.slideshow.enabled = true) and #skin.fanarthandler.pictures.slideshow.enabled = true then when playing music should show your pictures but not the backdrop for an artist.
 + Add new tab in Configurator for SlideShow</VersionDescription>
         <DevelopmentStatus>Stable</DevelopmentStatus>
-        <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-4.0.2.217.mpe1</OnlineLocation>
+        <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-4.0.2.217.mpe1</OnlineLocation>
         <ReleaseDate>2015-11-01T17:18:10.7167032+02:00</ReleaseDate>
         <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper</Tags>
         <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
@@ -1372,7 +1372,7 @@ If Slide show activated (#fanarthandler.pictures.slideshow.enabled = true) and #
 * Fixes for MyPictures slide show
 </VersionDescription>
         <DevelopmentStatus>Stable</DevelopmentStatus>
-        <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-4.0.2.219.mpe1</OnlineLocation>
+        <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-4.0.2.219.mpe1</OnlineLocation>
         <ReleaseDate>2015-11-05T23:30:25.045468+02:00</ReleaseDate>
         <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper</Tags>
         <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
@@ -1550,7 +1550,7 @@ If Slide show activated (#fanarthandler.pictures.slideshow.enabled = true) and #
         <VersionDescription>* Cosmetic
 </VersionDescription>
         <DevelopmentStatus>Stable</DevelopmentStatus>
-        <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-4.0.2.220.mpe1</OnlineLocation>
+        <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-4.0.2.220.mpe1</OnlineLocation>
         <ReleaseDate>2015-11-12T20:08:55.266766+02:00</ReleaseDate>
         <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper</Tags>
         <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
@@ -1727,7 +1727,7 @@ If Slide show activated (#fanarthandler.pictures.slideshow.enabled = true) and #
 </ExtensionDescription>
         <VersionDescription>* Fix for suspend/resume</VersionDescription>
         <DevelopmentStatus>Stable</DevelopmentStatus>
-        <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-4.0.2.221.mpe1</OnlineLocation>
+        <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-4.0.2.221.mpe1</OnlineLocation>
         <ReleaseDate>2015-11-23T13:44:27.542348+02:00</ReleaseDate>
         <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper</Tags>
         <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
@@ -1904,7 +1904,7 @@ If Slide show activated (#fanarthandler.pictures.slideshow.enabled = true) and #
 </ExtensionDescription>
         <VersionDescription>* Cosmetic</VersionDescription>
         <DevelopmentStatus>Stable</DevelopmentStatus>
-        <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-4.0.2.223.mpe1</OnlineLocation>
+        <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-4.0.2.223.mpe1</OnlineLocation>
         <ReleaseDate>2015-11-28T12:56:58.3932652+02:00</ReleaseDate>
         <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper</Tags>
         <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
@@ -2110,7 +2110,7 @@ Added FanartHandler.Studios.xml thx @catavolt
 #fanarthandler.picture.backdrop.selected
 </VersionDescription>
         <DevelopmentStatus>Stable</DevelopmentStatus>
-        <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-4.0.2.224.mpe1</OnlineLocation>
+        <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-4.0.2.224.mpe1</OnlineLocation>
         <ReleaseDate>2016-03-03T00:14:26.4654999+02:00</ReleaseDate>
         <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper</Tags>
         <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
@@ -2287,7 +2287,7 @@ Added FanartHandler.Studios.xml thx @catavolt
 </ExtensionDescription>
         <VersionDescription>Fix Moving Pictures support</VersionDescription>
         <DevelopmentStatus>Stable</DevelopmentStatus>
-        <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-4.0.2.225.mpe1</OnlineLocation>
+        <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-4.0.2.225.mpe1</OnlineLocation>
         <ReleaseDate>2016-03-06T17:31:47.2534028+02:00</ReleaseDate>
         <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper</Tags>
         <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
@@ -2470,7 +2470,7 @@ Add properties:
 #fanarthandler.movie.awards.selected.verticalall
 </VersionDescription>
         <DevelopmentStatus>Stable</DevelopmentStatus>
-        <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-4.0.2.226.mpe1</OnlineLocation>
+        <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-4.0.2.226.mpe1</OnlineLocation>
         <ReleaseDate>2016-03-13T18:16:19.6396149+02:00</ReleaseDate>
         <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper</Tags>
         <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
@@ -2683,7 +2683,7 @@ Add Awards support ...
 Add Awards, Genres, Studios packages...
 </VersionDescription>
         <DevelopmentStatus>Stable</DevelopmentStatus>
-        <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-4.0.2.229.mpe1</OnlineLocation>
+        <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-4.0.2.229.mpe1</OnlineLocation>
         <ReleaseDate>2016-03-30T12:58:20.3832872+03:00</ReleaseDate>
         <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios</Tags>
         <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
@@ -2900,7 +2900,7 @@ Skeeners! Properties changed:
 #fanarthandler.movie.genres.selected -&gt; #fanarthandler.movie.genres.selected.single
 #fanarthandler.movie.awards.selected -&gt; #fanarthandler.movie.awards.selected.single</VersionDescription>
         <DevelopmentStatus>Stable</DevelopmentStatus>
-        <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-4.0.2.234.mpe1</OnlineLocation>
+        <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-4.0.2.234.mpe1</OnlineLocation>
         <ReleaseDate>2016-06-21T22:40:15.5223481+03:00</ReleaseDate>
         <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios</Tags>
         <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
@@ -3109,7 +3109,7 @@ Skeeners! Properties changed:
 </ExtensionDescription>
         <VersionDescription>Fix Fanart due HtBackdrops site down</VersionDescription>
         <DevelopmentStatus>Stable</DevelopmentStatus>
-        <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-4.0.2.239.mpe1</OnlineLocation>
+        <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-4.0.2.239.mpe1</OnlineLocation>
         <ReleaseDate>2016-07-12T21:46:51.3252083+03:00</ReleaseDate>
         <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios</Tags>
         <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
@@ -3318,7 +3318,7 @@ Skeeners! Properties changed:
 </ExtensionDescription>
         <VersionDescription>Cosmetic Fix for MultiArtists shared view Music Fanart</VersionDescription>
         <DevelopmentStatus>Stable</DevelopmentStatus>
-        <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-4.0.2.240.mpe1</OnlineLocation>
+        <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-4.0.2.240.mpe1</OnlineLocation>
         <ReleaseDate>2016-07-24T13:38:21.8227192+03:00</ReleaseDate>
         <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios</Tags>
         <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
@@ -3537,7 +3537,7 @@ Add TheAudioDB support. Thanks @zag2me
 Turn off htBackdrops support due shutdown
 Small cosmetic bug fixes.</VersionDescription>
         <DevelopmentStatus>Stable</DevelopmentStatus>
-        <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-4.0.2.244.mpe1</OnlineLocation>
+        <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-4.0.2.244.mpe1</OnlineLocation>
         <ReleaseDate>2017-01-21T15:38:56.3730607+02:00</ReleaseDate>
         <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios</Tags>
         <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
@@ -3746,7 +3746,7 @@ Small cosmetic bug fixes.</VersionDescription>
 </ExtensionDescription>
         <VersionDescription>Audio DB fix...</VersionDescription>
         <DevelopmentStatus>Stable</DevelopmentStatus>
-        <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-4.0.2.245.mpe1</OnlineLocation>
+        <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-4.0.2.245.mpe1</OnlineLocation>
         <ReleaseDate>2017-01-21T16:11:24.2057565+02:00</ReleaseDate>
         <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios</Tags>
         <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
@@ -3958,7 +3958,7 @@ Small cosmetic bug fixes.</VersionDescription>
 * Bug fixes, optimizations and internal rework
 * Music Record Label support</VersionDescription>
         <DevelopmentStatus>Stable</DevelopmentStatus>
-        <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-4.0.2.253.mpe1</OnlineLocation>
+        <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-4.0.2.253.mpe1</OnlineLocation>
         <ReleaseDate>2017-11-15T20:04:35.5797156+02:00</ReleaseDate>
         <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios</Tags>
         <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
@@ -4167,7 +4167,7 @@ Small cosmetic bug fixes.</VersionDescription>
 </ExtensionDescription>
         <VersionDescription>* Fix for Studios with /</VersionDescription>
         <DevelopmentStatus>Stable</DevelopmentStatus>
-        <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-4.0.2.260.mpe1</OnlineLocation>
+        <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-4.0.2.260.mpe1</OnlineLocation>
         <ReleaseDate>2017-11-21T20:56:11.862968+02:00</ReleaseDate>
         <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios</Tags>
         <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
@@ -4396,7 +4396,7 @@ Bug fixes
 Animated support
 And more</VersionDescription>
         <DevelopmentStatus>Stable</DevelopmentStatus>
-        <OnlineLocation>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/builds/FanartHandler-4.0.3.265.mpe1</OnlineLocation>
+        <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-4.0.3.265.mpe1</OnlineLocation>
         <ReleaseDate>2018-04-03T11:27:20.2823352+03:00</ReleaseDate>
         <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios</Tags>
         <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
