@@ -154,6 +154,7 @@ namespace FanartHandler
     public static bool AddOtherPicturesToCache { get; set; }
     public static int HolidayShow { get; set; }
     public static bool HolidayShowAllDay { get; set; }
+    public static int HolidayEaster { get; set; }      // 0 - Auto, 1 - Western, 2 - Eastern
     #endregion
 
     #region Cleanup
@@ -5936,6 +5937,7 @@ namespace FanartHandler
       AddOtherPicturesToCache = true;
       HolidayShow = 5;
       HolidayShowAllDay = false;
+      HolidayEaster = 0;
       #endregion
       #region Cleadup
       CleanUpFanart = false;
@@ -6086,6 +6088,7 @@ namespace FanartHandler
           AddOtherPicturesToCache = settings.GetValueAsBool("FanartHandler", "AddOtherPicturesToCache", AddOtherPicturesToCache);
           HolidayShow = settings.GetValueAsInt("FanartHandler", "HolidayShow", HolidayShow);
           HolidayShowAllDay = settings.GetValueAsBool("FanartHandler", "HolidayShowAllDay", HolidayShowAllDay);
+          HolidayEaster = settings.GetValueAsInt("FanartHandler", "HolidayEaster", HolidayEaster);
           //
           UseFanartTV = settings.GetValueAsBool("Providers", "UseFanartTV", UseFanartTV);
           UseHtBackdrops = settings.GetValueAsBool("Providers", "UseHtBackdrops", UseHtBackdrops);
@@ -6286,6 +6289,10 @@ namespace FanartHandler
       {
         logger.Debug("Movies info: " + Check(GetMoviesAwards) + " Awards");
       }
+      if (HolidayEaster == 0)
+      {
+        HolidayEaster = (HolidayLanguage == "RU" ? 2 : HolidayLanguage == "HE" ? 3 : 1);
+      }
       #endregion
       //
       #region Debug
@@ -6389,6 +6396,7 @@ namespace FanartHandler
           // xmlwriter.SetValue("FanartHandler", "LimitNumberFanart", LimitNumberFanart);
           xmlwriter.SetValue("FanartHandler", "HolidayShow", HolidayShow);
           xmlwriter.SetValueAsBool("FanartHandler", "HolidayShowAllDay", HolidayShowAllDay);
+          xmlwriter.SetValue("FanartHandler", "HolidayEaster", HolidayEaster);
           //
           xmlwriter.SetValueAsBool("Providers", "UseFanartTV", UseFanartTV);
           xmlwriter.SetValueAsBool("Providers", "UseHtBackdrops", UseHtBackdrops);

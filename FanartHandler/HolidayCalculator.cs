@@ -167,6 +167,14 @@ namespace JayMuntzCom
       {
         h.Date = this.easter();
       }
+      else if (childNodes.Contains("DSTStart"))
+      {
+        h.Date = this.dststart();
+      }
+      else if (childNodes.Contains("DSTEnd"))
+      {
+        h.Date = this.dstend();
+      }
       else if (childNodes.Contains("NearestWeekday"))
       {
         int m = Int32.Parse(n.SelectSingleNode("./NearestWeekday/Month").InnerXml.ToString());
@@ -249,22 +257,86 @@ namespace JayMuntzCom
     /// <returns></returns>
     private DateTime easter(int y)
     {
-      int a = y % 19;
-      int b = y / 100;
-      int c = y % 100;
-      int d = b / 4;
-      int e = b % 4;
-      int f = (b + 8) / 25;
-      int g = (b - f + 1) / 3;
-      int h = (19 * a + b - d - g + 15) % 30;
-      int i = c / 4;
-      int k = c % 4;
-      int l = (32 + 2 * e + 2 * i - h - k) % 7;
-      int m = (a + 11 * h + 22 * l) / 451;
-      int easterMonth = (h + l - 7 * m + 114) / 31;
-      int p = (h + l - 7 * m + 114) % 31;
-      int easterDay = p + 1;
-      DateTime est = new DateTime(y, easterMonth, easterDay);
+      DateTime est;
+      int easterMonth;
+      int easterDay;
+
+      if (Utils.HolidayEaster == 1)
+      {
+        // Western - Catholic Easter
+        int a = y % 19;
+        int b = y / 100;
+        int c = y % 100;
+        int d = b / 4;
+        int e = b % 4;
+        int f = (b + 8) / 25;
+        int g = (b - f + 1) / 3;
+        int h = (19 * a + b - d - g + 15) % 30;
+        int i = c / 4;
+        int k = c % 4;
+        int l = (32 + 2 * e + 2 * i - h - k) % 7;
+        int m = (a + 11 * h + 22 * l) / 451;
+        easterMonth = (h + l - 7 * m + 114) / 31;
+        int p = (h + l - 7 * m + 114) % 31;
+        easterDay = p + 1;
+      }
+      else if (Utils.HolidayEaster == 2) 
+      {
+        // Eastern - Orthodox Easter
+        int a = y % 19;
+        int b = y % 7;
+        int c = y % 4;
+     
+        int d = (19 * a + 16) % 30;
+        int e = (2 * c + 4 * b + 6 * d) % 7;
+        int f = (19 * a + 16) % 30;
+        int key = f + e + 3;
+     
+        easterMonth = (key > 30) ? 5 : 4;
+        easterDay = (key > 30) ? key - 30 : key;
+      }
+      else // if (Utils.HolidayEaster == 3) 
+      {
+        // Hebrew - Passover - Pesach 
+        int a = (12 * y + 12) % 19;
+        int b = y % 4;
+        double f = 20.0955877 + 1.5542418 * a + 0.25 * b - 0.003177794 * y;
+        int M = (int)f;
+        double m = f % 1.0;
+        int c = (M + 3 * y + 5 * b + 1) % 7;
+
+        easterMonth = 3;
+        easterDay = M;
+        if (c == 2 || c == 4 || c == 6)
+        {
+          easterDay = M + 1;
+        }
+        else if (c == 1 && a > 6 && m > 0.63287037)
+        {
+          easterDay = M + 2;
+        }
+        else if (c == 0 && a > 11 && m > 0.89772376)
+        {
+          easterDay = M + 1;
+        }
+        if (M > 31)
+        {
+          easterMonth = 4;
+          easterDay = M - 31;
+        }
+
+        DateTime old = new DateTime(y, easterMonth, easterDay);
+        old = old.AddDays(13);
+        if (old.DayOfWeek == DayOfWeek.Monday || old.DayOfWeek == DayOfWeek.Wednesday || old.DayOfWeek == DayOfWeek.Friday)
+        {
+          old = old.AddDays(1);
+        }
+
+        easterMonth = old.Month;
+        easterDay = old.Day;
+      }
+
+      est = new DateTime(y, easterMonth, easterDay);
       if (est < this.startingDate)
       {
         return this.easter(y + 1);
@@ -272,6 +344,159 @@ namespace JayMuntzCom
       else
       {
         return new DateTime(y, easterMonth, easterDay);
+      }
+    }
+
+    /// <summary>
+    /// Determines the occurance of Daylight Savings Start Date.
+    /// </summary>
+    /// <param name="y"></param>
+    /// <returns></returns>
+    private DateTime dststart()
+    {
+      DateTime workDate = this.getFirstDayOfMonth(this.startingDate);
+      int y = workDate.Year;
+      return this.dststart(y);
+    }
+
+    /// <summary>
+    /// Determines the occurance of Daylight Savings End Date.
+    /// </summary>
+    /// <param name="y"></param>
+    /// <returns></returns>
+    private DateTime dstend()
+    {
+      DateTime workDate = this.getFirstDayOfMonth(this.startingDate);
+      int y = workDate.Year;
+      return this.dstend(y);
+    }
+
+    /// <summary>
+    /// Determines the occurance of Daylight Savings Start Date in the given year. If the result comes before StartDate, recalculates for the following year.
+    /// </summary>
+    /// <param name="y"></param>
+    /// <returns></returns>
+    private DateTime dststart(int y)
+    {
+      TimeZoneInfo timeZoneInfo = TimeZoneInfo.Local;
+      TimeZoneInfo.AdjustmentRule[] adjustmentRules = timeZoneInfo.GetAdjustmentRules();
+
+      DateTime dst = this.GetDaylightSavingsStartDateForYear(adjustmentRules, y);
+      if (dst < this.startingDate)
+      {
+        return this.dststart(y + 1);
+      }
+      else
+      {
+        return dst;
+      }
+    }
+
+    /// <summary>
+    /// Determines the occurance of Daylight Savings End Date in the given year. If the result comes before StartDate, recalculates for the following year.
+    /// </summary>
+    /// <param name="y"></param>
+    /// <returns></returns>
+    private DateTime dstend(int y)
+    {
+      TimeZoneInfo timeZoneInfo = TimeZoneInfo.Local;
+      TimeZoneInfo.AdjustmentRule[] adjustmentRules = timeZoneInfo.GetAdjustmentRules();
+
+      DateTime dst = this.GetDaylightSavingsEndDateForYear(adjustmentRules, y);
+      if (dst < this.startingDate)
+      {
+        return this.dstend(y + 1);
+      }
+      else
+      {
+        return dst;
+      }
+    }
+
+    /// <summary>
+    /// Determines the occurance of Daylight Savings Start Date in the given year and Adjustment Rules.
+    /// </summary>
+    /// <param name="adjustmentRules"></param>
+    /// <param name="year"></param>
+    /// <returns></returns>
+    private DateTime GetDaylightSavingsStartDateForYear(TimeZoneInfo.AdjustmentRule[] adjustmentRules, int year)
+    {
+      DateTime firstOfYear = new DateTime(year, 1, 1);
+
+      foreach (TimeZoneInfo.AdjustmentRule adjustmentRule in adjustmentRules)
+      {
+        if ((adjustmentRule.DateStart <= firstOfYear) && (firstOfYear <= adjustmentRule.DateEnd))
+        {
+          return this.GetTransitionDate(adjustmentRule.DaylightTransitionStart, year);
+        }
+      }
+      return DateTime.MinValue;
+    }
+
+    /// <summary>
+    /// Determines the occurance of Daylight Savings End Date in the given year and Adjustment Rules.
+    /// </summary>
+    /// <param name="adjustmentRules"></param>
+    /// <param name="year"></param>
+    /// <returns></returns>
+    private DateTime GetDaylightSavingsEndDateForYear(TimeZoneInfo.AdjustmentRule[] adjustmentRules, int year)
+    {
+      DateTime firstOfYear = new DateTime(year, 1, 1);
+
+      foreach (TimeZoneInfo.AdjustmentRule adjustmentRule in adjustmentRules)
+      {
+        if ((adjustmentRule.DateStart <= firstOfYear) && (firstOfYear <= adjustmentRule.DateEnd))
+        {
+          return this.GetTransitionDate(adjustmentRule.DaylightTransitionEnd, year);
+        }
+      }
+      return DateTime.MinValue;
+    }
+
+    /// <summary>
+    /// Calc Transition DateTime in the given year.
+    /// </summary>
+    /// <param name="transitionTime"></param>
+    /// <param name="year"></param>
+    /// <returns></returns>
+    private DateTime GetTransitionDate(TimeZoneInfo.TransitionTime transitionTime, int year)
+    {
+      if (transitionTime.IsFixedDateRule)
+      {
+        return new DateTime(year, transitionTime.Month, transitionTime.Day);
+      }
+      else
+      {
+        if (transitionTime.Week == 5)
+        {
+          // Special value meaning the last DayOfWeek (e.g., Sunday) in the month.
+          DateTime transitionDate = new DateTime(year, transitionTime.Month, 1);
+          transitionDate = transitionDate.AddMonths(1);
+
+          transitionDate = transitionDate.AddDays(-1);
+          while (transitionDate.DayOfWeek != transitionTime.DayOfWeek)
+          {
+            transitionDate = transitionDate.AddDays(-1);
+          }
+
+          return transitionDate;
+        }
+        else
+        {
+          DateTime transitionDate = new DateTime(year, transitionTime.Month, 1);
+          transitionDate = transitionDate.AddDays(-1);
+
+          for (int howManyWeeks = 0; howManyWeeks < transitionTime.Week; howManyWeeks++)
+          {
+            transitionDate = transitionDate.AddDays(1);
+            while (transitionDate.DayOfWeek != transitionTime.DayOfWeek)
+            {
+              transitionDate = transitionDate.AddDays(1);
+            }
+          }
+
+          return transitionDate;
+        }
       }
     }
 
