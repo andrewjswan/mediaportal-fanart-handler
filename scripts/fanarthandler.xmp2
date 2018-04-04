@@ -793,11 +793,11 @@ ajs</Value>
        * push random images from selected folders
 
 </ExtensionDescription>
-    <VersionDescription>Internal rework
-Internal DB rework
-Bug fixes
-Animated support
-And more</VersionDescription>
+    <VersionDescription>Holiday rework:
+
+Add Orthodox, Pesach support
+
+Add Local Daylight Savings date support</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-{VERSION}.MPE1</OnlineLocation>
     <ReleaseDate>2018-04-03T15:04:24</ReleaseDate>
