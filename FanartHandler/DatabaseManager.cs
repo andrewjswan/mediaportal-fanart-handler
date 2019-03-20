@@ -3794,7 +3794,8 @@ namespace FanartHandler
         if (folderFoundFiles != null && folderFoundFiles.Count() > 0)
         {
           folderFoundFiles = folderFoundFiles.Select(s => Utils.GetFileName(s).ToLowerInvariant()).ToArray();
-          string[] filesForDelete = Utils.ExceptLists(movieList.ToArray(), folderFoundFiles);
+          string[] movieArray = movieList.ToArray().Select(s => s.ToLowerInvariant()).ToArray();
+          string[] filesForDelete = Utils.ExceptLists(movieArray, folderFoundFiles);
           DeleteExtraFiles(folder, filesForDelete, report);
         }
       }
@@ -5156,7 +5157,7 @@ namespace FanartHandler
               {
                 return;
               }
-              key1 = fm.IMDBId;
+              key1 = fm.IMDBId.ToLowerInvariant();
               id = key1;
               break;
           }

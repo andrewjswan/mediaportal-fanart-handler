@@ -4084,6 +4084,9 @@ namespace FanartHandler
         {
           using (WebClient wc = new WebClientWithTimeouts { Timeout = TimeSpan.FromMilliseconds(20000) })
           {
+            // .NET 4.0: Use TLS v1.2. Many download sources no longer support the older and now insecure TLS v1.0/1.1 and SSL v3.
+            ServicePointManager.SecurityProtocol = (SecurityProtocolType)0xc00;
+
             wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
             wc.UseDefaultCredentials = true;
             wc.Headers.Add("User-Agent", DefUserAgent);

@@ -224,6 +224,7 @@ namespace FanartHandler
     public static string AnimatedLanguage { get; set; }
     public static bool AnimatedMoviesPosterDownload { get; set; }
     public static bool AnimatedMoviesBackgroundDownload { get; set; }
+    public static bool AnimatedDownloadClean { get; set; }
     #endregion
 
     #region TheMovieDB
@@ -5671,6 +5672,8 @@ namespace FanartHandler
     {
       try
       {
+        // .NET 4.0: Use TLS v1.2. Many download sources no longer support the older and now insecure TLS v1.0/1.1 and SSL v3.
+        ServicePointManager.SecurityProtocol = (SecurityProtocolType)0xc00;
         //Creating the HttpWebRequest
         HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
         //Setting the Request method HEAD, you can also use GET too.
@@ -6001,6 +6004,7 @@ namespace FanartHandler
       AnimatedLanguage = "EN";
       AnimatedMoviesPosterDownload = false;
       AnimatedMoviesBackgroundDownload = false;
+      AnimatedDownloadClean = false;
       #endregion
       #region TheMovieDB
       MovieDBLanguage = "EN";
@@ -6159,6 +6163,7 @@ namespace FanartHandler
           //
           AnimatedMoviesPosterDownload = settings.GetValueAsBool("Animated", "MoviesPosterDownload", AnimatedMoviesPosterDownload);
           AnimatedMoviesBackgroundDownload = settings.GetValueAsBool("Animated", "MoviesBackgroundDownload", AnimatedMoviesBackgroundDownload);
+          AnimatedDownloadClean = settings.GetValueAsBool("Animated", "DownloadClean", AnimatedDownloadClean);
           //
           MovieDBMoviePosterDownload = settings.GetValueAsBool("TheMovieDB", "MoviePosterDownload", MovieDBMoviePosterDownload);
           MovieDBMovieBackgroundDownload = settings.GetValueAsBool("TheMovieDB", "MovieBackgroundDownload", MovieDBMovieBackgroundDownload);
@@ -6447,6 +6452,7 @@ namespace FanartHandler
           //
           xmlwriter.SetValueAsBool("Animated", "MoviesPosterDownload", AnimatedMoviesPosterDownload);
           xmlwriter.SetValueAsBool("Animated", "MoviesBackgroundDownload", AnimatedMoviesBackgroundDownload);
+          xmlwriter.SetValueAsBool("Animated", "DownloadClean", AnimatedDownloadClean);
           //
           xmlwriter.SetValueAsBool("TheMovieDB", "MoviePosterDownload", MovieDBMoviePosterDownload);
           xmlwriter.SetValueAsBool("TheMovieDB", "MovieBackgroundDownload", MovieDBMovieBackgroundDownload);

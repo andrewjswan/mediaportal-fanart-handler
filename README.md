@@ -208,6 +208,11 @@ To the team behind the MP Moving Picture plugin. From who I have used some of th
 #fanarthandler.showtimes.backdrop1.any
 #fanarthandler.showtimes.backdrop2.any
 
+#fanarthandler.spotlight.available
+#fanarthandler.spotlight.backdrop1.any
+#fanarthandler.spotlight.backdrop2.any
+
+#fanarthandler.weather.season
 #fanarthandler.weather.backdrop1
 #fanarthandler.weather.backdrop2
 

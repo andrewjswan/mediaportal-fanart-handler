@@ -732,7 +732,7 @@ namespace FanartHandler
         else if (!value.ToUpperInvariant().StartsWith("TT"))
           _imdbid = string.Empty; 
         else
-          _imdbid = value;
+          _imdbid = value.ToLowerInvariant();
       }
     }
 

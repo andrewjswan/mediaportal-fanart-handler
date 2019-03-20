@@ -2,6 +2,7 @@ using FanartHandler;
 
 using System;
 using System.Collections;
+using System.Globalization;
 using System.Xml;
 
 namespace JayMuntzCom
@@ -167,6 +168,10 @@ namespace JayMuntzCom
       {
         h.Date = this.easter();
       }
+      else if (childNodes.Contains("ChineseNewYear"))
+      {
+        h.Date = this.getChineseNewYear();
+      }
       else if (childNodes.Contains("DSTStart"))
       {
         h.Date = this.dststart();
@@ -229,6 +234,30 @@ namespace JayMuntzCom
         if (!string.IsNullOrEmpty(localName))
         {
           h.LocalName = localName; 
+        }
+      }
+
+      if (childNodes.Contains("CelebratedIn"))
+      {
+        string sCelebratedIn = n.SelectSingleNode("./CelebratedIn").InnerXml.ToString();
+        if (!string.IsNullOrEmpty(sCelebratedIn))
+        {
+          if (!sCelebratedIn.Contains(Utils.HolidayLanguage))
+          {
+            h.Date = DateTime.MinValue;
+          }
+        }
+      }
+
+      if (childNodes.Contains("NotCelebratedIn"))
+      {
+        string sNotCelebratedIn = n.SelectSingleNode("./NotCelebratedIn").InnerXml.ToString();
+        if (!string.IsNullOrEmpty(sNotCelebratedIn))
+        {
+          if (sNotCelebratedIn.Contains(Utils.HolidayLanguage))
+          {
+            h.Date = DateTime.MinValue;
+          }
         }
       }
 
@@ -348,9 +377,48 @@ namespace JayMuntzCom
     }
 
     /// <summary>
-    /// Determines the occurance of Daylight Savings Start Date.
+    /// Determines the occurance of Chinese New Year Date.
+    /// </summary>
+    /// <returns></returns>
+    private DateTime getChineseNewYear()
+    {
+      DateTime workDate = this.getFirstDayOfMonth(this.startingDate);
+      int y = workDate.Year;
+      return this.getChineseNewYear(y);
+    }
+
+    /// <summary>
+    /// Determines the occurance of Chinese New Year in the given year. If the result comes before StartDate, recalculates for the following year.
     /// </summary>
     /// <param name="y"></param>
+    /// <returns></returns>
+    private DateTime getChineseNewYear(int y)
+    {
+      ChineseLunisolarCalendar chinese   = new ChineseLunisolarCalendar();
+      GregorianCalendar        gregorian = new GregorianCalendar();
+
+      // Get Chinese New Year of current UTC date/time
+      DateTime chineseNewYear = chinese.ToDateTime( y, 1, 1, 0, 0, 0, 0 );
+
+      // Convert back to Gregorian (you could just query properties of `chineseNewYear` directly, but I prefer to use `GregorianCalendar` for consistency:
+      Int32 year  = gregorian.GetYear( chineseNewYear );
+      Int32 month = gregorian.GetMonth( chineseNewYear );
+      Int32 day   = gregorian.GetDayOfMonth( chineseNewYear );
+
+      DateTime cny =  new DateTime(year, month, day);
+      if (cny < this.startingDate)
+      {
+        return this.getChineseNewYear(y + 1);
+      }
+      else
+      {
+        return new DateTime(y, month, day);
+      }
+    }
+
+    /// <summary>
+    /// Determines the occurance of Daylight Savings Start Date.
+    /// </summary>
     /// <returns></returns>
     private DateTime dststart()
     {
@@ -362,7 +430,6 @@ namespace JayMuntzCom
     /// <summary>
     /// Determines the occurance of Daylight Savings End Date.
     /// </summary>
-    /// <param name="y"></param>
     /// <returns></returns>
     private DateTime dstend()
     {

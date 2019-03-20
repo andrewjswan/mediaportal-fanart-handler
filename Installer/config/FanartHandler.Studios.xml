@@ -37,6 +37,7 @@
   <studio name="20th Century Fox CIS">20th Century Fox</studio>
   <studio name="Twentieth Century Fox CIS">20th Century Fox</studio>
   <studio name="21st Century Film Corporation">21st Century Film</studio>
+  <studio name="21st Century">21st Century Film</studio>
   <studio name="2929 Productions">2929</studio>
   <studio name="3L Filmproduktion">3L Productions</studio>
   <studio name="40 Acres A Mule Filmworks">40 Acres &amp; A Mule Filmworks</studio>
@@ -87,6 +88,7 @@
   <studio name="Alberta Film Entertainment">Alberta Film</studio>
   <studio name="Alcon Films">Alcon</studio>
   <studio name="Alcon Entertainment">Alcon</studio>
+  <studio name="All Media">All Media Company</studio>
   <studio name="Alliance Atlantis Communications">Alliance Atlantis</studio>
   <studio name="Alliance Atlantis Home Video">Alliance Atlantis</studio>
   <studio name="Alliance Atlantis Productions">Alliance Atlantis</studio>
@@ -260,6 +262,7 @@
   <studio name="Boies/Schiller Film Group">Boies-Schiller Film</studio>
   <studio name="Boies-Schiller Film Group">Boies-Schiller Film</studio>
   <studio name="Bravo">Bravo!</studio>
+  <studio name="Bravo (US)">Bravo!</studio>
   <studio name="Brain&apos;s Base">Brains Base</studio>
   <studio name="Brightlight Pictures">Brightlight</studio>
   <studio name="Brightlight Pictures Inc">Brightlight</studio>
@@ -293,6 +296,8 @@
   <studio name="Canal+ [fr]">Canal+</studio>
   <studio name="Canadian Film or Video Production Tax Credit">CPTC</studio>
   <studio name="Canadian Film or Video Production Tax Credit (CPTC)">CPTC</studio>
+  <studio name="Canadian Television">CTV</studio>
+  <studio name="Canadian Television (CTV)">CTV</studio>
   <studio name="Cannon Entertainment">Cannon</studio>
   <studio name="Cannon Film Distributors">Cannon</studio>
   <studio name="Cannon Films">Cannon</studio>
@@ -348,8 +353,8 @@
   <studio name="Channel4UK">Channel 4</studio>
   <studio name="ChannelFour">Channel 4</studio>
   <studio name="Channel4">Channel 4</studio>
-  <studio name="Channel Four Films">Channel Four</studio>
-  <studio name="Channel Four Productions">Channel Four</studio>
+  <studio name="Channel Four Films">Channel 4</studio>
+  <studio name="Channel Four Productions">Channel 4</studio>
   <studio name="Cheyenne Enterprises">Cheyenne</studio>
   <studio name="Cheyenne Studios">Cheyenne</studio>
   <studio name="Cheyenne Films">Cheyenne</studio>
@@ -385,12 +390,14 @@
   <studio name="Cofinova 8">Cofinova</studio>
   <studio name="Cofinova 9">Cofinova</studio>
   <studio name="Cofinova 10">Cofinova</studio>
+  <studio name="Colosé Producciones">Colose Producciones</studio>
   <studio name="Columbia Pictures">Columbia</studio>
   <studio name="Columbia Pictures Corporation">Columbia</studio>
   <studio name="Columbia Pictures Film Production Asia">Columbia</studio>
   <studio name="Columbia Pictures Producciones Mexico">Columbia</studio>
   <studio name="Columbia TriStar">Columbia</studio>
   <studio name="Columbia TriStar Television">Columbia</studio>
+  <studio name="Columbia/Sony">Columbia|Sony</studio>
   <studio name="Comedy (CA)">Comedy</studio>
   <studio name="Comedy Central Films">Comedy Central</studio>
   <studio name="comedycentral">Comedy Central</studio>
@@ -419,6 +426,9 @@
   <studio name="Cruise/Wagner Productions">CruiseWagner Productions</studio>
   <studio name="Cruise Wagner Productions">CruiseWagner Productions</studio>
   <studio name="Cruise-Wagner Productions">CruiseWagner Productions</studio>
+  <studio name="CrossDay">CrossDay Productions</studio>
+  <studio name="CrossDay Productions Ltd">CrossDay Productions</studio>
+  <studio name="CrossDay Productions Ltd.">CrossDay Productions</studio>
   <studio name="Crowvision Inc.">Crowvision</studio>
   <studio name="CW Television Network">CW</studio>
   <studio name="The-CW">CW</studio>
@@ -439,6 +449,7 @@
   <studio name="Dark Horse Indie">Dark Horse Films</studio>
   <studio name="Dark Horse Pictures">Dark Horse Films</studio>
   <studio name="darkhorse">Dark Horse Films</studio>
+  <studio name="Dawn's Light">Dawns Light</studio>
   <studio name="DC Comics">DC</studio>
   <studio name="DC Entertainment">DC</studio>
   <studio name="De Laurentiis">DEG</studio>
@@ -505,7 +516,11 @@
   <studio name="Eurosport 1">Eurosport</studio>
   <studio name="eurosport 2">Eurosport</studio>
   <studio name="eurosport HD">Eurosport</studio>
+  <studio name="F.Films">F Films</studio>
+  <studio name="F. Films">F Films</studio>
   <studio name="Excel Entertainment Group">Excel</studio>
+  <studio name="Farah Films &amp; Management">Farah Films</studio>
+  <studio name="Farah Films and Management">Farah Films</studio>
   <studio name="Figaro Film Production Ltd">Figaro</studio>
   <studio name="Film Department The">Film Department</studio>
   <studio name="Film Department, The">Film Department</studio>
@@ -514,7 +529,12 @@
   <studio name="Film Farm The">Film Farm</studio>
   <studio name="Film Farm, The">Film Farm</studio>
   <studio name="Film4">Film Four</studio>
+  <studio name="Film 4">Film Four</studio>
   <studio name="FilmFour">Film Four</studio>
+  <studio name="Film Four">Film Four</studio>
+  <studio name="Film4 Productions">Film Four</studio>
+  <studio name="Film 4 Productions">Film Four</studio>
+  <studio name="Film Four Productions">Film Four</studio>
   <studio name="Filmax Group">Filmax</studio>
   <studio name="Filmförderungsanstalt">FFA</studio>
   <studio name="Filmförderungsanstalt (FFA)">FFA</studio>
@@ -549,6 +569,7 @@
   <studio name="Fulcrum Media Finance">Fulcrum Media</studio>
   <studio name="Fulcrum Media Services">Fulcrum Media</studio>
   <studio name="Furla Films">Emmett Furla Films</studio>
+  <studio name="FX Digital">FX</studio>
   <studio name="FX Networks">FX</studio>
   <studio name="fxnetworks">FX</studio>
   <studio name="FX (US)">FX</studio>
@@ -604,7 +625,9 @@
   <studio name="Happy Madison Productions">Happy Madison</studio>
   <studio name="happy_madison">Happy Madison</studio>
   <studio name="happymadison">Happy Madison</studio>
+  <studio name="Hasbro Inc">Hasbro</studio>
   <studio name="Hasbro Inc.">Hasbro</studio>
+  <studio name="Hasbro Studios">Hasbro</studio>
   <studio name="Haxan Films">Haxan</studio>
   <studio name="HBO Documentary Films">HBO</studio>
   <studio name="HBO Films">HBO</studio>
@@ -656,6 +679,12 @@
   <studio name="Production IMS">IMS</studio>
   <studio name="Industrial Light &amp; Magic">Industrial Light</studio>
   <studio name="Industrial Light and Magic">Industrial Light</studio>
+  <studio name="Institut Català de les Empreses Culturals">ICEC</studio>
+  <studio name="Institut Catala de les Empreses Culturals">ICEC</studio>
+  <studio name="Institut Català de les Empreses Culturals (ICEC)">ICEC</studio>
+  <studio name="Institut Catala de les Empreses Culturals (ICEC)">ICEC</studio>
+  <studio name="Initial Entertainment Group">IEG</studio>
+  <studio name="Initial Entertainment Group (IEG)">IEG</studio>
   <studio name="Infinite Frameworks Ltd">Infinite Frameworks</studio>
   <studio name="Infinite Frameworks Ltd.">Infinite Frameworks</studio>
   <studio name="Infinite Frameworks Pte Ltd">Infinite Frameworks</studio>
@@ -680,7 +709,9 @@
   <studio name="Jim Henson Company, The">Jim Henson</studio>
   <studio name="The Jim Henson Company">Jim Henson</studio>
   <studio name="Jim Henson Pictures">Jim Henson</studio>
-  <studio name="KADR Studio">KADR</studio>
+  <studio name="K5 Media Group">K5 Film</studio>
+  <studio name="K5 GAMES">K5 Film</studio>
+  <studio name="K5 CTRL IT">K5 Film</studio>
   <studio name="K/O Paper">Kurtzman Orci Paper Products</studio>
   <studio name="K.O.Paper">Kurtzman Orci Paper Products</studio>
   <studio name="K.O. Paper">Kurtzman Orci Paper Products</studio>
@@ -730,6 +761,7 @@
   <studio name="LB Productions">Lawrence Bender Productions</studio>
   <studio name="Left Turn Productions">Left Turn Films</studio>
   <studio name="Legendary Pictures">Legendary</studio>
+  <studio name="Legendary Entertainment">Legendary</studio>
   <studio name="LGM Cinéma">LGM Cinema</studio>
   <studio name="LGM Productions">LGM Cinema</studio>
   <studio name="Luxembourg Film Fund">Film Fund Luxembourg</studio>
@@ -871,6 +903,8 @@
   <studio name="Morag Loves Company Limited">Morag Loves Company</studio>
   <studio name="Morgan Creek International">Morgan Creek</studio>
   <studio name="Morgan Creek Productions">Morgan Creek</studio>
+  <studio name="Morgan Creek Entertainment">Morgan Creek</studio>
+  <studio name="Morgan Creek Entertainment Group">Morgan Creek</studio>
   <studio name="Mosaic Entertainment">Mosaic</studio>
   <studio name="Mosaic Film Group">Mosaic</studio>
   <studio name="Mosaic Films">Mosaic</studio>
@@ -884,6 +918,7 @@
   <studio name="Motion Picture Corporation of America (MPCA)">MPCA</studio>
   <studio name="Motorvision TV">Motorvision</studio>
   <studio name="Movie Central Network">Movie Central</studio>
+  <studio name="Movistar+">Movistar Plus</studio>
   <studio name="MSNBC Films">MSNBC</studio>
   <studio name="MSNBC Network">MSNBC</studio>
   <studio name="MTV (US)">MTV</studio>
@@ -919,6 +954,7 @@
   <studio name="Newmarket Films">Newmarket</studio>
   <studio name="Next Generation TV &amp; Film Limited">Next Generation TV &amp; Film</studio>
   <studio name="NGC">National Geographic</studio>
+  <studio name="National Geographic Channel">National Geographic</studio>
   <studio name="Nicholas Sparks Productions">Nicholas Sparks</studio>
   <studio name="Nickelodeon Animation Studios">Nickelodeon</studio>
   <studio name="Nickelodeon Movies">Nickelodeon</studio>
@@ -933,6 +969,8 @@
   <studio name="NUIMAGE">Nu Image</studio>
   <studio name="ACGT">OB Planning</studio>
   <studio name="Triangle Staff">OB Planning</studio>
+  <studio name="Oasis Films">Oasis Films</studio>
+  <studio name="Oasis Films (EFO Films)">Oasis Films</studio>
   <studio name="Odd Lot Entertainment">Odd Lot</studio>
   <studio name="Oddlot">Odd Lot</studio>
   <studio name="Olga Film GmbH">Olga Film</studio>
@@ -970,6 +1008,10 @@
   <studio name="PalmStar Entertainment">Palm-Star</studio>
   <studio name="Palm Star Entertainment">Palm-Star</studio>
   <studio name="Palm-Star Entertainment">Palm-Star</studio>
+  <studio name="PalmStar Media">Palm-Star</studio>
+  <studio name="Palm Star Media">Palm-Star</studio>
+  <studio name="Palm-Star Media">Palm-Star</studio>
+  <studio name="Pan Européenne">Pan Europeenne</studio>
   <studio name="Pandora Cinema">Pandora</studio>
   <studio name="Pandora Films">Pandora</studio>
   <studio name="Pandora Productions">Pandora</studio>
@@ -977,6 +1019,7 @@
   <studio name="Pandora Film Produktion">Pandora</studio>
   <studio name="Pão Com Ovo Filmes">Pao Com Ovo Filmes</studio>
   <studio name="Parkwood Entertainment">Parkwood Pictures</studio>
+  <studio name="Paragon Entertainment">Paragon Entertainment Corporation</studio>
   <studio name="Paramount Film">Paramount</studio>
   <studio name="Paramount-Film">Paramount</studio>
   <studio name="Paramount British Pictures">Paramount</studio>
@@ -984,6 +1027,7 @@
   <studio name="Paramount Home Video">Paramount</studio>
   <studio name="Paramount Pictures">Paramount</studio>
   <studio name="Paramount Studios">Paramount</studio>
+  <studio name="Paramount Network">Paramount</studio>
   <studio name="Paramount Television">Paramount</studio>
   <studio name="Parkes/MacDonald Productions">Parkes MacDonald Productions</studio>
   <studio name="P Vantage">Paramount Vantage</studio>
@@ -1141,6 +1185,7 @@
   <studio name="Saul Zaentz Company The">Saul Zaentz Company</studio>
   <studio name="Saul Zaentz Company, The">Saul Zaentz Company</studio>
   <studio name="The Saul Zaentz Company">Saul Zaentz Company</studio>
+  <studio name="SBS (KR)">SBS</studio>
   <studio name="SBS6">SBS 6</studio>
   <studio name="Science Fiction">SciFi</studio>
   <studio name="Science Fiction Channel">SciFi</studio>
@@ -1243,6 +1288,7 @@
   <studio name="Sony Pictures Entertainment">Sony</studio>
   <studio name="Sony Pictures Studios">Sony</studio>
   <studio name="sonypictures">Sony</studio>
+  <studio name="Sony/Columbia">Sony|Columbia</studio>
   <studio name="Sony Pictures Television International">Sony Pictures Television</studio>
   <studio name="SPC">Sony Pictures Classics</studio>
   <studio name="BVSPR Sony">Sony</studio>
@@ -1319,6 +1365,7 @@
   <studio name="Telos Films">Telos</studio>
   <studio name="Telecom Animation Film">TMS Entertainment</studio>
   <studio name="Téléfilm Canada">Telefilm Canada</studio>
+  <studio name="Televisió de Catalunya">Televisio de Catalunya</studio>
   <studio name="Tesela Producciones Cinematográficas">Tesela Producciones Cinematograficas</studio>
   <studio name="TF1 Films Production">TF1 Films Productions</studio>
   <studio name="Tokyo Movie">TMS Entertainment</studio>
@@ -1441,6 +1488,9 @@
   <studio name="Telewizja Polska (TVP)">TVP</studio>
   <studio name="Radio West">TV West</studio>
   <studio name="Twisted Pictures">Twisted</studio>
+  <studio name="Twisted Media Inc">Twisted</studio>
+  <studio name="Twisted Media Inc.">Twisted</studio>
+  <studio name="Twisted Media Incorporated">Twisted</studio>
   <studio name="Two for Flinching Productions LLC">Two For Flinching Pictures</studio>
   <studio name="Tyo Animations">Tyo</studio>
   <studio name="Unified Film Organization">Unified Film Organization (UFO)</studio>
@@ -1471,6 +1521,8 @@
   <studio name="UPP">Universal</studio>
   <studio name="UMS">Universal</studio>
   <studio name="UI">Universal</studio>
+  <studio name="Universal 1440">Universal</studio>
+  <studio name="Universal 1440 Entertainment">Universal</studio>
   <studio name="Universal City Studios">Universal</studio>
   <studio name="Universal Film Manufacturing Company">Universal</studio>
   <studio name="Universal Films">Universal</studio>
@@ -1498,6 +1550,8 @@
   <studio name="Universal Television">Universal</studio>
   <studio name="Universal Title">Universal</studio>
   <studio name="Universal TV">Universal</studio>
+  <studio name="Юниверсал Пикчерс">Universal</studio>
+  <studio name="Юниверсал Пикчерс Рус">Universal</studio>
   <studio name="usa-network">USA</studio>
   <studio name="USA Cable Network">USA</studio>
   <studio name="USA Films">USA</studio>
@@ -1505,6 +1559,8 @@
   <studio name="USA Network">USA</studio>
   <studio name="usanetwork">USA</studio>
   <studio name="Studios USA">USA</studio>
+  <studio name="Seven Bucks Digital Studios">Seven Bucks</studio>
+  <studio name="Seven Bucks Productions">Seven Bucks</studio>
   <studio name="UTV Spotboy Motion Pictures">UTV Spotboy</studio>
   <studio name="Vendome Pictures">Vendome</studio>
   <studio name="Verenigde Arbeiders Radio Amateurs">VARA</studio>
@@ -1519,6 +1575,7 @@
   <studio name="VH1 Original Movies">VH1</studio>
   <studio name="VH1 Productions">VH1</studio>
   <studio name="VH1 Television">VH1</studio>
+  <studio name="Viceland (US)">Viceland</studio>
   <studio name="View Askew Productions">View Askew</studio>
   <studio name="Too Askew Prod.">View Askew</studio>
   <studio name="Too Askew Prod. Inc.">View Askew</studio>
@@ -1564,6 +1621,7 @@
   <studio name="Walt Disney Television Animation">Walt Disney Television</studio>
   <studio name="Disney Interactive">Disney Channel</studio>
   <studio name="disneychannel">Disney Channel</studio>
+  <studio name="Disney Channel (US)">Disney Channel</studio>
   <studio name="disney_dvd">Disney DVD</studio>
   <studio name="disneydvd">Disney DVD</studio>
   <studio name="WDSSPR">Disney|Sony</studio>
@@ -1682,6 +1740,8 @@
   <studio name="Анимационная студия Мельница">Мельница</studio>
   <studio name="Анімаград">Анимаград</studio>
   <studio name="Animagrad">Анимаград</studio>
+  <studio name="Animagrad Animation">Анимаград</studio>
+  <studio name="Animagrad Animation Studio">Анимаград</studio>
   <studio name="Базелевс">Bazelevs Production</studio>
   <studio name="Базелевс Продакшн">Bazelevs Production</studio>
   <studio name="Bazelevs Distribution">Bazelevs Production</studio>
@@ -1710,6 +1770,7 @@
   <studio name="Koktebel Film Company">Кинокомпания Коктебель</studio>
   <studio name="Кинокомпания 2Д Целлулоид">2D Celluloid</studio>
   <studio name="2Д Целлулоид">2D Celluloid</studio>
+  <studio name="CP-Digital">CP Digital</studio>
   <studio name="СТБ">Кинокомпания CTB</studio>
   <studio name="CTB Film Company">Кинокомпания CTB</studio>
   <studio name="Кинокомпания СТВ">Кинокомпания CTB</studio>
@@ -1785,6 +1846,8 @@
   <studio name="КАРОПродакшн">КАРО Продакшн</studio>
   <studio name="КароПрокат">Каро Прокат</studio>
   <studio name="Каро-Прокат">Каро Прокат</studio>
+  <studio name="Karoprokat">Каро Прокат</studio>
+  <studio name="Karo-Prokat">Каро Прокат</studio>
   <studio name="Cosmopol Film Distribution">Космопол</studio>
   <studio name="Cosmopol FD">Космопол</studio>
   <studio name="Космопол Фильм Дистрибьюшн">Космопол</studio>
@@ -1816,15 +1879,21 @@
   <studio name="Кинокомпания «Царь»">Царь</studio>
   <studio name="Кинокомпания &quot;Царь&quot;">Царь</studio>
   <studio name="Кинокомпания Царь Pictures">Царь</studio>
+  <studio name="Киностудия КИТ">КИТ</studio>
+  <studio name="Кинокомпания Новые люди">Новые люди</studio>
   <studio name="КиноКластер">KinoKlaster</studio>
   <studio name="Кино Кластер">KinoKlaster</studio>
   <studio name="Kino Klaster">KinoKlaster</studio>
+  <studio name="Lenfilm">Ленфильм</studio>
   <studio name="Царь Pictures">Царь</studio>
   <studio name="Czar Pictures">Царь</studio>
   <studio name="Марс Медиа Энтертейнмент">Марс Медиа</studio>
   <studio name="Mars Media Entertainment">Марс Медиа</studio>
   <studio name="Mars Media">Марс Медиа</studio>
   <studio name="Муха Студия">Муха</studio>
+  <studio name="Новый Диск">НД Плэй</studio>
+  <studio name="ND Play">НД Плэй</studio>
+  <studio name="Патриот Продакшнс">Patriot Productions</studio>
   <studio name="ПРО взгляд">ПРОвзгляд</studio>
   <studio name="PROвзгляд">ПРОвзгляд</studio>
   <studio name="PRO взгляд">ПРОвзгляд</studio>
@@ -1837,6 +1906,9 @@
   <studio name="Sreda">Среда</studio>
   <studio name="Sreda-Fetisov Films">Среда</studio>
   <studio name="Студия Казахфильм">Казахфильм</studio>
+  <studio name="Студия Кадр">KADR</studio>
+  <studio name="KADR Studio">KADR</studio>
+  <studio name="Синема Продакшн">Cinema Production</studio>
   <studio name="Творческое объединение Экран">Экран</studio>
   <studio name="ТО Экран">Экран</studio>
   <studio name="Телеканал «РОССИЯ 1»">Россия 1</studio>
@@ -1844,4 +1916,7 @@
   <studio name="Film.UA">Film UA</studio>
   <studio name="Central Partnership">Централ Партнершип</studio>
   <studio name="Централ Партнершип Classic">Централ Партнершип</studio>
+  <studio name="Фетисов Иллюзион">FetisOFF IllusiON</studio>
+  <studio name="Державне агентство України з питань кіно">Ukrainian State Film Agency</studio>
+  <studio name="Государственное агентство Украины по вопросам кино">Ukrainian State Film Agency</studio>
 </studios>

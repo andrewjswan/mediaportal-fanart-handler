@@ -18,10 +18,13 @@ using Newtonsoft.Json;
 namespace FanartHandler
 {
   // https://forum.kodi.tv/showthread.php?tid=215727
+  // https://blueeyiz702.wixsite.com/posters/animated-posters
   class AnimatedClass
   {
     private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-    private const string AnimatedURL = "http://www.consiliumb.com/animatedgifs/{0}";
+    // private const string AnimatedURL = "http://www.consiliumb.com/animatedgifs/{0}";
+    private const string AnimatedURL = "https://gitlab.com/andrewjswan/mediaportal.animated.poster/raw/master/Poster/{0}";
+    private const string AnimatedDBURL = "https://gitlab.com/andrewjswan/mediaportal.animated.poster/raw/master/DB/{0}";
     private const string CatalogFolder = @"FanartHandler\Animated\";
     private const string CatalogFilename = "movies.json";
     private const string CatalogSuffix = "_original.gif";
@@ -48,6 +51,9 @@ namespace FanartHandler
       public string contributedBy { get; set; } 
       public string language { get; set; } 
       public int size { get; set; } 
+      public int height { get; set; } 
+      public int width { get; set; } 
+      public int frames { get; set; } 
     } 
 
     public class Movie 
@@ -55,6 +61,7 @@ namespace FanartHandler
       public string imdbid { get; set; } 
       public string tmdbid { get; set; } 
       public string title { get; set; }
+      public string originaltitle { get; set; }
       public string year { get; set; } 
       public List<Entry> entries { get; set; } 
     }
@@ -127,7 +134,9 @@ namespace FanartHandler
       try
       {
         WebClient wc = new WebClient();
-        wc.DownloadFile(string.Format(AnimatedURL, CatalogFilename), CatalogFullFilename);
+        // .NET 4.0: Use TLS v1.2. Many download sources no longer support the older and now insecure TLS v1.0/1.1 and SSL v3.
+        ServicePointManager.SecurityProtocol = (SecurityProtocolType)0xc00;
+        wc.DownloadFile(string.Format(AnimatedDBURL, CatalogFilename), CatalogFullFilename);
 
         Utils.DBm.InsertDummyInfoItem(Utils.Scrapper.ScrapeAnimated);
         logger.Debug("Animated: DownloadCatalog - Downloaded.");
@@ -155,22 +164,33 @@ namespace FanartHandler
       Entry entry = null;
       string result = string.Empty;
 
-      if (lang != "EN")
+      if (Utils.AnimatedDownloadClean)
       {
-        entry = entries.OrderByDescending(item => item.size).Where(p => p.type == type && p.language.ToUpperInvariant() == lang).FirstOrDefault();
+        entry = entries.OrderByDescending(item => item.height).Where(p => p.type == type && p.language.ToUpperInvariant() == "CLEAN").FirstOrDefault();
+        if (entry != null)
+        {
+          // logger.Debug("*** Found: [CLEAN]" + entry.id + " " + entry.image + " " + entry.type + " " + entry.language + " " + entry.size); 
+          result = entry.image;
+        }
+      }
+      if (string.IsNullOrWhiteSpace(result) && (lang != "EN"))
+      {
+        entry = entries.OrderByDescending(item => item.height).Where(p => p.type == type && p.language.ToUpperInvariant() == lang).FirstOrDefault();
         if (entry != null)
         {
           // logger.Debug("*** Found: [" + lang + "]" + entry.id + " " + entry.image + " " + entry.type + " " + entry.language + " " + entry.size); 
           result = entry.image;
         }
       }
-      entry = entries.OrderByDescending(item => item.size).Where(p => p.type == type && p.language.ToUpperInvariant() == "EN").FirstOrDefault();
-      if (entry != null)
+      if (string.IsNullOrWhiteSpace(result))
       {
-        // logger.Debug("*** Found [EN]: " + entry.id + " " + entry.image + " " + entry.type + " " + entry.language + " " + entry.size);
-        result = entry.image;
+        entry = entries.OrderByDescending(item => item.height).Where(p => p.type == type && p.language.ToUpperInvariant() == "EN").FirstOrDefault();
+        if (entry != null)
+        {
+          // logger.Debug("*** Found [EN]: " + entry.id + " " + entry.image + " " + entry.type + " " + entry.language + " " + entry.size);
+          result = entry.image;
+        }
       }
-
       if (!string.IsNullOrWhiteSpace(result))
       {
         return string.Format(AnimatedURL, result.Replace(".gif", CatalogSuffix));

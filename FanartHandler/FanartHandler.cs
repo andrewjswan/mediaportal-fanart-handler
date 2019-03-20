@@ -1108,6 +1108,8 @@ namespace FanartHandler
                                Utils.Check(FWeather.CheckValidWindowIDForFanart()) + " Weather, " +
                                Utils.Check(FHoliday.CheckValidWindowIDForFanart()) + " Holiday") ;
 
+        FWeather.SetSeasonPropery();
+
         if (refreshStart)
         {
           StartRefreshTimer();

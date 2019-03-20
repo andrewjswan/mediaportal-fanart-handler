@@ -70,6 +70,7 @@ namespace FanartHandler
       IsSelectedWeather = false;
 
       ClearCurrProperties();
+      SetSeasonPropery();
     }
 
     public void ClearCurrProperties()
@@ -84,6 +85,11 @@ namespace FanartHandler
     public bool CheckValidWindowIDForFanart()
     {
       return (Utils.ContainsID(WindowsUsingFanartWeather));
+    }
+
+    public void SetSeasonPropery()
+    {
+      Utils.SetProperty("weather.season", Utils.GetWeatherCurrentSeason().ToString());
     }
 
     #region Refresh Weather Properties

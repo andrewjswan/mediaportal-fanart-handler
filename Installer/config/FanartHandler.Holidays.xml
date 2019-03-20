@@ -14,16 +14,19 @@
 		<Month>1</Month>
 		<Day>7</Day>
 		<NameRU>Рождество</NameRU>
+		<CelebratedIn>RU</CelebratedIn>
 	</Holiday>
 	<Holiday name="Malanka - Schedry vecher" shortname="NewYear">
 		<Month>1</Month>
 		<Day>13</Day>
 		<NameRU>Маланка - Щедрый вечер - Старый Новый год</NameRU>
+		<CelebratedIn>RU</CelebratedIn>
 	</Holiday>
 	<Holiday name="Martin Luther King's Birthday">
 		<Month>1</Month>
 		<DayOfWeek>1</DayOfWeek>
 		<WeekOfMonth>3</WeekOfMonth>
+		<NotCelebratedIn>RU</NotCelebratedIn>
 	</Holiday>
 	<Holiday name="World Beatles Day" shortname="Beatles">
 		<Month>1</Month>
@@ -34,11 +37,17 @@
 		<Day>20</Day>
 		<EveryXYears>4</EveryXYears>
 		<StartYear>1940</StartYear>
+		<NotCelebratedIn>RU</NotCelebratedIn>
+	</Holiday>
+	<Holiday name="Chinese New Year" shortname="ChineseNewYear">
+		<ChineseNewYear />
+		<NameRU>Китайский Новый Год</NameRU>
 	</Holiday>
 	<Holiday name="President's Day">
 		<Month>2</Month>
 		<DayOfWeek>1</DayOfWeek>
 		<WeekOfMonth>3</WeekOfMonth>
+		<NotCelebratedIn>RU</NotCelebratedIn>
 	</Holiday>
 	<Holiday name="Groundhog Day">
 		<Month>2</Month>
@@ -48,6 +57,7 @@
 	<Holiday name="Lincoln's Birthday (Traditional)">
 		<Month>2</Month>
 		<Day>12</Day>
+		<NotCelebratedIn>RU</NotCelebratedIn>
 	</Holiday>
 	<Holiday name="Valentine's Day" shortname="Valentines">
 		<Month>2</Month>
@@ -57,6 +67,7 @@
 	<Holiday name="Washington's Birthday (Traditional)">
 		<Month>2</Month>
 		<Day>22</Day>
+		<NotCelebratedIn>RU</NotCelebratedIn>
 	</Holiday>
 	<Holiday name="Pi Day" shortname="PiDay">
 		<Month>3</Month>
@@ -73,17 +84,32 @@
 		<NameRU>Пасха</NameRU>
 		<NameHE>פסח</NameHE>
 	</Holiday>	
-        <Holiday name="Good Friday">
+    <Holiday name="Pesach">
+		<DaysAfterHoliday Holiday="Easter">
+			<Days>7</Days>
+		</DaysAfterHoliday>
+		<NameHE>פסח</NameHE>
+		<CelebratedIn>HE</CelebratedIn>
+	</Holiday>
+    <Holiday name="Maundy Thursday">
+		<DaysAfterHoliday Holiday="Good Friday">
+			<Days>-1</Days>
+		</DaysAfterHoliday>
+		<NotCelebratedIn>HE</NotCelebratedIn>
+	</Holiday>
+    <Holiday name="Good Friday">
 		<DaysAfterHoliday Holiday="Easter">
 			<Days>-2</Days>
 		</DaysAfterHoliday>
 		<NameRU>Великая пятница</NameRU>
+		<NotCelebratedIn>HE</NotCelebratedIn>
 	</Holiday>
 	<Holiday name="Ash Wednesday">
 		<DaysAfterHoliday Holiday="Good Friday">
 			<Days>-44</Days>
 		</DaysAfterHoliday>
 		<NameRU>Пепельная среда</NameRU>
+		<NotCelebratedIn>HE</NotCelebratedIn>
 	</Holiday>
 	<Holiday name="April Fool's Day" shortname="AprilFools">
 		<Month>4</Month>
@@ -95,31 +121,27 @@
 			<Month>4</Month>
 			<DayOfWeek>3</DayOfWeek>
 		</LastFullWeekOfMonth>
+		<NotCelebratedIn>RU</NotCelebratedIn>
 	</Holiday>
-	<!-- US
-	<Holiday name="Daylight Savings Time Ends" shortname="DaylightSavings|DaylightSavingsEnd">
+	<Holiday name="Cosmonautics Day" shortname="CosmonauticsDay">
 		<Month>4</Month>
-		<DayOfWeek>0</DayOfWeek>
-		<WeekOfMonth>1</WeekOfMonth>
-	</Holiday>
-	<Holiday name="Daylight Savings Time Ends" shortname="DaylightSavings|DaylightSavingsEnd">
-		<Month>4</Month>
-		<DayOfWeek>0</DayOfWeek>
-		<WeekOfMonth>5</WeekOfMonth>
-	</Holiday>
-	-->
-	<Holiday name="Daylight Savings Time Ends" shortname="DaylightSavings|DaylightSavingsEnd">
-		<DSTEnd />
-	</Holiday>
-	<Holiday name="Earth Day" shortname="EarthDay">
-		<Month>4</Month>
-		<Day>22</Day>
+		<Day>12</Day>
+		<NameRU>День космонавтики</NameRU>
 	</Holiday>
 	<Holiday name="Tax Day">
 		<WeekdayOnOrAfter>
 			<Month>4</Month>
 			<Day>15</Day>
 		</WeekdayOnOrAfter>
+		<NotCelebratedIn>RU</NotCelebratedIn>
+	</Holiday>
+	<Holiday name="Earth Day" shortname="EarthDay">
+		<Month>4</Month>
+		<Day>22</Day>
+	</Holiday>
+	<Holiday name="Alien Day" shortname="AlienDay">
+		<Month>4</Month>
+		<Day>26</Day>
 	</Holiday>
 	<Holiday name="May the 4th be with You!" shortname="StarWarsDay">
 		<Month>5</Month>
@@ -134,15 +156,18 @@
 		<Month>5</Month>
 		<DayOfWeek>6</DayOfWeek>
 		<WeekOfMonth>3</WeekOfMonth>
+		<NotCelebratedIn>RU</NotCelebratedIn>
 	</Holiday>
 	<Holiday name="Memorial Day">
 		<Month>5</Month>
 		<DayOfWeek>1</DayOfWeek>
 		<WeekOfMonth>5</WeekOfMonth>
+		<NotCelebratedIn>RU</NotCelebratedIn>
 	</Holiday>
 	<Holiday name="Flag Day">
 		<Month>6</Month>
 		<Day>14</Day>
+		<NotCelebratedIn>RU</NotCelebratedIn>
 	</Holiday>	
 	<Holiday name="Fathers' Day" shortname="FathersDay">
 		<Month>6</Month>
@@ -157,6 +182,7 @@
 	<Holiday name="Independence Day">
 		<Month>7</Month>
 		<Day>4</Day>
+		<NotCelebratedIn>RU</NotCelebratedIn>
 	</Holiday>
     <Holiday name="System Administrator Appreciation Day" shortname="SysAdminDay">
 		<Month>7</Month>
@@ -167,6 +193,7 @@
 		<Month>9</Month>
 		<DayOfWeek>1</DayOfWeek>
 		<WeekOfMonth>1</WeekOfMonth>
+		<NotCelebratedIn>RU</NotCelebratedIn>
 	</Holiday>
 	<Holiday name="Grandparents' Day">
 		<DaysAfterHoliday Holiday="Labor Day">
@@ -183,30 +210,17 @@
 	<Holiday name="United Nations Day">
 		<Month>10</Month>
 		<Day>24</Day>
+		<NotCelebratedIn>RU</NotCelebratedIn>
 	</Holiday>
 	<Holiday name="Halloween">
 		<Month>10</Month>
 		<Day>31</Day>
 	</Holiday>
-	<!-- US
-	<Holiday name="Daylight Savings Time Begins" shortname="DaylightSavings|DaylightSavingsBegin">
-		<Month>10</Month>
-		<DayOfWeek>0</DayOfWeek>
-		<WeekOfMonth>0</WeekOfMonth>
-	</Holiday>
-	<Holiday name="Daylight Savings Time Begins" shortname="DaylightSavings|DaylightSavingsBegin">
-		<Month>10</Month>
-		<DayOfWeek>0</DayOfWeek>
-		<WeekOfMonth>5</WeekOfMonth>
-	</Holiday>
-	-->
-	<Holiday name="Daylight Savings Time Begins" shortname="DaylightSavings|DaylightSavingsBegin">
-		<DSTStart />
-	</Holiday>
 	<Holiday name="Columbus Day">
 		<Month>10</Month>
 		<DayOfWeek>1</DayOfWeek>
 		<WeekOfMonth>2</WeekOfMonth>
+		<NotCelebratedIn>RU</NotCelebratedIn>
 	</Holiday>
 	<Holiday name="Election Day">
 		<DayOfWeekOnOrAfter>
@@ -214,10 +228,12 @@
 			<Month>11</Month>
 			<Day>2</Day>
 		</DayOfWeekOnOrAfter>
+		<NotCelebratedIn>RU</NotCelebratedIn>
 	</Holiday>
 	<Holiday name="Veterans Day">
 		<Month>11</Month>
 		<Day>11</Day>
+		<NotCelebratedIn>RU</NotCelebratedIn>
 	</Holiday>
 	<Holiday name="Christmas Day" shortname="Christmas">
 		<Month>12</Month>
@@ -228,5 +244,11 @@
 		<Month>12</Month>
 		<Day>31</Day>
 		<NameRU>Новый год к нам мчится...</NameRU>
+	</Holiday>
+	<Holiday name="Daylight Savings Time Begins" shortname="DaylightSavings|DaylightSavingsBegin">
+		<DSTStart />
+	</Holiday>
+	<Holiday name="Daylight Savings Time Ends" shortname="DaylightSavings|DaylightSavingsEnd">
+		<DSTEnd />
 	</Holiday>
 </Holidays>
