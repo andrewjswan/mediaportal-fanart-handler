@@ -95,6 +95,7 @@
 		<DaysAfterHoliday Holiday="Good Friday">
 			<Days>-1</Days>
 		</DaysAfterHoliday>
+		<NameRU>Чистый четверг</NameRU>
 		<NotCelebratedIn>HE</NotCelebratedIn>
 	</Holiday>
     <Holiday name="Good Friday">

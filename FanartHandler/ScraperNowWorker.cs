@@ -113,6 +113,12 @@ namespace FanartHandler
           return;
 
         Utils.Progress state = e.UserState == null ? Utils.Progress.None : (Utils.Progress)Enum.Parse(typeof(Utils.Progress), e.UserState.ToString());
+        int percent = e.ProgressPercentage;
+        if (percent > 100)
+        {
+          percent = 100;
+        }
+
         switch (state)
         {
           case Utils.Progress.Start:
@@ -137,7 +143,7 @@ namespace FanartHandler
           }
           default:
           {
-            Utils.SetProperty("scraper.percent.completed", e.ProgressPercentage.ToString());
+            Utils.SetProperty("scraper.percent.completed", percent.ToString());
             Utils.SetProperty("scraper.percent.sign", Translation.StatusPercent);
             break;
           }

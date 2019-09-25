@@ -595,6 +595,10 @@ namespace FanartHandler
 
     private bool SupportsRandomLatestsImages(Utils.Latests category)
     {
+      if (!Utils.LatestMediaHandlerEnabled)
+      {
+        return false;
+      }
       if (WindowsUsingFanartLatestsRandom != null)
       {
         if (Utils.iActiveWindow > (int)GUIWindow.Window.WINDOW_INVALID)
@@ -622,6 +626,10 @@ namespace FanartHandler
 
     public bool NeedLatestsUpdate()
     {
+      if (!Utils.LatestMediaHandlerEnabled)
+      {
+        return false;
+      }
       if (!Utils.ContainsID(WindowsUsingFanartLatestsRandom))
       {
         return false;
@@ -636,6 +644,10 @@ namespace FanartHandler
 
     public bool NeedLatestsUpdate(Utils.Latests category)
     {
+      if (!Utils.LatestMediaHandlerEnabled)
+      {
+        return false;
+      }
       if (!Utils.ContainsID(WindowsUsingFanartLatestsRandom))
       {
         return false;
@@ -677,6 +689,10 @@ namespace FanartHandler
 
     public string GetLatestsRandomFilename(ref int iFilePrev, ref string sFileNamePrev, Utils.Latests category)
     {
+      if (!Utils.LatestMediaHandlerEnabled)
+      {
+        return string.Empty;
+      }
       var result = string.Empty;
       // logger.Debug("*** GetLatestsRandomFilename: "+iFilePrev+" - "+sFileNamePrev+" - "+category);
       // var stopwatch = System.Diagnostics.Stopwatch.StartNew();

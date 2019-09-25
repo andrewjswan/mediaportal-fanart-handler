@@ -110,6 +110,7 @@ namespace FanartHandler
     public static int SpotLightMax;
 
     public static AnimatedClass FHAnimated = null;
+    public static AnimatedKyraDBClass FHKyraDBAnimated = null;
 
     #region Settings
     public static bool UseFanart { get; set; }
@@ -2740,7 +2741,7 @@ namespace FanartHandler
         if (!string.IsNullOrWhiteSpace(selAlbum))
           currSelectedMusicAlbum = selAlbum;
 
-        // logger.Debug("*** GMAFLC: ["+selArtist+"] ["+selAlbumArtist+"] ["+selAlbum+"] ["+selItem+"]");
+        // logger.Debug("*** GMAFLC: Main: ["+selArtist+"] ["+selAlbumArtist+"] ["+selAlbum+"] ["+selItem+"]");
         if (!string.IsNullOrWhiteSpace(selArtist))
           if (!string.IsNullOrWhiteSpace(selAlbumArtist))
             if (selArtist.Equals(selAlbumArtist, StringComparison.InvariantCultureIgnoreCase))
@@ -2811,7 +2812,7 @@ namespace FanartHandler
                 }
                 htArtists.Clear();
                 htArtists = null;
-                // logger.Debug("*** GMAFLC: ["+_artists+"] ["+currSelectedMusicAlbum+"] ["+selItem+"]");
+                // logger.Debug("*** GMAFLCL: List: ["+_artists+"] ["+currSelectedMusicAlbum+"] ["+selItem+"]");
                 return _artists;
               }
             }
@@ -2841,7 +2842,10 @@ namespace FanartHandler
             arrayList.Clear();
           arrayList = null;
           if (!string.IsNullOrWhiteSpace(FoundArtist))
+          {
+            // logger.Debug("*** GMAFLC: Selected: ["+SelArtist+"] - ["+FoundArtist+"]");
             return FoundArtist;
+          }
           //
           SelArtist = GetArtistLeftOfMinusSign(selItem);
           arrayList = new ArrayList();
@@ -2859,7 +2863,10 @@ namespace FanartHandler
             arrayList.Clear();
           arrayList = null;
           if (!string.IsNullOrWhiteSpace(FoundArtist))
+          {
+            // logger.Debug("*** GMAFLC: Selected II: ["+SelArtist+"] - ["+FoundArtist+"]");
             return FoundArtist;
+          }
           //
           var SelArtistWithoutPipes = RemoveMPArtistPipes(SelArtist);
           arrayList = new ArrayList();
@@ -2877,8 +2884,12 @@ namespace FanartHandler
             arrayList.Clear();
           arrayList = null;
           if (!string.IsNullOrWhiteSpace(FoundArtist))
+          {
+            // logger.Debug("*** GMAFLC: Selected III: ["+SelArtist+"] - ["+FoundArtist+"]");
             return FoundArtist;
+          }
           //
+          // logger.Debug("*** GMAFLC: Selected End: ["+selItem+"]");
           return selItem;
         }
         else
@@ -2900,6 +2911,7 @@ namespace FanartHandler
             // selAlbumArtist = MovePrefixToBack(RemoveMPArtistPipes(musicTag.AlbumArtist)).Trim();
             selAlbumArtist = RemoveMPArtistPipes(musicTag.AlbumArtist).Trim()+"|"+musicTag.AlbumArtist.Trim();
 
+          // logger.Debug("*** GMAFLC: Selected List: ["+selArtist+"] ["+selAlbumArtist+"]");
           if (!string.IsNullOrWhiteSpace(selArtist))
             if (!string.IsNullOrWhiteSpace(selAlbumArtist))
               if (selArtist.Equals(selAlbumArtist, StringComparison.InvariantCultureIgnoreCase))
@@ -2913,6 +2925,7 @@ namespace FanartHandler
               return selAlbumArtist;
         }
         //
+        // logger.Debug("*** GMAFLC: Selected End II: ["+selItem+"]");
         return selItem;
       }
       catch (Exception ex)
@@ -3726,6 +3739,10 @@ namespace FanartHandler
       {
         FHAnimated = new AnimatedClass();
       }
+      if (FHAnimated == null)
+      {
+        FHKyraDBAnimated = new AnimatedKyraDBClass();
+      }
       if (!FHAnimated.DownloadCatalog())
       {
         FHAnimated = null;
@@ -3743,6 +3760,8 @@ namespace FanartHandler
     public static void AnimatedUnLoad()
     {
       ReleaseDelayStop("FanartHandler-AnimatedLoad");
+      FHKyraDBAnimated = null;
+
       if (FHAnimated == null)
       {
         return;
@@ -3757,12 +3776,32 @@ namespace FanartHandler
 
     public static string AnimatedGetFilename(Utils.Animated type, FanartClass key)
     {
-      if (FHAnimated == null)
+       string result = AnimatedCatalogGetFilename(type, key);
+       if (string.IsNullOrEmpty(result))
+       {
+         result = AnimatedKyraDBGetFilename(type, key);
+       }
+       return result;
+    }
+
+    public static string AnimatedCatalogGetFilename(Utils.Animated type, FanartClass key)
+    {
+      if (FHAnimated != null)
       {
         return string.Empty;
       }
 
       return FHAnimated.GetFilenameFromCatalog(type, key);
+    }
+
+    public static string AnimatedKyraDBGetFilename(Utils.Animated type, FanartClass key)
+    {
+      if (FHKyraDBAnimated == null)
+      {
+        return string.Empty;
+      }
+
+      return FHKyraDBAnimated.GetFilenameFromCatalog(type, key);
     }
     #endregion
 

@@ -25,6 +25,11 @@
       <searchProperty>#awards</searchProperty>
       <searchRegex>Won[^*]+?-.Oscar</searchRegex>
     </rule>
+    <rule>
+      <winID>614</winID>
+      <searchProperty>#Actor.Biography</searchProperty>
+      <searchRegex>Won[^*]+?-.Oscar</searchRegex>
+    </rule>
   </award>
 
   <award>
@@ -44,6 +49,11 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#awards</searchProperty>
+      <searchRegex>Won[^*]+?-.Golden Globe</searchRegex>
+    </rule>
+    <rule>
+      <winID>614</winID>
+      <searchProperty>#Actor.Biography</searchProperty>
       <searchRegex>Won[^*]+?-.Golden Globe</searchRegex>
     </rule>
   </award>
@@ -68,6 +78,11 @@
       <searchProperty>#awards</searchProperty>
       <searchRegex>Won[^*]+?-.MTV</searchRegex>
     </rule>
+    <rule>
+      <winID>614</winID>
+      <searchProperty>#Actor.Biography</searchProperty>
+      <searchRegex>Won[^*]+?-.MTV</searchRegex>
+    </rule>
   </award>
 
   <award>
@@ -88,6 +103,11 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#awards</searchProperty>
+      <searchRegex>Won[^*]+?-.Raspberry</searchRegex>
+    </rule>
+    <rule>
+      <winID>614</winID>
+      <searchProperty>#Actor.Biography</searchProperty>
       <searchRegex>Won[^*]+?-.Raspberry</searchRegex>
     </rule>
   </award>
@@ -112,6 +132,11 @@
       <searchProperty>#awards</searchProperty>
       <searchRegex>Moscow International Film Festival[^*]+?Won[^*]+?-</searchRegex>
     </rule>
+    <rule>
+      <winID>614</winID>
+      <searchProperty>#Actor.Biography</searchProperty>
+      <searchRegex>Moscow International Film Festival[^*]+?Won[^*]+?-</searchRegex>
+    </rule>
   </award>
 
   <award>
@@ -132,6 +157,11 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#awards</searchProperty>
+      <searchRegex>Won[^*]+?-.Golden Lion</searchRegex>
+    </rule>
+    <rule>
+      <winID>614</winID>
+      <searchProperty>#Actor.Biography</searchProperty>
       <searchRegex>Won[^*]+?-.Golden Lion</searchRegex>
     </rule>
   </award>
@@ -156,6 +186,11 @@
       <searchProperty>#awards</searchProperty>
       <searchRegex>Won[^*]+?-.Golden Berlin Bear</searchRegex>
     </rule>
+    <rule>
+      <winID>614</winID>
+      <searchProperty>#Actor.Biography</searchProperty>
+      <searchRegex>Won[^*]+?-.Golden Berlin Bear</searchRegex>
+    </rule>
   </award>
 
   <award>
@@ -176,6 +211,11 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#awards</searchProperty>
+      <searchRegex>Won[^*]+?-.Cannes</searchRegex>
+    </rule>
+    <rule>
+      <winID>614</winID>
+      <searchProperty>#Actor.Biography</searchProperty>
       <searchRegex>Won[^*]+?-.Cannes</searchRegex>
     </rule>
   </award>
@@ -200,6 +240,11 @@
       <searchProperty>#awards</searchProperty>
       <searchRegex>Won[^*]+?-.Asian</searchRegex>
     </rule>
+    <rule>
+      <winID>614</winID>
+      <searchProperty>#Actor.Biography</searchProperty>
+      <searchRegex>Won[^*]+?-.Asian</searchRegex>
+    </rule>
   </award>
 
   <award>
@@ -220,6 +265,11 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#awards</searchProperty>
+      <searchRegex>Won[^*]+?-.BAFTA</searchRegex>
+    </rule>
+    <rule>
+      <winID>614</winID>
+      <searchProperty>#Actor.Biography</searchProperty>
       <searchRegex>Won[^*]+?-.BAFTA</searchRegex>
     </rule>
   </award>
@@ -244,6 +294,11 @@
       <searchProperty>#awards</searchProperty>
       <searchRegex>Won[^*]+?-[^*]+?Emmy</searchRegex>
     </rule>
+    <rule>
+      <winID>614</winID>
+      <searchProperty>#Actor.Biography</searchProperty>
+      <searchRegex>Won[^*]+?-[^*]+?Emmy</searchRegex>
+    </rule>
   </award>
 
   <award>
@@ -264,6 +319,11 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#awards</searchProperty>
+      <searchRegex>Screen Actors Guild[^*]+?Won[^*]+?-</searchRegex>
+    </rule>
+    <rule>
+      <winID>614</winID>
+      <searchProperty>#Actor.Biography</searchProperty>
       <searchRegex>Screen Actors Guild[^*]+?Won[^*]+?-</searchRegex>
     </rule>
   </award>
@@ -288,6 +348,11 @@
       <searchProperty>#awards</searchProperty>
       <searchRegex>Won[^*]+?-[^*]+?Saturn</searchRegex>
     </rule>
+    <rule>
+      <winID>614</winID>
+      <searchProperty>#Actor.Biography</searchProperty>
+      <searchRegex>Won[^*]+?-[^*]+?Saturn</searchRegex>
+    </rule>
   </award>
 
   <award>
@@ -308,6 +373,11 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#awards</searchProperty>
+      <searchRegex>Won[^*]+?-[^*]+?Nika</searchRegex>
+    </rule>
+    <rule>
+      <winID>614</winID>
+      <searchProperty>#Actor.Biography</searchProperty>
       <searchRegex>Won[^*]+?-[^*]+?Nika</searchRegex>
     </rule>
   </award>
@@ -332,6 +402,11 @@
       <searchProperty>#awards</searchProperty>
       <searchRegex>Sochi Open Russian Film Festival[^*]+?Won[^*]+?-</searchRegex>
     </rule>
+    <rule>
+      <winID>614</winID>
+      <searchProperty>#Actor.Biography</searchProperty>
+      <searchRegex>Sochi Open Russian Film Festival[^*]+?Won[^*]+?-</searchRegex>
+    </rule>
   </award>
 
   <award>
@@ -352,6 +427,11 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#awards</searchProperty>
+      <searchRegex>European Film Awards[^*]+?Won[^*]+?-</searchRegex>
+    </rule>
+    <rule>
+      <winID>614</winID>
+      <searchProperty>#Actor.Biography</searchProperty>
       <searchRegex>European Film Awards[^*]+?Won[^*]+?-</searchRegex>
     </rule>
   </award>
@@ -376,6 +456,11 @@
       <searchProperty>#awards</searchProperty>
       <searchRegex>Won[^*]+?-[^*]+?Goya</searchRegex>
     </rule>
+    <rule>
+      <winID>614</winID>
+      <searchProperty>#Actor.Biography</searchProperty>
+      <searchRegex>Won[^*]+?-[^*]+?Goya</searchRegex>
+    </rule>
   </award>
 
   <award>
@@ -396,6 +481,11 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#awards</searchProperty>
+      <searchRegex>Won[^*]+?-[^*]+?César</searchRegex>
+    </rule>
+    <rule>
+      <winID>614</winID>
+      <searchProperty>#Actor.Biography</searchProperty>
       <searchRegex>Won[^*]+?-[^*]+?César</searchRegex>
     </rule>
   </award>
@@ -420,6 +510,11 @@
       <searchProperty>#awards</searchProperty>
       <searchRegex>Karlovy Vary International Film Festival[^*]+?Won[^*]+?-</searchRegex>
     </rule>
+    <rule>
+      <winID>614</winID>
+      <searchProperty>#Actor.Biography</searchProperty>
+      <searchRegex>Karlovy Vary International Film Festival[^*]+?Won[^*]+?-</searchRegex>
+    </rule>
   </award>
 
   <award>
@@ -442,6 +537,11 @@
       <searchProperty>#awards</searchProperty>
       <searchRegex>Won[^*]+?-[^*]+?Georges</searchRegex>
     </rule>
+    <rule>
+      <winID>614</winID>
+      <searchProperty>#Actor.Biography</searchProperty>
+      <searchRegex>Won[^*]+?-[^*]+?Georges</searchRegex>
+    </rule>
   </award>
 
   <award>
@@ -462,6 +562,11 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#awards</searchProperty>
+      <searchRegex>Sundance Film Festival[^*]+?Won[^*]+?-</searchRegex>
+    </rule>
+    <rule>
+      <winID>614</winID>
+      <searchProperty>#Actor.Biography</searchProperty>
       <searchRegex>Sundance Film Festival[^*]+?Won[^*]+?-</searchRegex>
     </rule>
   </award>
@@ -487,8 +592,18 @@
       <searchRegex>San Sebastián International Film Festival[^*]+?Won[^*]+?-</searchRegex>
     </rule>
     <rule>
+      <winID>614</winID>
+      <searchProperty>#Actor.Biography</searchProperty>
+      <searchRegex>San Sebastián International Film Festival[^*]+?Won[^*]+?-</searchRegex>
+    </rule>
+    <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#awards</searchProperty>
+      <searchRegex>Won[^*]+?-[^*]+?Golden Seashell</searchRegex>
+    </rule>
+    <rule>
+      <winID>614</winID>
+      <searchProperty>#Actor.Biography</searchProperty>
       <searchRegex>Won[^*]+?-[^*]+?Golden Seashell</searchRegex>
     </rule>
   </award>
@@ -503,8 +618,18 @@
       <searchRegex>Odesa International Film Festival[^*]+?Won[^*]+?-</searchRegex>
     </rule>
     <rule>
+      <winID>614</winID>
+      <searchProperty>#Actor.Biography</searchProperty>
+      <searchRegex>Odesa International Film Festival[^*]+?Won[^*]+?-</searchRegex>
+    </rule>
+    <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#awards</searchProperty>
+      <searchRegex>Won[^*]+?-[^*]+?Golden Duke</searchRegex>
+    </rule>
+    <rule>
+      <winID>614</winID>
+      <searchProperty>#Actor.Biography</searchProperty>
       <searchRegex>Won[^*]+?-[^*]+?Golden Duke</searchRegex>
     </rule>
   </award>
@@ -519,8 +644,18 @@
       <searchRegex>Golden Eagle Awards[^*]+?Won[^*]+?-</searchRegex>
     </rule>
     <rule>
+      <winID>614</winID>
+      <searchProperty>#Actor.Biography</searchProperty>
+      <searchRegex>Golden Eagle Awards[^*]+?Won[^*]+?-</searchRegex>
+    </rule>
+    <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#awards</searchProperty>
+      <searchRegex>Won[^*]+?-[^*]+?Golden Eagle</searchRegex>
+    </rule>
+    <rule>
+      <winID>614</winID>
+      <searchProperty>#Actor.Biography</searchProperty>
       <searchRegex>Won[^*]+?-[^*]+?Golden Eagle</searchRegex>
     </rule>
   </award>

@@ -19,11 +19,13 @@ namespace FanartHandler
 {
   // https://forum.kodi.tv/showthread.php?tid=215727
   // https://blueeyiz702.wixsite.com/posters/animated-posters
+  // http://www.consiliumb.com/animatedgifs
+  // https://gitlab.com/andrewjswan/mediaportal.animated.poster
+  // https://gitlab.com/andrewjswan/mediaportal.animated.background
+
   class AnimatedClass
   {
     private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-    // private const string AnimatedURL = "http://www.consiliumb.com/animatedgifs/{0}";
-    private const string AnimatedURL = "https://gitlab.com/andrewjswan/mediaportal.animated.poster/raw/master/Poster/{0}";
     private const string AnimatedDBURL = "https://gitlab.com/andrewjswan/mediaportal.animated.poster/raw/master/DB/{0}";
     private const string CatalogFolder = @"FanartHandler\Animated\";
     private const string CatalogFilename = "movies.json";
@@ -31,6 +33,7 @@ namespace FanartHandler
 
     private RootObject Catalog = null;
     private string CatalogFullFilename = string.Empty;
+    private string AnimatedURL = string.Empty;
 
     static AnimatedClass() { }
 
@@ -61,18 +64,18 @@ namespace FanartHandler
       public string imdbid { get; set; } 
       public string tmdbid { get; set; } 
       public string title { get; set; }
-      public string originaltitle { get; set; }
       public string year { get; set; } 
       public List<Entry> entries { get; set; } 
     }
 
     public class RootObject 
     { 
+      public List<Movie> movies { get; set; } 
       public int version { get; set; } 
       public string lastUpdated { get; set; } 
       public string previousUpdated { get; set; }
-      public string baseURL { get; set; } 
-      public List<Movie> movies { get; set; } 
+      public string baseURLPoster { get; set; }
+      public string baseURLBackground { get; set; }
     }
 
     public bool CatalogLoaded 
@@ -166,7 +169,7 @@ namespace FanartHandler
 
       if (Utils.AnimatedDownloadClean)
       {
-        entry = entries.OrderByDescending(item => item.height).Where(p => p.type == type && p.language.ToUpperInvariant() == "CLEAN").FirstOrDefault();
+        entry = entries.OrderByDescending(item => item.width).Where(p => p.type == type && p.language.ToUpperInvariant() == "CLEAN").FirstOrDefault();
         if (entry != null)
         {
           // logger.Debug("*** Found: [CLEAN]" + entry.id + " " + entry.image + " " + entry.type + " " + entry.language + " " + entry.size); 
@@ -175,7 +178,7 @@ namespace FanartHandler
       }
       if (string.IsNullOrWhiteSpace(result) && (lang != "EN"))
       {
-        entry = entries.OrderByDescending(item => item.height).Where(p => p.type == type && p.language.ToUpperInvariant() == lang).FirstOrDefault();
+        entry = entries.OrderByDescending(item => item.width).Where(p => p.type == type && p.language.ToUpperInvariant() == lang).FirstOrDefault();
         if (entry != null)
         {
           // logger.Debug("*** Found: [" + lang + "]" + entry.id + " " + entry.image + " " + entry.type + " " + entry.language + " " + entry.size); 
@@ -184,7 +187,7 @@ namespace FanartHandler
       }
       if (string.IsNullOrWhiteSpace(result))
       {
-        entry = entries.OrderByDescending(item => item.height).Where(p => p.type == type && p.language.ToUpperInvariant() == "EN").FirstOrDefault();
+        entry = entries.OrderByDescending(item => item.width).Where(p => p.type == type && p.language.ToUpperInvariant() == "EN").FirstOrDefault();
         if (entry != null)
         {
           // logger.Debug("*** Found [EN]: " + entry.id + " " + entry.image + " " + entry.type + " " + entry.language + " " + entry.size);
@@ -223,11 +226,13 @@ namespace FanartHandler
           {
             if (type == Utils.Animated.MoviesPoster)
             {
+              AnimatedURL = Catalog.baseURLPoster + "/raw/master/Poster/{0}";
               return GetFilenameFromEntrys(movie.entries, "poster", Utils.AnimatedLanguage);
             }
 
             if (type == Utils.Animated.MoviesBackground)
             {
+              AnimatedURL = Catalog.baseURLBackground + "/raw/master/Background/{0}";
               return GetFilenameFromEntrys(movie.entries, "background", Utils.AnimatedLanguage);
             }
           }
@@ -238,11 +243,13 @@ namespace FanartHandler
           string gifFile = "{0}_{1}_0" + CatalogSuffix;
           if (type == Utils.Animated.MoviesPoster)
           {
+            AnimatedURL = Catalog.baseURLPoster + "/raw/master/Poster/{0}";
             gifFile = string.Format(gifFile, imdbid, "poster");
           }
 
           if (type == Utils.Animated.MoviesBackground)
           {
+            AnimatedURL = Catalog.baseURLBackground + "/raw/master/Background/{0}";
             gifFile = string.Format(gifFile, imdbid, "background");
           }
 

@@ -20,7 +20,7 @@ using System.Web;
 internal class AwardsGrabber : Grabbers.Movies.IAwardsGrabber
 {
   const string strGrabber = "FH:KP/IMDB";
-  const string strGrabberVersion = "20180227.I";
+  const string strGrabberVersion = "20190905.I";
 
   string Grabbers.Movies.IAwardsGrabber.GetName()
   {
@@ -96,8 +96,8 @@ internal class AwardsGrabber : Grabbers.Movies.IAwardsGrabber
   #region Kinopoisk Parameters
 
   private const string KP_BaseUrl = "https://ext.kinopoisk.ru/ios/5.0.0/";
-  private const string KP_Agent = "Android client(4.4 / api19), ru.kinopoisk/4.2.0 (55)";
-  private const string KP_Android = "19";
+  private const string KP_Agent = "Android client (4.4 / api22),ru.kinopoisk/4.2.1 (52)";
+  private const string KP_Android = "22";
   private const string KP_Plex = "2.0.0";
 
   #endregion Kinopoisk Parameters
@@ -496,42 +496,29 @@ internal class AwardsGrabber : Grabbers.Movies.IAwardsGrabber
 
   private static string GetKinopoiskResponse(string url)
   {
-    // GrabbersLog.Debug("{0} GetKinopoiskResponse: {1}", strGrabber, url);
+    // Log.Debug("{0} GetKinopoiskResponse: {1}", strGrabber, url);
 
-    string plexurl = "http://plex.filmingdata.com/reqh";
-    string plexxs = string.Empty;
-    string plexxt = string.Empty;
+    string salt = "IDATevHDS7";
+    DateTime now = DateTime.Now;
 
-    System.Net.HttpWebRequest webRequest;
-    try
+    // x-timestamp
+    long isec = ((DateTimeOffset)now).ToUnixTimeSeconds();
+    string plexxt = isec.ToString(); // x-timestamp
+
+    // x-signature
+    int index = url.IndexOf(KP_BaseUrl);
+    string kurl = (index < 0) ? url : url.Remove(index, KP_BaseUrl.Length);
+    string hstr = kurl + plexxt + salt;
+    System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create();
+    byte[] iBytes = System.Text.Encoding.ASCII.GetBytes(hstr);
+    byte[] hash = md5.ComputeHash(iBytes);
+
+    System.Text.StringBuilder sb = new System.Text.StringBuilder();
+    for (int i = 0; i < hash.Length; i++)
     {
-      webRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(plexurl);
-      webRequest.Headers.Clear();
-      webRequest.Timeout = 5000;
-      webRequest.Method = System.Net.WebRequestMethods.Http.Head;
-
-      webRequest.Headers.Add("Pragma", "no-cache");
-      webRequest.Headers.Add("Cache-Control", "no-cache");
-
-      webRequest.Headers.Add("X-Kinopoisk-Url", url);
-      webRequest.Headers.Add("X-Server-ID", KP_Plex);
-      using (System.Net.WebResponse webResponse = webRequest.GetResponse())
-      {
-        plexxs = webResponse.Headers["x-signature"];
-        plexxt = webResponse.Headers["x-timestamp"];
-        webResponse.Close();
-      }
+        sb.Append(hash[i].ToString("X2"));
     }
-    catch
-    {
-      plexxs = string.Empty;
-      plexxt = string.Empty;
-    }
-    finally
-    {
-      webRequest = null;
-    }
-    // GrabbersLog.Debug("{0} GetKinopoiskResponse: {1} - {2}", strGrabber, plexxs, plexxt);
+    string plexxs = sb.ToString().ToLowerInvariant(); // x-signature
 
     if (string.IsNullOrEmpty(plexxs) || string.IsNullOrEmpty(plexxt))
     {
@@ -574,7 +561,7 @@ internal class AwardsGrabber : Grabbers.Movies.IAwardsGrabber
     }
     catch (Exception ex)
     {
-      GrabbersLog.Debug("{0} GetKinopoiskResponse: Exception: {1}", strGrabber, ex);
+      Log.Debug("{0} GetKinopoiskResponse: Exception: {1}", strGrabber, ex);
     }
     finally
     {
