@@ -237,29 +237,6 @@ namespace FanartHandler
             }
           }
         }
-        else
-        {
-          // Create direct/default link to Movie gif, and check Exists on site or not ...
-          string gifFile = "{0}_{1}_0" + CatalogSuffix;
-          if (type == Utils.Animated.MoviesPoster)
-          {
-            AnimatedURL = Catalog.baseURLPoster + "/raw/master/Poster/{0}";
-            gifFile = string.Format(gifFile, imdbid, "poster");
-          }
-
-          if (type == Utils.Animated.MoviesBackground)
-          {
-            AnimatedURL = Catalog.baseURLBackground + "/raw/master/Background/{0}";
-            gifFile = string.Format(gifFile, imdbid, "background");
-          }
-
-          string URL = string.Format(AnimatedURL, gifFile);
-          if (Utils.RemoteFileExists(URL))
-          {
-            logger.Debug("Animated: GetFilenameFromCatalog - Outdated DB on site. Animated file {0} on site, but not in DB...", gifFile);
-            return URL;
-          }
-        }
       }
       else
       {

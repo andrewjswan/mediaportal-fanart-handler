@@ -223,6 +223,7 @@ namespace FanartHandler
 
     #region Animated
     public static string AnimatedLanguage { get; set; }
+    public static string AnimatedLanguageFull { get; set; }
     public static bool AnimatedMoviesPosterDownload { get; set; }
     public static bool AnimatedMoviesBackgroundDownload { get; set; }
     public static bool AnimatedDownloadClean { get; set; }
@@ -4783,6 +4784,28 @@ namespace FanartHandler
       return lang;
     }
 
+    public static string GetLangName()
+    {
+      string lang = string.Empty;
+      try
+      {
+        lang = GUILocalizeStrings.CurrentLanguage();
+      }
+      catch (Exception)
+      {
+        lang = CultureInfo.CurrentUICulture.EnglishName;
+        if (!string.IsNullOrEmpty(lang))
+        {
+		  lang = lang.IndexOf(" ") > -1 ? lang.Substring(0,lang.IndexOf(" ")) : lang;
+		}
+      }
+      if (string.IsNullOrEmpty(lang))
+      {
+        lang = "-z";
+      }
+      return lang;
+    }
+
     public static void SendMessage(int windowid, int controlid, bool show)
     {
       var message = new GUIMessage(show ? GUIMessage.MessageType.GUI_MSG_VISIBLE : GUIMessage.MessageType.GUI_MSG_HIDDEN, windowid, 0, controlid, 0, 0, null);
@@ -6041,6 +6064,7 @@ namespace FanartHandler
       #endregion
       #region Animated
       AnimatedLanguage = "EN";
+      AnimatedLanguageFull = "english";
       AnimatedMoviesPosterDownload = false;
       AnimatedMoviesBackgroundDownload = false;
       AnimatedDownloadClean = false;
@@ -6077,6 +6101,7 @@ namespace FanartHandler
       #region Language
       InfoLanguage = GetLang().ToUpper();
       AnimatedLanguage = GetLang().ToUpper();
+      AnimatedLanguageFull = GetLangName().ToLower();
       AwardsLanguage = GetLang().ToUpper();
       HolidayLanguage = GetLang().ToUpper();
       MovieDBLanguage = GetLang().ToUpper();
@@ -6295,6 +6320,7 @@ namespace FanartHandler
       if (UseAnimated)
       {
         logger.Debug("Animated: Movie: " + Check(AnimatedMoviesPosterDownload) + " Poster, " + Check(AnimatedMoviesBackgroundDownload) + " Background");
+        logger.Debug("Animated: Language: " + AnimatedLanguage + " - " + GetLangName());
       }
       if (UseTheMovieDB && TheMovieDBMovieNeedDownload)
       {

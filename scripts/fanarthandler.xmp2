@@ -781,25 +781,35 @@ ajs</Value>
       <Build>2</Build>
       <Revision>0</Revision>
     </Version>
-    <ExtensionDescription>Fanart Handler is a plugin for MediaPortal (MP). The plugin basically supports;
-
-    * Search and download music artist fanart or artist and album thumbnails (scrape) from the fanart.tv, htbackdrops, last.fm, coverartarchive site.
-       * for all artists stored in your MP music database.
-       * for any artist currently being played (on the fly).
-
-    * Push fanart that you store on your local harddrive to the current used MP skin.
-       * push fanart for now played music
-       * push fanart for selected music or movie
-       * push random images from selected folders
-
+    <ExtensionDescription>Fanart Handler is a plugin for MediaPortal (MP). The plugin basically supports;
+
+
+
+    * Search and download music artist fanart or artist and album thumbnails (scrape) from the fanart.tv, htbackdrops, last.fm, coverartarchive site.
+
+       * for all artists stored in your MP music database.
+
+       * for any artist currently being played (on the fly).
+
+
+
+    * Push fanart that you store on your local harddrive to the current used MP skin.
+
+       * push fanart for now played music
+
+       * push fanart for selected music or movie
+
+       * push random images from selected folders
+
+
+
 </ExtensionDescription>
-    <VersionDescription>Bug fixes
-Cosmetic
-Add new Animated repo
+    <VersionDescription>Add to new Animated repo Language specific download...
+
 </VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-{VERSION}.MPE1</OnlineLocation>
-    <ReleaseDate>2019-03-20T15:04:24</ReleaseDate>
+    <ReleaseDate>2019-10-05T15:04:24</ReleaseDate>
     <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios,animated</Tags>
     <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
     <Params>

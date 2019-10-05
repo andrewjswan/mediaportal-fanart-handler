@@ -35,7 +35,9 @@ namespace FanartHandler
         public string resolution { get; set; }
         public string width { get; set; }
         public string height { get; set; }
+        public string language { get; set; }
         public string date_added { get; set; }
+        public int likes { get; set; }
     }
 
     public class Background
@@ -44,7 +46,9 @@ namespace FanartHandler
         public string resolution { get; set; }
         public string width { get; set; }
         public string height { get; set; }
+        public string language { get; set; }
         public string date_added { get; set; }
+        public int likes { get; set; }
     }
 
     public class RootObject
@@ -129,22 +133,48 @@ namespace FanartHandler
           {
             if (Catalog.posters != null)
             {
-              Poster poster = Catalog.posters.OrderByDescending(item => item.width).FirstOrDefault();
-              if (poster != null)
+              Poster poster = null;
+              string result = string.Empty;
+
+              if (Utils.AnimatedDownloadClean)
               {
-                return Catalog.base_url_posters + "/" +poster.name;
+                poster = Catalog.posters.Where(p => p.language.ToLowerInvariant() == "unknown").OrderByDescending(item => item.likes).ThenByDescending(item => item.width).FirstOrDefault();
+                if (poster != null)
+                {
+                  result = poster.name;
+                }
+              }
+              if (string.IsNullOrWhiteSpace(result) && (Utils.AnimatedLanguageFull != "english"))
+              {
+                poster = Catalog.posters.Where(p => p.language.ToLowerInvariant() == Utils.AnimatedLanguageFull).OrderByDescending(item => item.likes).ThenByDescending(item => item.width).FirstOrDefault();
+                if (poster != null)
+                {
+                  result = poster.name;
+                }
+              }
+              if (string.IsNullOrWhiteSpace(result))
+              {
+                poster = Catalog.posters.Where(p => p.language.ToLowerInvariant() == "english").OrderByDescending(item => item.likes).ThenByDescending(item => item.width).FirstOrDefault();
+                if (poster != null)
+                {
+                  result = poster.name;
+                }
+              }           
+              if (!string.IsNullOrWhiteSpace(result))
+              {
+                return Catalog.base_url_posters + "/" + result;
               }
             }
           }
 
           if (type == Utils.Animated.MoviesBackground)
           {
-            if (Catalog.posters != null)
+            if (Catalog.backgrounds != null)
             {
-              Background background = Catalog.backgrounds.OrderByDescending(item => item.width).FirstOrDefault();
+              Background background = Catalog.backgrounds.OrderByDescending(item => item.likes).ThenByDescending(item => item.width).FirstOrDefault();
               if (background != null)
               {
-                return Catalog.base_url_backgrounds + "/" +background.name;
+                return Catalog.base_url_backgrounds + "/" + background.name;
               }
             }
           }
