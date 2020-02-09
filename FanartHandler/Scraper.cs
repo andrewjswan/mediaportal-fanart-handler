@@ -356,7 +356,11 @@ namespace FanartHandler
       res = TheAudioDBGetMusicBrainzID(artist, album);
       if (string.IsNullOrEmpty(res))
       {
-        res = GetMusicBrainzID(artist, album);
+        res = LastFMGetMusicBrainzID(artist, album);
+        if (string.IsNullOrEmpty(res))
+        {
+          res = GetMusicBrainzID(artist, album);
+        }
       }
       return res;
     }
@@ -1741,15 +1745,22 @@ namespace FanartHandler
               sourceFilename = sourceFilename.Substring(0, sourceFilename.IndexOf("</image>"));
               logger.Debug("Last.FM: Thumb Mega for " + Method + " - " + sourceFilename);
               if (sourceFilename.ToLower().IndexOf(".jpg") > 0 || sourceFilename.ToLower().IndexOf(".png") > 0 || sourceFilename.ToLower().IndexOf(".gif") > 0)
+              {
                 flag = true;
-              else {
+              }
+              else 
+              {
                 sourceFilename = html.Substring(checked (html.IndexOf("size=\"extralarge\">") + 18));
                 sourceFilename = sourceFilename.Substring(0, sourceFilename.IndexOf("</image>"));
                 logger.Debug("Last.FM: Thumb Extra for " + Method + " - " + sourceFilename);
                 if (sourceFilename.ToLower().IndexOf(".jpg") > 0 || sourceFilename.ToLower().IndexOf(".png") > 0 || sourceFilename.ToLower().IndexOf(".gif") > 0)
+                {
                   flag = true;
+                }
                 else
+                {
                   flag = false;
+                }
               }
             }
             if (html.IndexOf("<mbid>") > 0) 
@@ -1758,7 +1769,9 @@ namespace FanartHandler
               mbid = mbid.Substring(0, mbid.IndexOf("</mbid>"));
               logger.Debug("Last.FM: MBID for " + Method + " - " + mbid);
               if (mbid.Length == 0)
+              {
                 mbid = null;
+              }
             }
           }
         }
@@ -1769,7 +1782,7 @@ namespace FanartHandler
 
         if (flag) 
         {
-          if (sourceFilename != null && !sourceFilename.Contains("bad_tag")) 
+          if (sourceFilename != null && !sourceFilename.Contains("bad_tag") && !sourceFilename.Contains("2a96cbd8b46e442fc41c2b86b821562f")) 
           {
             string dbartist = null;
             string dbalbum = null;
@@ -1877,6 +1890,78 @@ namespace FanartHandler
       return result;
     }
     // End: Last.FM Get Album from Artist - Track
+
+    // Begin: Last.FM Get MusicBrainzID for Artist or Artist/Album
+    public string LastFMGetMusicBrainzID(string artist)
+    {
+      return LastFMGetMusicBrainzID(artist, null);
+    }
+
+    public string LastFMGetMusicBrainzID(string artist, string album)
+    {
+      if (!Utils.UseLastFM)
+        return string.Empty;
+
+      var URL = string.Empty;
+      var POST = string.Empty;
+      var validUrlLastFmString1 = string.Empty;
+      var validUrlLastFmString2 = string.Empty;
+
+      URL = "http://ws.audioscrobbler.com/2.0/?method=";
+      POST = "&autocorrect=1&api_key="+ApiKeyLastFM;
+
+      // Last.FM get Artist MusicBrainzID
+      if (string.IsNullOrEmpty(album)) 
+      {
+        validUrlLastFmString1 = getValidURLLastFMString(Utils.UndoArtistPrefix(artist));
+        URL = URL + "artist.getInfo";
+        POST = POST + "&artist=" + validUrlLastFmString1;
+      // Last.FM get Artist/Album MusicBrainzID
+      } 
+      else
+      {
+        validUrlLastFmString1 = getValidURLLastFMString(Utils.UndoArtistPrefix(artist));
+        validUrlLastFmString2 = getValidURLLastFMString(album);
+        URL = URL + "album.getInfo";
+        POST = POST + "&artist=" + validUrlLastFmString1 + "&album=" + validUrlLastFmString2;
+      }
+
+      try
+      {
+        var html = string.Empty;
+        var mbid = string.Empty;
+
+        logger.Debug("Last.FM: Trying to find MusicBrains ID for " + artist + (!string.IsNullOrEmpty(album) ? " - " + album : "") + ".");
+        GetHtml(URL+POST, out html);
+
+        try
+        {
+          if (!string.IsNullOrWhiteSpace(html))
+          {
+            if (html.IndexOf("<mbid>") > 0) 
+            {
+              mbid = html.Substring(checked (html.IndexOf("<mbid>") + 6));
+              mbid = mbid.Substring(0, mbid.IndexOf("</mbid>"));
+              if (!string.IsNullOrWhiteSpace(mbid))
+              {
+                logger.Debug("Last.FM: MBID for " +  artist + (!string.IsNullOrEmpty(album) ? " - " + album : "") + " - " + mbid);
+                return mbid;
+              }
+            }
+          }
+        }
+        catch (Exception ex)
+        {
+          logger.Error(ex.ToString());
+        }
+      }
+      catch (Exception ex)
+      {
+        logger.Error("Last.FM: MusicBrainzID: " + artist + (!string.IsNullOrEmpty(album) ? " - " + album : "") + " - " + ex);
+      }
+      return string.Empty;
+    }
+    // End: Last.FM Get MusicBrainzID for Artist or Artist/Album
     #endregion
 
     #region Fanart.TV
@@ -3457,7 +3542,7 @@ namespace FanartHandler
         }
         Method = "Artist/Album: "+fa.Artist+" - "+fa.Album+" - "+fa.Id;
       }
-      // Last.FM wrong Category ...
+      // Cover Art Archive wrong Category ...
       else 
       {
         logger.Warn("CoverArtArchive: GetTumbnails - wrong category - " + category.ToString() + ":" + subcategory.ToString() + ".");

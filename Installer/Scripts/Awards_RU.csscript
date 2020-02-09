@@ -20,7 +20,7 @@ using System.Web;
 internal class AwardsGrabber : Grabbers.Movies.IAwardsGrabber
 {
   const string strGrabber = "FH:KP/IMDB";
-  const string strGrabberVersion = "20190905.I";
+  const string strGrabberVersion = "20191019.I";
 
   string Grabbers.Movies.IAwardsGrabber.GetName()
   {
@@ -286,7 +286,7 @@ internal class AwardsGrabber : Grabbers.Movies.IAwardsGrabber
 
   private static string MakeKinopoiskUrl(string method, string query)
   {
-    return method + Uri.EscapeDataString(query);
+    return method + Uri.EscapeDataString(HttpUtility.UrlDecode(query).Replace("+", " "));
   }
 
   public static string GetKinopoiskAwards(string url)
@@ -540,12 +540,14 @@ internal class AwardsGrabber : Grabbers.Movies.IAwardsGrabber
       oHttpWebRequest.Headers.Add("device", "android");
       oHttpWebRequest.Headers.Add("Android-Api-Version", KP_Android);
 
+      oHttpWebRequest.Headers.Add("ClientId", "55decdcf6d4cd1bcaa1b3856");
+
       // oHttpWebRequest.Headers.Add("Image-Scale", "1");
       // oHttpWebRequest.Headers.Add("countryID", "2");
       // oHttpWebRequest.Headers.Add("cityID", "1");
       // oHttpWebRequest.Headers.Add("Content-Lang", API_LANG_URL);
 
-      string cd = DateTime.Now.ToString("HH:mm dd.MM.yyyy");
+      string cd = now.ToString("HH:mm dd.MM.yyyy");
       oHttpWebRequest.Headers.Add("clientDate", cd);
 
       oHttpWebRequest.Headers.Add("X-SIGNATURE", plexxs);

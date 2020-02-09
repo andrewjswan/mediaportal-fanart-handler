@@ -4128,12 +4128,13 @@ namespace FanartHandler
         string sqlSubCategory = subcategory.ToString();
 
         DeleteDummyItem(key1, key2, category, subcategory);
-        if (DatabaseUtility.GetAsInt(dbClient.Execute("SELECT COUNT(Key1) " +
-                                                       "FROM Image " +
-                                                       "WHERE Id = '" + Utils.PatchSql(imageId) + "' AND " +
-                                                             (string.IsNullOrEmpty(key1) ? string.Empty : "Key1 = '" + Utils.PatchSql(key1) + "' AND ") +
-                                                             // (string.IsNullOrEmpty(key2) ? string.Empty : "Key2 = '" + Utils.PatchSql(key2) + "' AND ") +
-                                                             "Provider = '" + provider + "';"), 0, 0) > 0)
+        SQLiteResultSet sqLiteResultSet = dbClient.Execute("SELECT COUNT(Key1) " +
+                                                           "FROM Image " +
+                                                           "WHERE Id = '" + Utils.PatchSql(imageId) + "' AND " +
+                                                                 (string.IsNullOrEmpty(key1) ? string.Empty : "Key1 = '" + Utils.PatchSql(key1) + "' AND ") +
+                                                                 // (string.IsNullOrEmpty(key2) ? string.Empty : "Key2 = '" + Utils.PatchSql(key2) + "' AND ") +
+                                                                 "Provider = '" + provider + "';");
+        if (sqLiteResultSet.Rows.Count > 0 && DatabaseUtility.GetAsInt(sqLiteResultSet, 0, 0) > 0)
         {
           SQL = "UPDATE Image SET Category = '" + sqlCategory + "', " +
                                  (subcategory == Utils.SubCategory.None ? string.Empty : "SubCategory = '" + sqlSubCategory + "', ") +
@@ -4202,7 +4203,8 @@ namespace FanartHandler
                                   // (string.IsNullOrEmpty(key2) ? string.Empty : "Key2 = '" + Utils.PatchSql(key2) + "' AND ") +
                                   "Provider = '" + provider + "'";
 
-        if (DatabaseUtility.GetAsInt(dbClient.Execute("SELECT COUNT(Key1) FROM Image WHERE " + where + ";"), 0, 0) <= 0)
+        SQLiteResultSet sqLiteResultSet = dbClient.Execute("SELECT COUNT(Key1) FROM Image WHERE " + where + ";");
+        if (sqLiteResultSet.Rows.Count == 0 || DatabaseUtility.GetAsInt(sqLiteResultSet, 0, 0) <= 0)
         {
           return false;
         }

@@ -2055,8 +2055,7 @@ namespace FanartHandler
       {
         try
         {
-          string[] allPrefixes = null;
-          allPrefixes = _artistPrefixes.Split(',');
+          string[] allPrefixes = _artistPrefixes.Split(',');
           if (allPrefixes != null && allPrefixes.Length > 0)
           {
             for (var i = 0; i < allPrefixes.Length; i++)
@@ -3777,10 +3776,10 @@ namespace FanartHandler
 
     public static string AnimatedGetFilename(Utils.Animated type, FanartClass key)
     {
-       string result = AnimatedCatalogGetFilename(type, key);
+       string result = AnimatedKyraDBGetFilename(type, key);
        if (string.IsNullOrEmpty(result))
        {
-         result = AnimatedKyraDBGetFilename(type, key);
+         result = AnimatedCatalogGetFilename(type, key);
        }
        return result;
     }

@@ -124,6 +124,8 @@ To the team behind the MP Moving Picture plugin. From who I have used some of th
 #fanarthandler.movie.awards.selected.all
 #fanarthandler.movie.awards.selected.verticalall
 #fanarthandler.movie.awards.selected.text
+#fanarthandler.movie.animated.selected.thumb
+#fanarthandler.movie.animated.selected.background
 
 #fanarthandler.movingpicture.latests.available
 #fanarthandler.movingpicture.available
@@ -320,3 +322,12 @@ Suitable for cleaning images that were downloaded while listening to the radio. 
 - GetAlbumInfo - Get info for Albums.
 - InfoLanguage - Info language.
 - FullScanInfo - Make full scan of Music DB (Once in 30 days).
+
+### Find information about Movies Awards 
+```xml
+  <section name="MoviesInfo">
+    <entry name="GetMoviesAwards">yes</entry>
+  </section>
+```
+- GetMoviesAwards - Get info for Movies Awards.
+Used scripts from MP Config folder (..\Team MediaPortal\MediaPortal\FanartHandler\Scripts)
