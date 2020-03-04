@@ -4123,7 +4123,7 @@ namespace FanartHandler
     public static List<string> LoadPathToAllFiles(string pathToFolder, string fileMask, int numberOfFilesToReturn, bool allDir)
     {
       var DirInfo = new DirectoryInfo(pathToFolder);
-      var firstFiles = DirInfo.EnumerateFiles(fileMask, (allDir ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly)).Take(numberOfFilesToReturn).ToList();
+      var firstFiles = DirInfo.EnumerateFiles(fileMask, (allDir ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly)).OrderBy(p => Guid.NewGuid()).Take(numberOfFilesToReturn).ToList();
       return firstFiles.Select(l => l.FullName).ToList();
     }
 

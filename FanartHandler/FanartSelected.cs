@@ -11,6 +11,7 @@ using FHNLog.NLog;
 using System;
 using System.Collections;
 using System.IO;
+using System.Collections.Generic;
 
 namespace FanartHandler
 {
@@ -179,7 +180,6 @@ namespace FanartHandler
               currSelectedGeneric = string.Empty;
               prevSelectedGeneric = -1;
               SetCurrentSelectedImageNames(null, category, subcategory);
-              // FanartAvailable = false;
               if (isMusic || isMusicVideo)
                 FanartAvailableMusic = false;
               else
@@ -300,7 +300,6 @@ namespace FanartHandler
               CurrSelectedMusic = string.Empty;
               PrevSelectedMusic = -1;
               SetCurrentSelectedImageNames(null, Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartScraped);
-              // FanartAvailable = false;
               FanartAvailableMusic = false;
             }
 
@@ -413,74 +412,97 @@ namespace FanartHandler
           }
         }
 
-        if (isFolder && !string.IsNullOrEmpty(SelectedItem) && !string.IsNullOrEmpty(SelectedPath))
+        if (!string.IsNullOrWhiteSpace(SelectedItem) && !string.IsNullOrEmpty(SelectedPath))
         {
-          Hashtable CurrentPicturesImageNames = new Hashtable();
-          if (Directory.Exists(SelectedPath))
+          bool flag = (!CurrSelectedPicture.Equals(SelectedItem, StringComparison.CurrentCulture));
+          if (flag || (RefreshTickCount >= Utils.MaxRefreshTickCount))
           {
-            SetCurrentSelectedImageNames(null, Utils.Category.Picture, Utils.SubCategory.PictureManual);
-
-            var picturesFileList = Utils.LoadPathToAllFiles(SelectedPath, "*.jpg", Utils.LimitNumberFanart, true);
-            var i = 0;
-            if (picturesFileList != null)
+            var oldFanart = CurrSelectedPictureImage;
+            if (flag)
             {
-              foreach (string picturesFile in picturesFileList)
+              CurrSelectedPicture = string.Empty;
+              CurrSelectedPictureImage = string.Empty;
+              PrevSelectedPicture = -1;
+              SetCurrentSelectedImageNames(null, Utils.Category.Picture, Utils.SubCategory.PictureManual);
+              FanartAvailablePictures = false;
+            }
+
+            if (flag && isFolder && !string.IsNullOrEmpty(SelectedPath))
+            {
+              Hashtable CurrentPicturesImageNames = new Hashtable();
+
+              List<string> pictures = UtilsPictures.GetSelectedPicturesByPath(SelectedPath);
+              if ((pictures == null || pictures.Count == 0) && Directory.Exists(SelectedPath))
               {
-                CurrentPicturesImageNames.Add(i, new FanartImage("", "", picturesFile, "", "", ""));
-                i++;
+                logger.Debug("Pictures not found in the database, try to find the files ...");
+                pictures = Utils.LoadPathToAllFiles(SelectedPath, "*.jpg", Utils.LimitNumberFanart, true);
+              }
+
+              if (pictures != null)
+              {
+                var i = 0;
+                foreach (string picturesFile in pictures)
+                {
+                  CurrentPicturesImageNames.Add(i, new FanartImage(string.Empty, string.Empty, picturesFile, string.Empty, string.Empty, string.Empty));
+                  i++;
+                }
+              }
+
+              if (CurrentPicturesImageNames.Count > 0)
+              {
+                SetCurrentSelectedImageNames(CurrentPicturesImageNames, Utils.Category.Picture, Utils.SubCategory.PictureManual);
               }
             }
-            if (CurrentPicturesImageNames != null && CurrentPicturesImageNames.Count > 0)
+
+            if (isFolder)
             {
-              var FanartForShuffle = GetCurrentSelectedImageNames(Utils.Category.Picture, Utils.SubCategory.PictureManual);
-              Utils.Shuffle(ref FanartForShuffle);
-              SetCurrentSelectedImageNames(FanartForShuffle, Utils.Category.Picture, Utils.SubCategory.PictureManual);
+              SelectedPath = string.Empty;
+              var Fanart = GetCurrentSelectedImageNames(Utils.Category.Picture, Utils.SubCategory.PictureManual);
+              if (Fanart != null && Fanart.Count > 0)
+              {
+                var htValues = Fanart.Values;
+                SelectedPath = Utils.GetFanartFilename(ref PrevSelectedPicture, ref CurrSelectedPictureImage, ref htValues);
+              }
             }
-          }
 
-          if (CurrentPicturesImageNames != null && CurrentPicturesImageNames.Count > 0)
-          {
-            if (!SelectedItem.Equals(CurrSelectedPicture, StringComparison.CurrentCulture) || (RefreshTickCount >= Utils.MaxRefreshTickCount))
+            if (!string.IsNullOrEmpty(SelectedPath))
             {
-              var htValues = CurrentPicturesImageNames.Values;
-              SelectedPath = Utils.GetFanartFilename(ref PrevSelectedPicture, ref CurrSelectedPictureImage, ref htValues);
-            }
-          }
-          else
-          {
-            SetCurrentSelectedImageNames(null, Utils.Category.Picture, Utils.SubCategory.PictureManual);
-          }
-        }
-
-        if (!string.IsNullOrEmpty(SelectedItem) && !string.IsNullOrEmpty(SelectedPath) && !SelectedItem.Equals("..", StringComparison.CurrentCulture))
-        {
-          var NewFanart = (!SelectedItem.Equals(CurrSelectedPicture, StringComparison.CurrentCulture) || (RefreshTickCount >= Utils.MaxRefreshTickCount));
-
-          if (NewFanart)
-          {
-            CurrSelectedPicture = SelectedItem;
-            CurrSelectedPictureImage = SelectedPath;
-            if (DoShowImageOne)
-            {
-              Utils.AddProperty(ref propertiesSelect, "picture.backdrop1.selected", SelectedPath, ref ListSelectedPictures, true);
+              CurrSelectedPicture = SelectedItem;
+              CurrSelectedPictureImage = SelectedPath;
+              if (CurrSelectedPictureImage.Equals(oldFanart, StringComparison.CurrentCulture))
+              {
+                DoShowImageOne = !DoShowImageOne;
+              }
+              if (DoShowImageOne)
+              {
+                Utils.AddProperty(ref propertiesSelect, "picture.backdrop1.selected", SelectedPath, ref ListSelectedPictures, true, false);
+              }
+              else
+              {
+                Utils.AddProperty(ref propertiesSelect, "picture.backdrop2.selected", SelectedPath, ref ListSelectedPictures, true, false);
+              }
+              ResetRefreshTickCount();
+              FanartAvailablePictures = true;
             }
             else
             {
-              Utils.AddProperty(ref propertiesSelect, "picture.backdrop2.selected", SelectedPath, ref ListSelectedPictures, true);
+              FanartAvailablePictures = false;
             }
-            ResetRefreshTickCount();
-            // FanartAvailable = FanartAvailable || true;
-            FanartAvailablePictures = true;
-          }
-        }
+          } // if (flag || (RefreshTickCount >= Utils.MaxRefreshTickCount))
+        } // if (!string.IsNullOrWhiteSpace(SelectedItem) && !string.IsNullOrEmpty(SelectedPath))
         else
+        {
+          FanartAvailablePictures = false;
+        }
+
+        if (!FanartAvailablePictures)
         {
           PrevSelectedPicture = -1;
           CurrSelectedPicture = string.Empty;
           CurrSelectedPictureImage = string.Empty;
           Utils.AddProperty(ref propertiesSelect, "picture.backdrop1.selected", string.Empty, ref ListSelectedPictures, true);
           Utils.AddProperty(ref propertiesSelect, "picture.backdrop2.selected", string.Empty, ref ListSelectedPictures, true);
-          FanartAvailablePictures = false;
+          SetCurrentSelectedImageNames(null, Utils.Category.Picture, Utils.SubCategory.PictureManual);
         }
       }
       catch (Exception ex)

@@ -184,6 +184,7 @@
     <Compile Include="UtilsMyFilms.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UtilsPictures.cs" />
     <Compile Include="UtilsTVSeries.cs" />
     <Compile Include="UtilsLatestMediaHandler.cs" />
     <Compile Include="JunctionPoint.cs" />
