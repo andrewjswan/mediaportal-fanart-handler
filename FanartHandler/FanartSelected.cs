@@ -148,9 +148,13 @@ namespace FanartHandler
           return;
 
         if (currSelectedGeneric == null)
+        {
           currSelectedGeneric = string.Empty;
+        }
         if (currSelectedGenericTitle == null)
+        {
           currSelectedGenericTitle = string.Empty;
+        }
 
         var isMusic = (property == Utils.SelectedType.Music);
         var isVideo = (property == Utils.SelectedType.Movie);
@@ -250,9 +254,13 @@ namespace FanartHandler
           currSelectedGenericTitle = string.Empty;
 
           if (isMusic || isMusicVideo)
+          {
             PrevSelectedMusic = -1;
+          }
           else
+          {
             PrevSelectedVideo = -1;
+          }
 
           Utils.AddProperty(ref propertiesSelect, strMode + ".backdrop1.selected", string.Empty, ref listSelectedGeneric);
           Utils.AddProperty(ref propertiesSelect, strMode + ".backdrop2.selected", string.Empty, ref listSelectedGeneric);
@@ -260,11 +268,14 @@ namespace FanartHandler
           //
           SetCurrentSelectedImageNames(null, category, subcategory); 
           if (isMusic || isMusicVideo)
+          {
             FanartAvailableMusic = false;
+          }
           else
+          {
             FanartAvailableMovies = false;
+          }
         }
-
       }
       catch (Exception ex)
       {
@@ -431,8 +442,9 @@ namespace FanartHandler
             {
               Hashtable CurrentPicturesImageNames = new Hashtable();
 
-              List<string> pictures = UtilsPictures.GetSelectedPicturesByPath(SelectedPath);
-              if ((pictures == null || pictures.Count == 0) && Directory.Exists(SelectedPath))
+              bool inFileView = false;
+              List<string> pictures = UtilsPictures.GetSelectedPicturesByPath(SelectedPath, out inFileView);
+              if ((pictures == null || pictures.Count == 0) && inFileView && Directory.Exists(SelectedPath))
               {
                 logger.Debug("Pictures not found in the database, try to find the files ...");
                 pictures = Utils.LoadPathToAllFiles(SelectedPath, "*.jpg", Utils.LimitNumberFanart, true);

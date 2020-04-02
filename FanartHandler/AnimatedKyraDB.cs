@@ -124,6 +124,8 @@ namespace FanartHandler
       string imdbid = fm.IMDBId;
       string json = GetJSONFromKyraDB(imdbid);
 
+      // logger.Debug("Animated: KyraDB - GetFilenameFromCatalog - Movie - {0} {1} - Json: {2}", imdbid, fm.Title, (string.IsNullOrEmpty(json) ? "Empty" : "Recieved"));
+
       if (!string.IsNullOrEmpty(json)) 
       { 
         RootObject Catalog = JsonConvert.DeserializeObject<RootObject>(json);
@@ -162,6 +164,7 @@ namespace FanartHandler
               }           
               if (!string.IsNullOrWhiteSpace(result))
               {
+                // logger.Debug("Animated: KyraDB - GetFilenameFromCatalog - Movie - {0} {1} - Poster found.", imdbid, fm.Title);
                 return Catalog.base_url_posters + "/" + result;
               }
             }
@@ -174,6 +177,7 @@ namespace FanartHandler
               Background background = Catalog.backgrounds.OrderByDescending(item => item.likes).ThenByDescending(item => item.width).FirstOrDefault();
               if (background != null)
               {
+                // logger.Debug("Animated: KyraDB - GetFilenameFromCatalog - Movie - {0} {1} - Background found.", imdbid, fm.Title);
                 return Catalog.base_url_backgrounds + "/" + background.name;
               }
             }

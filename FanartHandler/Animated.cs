@@ -196,6 +196,7 @@ namespace FanartHandler
       }
       if (!string.IsNullOrWhiteSpace(result))
       {
+        // logger.Debug("Animated: GetFilenameFromEntrys - Movie - {0} - Image found...", entry.id);
         return string.Format(AnimatedURL, result.Replace(".gif", CatalogSuffix));
       }
       return string.Empty;
@@ -220,6 +221,7 @@ namespace FanartHandler
       if (CatalogLoaded && !CatalogEmpty) 
       { 
         Movie movie = Catalog.movies.Find(x => x.imdbid == imdbid); 
+        // logger.Debug("Animated: GetFilenameFromCatalog - Movie - {0} {1} - Entry: {2}.", imdbid, fm.Title, (movie != null ? "Empty" : "Found"));
         if (movie != null) 
         {
           if (movie.entries != null) 

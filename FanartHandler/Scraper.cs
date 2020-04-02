@@ -1938,7 +1938,11 @@ namespace FanartHandler
         {
           if (!string.IsNullOrWhiteSpace(html))
           {
-            if (html.IndexOf("<mbid>") > 0) 
+            if (html.IndexOf("<name>[unknown]</name>") > 0) 
+            {
+              return string.Empty;
+            }
+            if (html.IndexOf("<mbid>") > 0)
             {
               mbid = html.Substring(checked (html.IndexOf("<mbid>") + 6));
               mbid = mbid.Substring(0, mbid.IndexOf("</mbid>"));
@@ -2940,7 +2944,11 @@ namespace FanartHandler
       fa.Genre = ExtractAudioDBInfo(@"strGenre\"":\""(.*?)\"",\""", AInputString);
       fa.Style = ExtractAudioDBInfo(@"strStyle\"":\""(.*?)\"",\""", AInputString);
       fa.Year = ExtractAudioDBInfo(@"intYearReleased\"":\""(.*?)\"",\""", AInputString);
-      fa.Thumb = ExtractAudioDBInfo(@"strAlbumThumb\"":\""(.*?)\"",\""", AInputString);
+      fa.Thumb = ExtractAudioDBInfo(@"strAlbumThumbHQ\"":\""(.*?)\"",\""", AInputString);
+      if (string.IsNullOrEmpty(fa.Thumb))
+      {
+        fa.Thumb = ExtractAudioDBInfo(@"strAlbumThumb\"":\""(.*?)\"",\""", AInputString);
+      }
 
       return !string.IsNullOrEmpty(fa.GetDescription());;
     }
@@ -3038,7 +3046,7 @@ namespace FanartHandler
         dbalbum = fa.DBAlbum;
         Method = "Artist/Album (Thumbs): " + fa.Artist + " - " + fa.Album + " - " + fa.Id;
         URL = string.Format(URL + (string.IsNullOrEmpty(fa.Id) ? "searchalbum.php?s={1}&a={2}" : "album-mb.php?i={1}"), ApiKeyTheAudioDB, string.IsNullOrEmpty(fa.Id) ? dbartist : fa.Id, dbalbum);
-        Section = "strAlbumThumb";
+        Section = "strAlbum(?:3D)?Thumb(?:HQ)?";
       }
       // TheAudioDB wrong Category ...
       else 
@@ -3087,12 +3095,14 @@ namespace FanartHandler
             }
 
             if ((subcategory == Utils.SubCategory.MusicFanartScraped) || (subcategory == Utils.SubCategory.MovieScraped))
+            {
               if (Utils.DBm.SourceImageExist(dbartist, null, key.Id, AudioDBID, null, sourceFilename, category, subcategory, Utils.Provider.TheAudioDB))
                 {
                   logger.Debug("TheAudioDB: Will not download fanart image as it already exist an image in your fanart database with this source image name.");
                   checked { ++num; }
                   continue;
                 }
+            }
 
             if (DownloadImage(key, 
                               AudioDBID,
@@ -4231,6 +4241,15 @@ namespace FanartHandler
             DownloaderStatus = DownloadStatus.LessSize;
             logger.Debug("Download: Image: " + filename + " less than [" + Utils.MinResolution + "] will be deleted...");
           }
+        }
+      }
+
+      if (DownloaderStatus == DownloadStatus.Success && File.Exists(filename) && category == Utils.Category.MusicFanart)
+      {
+        if (Utils.CheckImageForDuplication(key, filename))
+        {
+          DownloaderStatus = DownloadStatus.Skip;
+          logger.Debug("Download: Image: " + filename + " already exists in fanart folder, will be deleted...");
         }
       }
 

@@ -198,6 +198,17 @@ namespace FanartHandler
     private CheckBox checkBoxCollectionClearLogoDownload;
     private CheckBox checkBoxCollectionBannerDownload;
     private CheckBox checkBoxCollectionClearArtDownload;
+    private Button btnDeleteDummy;
+    private GroupBox gbDuplication;
+    private CheckBox cbCheckFanartForDuplication;
+    private Label lblPercentage;
+    private Label lblThreshold;
+    private NumericUpDown udPercentage;
+    private NumericUpDown udThreshold;
+    private GroupBox gbExceptions;
+    private CheckBox cbUseArtistException;
+    private CheckBox cbReplaceFanartWhenBigger;
+    private Label label9;
     private Button button12;
 
     static FanartHandlerConfig()
@@ -378,6 +389,7 @@ namespace FanartHandler
       edtFanartTVPersonalAPIKey.Text = Utils.FanartTVPersonalAPIKey;
       checkBoxUseHighDefThumbnails.Checked = Utils.UseHighDefThumbnails;
       CheckBoxUseMinimumResolutionForDownload.Checked = Utils.UseMinimumResolutionForDownload;
+      cbUseArtistException.Checked = Utils.UseArtistException;
       //
       checkBoxShowDummyItems.Checked = Utils.ShowDummyItems;
       checkBoxAddAdditionalSeparators.Checked = Utils.AddAdditionalSeparators;
@@ -413,12 +425,22 @@ namespace FanartHandler
       checkBoxCollectionBannerDownload.Checked = Utils.MoviesCollectionBannerDownload;
       checkBoxCollectionClearLogoDownload.Checked = Utils.MoviesCollectionClearLogoDownload;
       checkBoxCollectionCDArtDownload.Checked = Utils.MoviesCollectionCDArtDownload;
+      //
+      cbCheckFanartForDuplication.Checked = Utils.CheckFanartForDuplication;
+      cbReplaceFanartWhenBigger.Checked = Utils.ReplaceFanartWhenBigger;
+      udThreshold.Value = Utils.DuplicationThreshold;
+      udPercentage.Value = Utils.DuplicationPercentage;
+      //
       // Utils.MoviesFanartNameAsMediaportal
       //
       if (string.IsNullOrEmpty(Utils.FanartTVLanguage))
+      {
         comboBoxFanartTVLanguage.SelectedIndex = 0;
+      }
       else
+      {
         comboBoxFanartTVLanguage.SelectedValue = Utils.FanartTVLanguage;
+      }
       checkBoxFanartTVLanguageToAny.Checked = Utils.FanartTVLanguageToAny;
       // Slideshow
       checkBoxMyPicturesSlideShow.Checked = Utils.UseMyPicturesSlideShow;
@@ -429,7 +451,9 @@ namespace FanartHandler
       foreach (var folder in Utils.MyPicturesSlideShowFolders)
       {
         if (!string.IsNullOrEmpty(folder))
+        {
           textBoxMyPicturesSlideShowFolders.AppendText(folder + Environment.NewLine);
+        }
       }
     }
 
@@ -461,6 +485,7 @@ namespace FanartHandler
       Utils.FanartTVPersonalAPIKey = edtFanartTVPersonalAPIKey.Text.Trim();
       Utils.UseHighDefThumbnails = checkBoxUseHighDefThumbnails.Checked;
       Utils.UseMinimumResolutionForDownload = CheckBoxUseMinimumResolutionForDownload.Checked;
+      Utils.UseArtistException = cbUseArtistException.Checked;
       //
       Utils.ShowDummyItems = checkBoxShowDummyItems.Checked;
       Utils.AddAdditionalSeparators = checkBoxAddAdditionalSeparators.Checked;
@@ -503,13 +528,20 @@ namespace FanartHandler
       Utils.FanartTVLanguage = selectedPair.Key.Trim();
       Utils.FanartTVLanguageToAny = checkBoxFanartTVLanguageToAny.Checked;
       //
+      Utils.CheckFanartForDuplication = cbCheckFanartForDuplication.Checked;
+      Utils.ReplaceFanartWhenBigger = cbReplaceFanartWhenBigger.Checked;
+      Utils.DuplicationThreshold = (int)udThreshold.Value;
+      Utils.DuplicationPercentage = (int)udPercentage.Value;
+      //
       // Slideshow
       Utils.UseMyPicturesSlideShow = checkBoxMyPicturesSlideShow.Checked;
       Utils.MyPicturesSlideShowFolders.Clear();
       foreach (var folder in textBoxMyPicturesSlideShowFolders.Lines)
       {
         if (!string.IsNullOrEmpty(folder))
+        {
           Utils.MyPicturesSlideShowFolders.Add(folder);
+        }
       }
     }
 
@@ -582,14 +614,18 @@ namespace FanartHandler
       this.Activate();
       //
       if (FanartHandlerSetup.Fh != null)
+      {
         FanartHandlerSetup.Fh.UpdateDirectoryTimer("All", "Fanart");
+      }
     }
 
     private void FanartHandlerConfig_FormClosing(object sender, FormClosedEventArgs e)
     {
       isStopping = true;
       if (DesignMode)
+      {
         return;
+      }
 
       var dialogResult = MessageBox.Show("Do you want to save your changes?", "Save Changes?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
 
@@ -597,7 +633,9 @@ namespace FanartHandler
       StopThumbScraper("True");
 
       if (dialogResult == DialogResult.Yes)
+      {
         DoSave();
+      }
       logger.Info("Fanart Handler configuration is stopped.");
       Close();
     }
@@ -606,7 +644,9 @@ namespace FanartHandler
     {
       var flag = checkBoxXFactorFanart.Checked || checkBoxThumbsAlbum.Checked || checkBoxThumbsArtist.Checked;
       if (!checkBoxXFactorFanart.Checked && checkBoxThumbsDisabled.Checked)
+      {
         flag = false;
+      }
       return flag;
     }
 
@@ -1120,10 +1160,15 @@ namespace FanartHandler
       {
         var dialogResult = MessageBox.Show("Update pictures [Yes], or Full Scan [No]?", "Scrape fanart pictures", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
         if (dialogResult == DialogResult.Cancel)
+        {
           return;
+        }
 
         if (dialogResult == DialogResult.No)
+        {
+          Utils.DBm.ResetDummyInfoItems();
           Utils.DBm.UpdateTimeStamp(null, null, Utils.Category.Dummy, Utils.SubCategory.None, false, true);
+        }
       }
 
       StartScrape();
@@ -2425,6 +2470,15 @@ namespace FanartHandler
       this.tabPage2 = new System.Windows.Forms.TabPage();
       this.tabControl3 = new System.Windows.Forms.TabControl();
       this.tabPage5 = new System.Windows.Forms.TabPage();
+      this.gbExceptions = new System.Windows.Forms.GroupBox();
+      this.cbUseArtistException = new System.Windows.Forms.CheckBox();
+      this.gbDuplication = new System.Windows.Forms.GroupBox();
+      this.cbReplaceFanartWhenBigger = new System.Windows.Forms.CheckBox();
+      this.lblPercentage = new System.Windows.Forms.Label();
+      this.lblThreshold = new System.Windows.Forms.Label();
+      this.udPercentage = new System.Windows.Forms.NumericUpDown();
+      this.udThreshold = new System.Windows.Forms.NumericUpDown();
+      this.cbCheckFanartForDuplication = new System.Windows.Forms.CheckBox();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
       this.label1 = new System.Windows.Forms.Label();
       this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -2446,6 +2500,7 @@ namespace FanartHandler
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPage8 = new System.Windows.Forms.TabPage();
       this.groupBoxGUI = new System.Windows.Forms.GroupBox();
+      this.btnDeleteDummy = new System.Windows.Forms.Button();
       this.checkBoxShowDummyItems = new System.Windows.Forms.CheckBox();
       this.groupBoxProviders = new System.Windows.Forms.GroupBox();
       this.checkBoxUseTheMovieDB = new System.Windows.Forms.CheckBox();
@@ -2476,6 +2531,7 @@ namespace FanartHandler
       this.toolStripStatusLabelToolTip = new System.Windows.Forms.ToolStripStatusLabel();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.timerProgress = new System.Windows.Forms.Timer(this.components);
+      this.label9 = new System.Windows.Forms.Label();
       this.tabPage13.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.dataGridViewUserManaged)).BeginInit();
@@ -2494,6 +2550,10 @@ namespace FanartHandler
       this.tabPage2.SuspendLayout();
       this.tabControl3.SuspendLayout();
       this.tabPage5.SuspendLayout();
+      this.gbExceptions.SuspendLayout();
+      this.gbDuplication.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.udPercentage)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.udThreshold)).BeginInit();
       this.groupBox1.SuspendLayout();
       this.groupBox3.SuspendLayout();
       this.tabPage6.SuspendLayout();
@@ -3786,6 +3846,8 @@ namespace FanartHandler
       // 
       // tabPage5
       // 
+      this.tabPage5.Controls.Add(this.gbExceptions);
+      this.tabPage5.Controls.Add(this.gbDuplication);
       this.tabPage5.Controls.Add(this.groupBox1);
       this.tabPage5.Controls.Add(this.groupBox3);
       this.tabPage5.Location = new System.Drawing.Point(4, 22);
@@ -3795,6 +3857,116 @@ namespace FanartHandler
       this.tabPage5.TabIndex = 0;
       this.tabPage5.Text = "Fanart Settings";
       this.tabPage5.UseVisualStyleBackColor = true;
+      // 
+      // gbExceptions
+      // 
+      this.gbExceptions.Controls.Add(this.cbUseArtistException);
+      this.gbExceptions.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.gbExceptions.Location = new System.Drawing.Point(6, 325);
+      this.gbExceptions.Name = "gbExceptions";
+      this.gbExceptions.Size = new System.Drawing.Size(900, 54);
+      this.gbExceptions.TabIndex = 3;
+      this.gbExceptions.TabStop = false;
+      this.gbExceptions.Text = "Exceptions Options";
+      // 
+      // cbUseArtistException
+      // 
+      this.cbUseArtistException.AutoSize = true;
+      this.cbUseArtistException.Checked = true;
+      this.cbUseArtistException.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.cbUseArtistException.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.cbUseArtistException.Location = new System.Drawing.Point(9, 23);
+      this.cbUseArtistException.Name = "cbUseArtistException";
+      this.cbUseArtistException.Size = new System.Drawing.Size(271, 20);
+      this.cbUseArtistException.TabIndex = 1;
+      this.cbUseArtistException.Text = "Don\'t download Fanarts for Various Arists";
+      this.toolTip.SetToolTip(this.cbUseArtistException, "Check this option if you dont want download Fanart for artists in exceptions list" +
+        "");
+      this.cbUseArtistException.UseVisualStyleBackColor = true;
+      // 
+      // gbDuplication
+      // 
+      this.gbDuplication.Controls.Add(this.label9);
+      this.gbDuplication.Controls.Add(this.cbReplaceFanartWhenBigger);
+      this.gbDuplication.Controls.Add(this.lblPercentage);
+      this.gbDuplication.Controls.Add(this.lblThreshold);
+      this.gbDuplication.Controls.Add(this.udPercentage);
+      this.gbDuplication.Controls.Add(this.udThreshold);
+      this.gbDuplication.Controls.Add(this.cbCheckFanartForDuplication);
+      this.gbDuplication.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.gbDuplication.Location = new System.Drawing.Point(6, 195);
+      this.gbDuplication.Name = "gbDuplication";
+      this.gbDuplication.Size = new System.Drawing.Size(900, 127);
+      this.gbDuplication.TabIndex = 2;
+      this.gbDuplication.TabStop = false;
+      this.gbDuplication.Text = "Duplication Options";
+      // 
+      // cbReplaceFanartWhenBigger
+      // 
+      this.cbReplaceFanartWhenBigger.AutoSize = true;
+      this.cbReplaceFanartWhenBigger.Checked = true;
+      this.cbReplaceFanartWhenBigger.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.cbReplaceFanartWhenBigger.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.cbReplaceFanartWhenBigger.Location = new System.Drawing.Point(484, 23);
+      this.cbReplaceFanartWhenBigger.Name = "cbReplaceFanartWhenBigger";
+      this.cbReplaceFanartWhenBigger.Size = new System.Drawing.Size(364, 20);
+      this.cbReplaceFanartWhenBigger.TabIndex = 6;
+      this.cbReplaceFanartWhenBigger.Text = "Replace existing Fanarts by duplicates with more file size";
+      this.toolTip.SetToolTip(this.cbReplaceFanartWhenBigger, "Check this option if you want the check artists fanart for duplication");
+      this.cbReplaceFanartWhenBigger.UseVisualStyleBackColor = true;
+      // 
+      // lblPercentage
+      // 
+      this.lblPercentage.AutoSize = true;
+      this.lblPercentage.Location = new System.Drawing.Point(6, 71);
+      this.lblPercentage.Name = "lblPercentage";
+      this.lblPercentage.Size = new System.Drawing.Size(696, 18);
+      this.lblPercentage.TabIndex = 5;
+      this.lblPercentage.Text = "Content difference to existing Fanarts in % when new Fanarts are not stored - def" +
+    "ault is 0%:";
+      // 
+      // lblThreshold
+      // 
+      this.lblThreshold.AutoSize = true;
+      this.lblThreshold.Location = new System.Drawing.Point(6, 46);
+      this.lblThreshold.Name = "lblThreshold";
+      this.lblThreshold.Size = new System.Drawing.Size(613, 18);
+      this.lblThreshold.TabIndex = 4;
+      this.lblThreshold.Text = "Allowed color coding difference to existing Fanarts (values 0 - 255) - default is" +
+    " 3:";
+      // 
+      // udPercentage
+      // 
+      this.udPercentage.Location = new System.Drawing.Point(764, 69);
+      this.udPercentage.Name = "udPercentage";
+      this.udPercentage.Size = new System.Drawing.Size(120, 24);
+      this.udPercentage.TabIndex = 3;
+      // 
+      // udThreshold
+      // 
+      this.udThreshold.Location = new System.Drawing.Point(764, 44);
+      this.udThreshold.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+      this.udThreshold.Name = "udThreshold";
+      this.udThreshold.Size = new System.Drawing.Size(120, 24);
+      this.udThreshold.TabIndex = 2;
+      // 
+      // cbCheckFanartForDuplication
+      // 
+      this.cbCheckFanartForDuplication.AutoSize = true;
+      this.cbCheckFanartForDuplication.Checked = true;
+      this.cbCheckFanartForDuplication.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.cbCheckFanartForDuplication.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.cbCheckFanartForDuplication.Location = new System.Drawing.Point(9, 23);
+      this.cbCheckFanartForDuplication.Name = "cbCheckFanartForDuplication";
+      this.cbCheckFanartForDuplication.Size = new System.Drawing.Size(199, 20);
+      this.cbCheckFanartForDuplication.TabIndex = 1;
+      this.cbCheckFanartForDuplication.Text = "Check Fanarts for duplication";
+      this.toolTip.SetToolTip(this.cbCheckFanartForDuplication, "Check this option if you want the check artists fanart for duplication");
+      this.cbCheckFanartForDuplication.UseVisualStyleBackColor = true;
       // 
       // groupBox1
       // 
@@ -4086,6 +4258,7 @@ namespace FanartHandler
       // 
       this.groupBoxGUI.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.groupBoxGUI.Controls.Add(this.btnDeleteDummy);
       this.groupBoxGUI.Controls.Add(this.checkBoxShowDummyItems);
       this.groupBoxGUI.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold);
       this.groupBoxGUI.Location = new System.Drawing.Point(514, 212);
@@ -4094,6 +4267,18 @@ namespace FanartHandler
       this.groupBoxGUI.TabIndex = 4;
       this.groupBoxGUI.TabStop = false;
       this.groupBoxGUI.Text = "GUI";
+      // 
+      // btnDeleteDummy
+      // 
+      this.btnDeleteDummy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.btnDeleteDummy.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+      this.btnDeleteDummy.Location = new System.Drawing.Point(266, 27);
+      this.btnDeleteDummy.Name = "btnDeleteDummy";
+      this.btnDeleteDummy.Size = new System.Drawing.Size(134, 22);
+      this.btnDeleteDummy.TabIndex = 16;
+      this.btnDeleteDummy.Text = "Delete Dummy Items";
+      this.btnDeleteDummy.UseVisualStyleBackColor = true;
+      this.btnDeleteDummy.Click += new System.EventHandler(this.btnDeleteDummy_Click);
       // 
       // checkBoxShowDummyItems
       // 
@@ -4423,6 +4608,15 @@ namespace FanartHandler
       this.timerProgress.Interval = 500;
       this.timerProgress.Tick += new System.EventHandler(this.timerProgress_Tick);
       // 
+      // label9
+      // 
+      this.label9.AutoSize = true;
+      this.label9.Location = new System.Drawing.Point(6, 99);
+      this.label9.Name = "label9";
+      this.label9.Size = new System.Drawing.Size(574, 18);
+      this.label9.TabIndex = 7;
+      this.label9.Text = "Sensitivity: low values = less false detections, high values = less duplicates";
+      // 
       // FanartHandlerConfig
       // 
       this.ClientSize = new System.Drawing.Size(979, 562);
@@ -4462,6 +4656,12 @@ namespace FanartHandler
       this.tabPage2.ResumeLayout(false);
       this.tabControl3.ResumeLayout(false);
       this.tabPage5.ResumeLayout(false);
+      this.gbExceptions.ResumeLayout(false);
+      this.gbExceptions.PerformLayout();
+      this.gbDuplication.ResumeLayout(false);
+      this.gbDuplication.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.udPercentage)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.udThreshold)).EndInit();
       this.groupBox1.ResumeLayout(false);
       this.groupBox1.PerformLayout();
       this.groupBox3.ResumeLayout(false);
@@ -4537,6 +4737,10 @@ namespace FanartHandler
       comboBoxMinResolution.Items.Add("350x350");
       comboBoxMinResolution.Items.Add("400x400");
       comboBoxMinResolution.Items.Add("500x500");
+      comboBoxMinResolution.Items.Add("505x300");
+      comboBoxMinResolution.Items.Add("505x505");
+      comboBoxMinResolution.Items.Add("768x480");
+      comboBoxMinResolution.Items.Add("768x576");
       comboBoxMinResolution.Items.Add("960x540");
       comboBoxMinResolution.Items.Add("1024x576");
       comboBoxMinResolution.Items.Add("1280x720");
@@ -4701,6 +4905,16 @@ namespace FanartHandler
     private delegate void UpdateFanartTableDelegate();
     private delegate void UpdateThumbTableDelegate(string path);
 
+    private void btnDeleteDummy_Click(object sender, EventArgs e)
+    {
+      var dialogResult = MessageBox.Show("Delete Dummys?", "Dummys...", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
+      if (dialogResult == DialogResult.No)
+      {
+        return;
+      }
+
+      Utils.DBm.DeleteDummys();
+    }
   }
 
   public static class Prompt

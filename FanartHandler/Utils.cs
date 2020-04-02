@@ -33,6 +33,8 @@ using Monitor.Core.Utilities;
 
 using JayMuntzCom;
 
+using XnaFan.ImageComparison;
+
 namespace FanartHandler
 {
   internal static class Utils
@@ -100,6 +102,7 @@ namespace FanartHandler
     public static Hashtable Studios;
     public static Hashtable Weathers;
     public static List<KeyValuePair<string, object>> AwardsList;
+    public static List<string> ArtistExceptionList;
 
     public static int MaxViewAwardsImages;
     public static int MaxViewGenresImages;
@@ -156,6 +159,11 @@ namespace FanartHandler
     public static int HolidayShow { get; set; }
     public static bool HolidayShowAllDay { get; set; }
     public static int HolidayEaster { get; set; }      // 0 - Auto, 1 - Western, 2 - Eastern
+    public static bool CheckFanartForDuplication { get; set; }
+    public static bool ReplaceFanartWhenBigger { get; set; }
+    public static int DuplicationThreshold; // Default 3
+    public static int DuplicationPercentage; // Default 0, maybe 3 ...
+    public static bool UseArtistException;
     #endregion
 
     #region Cleanup
@@ -1428,6 +1436,20 @@ namespace FanartHandler
       {
         return key.ToLowerInvariant();
       }
+      if (key.IndexOf("|") > 0)
+      {
+        var keys = key.Split(new string[1] { "|" }, StringSplitOptions.RemoveEmptyEntries)
+                             .Where(x => !string.IsNullOrWhiteSpace(x))
+                             .Select(s => s.Trim())
+                             .Distinct(StringComparer.CurrentCultureIgnoreCase)
+                             .ToArray();
+        string result = string.Empty;
+        foreach (string str in keys)
+        {
+          result = result + (string.IsNullOrEmpty(result) ? "" : "|") + GetArtist(str, category, subcategory);
+        }
+        return result;
+      }
 
       key = PrepareArtistAlbum(key, category, subcategory);
       // logger.Debug("*** 1: {0}", key);
@@ -1444,6 +1466,9 @@ namespace FanartHandler
         {
           key = key.Substring(0, key.IndexOf("-", StringComparison.CurrentCulture)).Trim();
         }
+      }
+      else if (category == Category.MusicFanart && (key == "!" || key == "!!" || key == "!!!" || key == "?"))
+      {
       }
       else
       {
@@ -1503,6 +1528,9 @@ namespace FanartHandler
         {
           key = key.Substring(0, key.IndexOf("-", StringComparison.CurrentCulture)).Trim();
         }
+      }
+      else if (category == Category.MusicFanart && (key == "!" || key == "!!" || key == "!!!" || key == "?"))
+      {
       }
       else
       {
@@ -3007,6 +3035,7 @@ namespace FanartHandler
         filenames = dbm.GetFanart(key1, key2, category, subcategory, true);
         if (filenames != null && filenames.Count > 0) // Hi res fanart found ...
         {
+          // logger.Debug("*** GetFanart: {0} - {1} - {2}", key1, key2, filenames.Count);
           if (!SkipWhenHighResAvailable && (UseArtist || UseAlbum)) // Add low res fanart ...
           {
             var fanart = dbm.GetFanart(key1, key2, category, subcategory, false);
@@ -3042,6 +3071,7 @@ namespace FanartHandler
         {
           if (htValues != null)
           {
+            // logger.Debug("*** GetFanartFilename: {0}", htValues.Count);
             if (htValues.Count > 0)
             {
               var i = 0;
@@ -3055,8 +3085,10 @@ namespace FanartHandler
                   {
                     if (fanartImage != null)
                     {
+                      // logger.Debug("*** GetFanartFilename: Check: {0}", fanartImage.DiskImage);
                       if (CheckImageResolution(fanartImage.DiskImage, UseAspectRatio))
                       {
+                        // logger.Debug("*** GetFanartFilename: Found: {0}", fanartImage.DiskImage);
                         result = fanartImage.DiskImage;
                         iFilePrev = i;
                         sFileNamePrev = result;
@@ -3739,7 +3771,7 @@ namespace FanartHandler
       {
         FHAnimated = new AnimatedClass();
       }
-      if (FHAnimated == null)
+      if (FHKyraDBAnimated == null)
       {
         FHKyraDBAnimated = new AnimatedKyraDBClass();
       }
@@ -3786,7 +3818,7 @@ namespace FanartHandler
 
     public static string AnimatedCatalogGetFilename(Utils.Animated type, FanartClass key)
     {
-      if (FHAnimated != null)
+      if (FHAnimated == null)
       {
         return string.Empty;
       }
@@ -4163,7 +4195,7 @@ namespace FanartHandler
     {
       if (string.IsNullOrWhiteSpace(filename))
         return false;
-
+      // logger.Debug("*** CheckImageResolution: 1: {0} - {1} - {2}", filename, UseAspectRatio, FullHD);
       try
       {
         if (!File.Exists(filename))
@@ -4173,11 +4205,13 @@ namespace FanartHandler
         }
         else
         {
+          // logger.Debug("*** CheckImageResolution: 2: {0} - {1} - {2}", filename, UseAspectRatio, FullHD);
           int imgWidth = 0;
           int imgHeight = 0;
           double imgRatio = 0.0;
           // 3.7 
           dbm.GetImageAttr (filename, ref imgWidth, ref imgHeight, ref imgRatio);
+          // logger.Debug("*** CheckImageResolution: 3: {0} - {1} - {2} - {3}", filename, imgWidth, imgHeight, imgRatio);
           if (imgWidth > 0 && imgHeight > 0)
           {
             if (imgRatio == 0.0)                      
@@ -4201,6 +4235,7 @@ namespace FanartHandler
               }
             }
           }
+          // logger.Debug("*** CheckImageResolution: 4: {0} - {1} - {2} - {3}", filename, imgWidth, imgHeight, imgRatio);
           if (FullHD)
           {
             return imgWidth >= 1920 && imgHeight >= 1080;
@@ -4214,6 +4249,97 @@ namespace FanartHandler
       catch (Exception ex)
       {
         logger.Error("CheckImageResolution: " + ex);
+      }
+      return false;
+    }
+
+    public static bool CheckImageForDuplication(FanartClass key, string filename)
+    {
+      if (!CheckFanartForDuplication)
+      {
+        return false;
+      }
+
+      try
+      {
+        Hashtable ht = dbm.GetFanart(((FanartArtist)key).DBArtist, string.Empty, Category.MusicFanart, SubCategory.MusicFanartScraped, true);
+        if (ht != null && ht.Count > 0)
+        {
+          foreach (FanartImage fanartImage in ht.Values)
+          {
+            if (File.Exists(fanartImage.DiskImage))
+            {
+              int difference = (int)(ImageTool.GetPercentageDifference(filename, fanartImage.DiskImage, (byte)DuplicationThreshold) * 100);
+              if (difference <= DuplicationPercentage)
+              {
+                logger.Debug("Image: {0} is {1}% different from image {2}.", filename, difference, fanartImage.DiskImage);
+                if (ReplaceFanartWhenBigger)
+                {
+                  if (filename.IsBigger(fanartImage.DiskImage))
+                  {
+                    if (DeleteImage(fanartImage.DiskImage))
+                    {
+                      logger.Debug("Image replace: {0} is bigger than {1}.", filename, fanartImage.DiskImage);
+                      return false;
+                    }
+                  }
+                }
+                return true;
+              }
+            }
+          }
+        }
+      }
+      catch (Exception ex)
+      {
+        logger.Error("CheckImageForDuplication: " + ex);
+      }
+      return false;
+    }
+
+    public static bool IsBigger(this string source, string target)
+    {
+      if (string.IsNullOrWhiteSpace(source) || string.IsNullOrWhiteSpace(target))
+      {
+        return false;
+      }
+      if (!File.Exists(source) || !File.Exists(target))
+      {
+        return false;
+      }
+
+      try
+      {
+        using (Image sImage = LoadImageFastFromFile(source))
+        using (Image tImage = LoadImageFastFromFile(target))
+        {
+          if (sImage != null && tImage != null)
+          {
+            return (sImage.Width > tImage.Width) && (sImage.Height > tImage.Height);
+          }
+        }
+      }
+      catch (Exception ex)
+      {
+        logger.Error("IsBigger: " + ex);
+      }
+      return false;
+    }
+
+    public static bool DeleteImage(string filename)
+    {
+      try
+      {
+        if (File.Exists(filename))
+        {
+          File.Delete(filename);
+        }
+        dbm.DeleteImage(filename);
+        return true;
+      }
+      catch (Exception ex)
+      {
+        logger.Error("DeleteImage: " + ex);
       }
       return false;
     }
@@ -6002,8 +6128,13 @@ namespace FanartHandler
       HolidayShow = 5;
       HolidayShowAllDay = false;
       HolidayEaster = 0;
+      CheckFanartForDuplication = false;
+      ReplaceFanartWhenBigger = false;
+      DuplicationThreshold = 3;
+      DuplicationPercentage = 0;
+      UseArtistException = false;
       #endregion
-      #region Cleadup
+      #region Cleanup
       CleanUpFanart = false;
       CleanUpAnimation = false;
       CleanUpOldFiles = false;
@@ -6095,6 +6226,8 @@ namespace FanartHandler
       SpotLightMax = 30;
 
       PipesArray = new string[2] { "|", ";" };
+
+      ArtistExceptionList = new List<string> { "Various Artists" };
       #endregion
 
       #region Language
@@ -6171,6 +6304,7 @@ namespace FanartHandler
           ScraperMusicPlaying = settings.GetValueAsBool("Scraper", "ScraperMusicPlaying", ScraperMusicPlaying);
           ScraperMPDatabase = settings.GetValueAsBool("Scraper", "ScraperMPDatabase", ScraperMPDatabase);
           ScraperInterval = settings.GetValueAsString("Scraper", "ScraperInterval", ScraperInterval);
+          UseArtistException = settings.GetValueAsBool("Scraper", "UseArtistException", UseArtistException);
           //
           MusicClearArtDownload = settings.GetValueAsBool("FanartTV", "MusicClearArtDownload", MusicClearArtDownload);
           MusicBannerDownload = settings.GetValueAsBool("FanartTV", "MusicBannerDownload", MusicBannerDownload);
@@ -6232,7 +6366,12 @@ namespace FanartHandler
           MovieDBMovieBackgroundDownload = settings.GetValueAsBool("TheMovieDB", "MovieBackgroundDownload", MovieDBMovieBackgroundDownload);
           MovieDBCollectionPosterDownload = settings.GetValueAsBool("TheMovieDB", "CollectionPosterDownload", MovieDBCollectionPosterDownload);
           MovieDBCollectionBackgroundDownload = settings.GetValueAsBool("TheMovieDB", "CollectionBackgroundDownload", MovieDBCollectionBackgroundDownload);
-          //     
+          //
+          CheckFanartForDuplication = settings.GetValueAsBool("Duplication", "CheckFanartForDuplication", CheckFanartForDuplication);
+          ReplaceFanartWhenBigger = settings.GetValueAsBool("Duplication", "ReplaceFanartWhenBigger", ReplaceFanartWhenBigger);
+          Int32.TryParse(settings.GetValueAsString("Duplication", "Threshold", DuplicationThreshold.ToString()), out DuplicationThreshold);
+          Int32.TryParse(settings.GetValueAsString("Duplication", "Percentage", DuplicationPercentage.ToString()), out DuplicationPercentage);
+          //
           if (AddAdditionalSeparators)
           {
             LoadSeparators(settings);
@@ -6307,6 +6446,10 @@ namespace FanartHandler
       logger.Debug("Images: " + ScraperMaxImages + " Show: " + ImageInterval + "s Random: " + (MaxRandomFanartImages > 0 ? MaxRandomFanartImages.ToString() : "All"));
       logger.Debug("Scan: " + Check(ScanMusicFoldersForFanart) + " Music Folders for Fanart, RegExp: " + MusicFoldersArtistAlbumRegex);
       logger.Debug("Scraper: " + Check(ScrapeFanart) + " Fanart, " + Check(ScraperMPDatabase) + " MP Databases , " + Check(ScrapeThumbnails) + " Artists Thumb , " + Check(ScrapeThumbnailsAlbum) + " Album Thumb, " + Check(UseMinimumResolutionForDownload) + " Delete if less then " + MinResolution + ", " + Check(UseHighDefThumbnails) + " High Def Thumbs, Max Count [" + ScraperMaxImages + "]");
+      if (UseArtistException)
+      {
+        logger.Debug("Scraper: " + Check(UseArtistException) + " Artist Exception list: [" + string.Join("][", ArtistExceptionList.ToArray()) + "]");
+      }
       logger.Debug("Providers: " + Check(UseFanartTV) + " Fanart.TV, " + Check(UseHtBackdrops) + " HtBackdrops, " + Check(UseLastFM) + " Last.fm, " + Check(UseCoverArtArchive) + " CoverArtArchive, " + Check(UseTheAudioDB) + " TheAudioDB, " + Check(UseSpotLight) + " SpotLight, " + Check(UseAnimated) + " Animated");
       if (UseFanartTV)
       {
@@ -6315,6 +6458,10 @@ namespace FanartHandler
         logger.Debug("Fanart.TV: Movie: " + Check(MoviesClearArtDownload) + " ClearArt, " + Check(MoviesBannerDownload) + " Banner, " + Check(MoviesCDArtDownload) + " CD, " + Check(MoviesClearLogoDownload) + " ClearLogo");
         logger.Debug("Fanart.TV: Series: " + Check(SeriesClearArtDownload) + " ClearArt, " + Check(SeriesBannerDownload) + " Banner, " + Check(SeriesClearLogoDownload) + " ClearLogo, " + Check(SeriesCDArtDownload) + " CD");
         logger.Debug("Fanart.TV: Series.Season: " + Check(SeriesSeasonBannerDownload) + " Banner, " + Check(SeriesSeasonCDArtDownload) + " CD");
+      }
+      if (CheckFanartForDuplication)
+      {
+        logger.Debug("Duplication: " + Check(CheckFanartForDuplication) + " Threshold: " + DuplicationThreshold + " Percentage: " + DuplicationPercentage + " " + Check(ReplaceFanartWhenBigger) + " Replace when bigger");
       }
       if (UseAnimated)
       {
@@ -6481,6 +6628,7 @@ namespace FanartHandler
           xmlwriter.SetValueAsBool("Scraper", "ScraperMusicPlaying", ScraperMusicPlaying);
           xmlwriter.SetValueAsBool("Scraper", "ScraperMPDatabase", ScraperMPDatabase);
           xmlwriter.SetValue("Scraper", "ScraperInterval", ScraperInterval);
+          xmlwriter.SetValueAsBool("Scraper", "UseArtistException", UseArtistException);
           //
           xmlwriter.SetValueAsBool("FanartTV", "MusicClearArtDownload", MusicClearArtDownload);
           xmlwriter.SetValueAsBool("FanartTV", "MusicBannerDownload", MusicBannerDownload);
@@ -6534,7 +6682,12 @@ namespace FanartHandler
           xmlwriter.SetValueAsBool("MusicInfo", "FullScanInfo", FullScanInfo);
           //
           xmlwriter.SetValueAsBool("MoviesInfo", "GetMoviesAwards", GetMoviesAwards);
-        } 
+          //
+          xmlwriter.SetValueAsBool("Duplication", "CheckFanartForDuplication", CheckFanartForDuplication);
+          xmlwriter.SetValueAsBool("Duplication", "ReplaceFanartWhenBigger", ReplaceFanartWhenBigger);
+          xmlwriter.SetValue("Duplication", "Threshold", DuplicationThreshold);
+          xmlwriter.SetValue("Duplication", "Percentage", DuplicationPercentage);
+        }
         #endregion
         /*
         try

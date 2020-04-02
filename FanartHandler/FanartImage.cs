@@ -2,6 +2,10 @@
 // Assembly: FanartHandler, Version=4.0.3.0, Culture=neutral, PublicKeyToken=null
 // MVID: 073E8D78-B6AE-4F86-BDE9-3E09A337833B
 
+extern alias FHNLog;
+
+using FHNLog.NLog;
+
 namespace FanartHandler
 {
 
@@ -82,13 +86,19 @@ namespace FanartHandler
     {
       get { return base.Id; }
       set 
-      { 
+      {
         if (string.IsNullOrEmpty(value))
+        {
           base.Id = string.Empty;
+        }
         else if (value.Length != 36)
-          base.Id = string.Empty; 
+        {
+          base.Id = string.Empty;
+        }
         else
+        {
           base.Id = value;
+        }
       }
     }
 
@@ -119,6 +129,7 @@ namespace FanartHandler
   // *** Fanart Artist
   internal class FanartArtist : FanartMusic
   {
+    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
     private string _artist;
     public string Artist 
     {

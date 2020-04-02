@@ -708,7 +708,7 @@ ajs</Value>
           <Revision>27644</Revision>
         </MaxVersion>
         <WarnOnly>false</WarnOnly>
-        <Message>This version of FanartHandler requires MediaPortal 1.10.0</Message>
+        <Message>This version of FanartHandler requires MediaPortal 1.25 Pre</Message>
         <Name>MediaPortal</Name>
       </DependencyItem>
       <DependencyItem>
@@ -727,7 +727,7 @@ ajs</Value>
           <Revision>0</Revision>
         </MaxVersion>
         <WarnOnly>true</WarnOnly>
-        <Message>requires Skin version 1.4.0.0 to 1.4.0.0.</Message>
+        <Message>Requires Skin version 1.4.0.0 to 1.4.0.0.</Message>
         <Name>Skin</Name>
       </DependencyItem>
       <DependencyItem>
@@ -735,8 +735,8 @@ ajs</Value>
         <Id />
         <MinVersion>
           <Major>1</Major>
-          <Minor>9</Minor>
-          <Build>0</Build>
+          <Minor>24</Minor>
+          <Build>100</Build>
           <Revision>0</Revision>
         </MinVersion>
         <MaxVersion>
@@ -745,8 +745,8 @@ ajs</Value>
           <Build>999</Build>
           <Revision>999</Revision>
         </MaxVersion>
-        <WarnOnly>true</WarnOnly>
-        <Message>requires Installer version 1.9.0.0 to 1.999.999.999</Message>
+        <WarnOnly>false</WarnOnly>
+        <Message>This version of FanartHandler requires MediaPortal 1.25 Pre</Message>
         <Name>Installer</Name>
       </DependencyItem>
     </Items>
@@ -781,27 +781,45 @@ ajs</Value>
       <Build>2</Build>
       <Revision>0</Revision>
     </Version>
-    <ExtensionDescription>Fanart Handler is a plugin for MediaPortal (MP). The plugin basically supports;
-
-    * Search and download music artist fanart or artist and album thumbnails (scrape) from the fanart.tv, htbackdrops, last.fm, coverartarchive site.
-
-       * for all artists stored in your MP music database.
-
-       * for any artist currently being played (on the fly).
-
-    * Push fanart that you store on your local harddrive to the current used MP skin.
-
-       * push fanart for now played music
-
-       * push fanart for selected music or movie
-
-       * push random images from selected folders
+    <ExtensionDescription>Fanart Handler is a plugin for MediaPortal (MP). The plugin basically supports;
+
+
+
+    * Search and download music artist fanart or artist and album thumbnails (scrape) from the fanart.tv, htbackdrops, last.fm, coverartarchive site.
+
+
+
+       * for all artists stored in your MP music database.
+
+
+
+       * for any artist currently being played (on the fly).
+
+
+
+    * Push fanart that you store on your local harddrive to the current used MP skin.
+
+
+
+       * push fanart for now played music
+
+
+
+       * push fanart for selected music or movie
+
+
+
+       * push random images from selected folders
+
 </ExtensionDescription>
-    <VersionDescription>Pictures support update...
+    <VersionDescription>Duplication check added for Music fanarts...
+Pictures support update...
+Bug fixes,,,
+
 </VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-{VERSION}.MPE1</OnlineLocation>
-    <ReleaseDate>2020-03-04T15:04:24</ReleaseDate>
+    <ReleaseDate>2020-04-02T15:04:24</ReleaseDate>
     <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios,animated</Tags>
     <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
     <Params>

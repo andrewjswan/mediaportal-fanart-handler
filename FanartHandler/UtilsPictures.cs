@@ -6,78 +6,29 @@ extern alias FHNLog;
 
 using FHNLog.NLog;
 
-using MediaPortal.Configuration;
+using MediaPortal.GUI.Library;
 using MediaPortal.Database;
 using MediaPortal.Picture.Database;
-
-using SQLite.NET;
 
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using MediaPortal.Util;
 
 namespace FanartHandler
 {
   internal static class UtilsPictures
   {
     private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-    private static SQLiteClient PicturesDB;
 
     static UtilsPictures()
     {
     }
 
-    /// <summary>
-    /// Initiation of the DatabaseManager.
-    /// </summary>
-    /// <param name="dbFilename">Database filename</param>
-    /// <returns>if database was successfully or not</returns>
-    private static bool InitDB()
+    internal static List<string> GetSelectedPicturesByPath(string path, out bool inFileView)
     {
-      string dbFilename = PictureDatabase.DatabaseName;
-      try
-      {
-        if (File.Exists(dbFilename))
-        {
-          if (new FileInfo(dbFilename).Length > 0)
-          {
-            PicturesDB = new SQLiteClient(dbFilename);
-            DatabaseUtility.SetPragmas(PicturesDB);
-            return true;
-          }
-        }
-      }
-      catch (Exception e)
-      {
-        logger.Error("UtilsPictures: InitDB: Could Not Open Database: " + dbFilename + ". " + e.ToString());
-      }
-
-      PicturesDB = null;
-      return false;
-    }
-
-    /// <summary>
-    /// Close the database client.
-    /// </summary>
-    private static void CloseDB()
-    {
-      try
-      {
-        if (PicturesDB != null)
-        {
-          PicturesDB.Close();
-        }
-
-        PicturesDB = null;
-      }
-      catch (Exception ex)
-      {
-        logger.Error("UtilsPictures: Close: " + ex.ToString());
-      }
-    }
-
-    internal static List<string> GetSelectedPicturesByPath(string path)
-    {
+      inFileView = true;
       List<string> pictures = new List<string>();
 
       if (!Utils.UsePicturesFanart)
@@ -85,26 +36,77 @@ namespace FanartHandler
         return pictures;
       }
 
-      if (!InitDB())
+      if (!PictureDatabase.DbHealth)
       {
         return pictures;
       }
 
       try
       {
-        string sqlQuery = "SELECT strFile FROM picture WHERE idPicture IN (SELECT idPicture FROM picture WHERE strFile LIKE '" + 
-                                          DatabaseUtility.RemoveInvalidChars(path.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar) + "%' " +
-                                         "ORDER BY RANDOM() LIMIT " + Utils.LimitNumberFanart + ");";
-        SQLiteResultSet resultSet = PicturesDB.Execute(sqlQuery);
-        CloseDB();
-
-        if (resultSet != null)
+        string sqlQuery = string.Empty;
+        MediaPortal.GUI.Pictures.GUIPictures Pictures = (MediaPortal.GUI.Pictures.GUIPictures)GUIWindowManager.GetWindow((int)GUIWindow.Window.WINDOW_PICTURES);
+        if (Pictures == null)
         {
-          if (resultSet.Rows.Count > 0)
+          return pictures;
+        }
+
+        if (Pictures.GetDisplayMode == MediaPortal.GUI.Pictures.GUIPictures.Display.Files)
+        {
+          sqlQuery = "SELECT strFile FROM picture WHERE idPicture IN (SELECT idPicture FROM picture WHERE strFile LIKE '" +
+                                     DatabaseUtility.RemoveInvalidChars(path.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar) + "%'" +
+                                    (PictureDatabase.FilterPrivate ? " AND idPicture NOT IN (SELECT DISTINCT idPicture FROM picturekeywords WHERE strKeyword = 'Private')" : string.Empty) +
+                                   " ORDER BY RANDOM() LIMIT " + Utils.LimitNumberFanart + ");";
+        }
+        else if (Pictures.GetDisplayMode == MediaPortal.GUI.Pictures.GUIPictures.Display.Date)
+        {
+          inFileView = false;
+          path = path.Replace(Path.DirectorySeparatorChar, '-');
+          sqlQuery = "SELECT strFile FROM picture WHERE idPicture IN (SELECT idPicture FROM picture WHERE strDateTaken LIKE '" +
+                                     DatabaseUtility.RemoveInvalidChars(path) + "%'" +
+                                    (PictureDatabase.FilterPrivate ? " AND idPicture NOT IN (SELECT DISTINCT idPicture FROM picturekeywords WHERE strKeyword = 'Private')" : string.Empty) +
+                                   " ORDER BY RANDOM() LIMIT " + Utils.LimitNumberFanart + ");";
+        }
+        else if (Pictures.GetDisplayMode == MediaPortal.GUI.Pictures.GUIPictures.Display.Keyword)
+        {
+          inFileView = false;
+          sqlQuery = "SELECT strFile FROM picture WHERE idPicture IN (SELECT idPicture FROM picturekeywords WHERE strKeyword = '" +
+                                     DatabaseUtility.RemoveInvalidChars(path) + "' ORDER BY RANDOM() LIMIT " + Utils.LimitNumberFanart + ");";
+        }
+        else if (Pictures.GetDisplayMode == MediaPortal.GUI.Pictures.GUIPictures.Display.Metadata)
+        {
+          inFileView = false;
+          if (!path.Contains(Path.DirectorySeparatorChar))
           {
-            for (int i = 0; i < resultSet.Rows.Count; i++)
+            string strName = path.ToDBField();
+            sqlQuery = "SELECT strFile FROM picturedata WHERE " + strName + " IS NOT NULL" +
+                                (PictureDatabase.FilterPrivate ? " AND idPicture NOT IN (SELECT DISTINCT idPicture FROM picturekeywords WHERE strKeyword = 'Private')" : string.Empty) +
+                                " ORDER BY RANDOM() LIMIT " + Utils.LimitNumberFanart + ";";
+          }
+          else
+          {
+            string[] metaWhere = path.Split(Path.DirectorySeparatorChar);
+            string strName = metaWhere[0].Trim().ToDBField();
+            string strValue = strName.Contains("Altitude") ? metaWhere[1].Trim() : "'" + DatabaseUtility.RemoveInvalidChars(metaWhere[1].Trim()) + "'";
+            
+            sqlQuery = "SELECT strFile FROM picturedata WHERE " + strName + " = " + strValue +
+                                (PictureDatabase.FilterPrivate ? " AND idPicture NOT IN (SELECT DISTINCT idPicture FROM picturekeywords WHERE strKeyword = 'Private')" : string.Empty) +
+                                " ORDER BY RANDOM() LIMIT " + Utils.LimitNumberFanart + ";";
+          }
+        }
+
+        if (string.IsNullOrEmpty(sqlQuery))
+        {
+          return pictures;
+        }
+
+        List<PictureData> picsData = PictureDatabase.GetPicturesByFilter(sqlQuery, "pictures");
+        if (picsData != null)
+        {
+          if (picsData.Count > 0)
+          {
+            for (int i = 0; i < picsData.Count; i++)
             {
-              pictures.Add(resultSet.GetField(i, 0));
+              pictures.Add(picsData[i].FileName);
             }
           }
         }

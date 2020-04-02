@@ -56,6 +56,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Common.GUIPlugins">
+      <HintPath>..\External\Common.GUIPlugins.dll</HintPath>
+    </Reference>
     <Reference Include="Common.Utils">
       <HintPath>..\External\Common.Utils.dll</HintPath>
     </Reference>
@@ -73,6 +76,9 @@
     <Reference Include="Databases">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\External\Databases.dll</HintPath>
+    </Reference>
+    <Reference Include="GUIPictures">
+      <HintPath>..\External\GUIPictures.dll</HintPath>
     </Reference>
     <Reference Include="LastFMLibrary">
       <HintPath>..\External\LastFMLibrary.dll</HintPath>
@@ -139,6 +145,7 @@
     <Compile Include="FanartWeather.cs" />
     <Compile Include="FanartHoliday.cs" />
     <Compile Include="Grabbers.cs" />
+    <Compile Include="ImageTool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

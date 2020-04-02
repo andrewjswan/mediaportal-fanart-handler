@@ -93,6 +93,12 @@ namespace FanartHandler
         return 0;
       }
 
+      if (Utils.UseArtistException && Utils.ArtistExceptionList.Contains(fa.Artist, StringComparer.OrdinalIgnoreCase))
+      {
+        logger.Debug("Artist: " + fa.Artist + " in Exception list, skipped...");
+        return Utils.iScraperMaxImages;
+      }
+
       if (!StopScraper)
       {
         try
@@ -4303,6 +4309,11 @@ namespace FanartHandler
     // Begin: GetDBMusicBrainzID
     public string GetDBMusicBrainzID(string artist, string album)
     {
+      if (dbClient == null)
+      {
+        return null;
+      }
+
       try
       {
         lock (lockObject)
@@ -4316,8 +4327,8 @@ namespace FanartHandler
       catch (Exception ex)
       {
         logger.Error("GetDBMusicBrainzID: " + ex);
-        return null;
       }
+      return null;
     }
     // End: GetDBMusicBrainzID
 
@@ -5210,6 +5221,20 @@ namespace FanartHandler
       }
     }
 
+    public void DeleteDummys()
+    {
+      try
+      {
+        var SQL = "DELETE FROM Image WHERE DummyItem = 1;";
+        lock (lockObject)
+          dbClient.Execute(SQL);
+      }
+      catch (Exception ex)
+      {
+        logger.Error("DeleteDummys: " + ex);
+      }
+    }
+
     public void DeleteDummyItem(string key1, string key2, params object[] categorys)
     {
       if (string.IsNullOrEmpty(key1))
@@ -5242,6 +5267,21 @@ namespace FanartHandler
       catch (Exception ex)
       {
         logger.Error("DeleteDummyItem: " + ex);
+      }
+    }
+
+    public void ResetDummyInfoItems()
+    {
+      try
+      {
+        lock (lockObject)
+        {
+          dbClient.Execute("UPDATE Params SET Value = '2000-01-01' WHERE Param LIKE 'Scrapper%';");
+        }
+      }
+      catch (Exception ex)
+      {
+        logger.Error("ResetDummyInfoItems: " + ex);
       }
     }
 
