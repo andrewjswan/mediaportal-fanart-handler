@@ -358,6 +358,10 @@ namespace FanartHandler
 
             RefreshMusicPlayingProperties();
           }
+          else
+          {
+            FanartAvailable = false;
+          }
         }
         if (rw != null)
         { 
