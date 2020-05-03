@@ -4112,7 +4112,9 @@ namespace FanartHandler
     public void LoadFanart(string key1, string key2, string id, string dbId, string diskImage, string sourceImage, Utils.Category category, Utils.SubCategory subcategory, Utils.Provider provider)
     {
       if (string.IsNullOrEmpty(key1))
+      {
         return;
+      }
 
       try
       {
@@ -4134,6 +4136,12 @@ namespace FanartHandler
         string sqlSubCategory = subcategory.ToString();
 
         DeleteDummyItem(key1, key2, category, subcategory);
+
+        if (provider != Utils.Provider.Local && category == Utils.Category.MusicFanart && subcategory == Utils.SubCategory.MusicFanartScraped)
+        {
+          ClearLocalItem(key1, key2, diskImage);
+        }
+
         SQLiteResultSet sqLiteResultSet = dbClient.Execute("SELECT COUNT(Key1) " +
                                                            "FROM Image " +
                                                            "WHERE Id = '" + Utils.PatchSql(imageId) + "' AND " +
@@ -4859,7 +4867,7 @@ namespace FanartHandler
     #region All Filenames
     public Hashtable GetAllFilenames(Utils.Category category, Utils.SubCategory subcategory)
     {
-      var hashtable = new Hashtable();
+      var hashtable = new Hashtable(StringComparer.InvariantCultureIgnoreCase);
       try
       {
         var SQL = "SELECT FullPath FROM image WHERE DummyItem = 0 AND Category = '" + category + "'" + 
@@ -4985,6 +4993,34 @@ namespace FanartHandler
         logger.Error("SetImageRatio: " + ex);
       }
     }
+    #endregion
+
+    #region Clear Fanart for Local Provider
+    public void ClearLocalItem(string key1, string key2, string FullPath)
+    {
+      if (string.IsNullOrEmpty(key1))
+      {
+        return;
+      }
+
+      try
+      {
+        var SQL = "DELETE FROM Image " +
+                   "WHERE Key1 = '" + Utils.PatchSql(key1) + "' AND " +
+                         "Key2 = '" + Utils.PatchSql(key2) + "' AND " +
+                         "Category = '" + Utils.Category.MusicFanart + "' AND " +
+                         "SubCategory = '" + Utils.SubCategory.MusicFanartScraped + "' AND " +
+                         "Provider = '" + Utils.Provider.Local + "' AND " +
+                         "FullPath = '" + Utils.PatchSql(FullPath) + "';";
+        lock (lockObject)
+          dbClient.Execute(SQL);
+      }
+      catch (Exception ex)
+      {
+        logger.Error("DeleteDummyItem: " + ex);
+      }
+    }
+
     #endregion
 
     #region Dummy
@@ -7691,6 +7727,269 @@ namespace FanartHandler
               dbClient.Execute("CREATE INDEX [idx_RecordLabel_MBID_Name] ON [RecordLabel] ([mbid] COLLATE NOCASE, [name]);");
               dbClient.Execute("CREATE INDEX [idx_RecordLabel_MBID] ON [RecordLabel] ([mbid] COLLATE NOCASE);");
             }
+            #endregion
+
+            #region Params 
+            logger.Debug("Upgrading: Step [9]: Params...");
+            lock (lockObject)
+            {
+              dbClient.Execute("UPDATE Params SET Value = '2000-01-01' WHERE Param LIKE 'Scrapper%';");
+            }
+            #endregion
+
+            #region Maintenance
+            MaintenanceDBMain();
+            #endregion
+
+            logger.Debug("Upgrading: Run Step [10]: Update images width, height, ratio ...");
+            System.Threading.ThreadPool.QueueUserWorkItem(delegate { UpdateWidthHeightRatio(); }, null);
+
+            if (SetVersionDBMain(DBMajor, DBMinor))
+            {
+              logger.Info("Upgraded Database to version {0}.{1}", DBMajor, DBMinor);
+            }
+            else
+            {
+              throw new ArgumentException("Upgrade database", "Set Version failed!");
+            }
+          }
+          #endregion
+
+          #region 4.6
+          if (DBMinor == 5)
+          {
+            DBMinor++;
+            logger.Info("Bump Database version to {0}.{1}", DBMajor, DBMinor);
+          }
+          #endregion
+
+          #region 4.7
+          if (DBMinor == 6)
+          {
+            #region Backup
+            BackupDBMain(string.Format("{0}{1}", DBMajor, DBMinor));
+            #endregion
+
+            DBMinor++;
+            logger.Info("Upgrading Database to version {0}.{1}", DBMajor, DBMinor);
+
+            try
+            {
+              #region transaction
+              lock (lockObject)
+              {
+                dbClient.Execute("BEGIN TRANSACTION;");
+                dbClient.Execute("PRAGMA writable_schema=ON;");
+                dbClient.Execute("DELETE FROM sqlite_master WHERE name LIKE 'mpsync%';");
+                dbClient.Execute("PRAGMA writable_schema=OFF;");
+                dbClient.Execute("COMMIT;");
+              }
+              #endregion
+            }
+            catch
+            {
+              lock (lockObject)
+                dbClient.Execute("ROLLBACK;");
+            }
+
+            lock (lockObject)
+              dbClient.Execute("VACUUM;");
+            logger.Info("Upgrading: Step [1]: Finished.");
+
+            #region Maintenance
+            MaintenanceDBMain();
+            #endregion
+
+            #region Dummy
+            lock (lockObject)
+            {
+              try
+              {
+                logger.Debug("Upgrading: Step [2]: Delete Dummy items...");
+                dbClient.Execute("DELETE FROM Image WHERE DummyItem = 1;");
+              }
+              catch (Exception ex)
+              {
+                logger.Error("Delete Dummy items:");
+                logger.Error(ex);
+              }
+            }
+            #endregion
+
+            #region Duplicate
+            lock (lockObject)
+            {
+              try
+              {
+                logger.Debug("Upgrading: Step [3]: Delete Duplicate items...");
+                dbClient.Execute("DELETE FROM Image WHERE Provider = 'Local' AND FullPath COLLATE NOCASE IN (SELECT FullPath FROM Image WHERE Provider <> 'Local');");
+                dbClient.Execute("DELETE FROM Image WHERE Provider = 'Local' AND UPPER(FullPath) IN (SELECT UPPER(FullPath) FROM Image WHERE Provider = 'Local' GROUP BY UPPER(FullPath) HAVING COUNT(UPPER(FullPath)) > 1);");
+              }
+              catch (Exception ex)
+              {
+                logger.Error("Delete Duplicate items:");
+                logger.Error(ex);
+              }
+            }
+            #endregion
+
+            #region Create table
+            logger.Debug("Upgrading: Step [4]: Create Image...");
+            lock (lockObject)
+              dbClient.Execute("CREATE TABLE [ImageNew] ( " +
+                                            "[Category] TEXT DEFAULT '', " +
+                                            "[SubCategory] TEXT DEFAULT '', " +
+                                            "[Section] TEXT DEFAULT '', " +
+                                            "[Provider] TEXT DEFAULT '', " +
+                                            "[Key1] TEXT, " +
+                                            "[Key2] TEXT, " +
+                                            "[Info] TEXT DEFAULT '', " +
+                                            "[Id] TEXT, " +
+                                            "[FullPath] TEXT COLLATE NOCASE DEFAULT '', " +
+                                            "[SourcePath] TEXT COLLATE NOCASE DEFAULT '', " +
+                                            "[MBID] TEXT COLLATE NOCASE DEFAULT '', " +
+                                            "[AvailableRandom] BOOL DEFAULT 0, " +
+                                            "[Enabled] BOOL DEFAULT 0, " +
+                                            "[DummyItem] BOOL DEFAULT 1, " +
+                                            "[Protected] BOOL DEFAULT 0, " +
+                                            "[Ratio] REAL, " +
+                                            "[iWidth] INTEGER, " +
+                                            "[iHeight] INTEGER, " +
+                                            "[Time_Stamp] DATE DEFAULT '2000-01-01', " +
+                                            "[Last_Access] DATE DEFAULT '2000-01-01', " +
+                                            "CONSTRAINT [pk_Id_Provider_Key] PRIMARY KEY([Id], [Provider], [Key1]) ON CONFLICT REPLACE);");
+            #endregion
+
+            #region Transfer
+            logger.Debug("Upgrading: Step [5]: Transfer Data to New table...");
+            lock (lockObject)
+            {
+              dbClient.Execute("INSERT INTO [ImageNew] SELECT DISTINCT * FROM [Image];");
+              dbClient.Execute("UPDATE ImageNew SET Time_Stamp = '2000-01-01';");
+              dbClient.Execute("UPDATE ImageNew SET Last_Access = date('now');");
+            }
+            #endregion
+
+            #region Rename and Drop
+            logger.Debug("Upgrading: Step [6]: Rename and Drop Tables...");
+            lock (lockObject)
+            {
+              dbClient.Execute("DROP TABLE Image;");
+              dbClient.Execute("ALTER TABLE ImageNew RENAME TO Image;");
+            }
+            #endregion
+
+            #region Indexes
+            logger.Debug("Upgrading: Step [7]: Create Indexes...");
+            lock (lockObject)
+            {
+              dbClient.Execute("CREATE INDEX [idx_Category] ON [Image] ([Category]);");
+              dbClient.Execute("CREATE INDEX [idx_SubCategory] ON [Image] ([SubCategory]);");
+              dbClient.Execute("CREATE INDEX [idx_Category_SubCategory] ON [Image] ([Category], [SubCategory]);");
+
+              dbClient.Execute("CREATE INDEX [idx_Category_Dummy] ON [Image] ([Category], [DummyItem]);");
+              dbClient.Execute("CREATE INDEX [idx_SubCategory_Dummy] ON [Image] ([SubCategory], [DummyItem]);");
+              dbClient.Execute("CREATE INDEX [idx_Category_SubCategory_Dummy] ON [Image] ([Category], [SubCategory], [DummyItem]);");
+
+              dbClient.Execute("CREATE INDEX [idx_Category_Dummy_Protected] ON [Image] ([Category], [DummyItem], [Protected]);");
+              dbClient.Execute("CREATE INDEX [idx_SubCategory_Dummy_Protected] ON [Image] ([SubCategory], [DummyItem], [Protected]);");
+              dbClient.Execute("CREATE INDEX [idx_Category_SubCategory_Dummy_Protected] ON [Image] ([Category], [SubCategory], [DummyItem], [Protected]);");
+
+              dbClient.Execute("CREATE INDEX [idx_Category_Enabled_AvailableRandom_Dummy_Width_Height_Ratio] ON [Image] ([Category], [Enabled], [AvailableRandom], [iWidth], [iHeight], [Ratio], [DummyItem]);");
+              dbClient.Execute("CREATE INDEX [idx_SubCategory_Enabled_AvailableRandom_Dummy_Width_Height_Ratio] ON [Image] ([SubCategory], [Enabled], [AvailableRandom], [iWidth], [iHeight], [Ratio], [DummyItem]);");
+              dbClient.Execute("CREATE INDEX [idx_Category_SubCategory_Enabled_AvailableRandom_Dummy_Width_Height_Ratio] ON [Image] ([Category], [SubCategory], [Enabled], [AvailableRandom], [iWidth], [iHeight], [Ratio], [DummyItem]);");
+
+              dbClient.Execute("CREATE INDEX [idx_Category_Enabled_Dummy] ON [Image] ([Category], [Enabled], [DummyItem]);");
+              dbClient.Execute("CREATE INDEX [idx_SubCategory_Enabled_Dummy] ON [Image] ([SubCategory], [Enabled], [DummyItem]);");
+              dbClient.Execute("CREATE INDEX [idx_Category_SubCategory_Enabled_Dummy] ON [Image] ([Category], [SubCategory], [Enabled], [DummyItem]);");
+
+              dbClient.Execute("CREATE INDEX [idx_Category_Enabled_Dummy_Width_Height_Ratio] ON [Image] ([Category], [Enabled], [iWidth], [iHeight], [Ratio], [DummyItem]);");
+              dbClient.Execute("CREATE INDEX [idx_SubCategory_Enabled_Dummy_Width_Height_Ratio] ON [Image] ([SubCategory], [Enabled], [iWidth], [iHeight], [Ratio], [DummyItem]);");
+              dbClient.Execute("CREATE INDEX [idx_Category_SubCategory_Enabled_Dummy_Width_Height_Ratio] ON [Image] ([Category], [SubCategory], [Enabled], [iWidth], [iHeight], [Ratio], [DummyItem]);");
+
+              dbClient.Execute("CREATE INDEX [idx_Category_Key] ON [Image] ([Category], [Key1]);");
+              dbClient.Execute("CREATE INDEX [idx_SubCategory_Key] ON [Image] ([SubCategory], [Key1]);");
+              dbClient.Execute("CREATE INDEX [idx_Category_SubCategory_Key] ON [Image] ([Category], [SubCategory], [Key1]);");
+
+              dbClient.Execute("CREATE INDEX [idx_Category_Key_Dummy] ON [Image] ([Category], [Key1], [DummyItem]);");
+              dbClient.Execute("CREATE INDEX [idx_SubCategory_Key_Dummy] ON [Image] ([SubCategory], [Key1], [DummyItem]);");
+              dbClient.Execute("CREATE INDEX [idx_Category_SubCategory_Key_Dummy] ON [Image] ([Category], [SubCategory], [Key1], [DummyItem]);");
+
+              dbClient.Execute("CREATE INDEX [idx_Category_Key_Enabled_Dummy] ON [Image] ([Category], [Key1], [Enabled], [DummyItem]);");
+              dbClient.Execute("CREATE INDEX [idx_SubCategory_Key_Enabled_Dummy] ON [Image] ([SubCategory], [Key1], [Enabled], [DummyItem]);");
+              dbClient.Execute("CREATE INDEX [idx_Category_SubCategory_Key_Enabled_Dummy] ON [Image] ([Category], [SubCategory], [Key1], [Enabled], [DummyItem]);");
+
+              dbClient.Execute("CREATE INDEX [idx_Category_Key_Enabled_Width_Height_Ratio_Dummy] ON [Image] ([Category], [Key1], [Enabled], [iWidth], [iHeight], [Ratio], [DummyItem]);");
+              dbClient.Execute("CREATE INDEX [idx_SubCategory_Key_Enabled_Width_Height_Ratio_Dummy] ON [Image] ([SubCategory], [Key1], [Enabled], [iWidth], [iHeight], [Ratio], [DummyItem]);");
+              dbClient.Execute("CREATE INDEX [idx_Category_SubCategory_Key_Enabled_Width_Height_Ratio_Dummy] ON [Image] ([Category], [SubCategory], [Key1], [Enabled], [iWidth], [iHeight], [Ratio], [DummyItem]);");
+
+              dbClient.Execute("CREATE INDEX [idx_Category_Keys] ON [Image] ([Category], [Key1], [Key2]);");
+              dbClient.Execute("CREATE INDEX [idx_SubCategory_Keys] ON [Image] ([SubCategory], [Key1], [Key2]);");
+              dbClient.Execute("CREATE INDEX [idx_Category_SubCategory_Keys] ON [Image] ([Category], [SubCategory], [Key1], [Key2]);");
+
+              dbClient.Execute("CREATE INDEX [idx_Category_Keys_Dummy] ON [Image] ([Category], [Key1], [Key2], [DummyItem]);");
+              dbClient.Execute("CREATE INDEX [idx_SubCategory_Keys_Dummy] ON [Image] ([SubCategory], [Key1], [Key2], [DummyItem]);");
+              dbClient.Execute("CREATE INDEX [idx_Category_SubCategory_Keys_Dummy] ON [Image] ([Category], [SubCategory], [Key1], [Key2], [DummyItem]);");
+
+              dbClient.Execute("CREATE INDEX [idx_Category_Keys_Enabled_Dummy] ON [Image] ([Category], [Key1], [Key2], [Enabled], [DummyItem]);");
+              dbClient.Execute("CREATE INDEX [idx_SubCategory_Keys_Enabled_Dummy] ON [Image] ([SubCategory], [Key1], [Key2], [Enabled], [DummyItem]);");
+              dbClient.Execute("CREATE INDEX [idx_Category_SubCategory_Keys_Enabled_Dummy] ON [Image] ([Category], [SubCategory], [Key1], [Key2], [Enabled], [DummyItem]);");
+
+              dbClient.Execute("CREATE INDEX [idx_Category_Keys_Dummy_TimeStamp] ON [Image] ([Category], [Key1], [Key2], [DummyItem], [Time_Stamp]);");
+              dbClient.Execute("CREATE INDEX [idx_SubCategory_Keys_Dummy_TimeStamp] ON [Image] ([SubCategory], [Key1], [Key2], [DummyItem], [Time_Stamp]);");
+              dbClient.Execute("CREATE INDEX [idx_Category_SubCategory_Keys_Dummy_TimeStamp] ON [Image] ([Category], [SubCategory], [Key1], [Key2], [DummyItem], [Time_Stamp]);");
+
+              dbClient.Execute("CREATE INDEX [idx_Category_Keys_Enabled_Width_Height_Ratio_Dummy] ON [Image] ([Category], [Key1], [Key2], [Enabled], [iWidth], [iHeight], [Ratio], [DummyItem]);");
+              dbClient.Execute("CREATE INDEX [idx_SubCategory_Keys_Enabled_Width_Height_Ratio_Dummy] ON [Image] ([SubCategory], [Key1], [Key2], [Enabled], [iWidth], [iHeight], [Ratio], [DummyItem]);");
+              dbClient.Execute("CREATE INDEX [idx_Category_SubCategory_Keys_Enabled_Width_Height_Ratio_Dummy] ON [Image] ([Category], [SubCategory], [Key1], [Key2], [Enabled], [iWidth], [iHeight], [Ratio], [DummyItem]);");
+
+              dbClient.Execute("CREATE INDEX [idx_Category_Keys_Provider_Protected_Dummy_LastAccess] ON [Image] ([Category], [Key1], [Key2], [Provider], [Protected], [DummyItem], [Last_Access]);");
+              dbClient.Execute("CREATE INDEX [idx_SubCategory_Keys_Provider_Protected_Dummy_LastAccess] ON [Image] ([SubCategory], [Key1], [Key2], [Provider], [Protected], [DummyItem], [Last_Access]);");
+              dbClient.Execute("CREATE INDEX [idx_Category_SubCategory_Keys_Provider_Protected_Dummy_LastAccess] ON [Image] ([Category], [SubCategory], [Key1], [Key2], [Provider], [Protected], [DummyItem], [Last_Access]);");
+
+              dbClient.Execute("CREATE INDEX [idx_Category_LastAccess] ON [Image] ([Category], [Last_Access]);");
+              dbClient.Execute("CREATE INDEX [idx_SubCategory_LastAccess] ON [Image] ([SubCategory], [Last_Access]);");
+              dbClient.Execute("CREATE INDEX [idx_Category_SubCategory_LastAccess] ON [Image] ([Category], [SubCategory], [Last_Access]);");
+
+              dbClient.Execute("CREATE INDEX [idx_Category_Protected_Provider_Dummy_Key_FullPath_LastAccess] ON [Image] ([Category], [Protected], [Provider], [DummyItem], [Key1], [FullPath], [Last_Access]);");
+              dbClient.Execute("CREATE INDEX [idx_SubCategory_Protected_Provider_Dummy_Key_FullPath_LastAccess] ON [Image] ([SubCategory], [Protected], [Provider], [DummyItem], [Key1], [FullPath], [Last_Access]);");
+              dbClient.Execute("CREATE INDEX [idx_Category_SubCategory_Protected_Provider_Dummy_Key_FullPath_LastAccess] ON [Image] ([Category], [SubCategory], [Protected], [Provider], [DummyItem], [Key1], [FullPath], [Last_Access]);");
+
+              dbClient.Execute("CREATE INDEX [idx_Category_TimeStamp] ON [Image] ([Category], [Time_Stamp]);");
+              dbClient.Execute("CREATE INDEX [idx_SubCategory_TimeStamp] ON [Image] ([SubCategory], [Time_Stamp]);");
+              dbClient.Execute("CREATE INDEX [idx_Category_SubCategory_TimeStamp] ON [Image] ([Category], [SubCategory], [Time_Stamp]);");
+
+              dbClient.Execute("CREATE INDEX [idx_Dummy] ON [Image] ([DummyItem]);");
+
+              dbClient.Execute("CREATE INDEX [idx_FullPath] ON [Image] ([FullPath]);");
+
+              dbClient.Execute("CREATE INDEX [idx_ID_Provider] ON [Image] ([Id], [Provider]);");
+
+              dbClient.Execute("CREATE INDEX [idx_SourcePath_Provider] ON [Image] ([SourcePath], [Provider]);");
+
+              dbClient.Execute("CREATE INDEX [idx_ID_Key_Provider] ON [Image] ([Id], [Key1], [Provider]);");
+              dbClient.Execute("CREATE INDEX [idx_ID_Keys_Provider] ON [Image] ([Id], [Key1], [Key2], [Provider]);");
+
+              dbClient.Execute("CREATE INDEX [idx_Keys_MBID] ON [Image] ([Key1], [Key2], [MBID] COLLATE [NOCASE]);");
+              dbClient.Execute("CREATE INDEX [idx_Keys_MBID_Dummy] ON [Image] ([Key1], [Key2], [MBID] COLLATE [NOCASE], [DummyItem]);");
+
+              dbClient.Execute("CREATE INDEX [idx_SourcePath_Key_Provider] ON [Image] ([SourcePath], [Key1], [Provider]);");
+              dbClient.Execute("CREATE INDEX [idx_SourcePath_Keys_Provider] ON [Image] ([SourcePath], [Key1], [Key2], [Provider]);");
+
+              dbClient.Execute("CREATE INDEX [idx_Width_Height_Ratio_Dummy] ON [Image] ([iWidth], [iHeight], [Ratio], [DummyItem]);");
+
+              dbClient.Execute("CREATE INDEX [idx_Ratio] ON [Image] ([Ratio]);");
+              dbClient.Execute("CREATE INDEX [idx_Width] ON [Image] ([iWidth]);");
+              dbClient.Execute("CREATE INDEX [idx_Height] ON [Image] ([iHeight]);");
+              dbClient.Execute("CREATE INDEX [idx_Width_Height] ON [Image] ([iWidth], [iHeight]);");
+              dbClient.Execute("CREATE INDEX [idx_Width_Height_Ratio] ON [Image] ([iWidth], [iHeight], [Ratio]);");
+            }
+            #endregion
+
+            #region Local scan ...
+            logger.Debug("Upgrading: Step [8]: Fill tables ...");
+            FanartHandlerSetup.Fh.UpdateDirectoryTimer("All", "Upgrade");
+            logger.Debug("Upgrading: Step [8]: Finished.");
             #endregion
 
             #region Params 

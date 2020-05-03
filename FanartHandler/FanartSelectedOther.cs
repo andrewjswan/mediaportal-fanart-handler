@@ -591,6 +591,7 @@ namespace FanartHandler
       {
         return;
       }
+      // logger.Debug("*** AddSelectedStudioProperty: " + Studios);
 
       var picFound = false;
       var sFile = string.Empty;

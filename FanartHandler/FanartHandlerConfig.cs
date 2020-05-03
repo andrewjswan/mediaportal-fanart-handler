@@ -3867,7 +3867,7 @@ namespace FanartHandler
       this.gbExceptions.Size = new System.Drawing.Size(900, 54);
       this.gbExceptions.TabIndex = 3;
       this.gbExceptions.TabStop = false;
-      this.gbExceptions.Text = "Exceptions Options";
+      this.gbExceptions.Text = "Exception Options";
       // 
       // cbUseArtistException
       // 
@@ -3879,7 +3879,7 @@ namespace FanartHandler
       this.cbUseArtistException.Name = "cbUseArtistException";
       this.cbUseArtistException.Size = new System.Drawing.Size(271, 20);
       this.cbUseArtistException.TabIndex = 1;
-      this.cbUseArtistException.Text = "Don\'t download Fanarts for Various Arists";
+      this.cbUseArtistException.Text = "Don\'t download Fanarts for Various Artists";
       this.toolTip.SetToolTip(this.cbUseArtistException, "Check this option if you dont want download Fanart for artists in exceptions list" +
         "");
       this.cbUseArtistException.UseVisualStyleBackColor = true;

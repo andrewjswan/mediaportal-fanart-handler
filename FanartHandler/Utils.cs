@@ -332,6 +332,8 @@ namespace FanartHandler
     #region Animated
     public static string AnimatedMoviesPosterFolder { get; set; }
     public static string AnimatedMoviesBackgroundFolder { get; set; }
+    public static string AnimatedMoviesCollectionsPosterFolder { get; set; }
+    public static string AnimatedMoviesCollectionsBackgroundFolder { get; set; }
     #endregion
 
     #region Genres, Awards, Studios and Holiday folders
@@ -666,6 +668,8 @@ namespace FanartHandler
 
       AnimatedMoviesPosterFolder = string.Empty;
       AnimatedMoviesBackgroundFolder = string.Empty;
+      AnimatedMoviesCollectionsPosterFolder = string.Empty;
+      AnimatedMoviesCollectionsBackgroundFolder = string.Empty;
 
       MovieDBMoviePosterFolder = string.Empty;
       MovieDBMovieBackgroundFolder = string.Empty;
@@ -926,10 +930,14 @@ namespace FanartHandler
       #endregion
 
       #region Animated
-      AnimatedMoviesPosterFolder = Path.Combine(FAHFolder, @"Animated\Movies\Poster\"); 
+      AnimatedMoviesPosterFolder = Path.Combine(FAHFolder, @"Animated\Movies\Poster\");
       logger.Debug("Fanart Handler Amimated Movie.Postert folder: "+AnimatedMoviesPosterFolder);
-      AnimatedMoviesBackgroundFolder = Path.Combine(FAHFolder, @"Animated\Movies\Background\"); 
+      AnimatedMoviesBackgroundFolder = Path.Combine(FAHFolder, @"Animated\Movies\Background\");
       logger.Debug("Fanart Handler Amimated Movie.Background folder: "+AnimatedMoviesBackgroundFolder);
+      AnimatedMoviesCollectionsPosterFolder = Path.Combine(FAHFolder, @"Animated\Collections\Poster\"); 
+      logger.Debug("Fanart Handler Amimated Movie.Collections.Postert folder: "+AnimatedMoviesCollectionsPosterFolder);
+      AnimatedMoviesCollectionsBackgroundFolder = Path.Combine(FAHFolder, @"Animated\Collections\Background\");
+      logger.Debug("Fanart Handler Amimated Movie.Collections.Background folder: "+AnimatedMoviesCollectionsBackgroundFolder);
       #endregion
 
       #region Genres and Studios, Awards, Holiday (Icon) folders
@@ -3689,6 +3697,12 @@ namespace FanartHandler
         case Animated.MoviesBackground:
           path = AnimatedMoviesBackgroundFolder;
           break;
+        case Animated.MoviesCollectionsPoster:
+          path = AnimatedMoviesCollectionsPosterFolder;
+          break;
+        case Animated.MoviesCollectionsBackground:
+          path = AnimatedMoviesCollectionsBackgroundFolder;
+          break;
       }
       return path;
     }
@@ -5142,7 +5156,7 @@ namespace FanartHandler
               {
                 sFileNames.Add(sFile);
               }
-              // logger.Debug("- {0} [{1}] found. {2}", _picType, picture, sFile);
+              // logger.Debug("*** FillFilesList: {0} [{1}] found. {2}", _picType, picture, sFile);
             }
             else if (!string.IsNullOrEmpty(sFile) && !File.Exists(sFile))
             {
@@ -5910,6 +5924,8 @@ namespace FanartHandler
       //
       CreateDirectoryIfMissing(AnimatedMoviesPosterFolder); 
       CreateDirectoryIfMissing(AnimatedMoviesBackgroundFolder);
+      CreateDirectoryIfMissing(AnimatedMoviesCollectionsPosterFolder); 
+      CreateDirectoryIfMissing(AnimatedMoviesCollectionsBackgroundFolder);
 
       #region Fill.FanartTV Folders
       // Music
@@ -7200,6 +7216,7 @@ namespace FanartHandler
       FanartTVSeries,
       FanartTVRecordLabels,
       AnimatedMovie,
+      AnimatedMovieCollection,
       MovieCollection,
       None,
     }
@@ -7254,6 +7271,8 @@ namespace FanartHandler
     {
       MoviesPoster,
       MoviesBackground,
+      MoviesCollectionsPoster,
+      MoviesCollectionsBackground,
       None,
     }
 

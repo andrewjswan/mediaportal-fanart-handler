@@ -250,7 +250,8 @@ namespace FanartHandler
         {
           string result = selectedSeries[DBOnlineSeries.cPrettyName].ToString() + "|" + selectedSeries[DBOnlineSeries.cOriginalName].ToString();
           sGenre = selectedSeries[DBOnlineSeries.cGenre];
-          sStudio = selectedSeries[DBOnlineSeries.cNetworkID];
+          // sStudio = selectedSeries[DBOnlineSeries.cNetworkID];
+          sStudio = selectedSeries[DBOnlineSeries.cNetwork];
           return result;
         }
       }

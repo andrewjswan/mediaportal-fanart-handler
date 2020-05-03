@@ -9,6 +9,7 @@
   <studio name="4th Wall Entertainment">4th Wall</studio>
   <studio name="6ch">Cinemax</studio>
   <studio name="20 Steps Productions">20 Steps</studio>
+  <studio name="20th Century">20th Century Fox</studio>
   <studio name="20th Century Fox Home Entertainment">20th Century Fox</studio>
   <studio name="20th Century Fox Studios">20th Century Fox</studio>
   <studio name="20th Century Fox Television">20th Century Fox</studio>
@@ -34,6 +35,7 @@
   <studio name="20th Century Fox Film Corporation">20th Century Fox</studio>
   <studio name="20th Century Fox CIS">20th Century Fox</studio>
   <studio name="Twentieth Century Fox CIS">20th Century Fox</studio>
+  <studio name="20th Century Studios">20th Century Fox</studio>
   <studio name="Fox 2000 Pict">Fox 2000</studio>
   <studio name="Fox 2000 Pictures">Fox 2000</studio>
   <studio name="FOX Türkiye">FOX Turkiye</studio>
@@ -135,6 +137,8 @@
   <studio name="Antena-3 Films">Antena 3</studio>
   <studio name="Anton Capital Entertainment (ACE)">Anton Capital Entertainment</studio>
   <studio name="Apple Film Productions">Apple</studio>
+  <studio name="Apple TV+">Apple TV</studio>
+  <studio name="Apple TV Plus">Apple TV</studio>
   <studio name="Aramid Entertainment Fund">Aramid Entertainment</studio>
   <studio name="Ardustry Home Entertainment">Ardustry Entertainment</studio>
   <studio name="Arclight Films">Arclight</studio>
@@ -209,6 +213,7 @@
   <studio name="bad_robot">Bad Robot</studio>
   <studio name="Banana-Moon-Sky Films">Banana-Moon Sky Films</studio>
   <studio name="Bandai Digital Entertainment">Bandai</studio>
+  <studio name="Bandai Entertainment">Bandai</studio>
   <studio name="Bandai Entertainment Inc.">Bandai</studio>
   <studio name="Bandai Visual Company">Bandai Visual</studio>
   <studio name="Banque Populaire Images 6">Banque Populaire Images</studio>
@@ -227,6 +232,7 @@
   <studio name="BBC Natural History">BBC</studio>
   <studio name="BBC Prime">BBC</studio>
   <studio name="BBC Television Centre">BBC</studio>
+  <studio name="BBC iPlayer">BBC</studio>
   <studio name="BBC_HD">BBC HD</studio>
   <studio name="BBC Two HD">BBC HD</studio>
   <studio name="BBC Three HD">BBC HD</studio>
@@ -897,6 +903,8 @@
   <studio name="Maverick Records">Maverick</studio>
   <studio name="Maverick Television">Maverick</studio>
   <studio name="Maya Entertainment">Maya</studio>
+  <studio name="Mainichi Broadcasting System">MBS</studio>
+  <studio name="Mainichi Broadcasting System (MBS)">MBS</studio>
   <studio name="Medusa Communications">Medusa</studio>
   <studio name="Medusa Distribuzione">Medusa</studio>
   <studio name="Medusa Film">Medusa</studio>
@@ -1387,8 +1395,10 @@
   <studio name="Sony/Columbia">Sony|Columbia</studio>
   <studio name="Sony Pictures Television International">Sony Pictures Television</studio>
   <studio name="SPC">Sony Pictures Classics</studio>
-  <studio name="BVSPR Sony">Sony</studio>
   <studio name="SPE">Sony</studio>
+  <studio name="SPPR">Sony</studio>
+  <studio name="СППР">Sony</studio>
+  <studio name="BVSPR Sony">Sony</studio>
   <studio name="Sony Classics">Sony</studio>
   <studio name="Sony Music Film">Sony</studio>
   <studio name="Sony Pictures Digital">Sony</studio>
@@ -1463,6 +1473,12 @@
   <studio name="TBS Superstation">TBS</studio>
   <studio name="Telos Films">Telos</studio>
   <studio name="Telecom Animation Film">TMS Entertainment</studio>
+  <studio name="TMS Entertainment Ltd.">TMS Entertainment</studio>
+  <studio name="TMS Entertainment, Ltd.">TMS Entertainment</studio>
+  <studio name="TMS Entertainment Ltd">TMS Entertainment</studio>
+  <studio name="TMS Entertainment, Ltd">TMS Entertainment</studio>
+  <studio name="TMS Entertainment Limited">TMS Entertainment</studio>
+  <studio name="TMS Entertainment, Limited">TMS Entertainment</studio>
   <studio name="Téléfilm Canada">Telefilm Canada</studio>
   <studio name="Televisió de Catalunya">Televisio de Catalunya</studio>
   <studio name="Tesela Producciones Cinematográficas">Tesela Producciones Cinematograficas</studio>
@@ -1529,6 +1545,12 @@
   <studio name="Toei Video Company">Toei</studio>
   <studio name="toho b">TOHO</studio>
   <studio name="Toho Company">TOHO</studio>
+  <studio name="Toho Company Ltd">TOHO</studio>
+  <studio name="Toho Company, Ltd">TOHO</studio>
+  <studio name="Toho Company Ltd.">TOHO</studio>
+  <studio name="Toho Company, Ltd.">TOHO</studio>
+  <studio name="Toho Company Limited">TOHO</studio>
+  <studio name="Toho Company, Limited">TOHO</studio>
   <studio name="Toho Eiga">TOHO</studio>
   <studio name="Toho Eiga Tokyo">TOHO</studio>
   <studio name="Toho Eiga (Tokyo)">TOHO</studio>
@@ -2001,6 +2023,7 @@
   <studio name="Pimanov Film">Пиманов</studio>
   <studio name="Кинокомпания «Водород»">Кинокомпания Водород</studio>
   <studio name="Кинокомпания &quot;Водород&quot;">Кинокомпания Водород</studio>
+  <studio name="Vodorod">Кинокомпания Водород</studio>
   <studio name="Кинокомпания Небо">Небо</studio>
   <studio name="Кинокомпания «Небо»">Небо</studio>
   <studio name="Кинокомпания &quot;Небо&quot;">Небо</studio>
@@ -2015,6 +2038,9 @@
   <studio name="Кино Кластер">KinoKlaster</studio>
   <studio name="Kino Klaster">KinoKlaster</studio>
   <studio name="Lenfilm">Ленфильм</studio>
+  <studio name="Медиа Телеком">Медиа-Телеком</studio>
+  <studio name="Media Telecom">Медиа-Телеком</studio>
+  <studio name="Media Telecom">Медиа-Телеком</studio>
   <studio name="Царь Pictures">Царь</studio>
   <studio name="Czar Pictures">Царь</studio>
   <studio name="Марс Медиа Энтертейнмент">Марс Медиа</studio>
