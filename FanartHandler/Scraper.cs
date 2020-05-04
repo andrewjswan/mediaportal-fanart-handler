@@ -4175,6 +4175,17 @@ namespace FanartHandler
 
       if (DownloaderStatus == DownloadStatus.Start)
       {
+        string tempFolder = Path.GetTempPath();
+        string tempFilename = Utils.GetFileName(filename);
+        if (!string.IsNullOrEmty(tempFilename))
+        {
+          tempFilename = Path.Combine(tempFolder, tempFilename);
+        }
+        else
+        {
+          tempFileName = GetTempFileName();
+        }
+
         try
         {
           using (WebClient wc = new WebClientWithTimeouts { Timeout = TimeSpan.FromMilliseconds(20000) })
@@ -4191,11 +4202,11 @@ namespace FanartHandler
             servicePoint.Expect100Continue = false;
 
             logger.Debug("Download: Image: " + filename + ": Start...");
-            wc.DownloadFile(uri, filename);
+            wc.DownloadFile(uri, tempFileName);
             wc.Dispose();
           }
 
-          if (!Utils.IsFileValid(filename))
+          if (!Utils.IsFileValid(tempFileName))
           {
             DownloaderStatus = DownloadStatus.Stop;
             logger.Warn("Download: Downloaded file is corrupt. Will be deleted.");
@@ -4231,12 +4242,12 @@ namespace FanartHandler
         }
       }
 
-      if (DownloaderStatus == DownloadStatus.Success && File.Exists(filename) && Utils.UseMinimumResolutionForDownload)
+      if (DownloaderStatus == DownloadStatus.Success && File.Exists(tempFileName) && Utils.UseMinimumResolutionForDownload)
       {
         if (category != Utils.Category.FanartTV &&
             category != Utils.Category.Animated)
         {
-          if (!Utils.CheckImageResolution(filename, false))
+          if (!Utils.CheckImageResolution(tempFileName, false))
           {
             DownloaderStatus = DownloadStatus.LessSize;
             logger.Debug("Download: Image: " + filename + " less than [" + Utils.MinResolution + "] will be deleted...");
@@ -4244,18 +4255,18 @@ namespace FanartHandler
         }
       }
 
-      if (DownloaderStatus == DownloadStatus.Success && File.Exists(filename) && category == Utils.Category.MusicFanart)
+      if (DownloaderStatus == DownloadStatus.Success && File.Exists(tempFileName) && category == Utils.Category.MusicFanart)
       {
-        if (Utils.CheckImageForDuplication(key, filename))
+        if (Utils.CheckImageForDuplication(key, tempFileName))
         {
           DownloaderStatus = DownloadStatus.Skip;
           logger.Debug("Download: Image: " + filename + " already exists in fanart folder, will be deleted...");
         }
       }
 
-      if (DownloaderStatus != DownloadStatus.Success && File.Exists(filename))
+      if (DownloaderStatus != DownloadStatus.Success && File.Exists(tempFileName))
       {
-        File.Delete(filename);
+        MediaPortal.Util.Utils.FileDelete(tempFileName);
         logger.Debug("Download: Status: [" + DownloaderStatus + "] Deleting temporary file: " + filename);
       }
 
@@ -4266,6 +4277,24 @@ namespace FanartHandler
       if (DownloaderStatus == DownloadStatus.NotFound)
       {
         logger.Debug("Download: Image for " + Text + " (" + sourceFilename + "): Not exists on source site.");
+      }
+
+      if (DownloaderStatus == DownloadStatus.Success && File.Exists(tempFileName))
+      {
+        try
+        {
+          if (File.Exists(filename))
+          {
+            File.SetAttributes(filename, FileAttributes.Normal);
+          }
+          File.Move(tempFileName, filename, true);
+        }
+        catch (Exception ex)
+        {
+          DownloaderStatus = DownloadStatus.Skip;
+          logger.Debug("Download: Cannot move temporary file to destination [" + tempFileName + " -> " + filename + "], Skipped.");
+          logger.Debug("Download: " + ex);
+        }
       }
 
       if (DownloaderStatus == DownloadStatus.Success && File.Exists(filename))
@@ -4295,16 +4324,7 @@ namespace FanartHandler
             }
           }
 
-          try
-          {
-            MediaPortal.Util.Utils.FileDelete(filename);
-          }
-          catch (Exception ex)
-          {
-            logger.Error("Download: Deleting temporary thumbnail: " + filename);
-            logger.Error(ex);
-          }
-
+          MediaPortal.Util.Utils.FileDelete(filename);
           filename = filename.Replace("_tmp.jpg", "L.jpg");
         }
 
