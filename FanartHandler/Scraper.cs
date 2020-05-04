@@ -4173,19 +4173,19 @@ namespace FanartHandler
         DownloaderStatus = DownloadStatus.NotFound;
       }
 
+      string tempFolder = Path.GetTempPath();
+      string tempFilename = Utils.GetFileName(filename);
+      if (!string.IsNullOrEmty(tempFilename))
+      {
+        tempFilename = Path.Combine(tempFolder, tempFilename);
+      }
+      else
+      {
+        tempFileName = GetTempFileName();
+      }
+
       if (DownloaderStatus == DownloadStatus.Start)
       {
-        string tempFolder = Path.GetTempPath();
-        string tempFilename = Utils.GetFileName(filename);
-        if (!string.IsNullOrEmty(tempFilename))
-        {
-          tempFilename = Path.Combine(tempFolder, tempFilename);
-        }
-        else
-        {
-          tempFileName = GetTempFileName();
-        }
-
         try
         {
           using (WebClient wc = new WebClientWithTimeouts { Timeout = TimeSpan.FromMilliseconds(20000) })
