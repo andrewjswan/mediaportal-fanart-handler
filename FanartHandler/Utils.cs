@@ -4267,11 +4267,20 @@ namespace FanartHandler
       return false;
     }
 
-    public static bool CheckImageForDuplication(FanartClass key, string filename)
+    public static bool CheckImageForDuplication(FanartClass key, string filename, string logfilename)
     {
       if (!CheckFanartForDuplication)
       {
         return false;
+      }
+      if (!File.Exists(filename))
+      {
+        return false;
+      }
+
+      if (string.IsNullOrWhiteSpace(logfilename))
+      {
+        logfilename = filename;
       }
 
       try
@@ -4286,14 +4295,14 @@ namespace FanartHandler
               int difference = (int)(ImageTool.GetPercentageDifference(filename, fanartImage.DiskImage, (byte)DuplicationThreshold) * 100);
               if (difference <= DuplicationPercentage)
               {
-                logger.Debug("Image: {0} is {1}% different from image {2}.", filename, difference, fanartImage.DiskImage);
+                logger.Debug("Image: {0} is {1}% different from image {2}.", logfilename, difference, fanartImage.DiskImage);
                 if (ReplaceFanartWhenBigger)
                 {
                   if (filename.IsBigger(fanartImage.DiskImage))
                   {
                     if (DeleteImage(fanartImage.DiskImage))
                     {
-                      logger.Debug("Image replace: {0} is bigger than {1}.", filename, fanartImage.DiskImage);
+                      logger.Debug("Image replace: {0} is bigger than {1}.", logfilename, fanartImage.DiskImage);
                       return false;
                     }
                   }

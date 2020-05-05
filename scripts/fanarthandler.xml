@@ -2247,7 +2247,7 @@ Bug fixes,,,
           <Major>4</Major>
           <Minor>0</Minor>
           <Build>3</Build>
-          <Revision>280</Revision>
+          <Revision>281</Revision>
         </Version>
         <ExtensionDescription>Fanart Handler is a plugin for MediaPortal (MP). The plugin basically supports;
     * Search and download music artist fanart or artist and album thumbnails (scrape) from the fanart.tv, htbackdrops, last.fm, coverartarchive site.
@@ -2258,14 +2258,16 @@ Bug fixes,,,
        * push fanart for now played music
        * push fanart for selected music or movie
        * push random images from selected folders</ExtensionDescription>
-        <VersionDescription>Duplication check fixed for Music fanarts...
-Downloading images via a temporary file...
-Bug fixes...
+        <VersionDescription>Duplication check fixed for Music fanarts.
+Downloading images via a temporary file.
+Fixed hibernate problem when FH scraper work.
+Improved MBID search for albums.
+Bug fixes.
 
 May the 4th Be With You!</VersionDescription>
         <DevelopmentStatus>Stable</DevelopmentStatus>
-        <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-4.0.3.280.mpe1</OnlineLocation>
-        <ReleaseDate>2020-05-04T18:15:50.3765672+03:00</ReleaseDate>
+        <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-4.0.3.281.mpe1</OnlineLocation>
+        <ReleaseDate>2020-05-05T18:41:15.8208598+03:00</ReleaseDate>
         <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios,animated</Tags>
         <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
         <Params>

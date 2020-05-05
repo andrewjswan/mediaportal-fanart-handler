@@ -3993,6 +3993,11 @@ namespace FanartHandler
       var filenames = new Hashtable();
       var flag = false;
 
+      if (dbClient == null)
+      {
+        return filenames;
+      }
+
       if (string.IsNullOrEmpty(album))
       {
         album = null;
@@ -4116,6 +4121,11 @@ namespace FanartHandler
         return;
       }
 
+      if (dbClient == null)
+      {
+        return;
+      }
+
       try
       {
         var imageId = GetImageId(key1, key2, dbId, diskImage, sourceImage, category, subcategory, provider);
@@ -4208,6 +4218,11 @@ namespace FanartHandler
 
     public bool SourceImageExist(string key1, string key2, string id, string dbId, string diskImage, string sourceImage, Utils.Category category, Utils.SubCategory subcategory, Utils.Provider provider)
     {
+      if (dbClient == null)
+      {
+        return false;
+      }
+
       try
       {
         string imageId = GetImageId(key1, key2, dbId, diskImage, sourceImage, category, subcategory, provider);
@@ -4899,6 +4914,11 @@ namespace FanartHandler
       iHeight = 0;
       fRatio = (double)0.0;
 
+      if (dbClient == null)
+      {
+        return;
+      }
+
       if (string.IsNullOrEmpty(Image))
       {
         return;
@@ -4910,6 +4930,7 @@ namespace FanartHandler
         SQLiteResultSet sqLiteResultSet;
         lock (lockObject)
           sqLiteResultSet = dbClient.Execute(SQL);
+
         if (sqLiteResultSet.Rows.Count > 0)
         {
           // Ratio
@@ -4957,6 +4978,11 @@ namespace FanartHandler
 
     public void SetImageRatio(string Image, double fRatio, int iWidth, int iHeight) // 3.7
     {
+      if (dbClient == null)
+      {
+        return;
+      }
+
       try
       {
         if (fRatio == 0.0 && iWidth > 0 && iHeight > 0)
@@ -5274,7 +5300,14 @@ namespace FanartHandler
     public void DeleteDummyItem(string key1, string key2, params object[] categorys)
     {
       if (string.IsNullOrEmpty(key1))
+      {
         return;
+      }
+
+      if (dbClient == null)
+      {
+        return;
+      }
 
       Utils.Category category = Utils.Category.None;
       Utils.SubCategory subcategory = Utils.SubCategory.None;

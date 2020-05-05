@@ -790,9 +790,11 @@ ajs</Value>
        * push fanart for now played music
        * push fanart for selected music or movie
        * push random images from selected folders</ExtensionDescription>
-    <VersionDescription>Duplication check fixed for Music fanarts...
-Downloading images via a temporary file...
-Bug fixes...
+    <VersionDescription>Duplication check fixed for Music fanarts.
+Downloading images via a temporary file.
+Fixed hibernate problem when FH scraper work.
+Improved MBID search for albums.
+Bug fixes.
 
 May the 4th Be With You!</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>

@@ -971,6 +971,7 @@ namespace FanartHandler
           Utils.InitiateDbm(Utils.DB.Start);
           FPlayOther.PicturesCache = new Hashtable();
           FSelectedOther.PicturesCache = new Hashtable();
+          ResetStopScraper();
           // StopTasks(false);
           // Start();
           UpdateDirectoryTimer("All", "Resume");
@@ -978,10 +979,15 @@ namespace FanartHandler
         else
         {
           if (e.Mode != PowerModes.Suspend)
+          {
             return;
+          }
           logger.Info("Fanart Handler: is suspending/hibernating...");
+          SetStopScraper();
           if (Utils.DBm != null)
+          {
             Utils.DBm.Close();
+          }
           // StopTasks(true);
           FPlayOther.PicturesCache = null;
           FSelectedOther.PicturesCache = null;
@@ -1252,6 +1258,22 @@ namespace FanartHandler
       }
     }
 
+    private void ResetStopScraper()
+    {
+      if (Utils.DBm != null)
+      {
+        Utils.StopScraper = false;
+      }
+      if (Utils.DBm != null)
+      {
+        Utils.StopScraperInfo = false;
+      }
+      if (Utils.DBm != null)
+      {
+        Utils.StopScraperMovieInfo = false;
+      }
+    }
+
     private void StartScraper()
     {
       StartScraper(Utils.Category.None, Utils.SubCategory.None);
@@ -1350,18 +1372,30 @@ namespace FanartHandler
       }
     }
 
+    private void SetStopScraper()
+    {
+      if (Utils.DBm != null)
+      {
+        Utils.StopScraper = true;
+      }
+      if (Utils.DBm != null)
+      {
+        Utils.StopScraperInfo = true;
+      }
+      if (Utils.DBm != null)
+      {
+        Utils.StopScraperMovieInfo = true;
+      }
+    }
+
     private void StopTasks(bool suspending)
     {
+      Utils.SetIsStopping(true);
+
+      SetStopScraper();
+
       try
       {
-        Utils.SetIsStopping(true);
-        if (Utils.DBm != null)
-          Utils.StopScraper = true;
-        if (Utils.DBm != null)
-          Utils.StopScraperInfo = true;
-        if (Utils.DBm != null)
-          Utils.StopScraperMovieInfo = true;
-
         try
         {
           UtilsMovingPictures.DisposeMovingPicturesLatest();

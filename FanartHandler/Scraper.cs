@@ -530,7 +530,7 @@ namespace FanartHandler
 
       var URL  = MBURL + (string.IsNullOrEmpty(album) ? 
                           MIDURL + @"""" + HttpUtility.UrlEncode(artist) + @"""" : 
-                          MIDURLA + @"""" + HttpUtility.UrlEncode(artist) + @"""" + " " + @"""" + HttpUtility.UrlEncode(album) + @"""");
+                          MIDURLA + @"""" + HttpUtility.UrlEncode(artist) + @"""" + " AND release:" + @"""" + HttpUtility.UrlEncode(album) + @"""");
       var html = string.Empty;
       GetHtml(URL, out html);
       return html;
@@ -4173,6 +4173,11 @@ namespace FanartHandler
         DownloaderStatus = DownloadStatus.NotFound;
       }
 
+      if (Utils.DBm.StopScraper)
+      {
+        return false;
+      }
+
       string tempFolder = Path.GetTempPath();
       string tempFilename = Utils.GetFileName(filename);
       if (!string.IsNullOrEmpty(tempFilename))
@@ -4184,6 +4189,7 @@ namespace FanartHandler
         tempFilename = Path.GetTempFileName();
         MediaPortal.Util.Utils.FileDelete(tempFilename);
       }
+      string logFilename = tempFilename.Replace(tempFolder, "%TEMP%");
 
       if (DownloaderStatus == DownloadStatus.Start)
       {
@@ -4243,6 +4249,11 @@ namespace FanartHandler
         }
       }
 
+      if (Utils.DBm.StopScraper)
+      {
+        DownloaderStatus = DownloadStatus.Stop;
+      }
+
       if (DownloaderStatus == DownloadStatus.Success && File.Exists(tempFilename) && Utils.UseMinimumResolutionForDownload)
       {
         if (category != Utils.Category.FanartTV &&
@@ -4258,7 +4269,7 @@ namespace FanartHandler
 
       if (DownloaderStatus == DownloadStatus.Success && File.Exists(tempFilename) && category == Utils.Category.MusicFanart)
       {
-        if (Utils.CheckImageForDuplication(key, tempFilename))
+        if (Utils.CheckImageForDuplication(key, tempFilename, logFilename))
         {
           DownloaderStatus = DownloadStatus.Skip;
           logger.Debug("Download: Image: " + filename + " already exists in fanart folder, will be deleted...");
@@ -4268,7 +4279,7 @@ namespace FanartHandler
       if (DownloaderStatus != DownloadStatus.Success && File.Exists(tempFilename))
       {
         MediaPortal.Util.Utils.FileDelete(tempFilename);
-        logger.Debug("Download: Status: [" + DownloaderStatus + "] Deleting temporary file: " + filename);
+        logger.Debug("Download: Status: [" + DownloaderStatus + "] Deleting temporary file: " + logFilename);
       }
 
       if (DownloaderStatus == DownloadStatus.Skip)
@@ -4278,6 +4289,10 @@ namespace FanartHandler
       if (DownloaderStatus == DownloadStatus.NotFound)
       {
         logger.Debug("Download: Image for " + Text + " (" + sourceFilename + "): Not exists on source site.");
+      }
+      if (DownloaderStatus == DownloadStatus.Stop)
+      {
+        logger.Debug("Download: Stopped, image for " + Text + " (" + filename + ") Skipped.");
       }
 
       if (DownloaderStatus == DownloadStatus.Success && File.Exists(tempFilename))
@@ -4294,7 +4309,7 @@ namespace FanartHandler
         catch (Exception ex)
         {
           DownloaderStatus = DownloadStatus.Skip;
-          logger.Debug("Download: Cannot move temporary file to destination [" + tempFilename + " -> " + filename + "], Skipped.");
+          logger.Debug("Download: Cannot move temporary file to destination [" + logFilename + " -> " + filename + "], Skipped.");
           logger.Debug("Download: " + ex);
         }
       }
