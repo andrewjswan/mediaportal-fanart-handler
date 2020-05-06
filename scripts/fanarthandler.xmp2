@@ -794,6 +794,7 @@ ajs</Value>
 Downloading images via a temporary file.
 Fixed hibernate problem when FH scraper work.
 Improved MBID search for albums.
+Add option: Ignore Minimum Resolution for MusicThumb when Download.
 Bug fixes.
 
 May the 4th Be With You!</VersionDescription>
