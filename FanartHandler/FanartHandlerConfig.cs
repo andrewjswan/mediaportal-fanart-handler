@@ -209,6 +209,7 @@ namespace FanartHandler
     private CheckBox cbUseArtistException;
     private CheckBox cbReplaceFanartWhenBigger;
     private Label label9;
+    private CheckBox CheckBoxIgnoreMinimumResolutionForMusicThumbDownload;
     private Button button12;
 
     static FanartHandlerConfig()
@@ -389,6 +390,7 @@ namespace FanartHandler
       edtFanartTVPersonalAPIKey.Text = Utils.FanartTVPersonalAPIKey;
       checkBoxUseHighDefThumbnails.Checked = Utils.UseHighDefThumbnails;
       CheckBoxUseMinimumResolutionForDownload.Checked = Utils.UseMinimumResolutionForDownload;
+      CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.Checked = Utils.IgnoreMinimumResolutionForMusicThumbDownload;
       cbUseArtistException.Checked = Utils.UseArtistException;
       //
       checkBoxShowDummyItems.Checked = Utils.ShowDummyItems;
@@ -485,6 +487,7 @@ namespace FanartHandler
       Utils.FanartTVPersonalAPIKey = edtFanartTVPersonalAPIKey.Text.Trim();
       Utils.UseHighDefThumbnails = checkBoxUseHighDefThumbnails.Checked;
       Utils.UseMinimumResolutionForDownload = CheckBoxUseMinimumResolutionForDownload.Checked;
+      Utils.IgnoreMinimumResolutionForMusicThumbDownload = CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.Checked;
       Utils.UseArtistException = cbUseArtistException.Checked;
       //
       Utils.ShowDummyItems = checkBoxShowDummyItems.Checked;
@@ -2473,6 +2476,7 @@ namespace FanartHandler
       this.gbExceptions = new System.Windows.Forms.GroupBox();
       this.cbUseArtistException = new System.Windows.Forms.CheckBox();
       this.gbDuplication = new System.Windows.Forms.GroupBox();
+      this.label9 = new System.Windows.Forms.Label();
       this.cbReplaceFanartWhenBigger = new System.Windows.Forms.CheckBox();
       this.lblPercentage = new System.Windows.Forms.Label();
       this.lblThreshold = new System.Windows.Forms.Label();
@@ -2531,7 +2535,7 @@ namespace FanartHandler
       this.toolStripStatusLabelToolTip = new System.Windows.Forms.ToolStripStatusLabel();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.timerProgress = new System.Windows.Forms.Timer(this.components);
-      this.label9 = new System.Windows.Forms.Label();
+      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload = new System.Windows.Forms.CheckBox();
       this.tabPage13.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.dataGridViewUserManaged)).BeginInit();
@@ -3201,6 +3205,7 @@ namespace FanartHandler
       // 
       this.groupBox10.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.groupBox10.Controls.Add(this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload);
       this.groupBox10.Controls.Add(this.checkBox9);
       this.groupBox10.Controls.Add(this.checkBoxUseHighDefThumbnails);
       this.groupBox10.Controls.Add(this.checkBox8);
@@ -3208,7 +3213,7 @@ namespace FanartHandler
       this.groupBox10.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.groupBox10.Location = new System.Drawing.Point(6, 6);
       this.groupBox10.Name = "groupBox10";
-      this.groupBox10.Size = new System.Drawing.Size(900, 152);
+      this.groupBox10.Size = new System.Drawing.Size(900, 175);
       this.groupBox10.TabIndex = 0;
       this.groupBox10.TabStop = false;
       this.groupBox10.Text = "Music Thumbnail Options";
@@ -3877,7 +3882,7 @@ namespace FanartHandler
       this.cbUseArtistException.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.cbUseArtistException.Location = new System.Drawing.Point(9, 23);
       this.cbUseArtistException.Name = "cbUseArtistException";
-      this.cbUseArtistException.Size = new System.Drawing.Size(271, 20);
+      this.cbUseArtistException.Size = new System.Drawing.Size(274, 20);
       this.cbUseArtistException.TabIndex = 1;
       this.cbUseArtistException.Text = "Don\'t download Fanarts for Various Artists";
       this.toolTip.SetToolTip(this.cbUseArtistException, "Check this option if you dont want download Fanart for artists in exceptions list" +
@@ -3900,6 +3905,15 @@ namespace FanartHandler
       this.gbDuplication.TabIndex = 2;
       this.gbDuplication.TabStop = false;
       this.gbDuplication.Text = "Duplication Options";
+      // 
+      // label9
+      // 
+      this.label9.AutoSize = true;
+      this.label9.Location = new System.Drawing.Point(6, 99);
+      this.label9.Name = "label9";
+      this.label9.Size = new System.Drawing.Size(574, 18);
+      this.label9.TabIndex = 7;
+      this.label9.Text = "Sensitivity: low values = less false detections, high values = less duplicates";
       // 
       // cbReplaceFanartWhenBigger
       // 
@@ -4608,14 +4622,18 @@ namespace FanartHandler
       this.timerProgress.Interval = 500;
       this.timerProgress.Tick += new System.EventHandler(this.timerProgress_Tick);
       // 
-      // label9
+      // CheckBoxIgnoreMinimumResolutionForMusicThumbDownload
       // 
-      this.label9.AutoSize = true;
-      this.label9.Location = new System.Drawing.Point(6, 99);
-      this.label9.Name = "label9";
-      this.label9.Size = new System.Drawing.Size(574, 18);
-      this.label9.TabIndex = 7;
-      this.label9.Text = "Sensitivity: low values = less false detections, high values = less duplicates";
+      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.AutoSize = true;
+      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.Checked = true;
+      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.Location = new System.Drawing.Point(12, 141);
+      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.Name = "CheckBoxIgnoreMinimumResolutionForMusicThumbDownload";
+      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.Size = new System.Drawing.Size(415, 20);
+      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.TabIndex = 4;
+      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.Text = "Ignore Minimum Resolution for Music Thumbnails when Download";
+      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.UseVisualStyleBackColor = true;
       // 
       // FanartHandlerConfig
       // 

@@ -4189,7 +4189,7 @@ namespace FanartHandler
         tempFilename = Path.GetTempFileName();
         MediaPortal.Util.Utils.FileDelete(tempFilename);
       }
-      string logFilename = tempFilename.Replace(tempFolder, "%TEMP%");
+      string logFilename = tempFilename.Replace(tempFolder, @"%TEMP%\");
 
       if (DownloaderStatus == DownloadStatus.Start)
       {
@@ -4257,7 +4257,9 @@ namespace FanartHandler
       if (DownloaderStatus == DownloadStatus.Success && File.Exists(tempFilename) && Utils.UseMinimumResolutionForDownload)
       {
         if (category != Utils.Category.FanartTV &&
-            category != Utils.Category.Animated)
+            category != Utils.Category.Animated &&
+            ((subcategory == Utils.SubCategory.MusicArtistThumbScraped || subcategory == Utils.SubCategory.MusicAlbumThumbScraped) && 
+              !Utils.IgnoreMinimumResolutionForMusicThumbDownload))
         {
           if (!Utils.CheckImageResolution(tempFilename, false))
           {

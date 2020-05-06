@@ -131,7 +131,7 @@ namespace FanartHandler
     public static bool ScrapeFanart { get; set; } 
     public static bool ScrapeThumbnails { get; set; } 
     public static bool ScrapeThumbnailsAlbum { get; set; } 
-    public static bool DoNotReplaceExistingThumbs { get; set; } 
+    public static bool DoNotReplaceExistingThumbs { get; set; }
     public static bool UseGenreFanart { get; set; } 
     public static bool ScanMusicFoldersForFanart { get; set; } 
     public static string MusicFoldersArtistAlbumRegex { get; set; } 
@@ -150,6 +150,7 @@ namespace FanartHandler
     public static bool DeleteMissing { get; set; }
     public static bool UseHighDefThumbnails { get; set; }
     public static bool UseMinimumResolutionForDownload { get; set; }
+    public static bool IgnoreMinimumResolutionForMusicThumbDownload { get; set; }
     public static bool ShowDummyItems { get; set; }
     public static bool AddAdditionalSeparators { get; set; }
     public static bool UseMyPicturesSlideShow { get; set; }
@@ -6144,6 +6145,7 @@ namespace FanartHandler
       DeleteMissing = false;
       UseHighDefThumbnails = false;
       UseMinimumResolutionForDownload = false;
+      IgnoreMinimumResolutionForMusicThumbDownload = false;
       ShowDummyItems = false;
       AddAdditionalSeparators = false;
       UseMyPicturesSlideShow = false;
@@ -6306,6 +6308,7 @@ namespace FanartHandler
           DeleteMissing = settings.GetValueAsBool("FanartHandler", "DeleteMissing", DeleteMissing);
           UseHighDefThumbnails = settings.GetValueAsBool("FanartHandler", "UseHighDefThumbnails", UseHighDefThumbnails);
           UseMinimumResolutionForDownload = settings.GetValueAsBool("FanartHandler", "UseMinimumResolutionForDownload", UseMinimumResolutionForDownload);
+          IgnoreMinimumResolutionForMusicThumbDownload = settings.GetValueAsBool("FanartHandler", "IgnoreMinimumResolutionForMusicThumbDownload", IgnoreMinimumResolutionForMusicThumbDownload);
           ShowDummyItems = settings.GetValueAsBool("FanartHandler", "ShowDummyItems", ShowDummyItems);
           UseMyPicturesSlideShow = settings.GetValueAsBool("FanartHandler", "UseMyPicturesSlideShow", UseMyPicturesSlideShow);
           FastScanMyPicturesSlideShow = settings.GetValueAsBool("FanartHandler", "FastScanMyPicturesSlideShow", FastScanMyPicturesSlideShow);
@@ -6470,7 +6473,12 @@ namespace FanartHandler
       logger.Info("Fanart Handler is using: " + Check(UseFanart) + " Fanart, " + Check(UseArtist) + " Artist Thumbs, " + Check(UseAlbum) + " Album Thumbs, " + Check(UseGenreFanart) + " Genre Fanart, Min: " + MinResolution + ", " + Check(UseAspectRatio) + " Aspect Ratio >= 1.3");
       logger.Debug("Images: " + ScraperMaxImages + " Show: " + ImageInterval + "s Random: " + (MaxRandomFanartImages > 0 ? MaxRandomFanartImages.ToString() : "All"));
       logger.Debug("Scan: " + Check(ScanMusicFoldersForFanart) + " Music Folders for Fanart, RegExp: " + MusicFoldersArtistAlbumRegex);
-      logger.Debug("Scraper: " + Check(ScrapeFanart) + " Fanart, " + Check(ScraperMPDatabase) + " MP Databases , " + Check(ScrapeThumbnails) + " Artists Thumb , " + Check(ScrapeThumbnailsAlbum) + " Album Thumb, " + Check(UseMinimumResolutionForDownload) + " Delete if less then " + MinResolution + ", " + Check(UseHighDefThumbnails) + " High Def Thumbs, Max Count [" + ScraperMaxImages + "]");
+      logger.Debug("Scraper: " + Check(ScrapeFanart) + " Fanart, " + Check(ScraperMPDatabase) + " MP Databases , " + Check(ScrapeThumbnails) + " Artists Thumb , " + Check(ScrapeThumbnailsAlbum) + " Album Thumb, " + Check(UseMinimumResolutionForDownload) +
+                   " Delete if less then " + MinResolution + ", " + Check(UseHighDefThumbnails) + " High Def Thumbs, Max Count [" + ScraperMaxImages + "]");
+      if (IgnoreMinimumResolutionForMusicThumbDownload)
+      {
+        logger.Debug("Scraper: " + Check(IgnoreMinimumResolutionForMusicThumbDownload) + "Ignore Minimum Resolution For Music Thumb Download");
+      }
       if (UseArtistException)
       {
         logger.Debug("Scraper: " + Check(UseArtistException) + " Artist Exception list: [" + string.Join("][", ArtistExceptionList.ToArray()) + "]");
@@ -6631,6 +6639,7 @@ namespace FanartHandler
           xmlwriter.SetValueAsBool("FanartHandler", "DeleteMissing", DeleteMissing);
           xmlwriter.SetValueAsBool("FanartHandler", "UseHighDefThumbnails", UseHighDefThumbnails);
           xmlwriter.SetValueAsBool("FanartHandler", "UseMinimumResolutionForDownload", UseMinimumResolutionForDownload);
+          xmlwriter.SetValueAsBool("FanartHandler", "IgnoreMinimumResolutionForMusicThumbDownload", IgnoreMinimumResolutionForMusicThumbDownload);
           xmlwriter.SetValueAsBool("FanartHandler", "ShowDummyItems", ShowDummyItems);
           xmlwriter.SetValueAsBool("FanartHandler", "UseMyPicturesSlideShow", UseMyPicturesSlideShow);
           // xmlwriter.SetValueAsBool("FanartHandler", "FastScanMyPicturesSlideShow", FastScanMyPicturesSlideShow);
