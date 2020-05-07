@@ -97,6 +97,8 @@ namespace FanartHandler
     public static List<string> BadArtistsList;  
     public static List<string> MyPicturesSlideShowFolders;  
     public static string[] PipesArray;
+    public static string[] MBIDArtistProviders;
+    public static string[] MBIDAlbumProviders;
     public static Hashtable Genres;
     public static Hashtable Characters;
     public static Hashtable Studios;
@@ -5814,6 +5816,50 @@ namespace FanartHandler
       }
     }
 
+    public static void LoadMBIDProviders(Settings xmlreader)
+    {
+      MBIDArtistProviders = new string[3] { "TheAudioDB", "LastFM", "MusicBrainz" };
+      MBIDAlbumProviders = new string[3] { "MusicBrainz", "TheAudioDB", "LastFM" };
+
+      string artistProviders = string.Join("|", MBIDArtistProviders);
+      string albumProviders = string.Join("|", MBIDAlbumProviders);
+
+      try
+      {
+        logger.Debug("Load MBID Providers from: " + ConfigFilename);
+        artistProviders = xmlreader.GetValueAsString("MBID", "ArtistProviders", artistProviders);
+        albumProviders = xmlreader.GetValueAsString("MBID", "AlbumProviders", albumProviders);
+        logger.Debug("Load MBID Providers from: " + ConfigFilename + " complete.");
+      }
+      catch (Exception ex)
+      {
+        artistProviders = string.Join("|", MBIDArtistProviders);
+        albumProviders = string.Join("|", MBIDAlbumProviders);
+        logger.Error("LoadMBIDProviders: " + ex);
+      }
+
+      // MBID Providers for Artist
+      string[] parts = artistProviders.Split(new char[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
+      List<string> partsList = new List<string>();
+      foreach (string part in parts)
+      {
+        partsList.Add(part);
+      }
+      MBIDArtistProviders = partsList.ToArray();
+
+      // MBID Providers for Albums
+      parts = albumProviders.Split(new char[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
+      partsList = new List<string>();
+      foreach (string part in parts)
+      {
+        partsList.Add(part);
+      }
+      MBIDAlbumProviders = partsList.ToArray();
+
+      // MBID Providers Debug info
+      logger.Debug("MBID Providers for Artist: [" + string.Join("][", MBIDArtistProviders) + "], for Albums: [" + string.Join("][", MBIDAlbumProviders) + "]");
+    }
+
     public static void LoadWeather()
     {
       Weathers = new Hashtable();
@@ -6404,6 +6450,7 @@ namespace FanartHandler
           {
             LoadSeparators(settings);
           }
+          LoadMBIDProviders(settings);
         }
         logger.Debug("Load settings from: "+ConfigFilename+" complete.");
       }
@@ -7320,6 +7367,13 @@ namespace FanartHandler
       Local,
       Dummy, 
       None,
+    }
+
+    public enum MBIDProvider
+    {
+      LastFM, 
+      TheAudioDB,
+      MusicBrainz,
     }
 
     public enum Logo

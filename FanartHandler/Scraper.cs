@@ -353,16 +353,54 @@ namespace FanartHandler
         return string.Empty;
       }
 
-      res = TheAudioDBGetMusicBrainzID(artist, album);
-      if (string.IsNullOrEmpty(res))
+      string[] providers;
+      if (string.IsNullOrEmpty(album))
       {
+        providers = Utils.MBIDArtistProviders.ToArray();
+      }
+      else
+      {
+        providers = Utils.MBIDAlbumProviders.ToArray();
+      }
+
+      if (providers.Count() == 0)
+      {
+        logger.Debug("Common: MusicBrainz DB ID: The list of providers is empty.");
+        return string.Empty;
+      }
+
+      foreach (string provider in providers)
+      {
+        // logger.Debug("*** MusicBrainz DB ID: Current Provider: {0}", provider);
+        if (provider.Equals(Utils.MBIDProvider.TheAudioDB.ToString(), StringComparison.InvariantCultureIgnoreCase))
+        {
+      res = TheAudioDBGetMusicBrainzID(artist, album);
+          if (!string.IsNullOrEmpty(res))
+      {
+            return res;
+          }
+          continue;
+        }
+        if (provider.Equals(Utils.MBIDProvider.LastFM.ToString(), StringComparison.InvariantCultureIgnoreCase))
+        {
         res = LastFMGetMusicBrainzID(artist, album);
-        if (string.IsNullOrEmpty(res))
+          if (!string.IsNullOrEmpty(res))
+        {
+            return res;
+          }
+          continue;
+        }
+        if (provider.Equals(Utils.MBIDProvider.MusicBrainz.ToString(), StringComparison.InvariantCultureIgnoreCase))
         {
           res = GetMusicBrainzID(artist, album);
+          if (!string.IsNullOrEmpty(res))
+          {
+            return res;
+          }
+          continue;
         }
       }
-      return res;
+      return string.Empty;
     }
 
     private string CommonGetMusicBrainzID(string artist)
@@ -524,13 +562,44 @@ namespace FanartHandler
         return string.Empty;
       }
 
-      const string MBURL    = "http://www.musicbrainz.org/ws/2";
-      const string MIDURL   = "/artist/?query=artist:";
-      const string MIDURLA  = "/release-group/?query=artist:";
+      const string MBURL     = "http://www.musicbrainz.org/ws/2/{0}/?query={1}:{2}";
+      string URL = string.Empty;
 
-      var URL  = MBURL + (string.IsNullOrEmpty(album) ? 
-                          MIDURL + @"""" + HttpUtility.UrlEncode(artist) + @"""" : 
-                          MIDURLA + @"""" + HttpUtility.UrlEncode(artist) + @"""" + " AND release:" + @"""" + HttpUtility.UrlEncode(album) + @"""");
+      string artistMBID = string.Empty;
+      if (!string.IsNullOrEmpty(album))
+      {
+        // Get from DB stored Artist MBID for Album
+        string res = Utils.DBm.GetDBMusicBrainzID(Utils.GetArtist(artist), null);
+        if (!string.IsNullOrEmpty(res) && (res.Length > 10) && !res.Trim().Equals("<none>", StringComparison.CurrentCulture))
+        {
+          artistMBID = res;
+        }
+      }
+
+      // Search MBID for Artist
+      if (string.IsNullOrEmpty(album))
+      {
+        logger.Debug("MusicBrainz: Trying to find MusicBrainz ID for Artist: {0}.", artist);
+        URL = String.Format(MBURL, "artist", "artist", @"""" + HttpUtility.UrlEncode(artist) + @"""");
+      }
+      else
+      {
+        // Search MBID for Alnum
+        if (string.IsNullOrEmpty(artistMBID))
+        {
+          // By Artist name - Album
+          logger.Debug("MusicBrainz: Trying to find MusicBrainz ID for Album: {0} - {1}.", artist, album);
+          URL = String.Format(MBURL, "release-group", "artist", @"""" + HttpUtility.UrlEncode(artist) + @"""");
+        }
+        else
+        {
+          // By Artist MBID - Album
+          logger.Debug("MusicBrainz: Trying to find MusicBrainz ID for Album: {0}:{1} - {2}.", artistMBID, artist, album);
+          URL = String.Format(MBURL, "release-group", "arid", HttpUtility.UrlEncode(artistMBID));
+        }
+        URL = URL + " AND release:" + @"""" + HttpUtility.UrlEncode(album) + @"""";
+      }
+
       var html = string.Empty;
       GetHtml(URL, out html);
       return html;
@@ -1931,7 +2000,7 @@ namespace FanartHandler
         var html = string.Empty;
         var mbid = string.Empty;
 
-        logger.Debug("Last.FM: Trying to find MusicBrains ID for " + artist + (!string.IsNullOrEmpty(album) ? " - " + album : "") + ".");
+        logger.Debug("Last.FM: Trying to find MusicBrainz ID for " + artist + (!string.IsNullOrEmpty(album) ? " - " + album : "") + ".");
         GetHtml(URL+POST, out html);
 
         try

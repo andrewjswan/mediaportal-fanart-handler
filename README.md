@@ -295,6 +295,15 @@ To the team behind the MP Moving Picture plugin. From who I have used some of th
 ```
 - Max - Max Windows 10 SpotLight images in MP Thumb folder, The oldest ones are deleted, the new ones are added.
 
+## Additional settings for MBID search Providers. (FanartHandler.xml)
+```xml
+  <section name="MBID">
+    <entry name="ArtistProviders">TheAudioDB|LastFM|MusicBrainz</entry>
+    <entry name="AlbumProviders">MusicBrainz|TheAudioDB|LastFM</entry>
+  </section>
+```
+- Allows you to change the priority of the search MBID by providers, as well as turn off the necessary ones (remove from the list).
+
 # Experemental function. (FanartHandler.xml)
 ## :warning: CAUTION: Use at your own risk
 
