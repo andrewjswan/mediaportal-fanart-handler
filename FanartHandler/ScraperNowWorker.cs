@@ -158,6 +158,7 @@ namespace FanartHandler
 
     internal void OnRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
     {
+      // logger.Debug("*** ScraperNowPlaying: OnRunWorkerCompleted ...");
       try
       {
         Utils.ReleaseDelayStop("FanartHandlerSetup-ScraperNowPlaying");
@@ -176,18 +177,21 @@ namespace FanartHandler
           Utils.TotArtistsBeingScraped = 0.0;
           Utils.CurrArtistsBeingScraped = 0.0;
 
+          // logger.Debug("*** ScraperNowPlaying: OnRunWorkerCompleted: Start update pictures ...");
           FanartHandlerSetup.Fh.FPlay.AddPlayingArtistPropertys(artist, album, genre);
           FanartHandlerSetup.Fh.FPlay.UpdateProperties();
           FanartHandlerSetup.Fh.FPlayOther.AddPlayingArtistPropertys(artist, album, genre);
 
           if (!FanartHandlerSetup.Fh.FPlay.FanartAvailable)
           {
+            // logger.Debug("*** ScraperNowPlaying: OnRunWorkerCompleted: Fanart found? force update OnDisplay pictures ...");
             FanartHandlerSetup.Fh.FPlay.ForceRefreshTickCount();
           }
           if (!FanartHandlerSetup.Fh.FPlayOther.FanartAvailable)
           {
             FanartHandlerSetup.Fh.FPlayOther.ForceRefreshTickCount();
           }
+          // logger.Debug("*** ScraperNowPlaying: OnRunWorkerCompleted: FH: {0}, MP: {1}", Utils.GetProperty("#fanarthandler.music.artisthumb.play"), Utils.GetProperty("#Play.Current.Thumb"));
         }
       }
       catch (Exception ex)

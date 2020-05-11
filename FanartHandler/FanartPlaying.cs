@@ -215,8 +215,10 @@ namespace FanartHandler
           Utils.AddProperty(ref propertiesPlay, "music.artisthumb.play", FileName, ref ListPlayMusic, true);
         }
         else
+        {
           Utils.SetProperty("music.artisthumb.play", string.Empty);
-        // logger.Debug("AddPlayingArtistThumbProperty: " + artist + " - " + album + " - " + FileName + "|" + (File.Exists(FileName) ? "True" : "False"));
+        }
+        // logger.Debug("*** AddPlayingArtistThumbProperty: " + artist + " - " + album + " - " + FileName + "|" + (File.Exists(FileName) ? "True" : "False"));
       }
       catch (Exception ex)
       {
@@ -330,6 +332,7 @@ namespace FanartHandler
             ForceRefreshTickCount();
             SetCurrentArtistsImageNames(null);
             FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh = false;
+            // logger.Debug("*** RefreshMusicPlaying: Trigger refresh ...");
           }
 
           if (!string.IsNullOrEmpty(CurrentTrackTag) && (g_Player.Playing || g_Player.Paused))
@@ -402,6 +405,7 @@ namespace FanartHandler
 
           if (newArtist || filenames == null || filenames.Count == 0)
           {
+            // logger.Debug("*** GetFilename: Load new fanarts from DB: " + key + " --- " + (key2 == null ? "null" : key2));
             Utils.GetFanart(ref filenames, key, key2, category, subcategory, isMusic);
             if (iFilePrev == -1)
             { 
@@ -524,6 +528,7 @@ namespace FanartHandler
         Utils.HideControl(Utils.iActiveWindow, 91919296);
         DoShowImageOnePlay = true;
         ControlImageVisible = 0;
+        // logger.Debug("*** Hide all fanart [91919295,91919296]... ");
       }
     }
 
@@ -533,6 +538,7 @@ namespace FanartHandler
       {
         Utils.ShowControl(Utils.iActiveWindow, 91919294);
         ControlVisible = 1;
+        // logger.Debug("*** Show fanart [91919294]...");
       }
     }
 
@@ -542,6 +548,7 @@ namespace FanartHandler
       {
         Utils.HideControl(Utils.iActiveWindow, 91919294);
         ControlVisible = 0;
+        // logger.Debug("*** Hide fanart [91919294]...");
       }
     }
 
@@ -553,6 +560,7 @@ namespace FanartHandler
         Utils.HideControl(Utils.iActiveWindow, 91919296);
         DoShowImageOnePlay = false;
         ControlImageVisible = 1;
+        // logger.Debug("*** First fanart [91919295] visible ...");
       }
       else
       {
@@ -568,6 +576,7 @@ namespace FanartHandler
         Utils.HideControl(Utils.iActiveWindow, 91919295);
         DoShowImageOnePlay = true;
         ControlImageVisible = 1;
+        // logger.Debug("*** Second fanart [91919296] visible ...");
       }
       else
       {

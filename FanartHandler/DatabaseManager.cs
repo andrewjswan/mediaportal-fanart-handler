@@ -308,7 +308,9 @@ namespace FanartHandler
             FanartArtist fa = new FanartArtist(artist);
 
             var numberOfFanartImages = GetNumberOfFanartImages(Utils.Category.MusicFanart, fa.DBArtist);
-            var doTriggerRefresh = (numberOfFanartImages == 0 && !externalAccess);
+            var doTriggerRefresh = (numberOfFanartImages < Utils.iScraperMaxImages) && !externalAccess;
+
+            // logger.Debug("*** DoScrapeArtistAlbum: Trigger {0} - {1} - {2}", numberOfFanartImages, Utils.iScraperMaxImages, doTriggerRefresh);
 
             #region Artist
             GetImages = DoScrapeArtist(fa, false, doTriggerRefresh, externalAccess);
@@ -958,7 +960,7 @@ namespace FanartHandler
                           "WHERE SubCategory IN (" + Utils.GetMusicFanartCategoriesInStatement(Utils.UseHighDefThumbnails) + ") AND " +
                                 "Enabled = 1 AND " +
                                 // 3.7 
-                                "((iWidth > " + Utils.MinWResolution + " AND iHeight > " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth IS NULL AND iHeight IS NULL)) AND "+
+                                "((iWidth >= " + Utils.MinWResolution + " AND iHeight >= " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth IS NULL AND iHeight IS NULL)) AND "+
                                 "DummyItem = 0 " +
                           "GROUP BY Key1 " +
                           "HAVING count(key1) >= " + Utils.ScraperMaxImages +
@@ -2695,11 +2697,12 @@ namespace FanartHandler
                          "Enabled = 1 AND " +
                          "Category = '" + category + "' AND " +
                          // 3.7 
-                         "((iWidth > " + Utils.MinWResolution + " AND iHeight > " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth IS NULL AND iHeight IS NULL)) AND "+
+                         "((iWidth >= " + Utils.MinWResolution + " AND iHeight >= " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth IS NULL AND iHeight IS NULL)) AND "+
                          "DummyItem = 0;";
         SQLiteResultSet sqLiteResultSet;
         lock (lockObject)
           sqLiteResultSet = dbClient.Execute(SQL);
+        //logger.Debug("*** GetNumberOfFanartImages: {0}: {1}", dbKey, sqLiteResultSet.GetField(0, 0));
         return int.Parse(sqLiteResultSet.GetField(0, 0), CultureInfo.CurrentCulture);
       }
       catch (Exception ex)
@@ -4031,9 +4034,9 @@ namespace FanartHandler
                     "Enabled = 1 AND " +
                     "DummyItem = 0 AND " +
                     // 3.7 
-                    "((iWidth > " + Utils.MinWResolution + " AND iHeight > " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth IS NULL AND iHeight IS NULL)) AND " +
+                    "((iWidth >= " + Utils.MinWResolution + " AND iHeight >= " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth IS NULL AND iHeight IS NULL)) AND " +
                     sqlCategory + ";";
-
+        // logger.Debug("*** GetFanart: " + SQL);
         lock (lockObject)
           sqLiteResultSet = dbClient.Execute(SQL);
 
@@ -4046,13 +4049,12 @@ namespace FanartHandler
                       "Enabled = 1 AND " +
                       "DummyItem = 0 AND " +
                       // 3.7 
-                      "((iWidth > " + Utils.MinWResolution + " AND iHeight > " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth IS NULL AND iHeight IS NULL)) AND " +
+                      "((iWidth >= " + Utils.MinWResolution + " AND iHeight >= " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth IS NULL AND iHeight IS NULL)) AND " +
                       sqlCategory + ";";
-
+          // logger.Debug("*** GetFanart: " + SQL);
           lock (lockObject)
             sqLiteResultSet = dbClient.Execute(SQL);
         }
-        // logger.Debug("*** "+SQL);
 
         var index = 0;
         while (index < sqLiteResultSet.Rows.Count)
@@ -4064,7 +4066,7 @@ namespace FanartHandler
                                             sqLiteResultSet.GetField(index, 4).Trim(),
                                             sqLiteResultSet.GetField(index, 5).Trim());
           filenames.Add(index, fanartImage);
-          // logger.Debug("*** Fanart: "+sqLiteResultSet.GetField(index, 2));
+          // logger.Debug("*** GetFanart: " + sqLiteResultSet.GetField(index, 2));
           checked { ++index; }
         }
 
@@ -4078,21 +4080,21 @@ namespace FanartHandler
                           "Enabled = 1 AND " +
                           "DummyItem = 0 AND " +
                           // 3.7 
-                          "((iWidth > " + Utils.MinWResolution + " AND iHeight > " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth IS NULL AND iHeight IS NULL)) AND " +
+                          "((iWidth >= " + Utils.MinWResolution + " AND iHeight >= " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth IS NULL AND iHeight IS NULL)) AND " +
                           sqlCategory + ";";
             lock (lockObject)
               dbClient.Execute(SQL);
           }
           catch (Exception ex)
           {
-            logger.Debug("getFanart: Last Access update:");
+            logger.Debug("GetFanart: Last Access update:");
             logger.Debug(ex);
           }
         }
       }
       catch (Exception ex)
       {
-        logger.Error("getFanart: " + ex);
+        logger.Error("GetFanart: " + ex);
       }
       // logger.Debug("*** Fanarts: "+filenames.Count);
       return filenames;
@@ -4158,6 +4160,7 @@ namespace FanartHandler
                                                                  (string.IsNullOrEmpty(key1) ? string.Empty : "Key1 = '" + Utils.PatchSql(key1) + "' AND ") +
                                                                  // (string.IsNullOrEmpty(key2) ? string.Empty : "Key2 = '" + Utils.PatchSql(key2) + "' AND ") +
                                                                  "Provider = '" + provider + "';");
+
         if (sqLiteResultSet.Rows.Count > 0 && DatabaseUtility.GetAsInt(sqLiteResultSet, 0, 0) > 0)
         {
           SQL = "UPDATE Image SET Category = '" + sqlCategory + "', " +
@@ -4623,7 +4626,7 @@ namespace FanartHandler
                          "DummyItem = 0 AND " +
                          "AvailableRandom = 1 AND " +
                          // 3.7 
-                         "((iWidth > " + Utils.MinWResolution + " AND iHeight > " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth IS NULL AND iHeight IS NULL)) AND " + 
+                         "((iWidth >= " + Utils.MinWResolution + " AND iHeight >= " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth IS NULL AND iHeight IS NULL)) AND " + 
                          sqlCategory + 
                    "ORDER BY Last_Access DESC, Category DESC " + 
                    (iLimit > 0 ? "LIMIT " + iLimit.ToString() + " OFFSET " + iOffset.ToString() : "") +
