@@ -790,15 +790,7 @@ ajs</Value>
        * push fanart for now played music
        * push fanart for selected music or movie
        * push random images from selected folders</ExtensionDescription>
-    <VersionDescription>Duplication check fixed for Music fanarts.
-Downloading images via a temporary file.
-Fixed hibernate problem when FH scraper work.
-Improved MBID search for albums.
-Add option: Ignore Minimum Resolution for MusicThumb when Download.
-Improved MBID Search for Artist and Album, see README.md
-Bug fixes.
-
-May the 4th Be With You!</VersionDescription>
+    <VersionDescription>Fix fanarts when playing ...</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-{VERSION}.MPE1</OnlineLocation>
     <ReleaseDate>2020-05-04T15:04:24</ReleaseDate>
