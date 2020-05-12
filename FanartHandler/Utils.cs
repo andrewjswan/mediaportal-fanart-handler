@@ -3072,10 +3072,14 @@ namespace FanartHandler
       }
     }
 
-    public static string GetFanartFilename(ref int iFilePrev, ref string sFileNamePrev, ref ICollection htValues, bool recursion = false)
+    public static string GetFanartFilename(ref int iFilePrev, ref string sFileNamePrev, ref ICollection htValues, bool fromBegin = false)
     {
       var result = string.Empty;
-      // result = sFileNamePrev;
+      if (fromBegin)
+      {
+        iFilePrev = -1;
+      }
+
       try
       {
         if (!GetIsStopping())
@@ -3086,8 +3090,6 @@ namespace FanartHandler
             if (htValues.Count > 0)
             {
               var i = 0;
-              var found = false;
-
               lock (htValues)
               {
                 foreach (FanartImage fanartImage in htValues)
@@ -3102,18 +3104,18 @@ namespace FanartHandler
                         // logger.Debug("*** GetFanartFilename: Found: {0}", fanartImage.DiskImage);
                         result = fanartImage.DiskImage;
                         iFilePrev = i;
-                        sFileNamePrev = result;
-                        found = true;
-                        break;
+                        if (!result.Equals(sFileNamePrev))
+                        {
+                          break;
+                        }
                       }
                     }
                   }
                   checked { ++i; }
                 }
               }
-              if (!recursion && !found)
+              if (!fromBegin && string.IsNullOrEmpty(result))
               {
-                iFilePrev = -1;
                 result = GetFanartFilename(ref iFilePrev, ref sFileNamePrev, ref htValues, true);
               }
             }
@@ -3123,6 +3125,11 @@ namespace FanartHandler
       catch (Exception ex)
       {
         logger.Error("GetFanartFilename: " + ex);
+      }
+
+      if (!string.IsNullOrEmpty(result))
+      {
+        sFileNamePrev = result;
       }
       return result;
     }
