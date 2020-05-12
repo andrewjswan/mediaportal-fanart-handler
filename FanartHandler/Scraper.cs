@@ -2282,7 +2282,7 @@ namespace FanartHandler
         GetHtml(String.Format(URL, fanartID), out html);
         if (string.IsNullOrWhiteSpace(html))
         {
-          logger.Debug("Fanart.TV: Empty resonse HTML ... Skip.");
+          logger.Debug("Fanart.TV: Empty response HTML ... Skip.");
           return 0;
         }
 
