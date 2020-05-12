@@ -4295,7 +4295,7 @@ namespace FanartHandler
 
       try
       {
-        Hashtable ht = dbm.GetFanart(((FanartArtist)key).DBArtist, string.Empty, Category.MusicFanart, SubCategory.MusicFanartScraped, true);
+        Hashtable ht = dbm.GetFanart(((FanartArtist)key).DBArtist, string.Empty, Category.MusicFanart, SubCategory.MusicFanartScraped, true, true);
         if (ht != null && ht.Count > 0)
         {
           foreach (FanartImage fanartImage in ht.Values)

@@ -3993,6 +3993,11 @@ namespace FanartHandler
 
     public Hashtable GetFanart(string artist, string album, Utils.Category category, Utils.SubCategory subcategory, bool highDef)
     {
+      return GetFanart(artist, album, category, subcategory, highDef, false);
+    }
+
+    public Hashtable GetFanart(string artist, string album, Utils.Category category, Utils.SubCategory subcategory, bool highDef, bool allFanarts)
+    {
       var filenames = new Hashtable();
       var flag = false;
 
@@ -4031,7 +4036,7 @@ namespace FanartHandler
               "FROM Image " +
               "WHERE Key1 IN (" + Utils.HandleMultipleKeysForDBQuery(Utils.PatchSql(artist)) + ") AND " +
                     (album == null ? string.Empty : "Key2 IN (" + Utils.HandleMultipleKeysForDBQuery(Utils.PatchSql(album)) + ") AND ") +
-                    "Enabled = 1 AND " +
+                    (allFanarts ? string.Empty : "Enabled = 1 AND ") +
                     "DummyItem = 0 AND " +
                     // 3.7 
                     "((iWidth >= " + Utils.MinWResolution + " AND iHeight >= " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth IS NULL AND iHeight IS NULL)) AND " +
