@@ -1215,7 +1215,7 @@ namespace FanartHandler
         var res = 0;
         logger.Debug("--- Movie --- " + key.Id + " - " + key.IMDBId + " - " + key.Title + " ---");
         logger.Debug("Trying to find Animated Poster for Movie: " + key.Id + " - " + key.IMDBId + " - " + key.Title);
-        res = GetAnimatedPictures(Utils.Animated.MoviesPoster, key, false, false);
+        res = GetAnimatedPictures(Utils.Animated.MoviesPoster, key);
         Utils.DBm.InsertDummyItem(key, Utils.Category.Animated, Utils.SubCategory.AnimatedMovie, Utils.Animated.MoviesPoster);
         num = res;
       }
@@ -1225,7 +1225,7 @@ namespace FanartHandler
         var res = 0;
         logger.Debug("--- Movie --- " + key.Id + " - " + key.IMDBId + " - " + key.Title + " ---");
         logger.Debug("Trying to find Animated Background for Movie: " + key.Id + " - " + key.IMDBId + " - " + key.Title);
-        res = GetAnimatedPictures(Utils.Animated.MoviesBackground, key, false, false);
+        res = GetAnimatedPictures(Utils.Animated.MoviesBackground, key);
         Utils.DBm.InsertDummyItem(key, Utils.Category.Animated, Utils.SubCategory.AnimatedMovie, Utils.Animated.MoviesBackground);
         num += res;
       }
@@ -1436,7 +1436,7 @@ namespace FanartHandler
                         if (FanartHandlerSetup.Fh.MyScraperNowWorker != null && doTriggerRefresh && !externalAccess)
                         {
                           FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh = true;
-                          doTriggerRefresh = false;
+                          // doTriggerRefresh = false;
                         }
                         ExternalAccess.InvokeScraperCompleted(Utils.Category.MusicFanart.ToString(), Utils.SubCategory.MusicFanartScraped.ToString(), dbartist);
                       }
@@ -2391,7 +2391,7 @@ namespace FanartHandler
           downloadCategories = new Utils.FanartTV[] { Utils.FanartTV.MusicLabel };
         }
 
-        num = FanartTVDownloadFanart(category, subcategory, key, Method, html, downloadCategories);
+        num = FanartTVDownloadFanart(category, subcategory, key, Method, html, doTriggerRefresh, externalAccess, downloadCategories);
 
       }
       catch (Exception ex)
@@ -2401,7 +2401,9 @@ namespace FanartHandler
       return num;
     }
 
-    public int FanartTVDownloadFanart(Utils.Category category, Utils.SubCategory subcategory, FanartClass key, string mode, string html, params Utils.FanartTV[] downloadCategory)
+    public int FanartTVDownloadFanart(Utils.Category category, Utils.SubCategory subcategory, FanartClass key, 
+                                      string mode, string html, bool doTriggerRefresh, bool externalAccess, 
+                                      params Utils.FanartTV[] downloadCategory)
     {
       if (downloadCategory == null || !downloadCategory.Any())
       {
@@ -2770,7 +2772,7 @@ namespace FanartHandler
 
             if (download)
             {
-              num = num + FanartTVDownloadFanart(category, subcategory, type, key, null, URLList, mode, iMax, inDB);
+              num = num + FanartTVDownloadFanart(category, subcategory, type, key, null, URLList, mode, iMax, inDB, doTriggerRefresh, externalAccess);
             }
           }
 
@@ -2797,7 +2799,7 @@ namespace FanartHandler
 
               if (download)
               {
-                num = num + FanartTVDownloadFanart(category, subcategory, type, key, sValue, URLList, mode, iMax, inDB);
+                num = num + FanartTVDownloadFanart(category, subcategory, type, key, sValue, URLList, mode, iMax, inDB, doTriggerRefresh, externalAccess);
               }
             }
           }
@@ -2812,7 +2814,8 @@ namespace FanartHandler
       return 0;
     }
 
-    private int FanartTVDownloadFanart(Utils.Category category, Utils.SubCategory subcategory, Utils.FanartTV type, FanartClass key, string sIdx, List<string> URLList, string mode, int iMax, bool inDB)
+    private int FanartTVDownloadFanart(Utils.Category category, Utils.SubCategory subcategory, Utils.FanartTV type, FanartClass key, 
+                                       string sIdx, List<string> URLList, string mode, int iMax, bool inDB, bool doTriggerRefresh, bool externalAccess)
     {
       if (URLList == null || URLList.Count <= 0 || iMax < 1)
       {
@@ -2884,6 +2887,15 @@ namespace FanartHandler
           if (inDB)
           { 
             Utils.DBm.LoadFanart(dbKey1, dbKey2, dbKey3, fanartTVID, filename, sourceFilename, dbCategory, dbSubCategory, Utils.Provider.FanartTV);
+            if (subcategory == Utils.SubCategory.MusicFanartScraped)
+            {
+              if (FanartHandlerSetup.Fh.MyScraperNowWorker != null && doTriggerRefresh && !externalAccess)
+              {
+                FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh = true;
+                // doTriggerRefresh = false;
+              }
+              ExternalAccess.InvokeScraperCompleted(category.ToString(), subcategory.ToString(), dbKey1);
+            }
           }
           if (Utils.StopScraper)
           {
@@ -3182,16 +3194,16 @@ namespace FanartHandler
               checked { ++num; }
               Utils.DBm.LoadFanart(dbartist, dbalbum, key.Id, AudioDBID, filename, sourceFilename, category, subcategory, Utils.Provider.TheAudioDB);
               //
-              if ((subcategory == Utils.SubCategory.MusicFanartScraped) || (subcategory == Utils.SubCategory.MovieScraped))
+              if (subcategory == Utils.SubCategory.MusicFanartScraped)
               {
                 if (FanartHandlerSetup.Fh.MyScraperNowWorker != null && doTriggerRefresh && !externalAccess)
                 {
                   FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh = true;
-                  doTriggerRefresh = false;
+                  // doTriggerRefresh = false;
                   // ScraperFlag = true;
                 }
+                ExternalAccess.InvokeScraperCompleted(category.ToString(), subcategory.ToString(), dbartist);
               }
-              ExternalAccess.InvokeScraperCompleted(category.ToString(), subcategory.ToString(), dbartist);
             }
 
             if ((num > 0) && (subcategory != Utils.SubCategory.MusicFanartScraped) && (subcategory != Utils.SubCategory.MovieScraped))
@@ -3712,7 +3724,7 @@ namespace FanartHandler
 
     #region Animated 
     // Begin: Animated Get Poster/Backgrounds for Movies
-    public int GetAnimatedPictures(Utils.Animated category, FanartClass key, bool doTriggerRefresh, bool externalAccess)
+    public int GetAnimatedPictures(Utils.Animated category, FanartClass key)
     {
       if (!Utils.UseAnimated)
         return 0;
@@ -3790,12 +3802,6 @@ namespace FanartHandler
                           category)) 
         {
           checked { ++num; }
-          //
-          if (FanartHandlerSetup.Fh.MyScraperNowWorker != null && doTriggerRefresh && !externalAccess)
-          {
-            FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh = true;
-            doTriggerRefresh = false;
-          }
           ExternalAccess.InvokeScraperCompleted(Utils.Category.Animated.ToString(), category.ToString(), key2);
         }
       }
