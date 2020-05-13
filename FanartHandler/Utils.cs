@@ -3072,7 +3072,12 @@ namespace FanartHandler
       }
     }
 
-    public static string GetFanartFilename(ref int iFilePrev, ref string sFileNamePrev, ref ICollection htValues, bool fromBegin = false)
+    public static string GetFanartFilename(ref int iFilePrev, ref string sFileNamePrev, ref ICollection htValues)
+    {
+      return GetFanartFilename(ref iFilePrev, ref sFileNamePrev, ref htValues, false);
+    }
+
+    public static string GetFanartFilename(ref int iFilePrev, ref string sFileNamePrev, ref ICollection htValues, bool fromBegin)
     {
       var result = string.Empty;
       if (fromBegin)

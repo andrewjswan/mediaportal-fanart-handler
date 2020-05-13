@@ -2365,7 +2365,7 @@ namespace FanartHandler
     private void labelGetFanartTVPersonalAPIKey_LinkClicked(object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
     {
       // Navigate to a URL.
-      System.Diagnostics.Process.Start("https://fanart.tv/?mymail=17744&k=ecb615a5720121199c56fea1471a4a02&t=fanart.tv%2Fget-an-api-key%2F&c=0&s=1");
+      System.Diagnostics.Process.Start("https://fanart.tv/get-an-api-key/");
     }
 
     private void InitializeComponent()

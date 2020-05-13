@@ -124,18 +124,39 @@ namespace FanartHandler
               dbClient.Execute("COMMIT;");
             scraper = null;
           }
-          if ((GetImages == 0) && (GetNumberOfFanartImages(Utils.Category.MusicFanart, fa.DBArtist) == 0))
-          {
-            logger.Info("No fanart found for Artist: " + fa.Artist + ".");
-          }
           if (GetImages > 0)
           {
             UpdateTimeStamp(fa.DBArtist, null, Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartScraped);
+          }
+
+          var dbImages = GetNumberOfFanartImages(Utils.Category.MusicFanart, fa.DBArtist);
+          if ((GetImages == 0) && (dbImages == 0))
+          {
+            logger.Info("No fanart found for Artist: {0}.", fa.Artist);
+          }
+          else if (dbImages >= Utils.iScraperMaxImages)
+          {
             if (doScrapeFanart)
             {
-              logger.Info("Artist: " + fa.Artist + " has already maximum number of images. Will not download anymore images for this artist.");
+              logger.Info("Artist: {0} has already maximum number of images. Will not download anymore images for this artist.", fa.Artist);
+            }
+            else
+            {
+              logger.Debug("Artist: {0} has already maximum number of images. Will not download anymore images for this artist.", fa.Artist);
+          }
+          }
+          else if (dbImages > 0)
+          {
+            if (doScrapeFanart)
+            {
+              logger.Info("Artist: {0} has already {1} images. No more images were found for this artist.", fa.Artist, dbImages);
+            }
+            else
+            {
+              logger.Debug("Artist: {0} has already {1} images. No more images were found for this artist.", fa.Artist, dbImages);
             }
           }
+
           if (StopScraper)
           {
             return GetImages;

@@ -288,12 +288,18 @@ namespace FanartHandler
               DoShowImageOnePlay = !DoShowImageOnePlay;
             }
             if (DoShowImageOnePlay)
+            {
               Utils.AddProperty(ref propertiesPlay, "music.backdrop1.play", FileName, ref ListPlayMusic);
+            }
             else
+            {
               Utils.AddProperty(ref propertiesPlay, "music.backdrop2.play", FileName, ref ListPlayMusic);
+            }
 
             if (Utils.UseOverlayFanart)
+            {
               Utils.AddProperty(ref propertiesPlay, "music.overlay.play", FileName, ref ListPlayMusic);
+            }
           }
           else
           {
@@ -301,7 +307,9 @@ namespace FanartHandler
             Utils.AddProperty(ref propertiesPlay, "music.backdrop2.play", string.Empty, ref ListPlayMusic);
 
             if (Utils.UseOverlayFanart)
+            {
               Utils.AddProperty(ref propertiesPlay, "music.overlay.play", string.Empty, ref ListPlayMusic);
+            }
           }
           ResetRefreshTickCount();
           FanartAvailable = (!string.IsNullOrEmpty(FileName));
