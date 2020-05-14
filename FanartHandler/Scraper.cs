@@ -2410,9 +2410,9 @@ namespace FanartHandler
         return 0;
       }
 
+      int num = 0;
       try
       {
-        int num = 0;
         foreach (Utils.FanartTV type in downloadCategory)
         {
           if (Utils.StopScraper)
@@ -2811,7 +2811,7 @@ namespace FanartHandler
         logger.Error("FanartTVDownloadFanart: " + ex);
       }
 
-      return 0;
+      return num;
     }
 
     private int FanartTVDownloadFanart(Utils.Category category, Utils.SubCategory subcategory, Utils.FanartTV type, FanartClass key, 
