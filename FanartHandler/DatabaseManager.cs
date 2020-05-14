@@ -2416,6 +2416,7 @@ namespace FanartHandler
         if (wartist.ToLower().Contains(" and "))
         {
           wartist = wartist + "|" + Regex.Replace(wartist, @"\sand\s", "|", RegexOptions.IgnoreCase);
+          logger.Info("--- Updated: Scrape for Artist(s): " + wartist + (fmp.Album.IsEmpty ? string.Empty : " Album: " + fmp.TrackAlbum + " Year: " + fmp.Album.Year + " Genre: " + fmp.Genre));
         }
         List<string> artists = wartist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries)
                                       .Where(x => !string.IsNullOrWhiteSpace(x))
@@ -2449,7 +2450,7 @@ namespace FanartHandler
         foreach (string sartist in artists)
         {
           CurrArtistsBeingScraped = (double)i * steps;
-          logger.Debug("NowPlayingScrape: Starting for Artist: " + sartist + (fmp.Album.IsEmpty ? string.Empty : " Album: " + fmp.Album.Album));
+          logger.Debug("--- NowPlaying: Scrape starting for Artist: " + sartist + (fmp.Album.IsEmpty ? string.Empty : " Album: " + fmp.Album.Album));
           if (!StopScraper)
           {
             var result = (DoScrapeArtistAlbum(sartist, fmp.Album.Album, fmp.Album.CDs, false) > 0);
@@ -4180,20 +4181,30 @@ namespace FanartHandler
           ClearLocalItem(key1, key2, diskImage);
         }
 
+        string sqlKey1 = Utils.PatchSql(key1);
+        string sqlKey2 = Utils.PatchSql(key2);
+        string sqlImageId = Utils.PatchSql(imageId);
+
+        string sqlProvider = "AND Provider = '" + provider + "'";
+        if (subcategory == Utils.SubCategory.MusicAlbumThumbScraped || subcategory == Utils.SubCategory.MusicArtistThumbScraped)
+        {
+          sqlProvider = string.Empty;
+        }
+
         SQLiteResultSet sqLiteResultSet = dbClient.Execute("SELECT COUNT(Key1) " +
                                                            "FROM Image " +
-                                                           "WHERE Id = '" + Utils.PatchSql(imageId) + "' AND " +
-                                                                 (string.IsNullOrEmpty(key1) ? string.Empty : "Key1 = '" + Utils.PatchSql(key1) + "' AND ") +
-                                                                 // (string.IsNullOrEmpty(key2) ? string.Empty : "Key2 = '" + Utils.PatchSql(key2) + "' AND ") +
-                                                                 "Provider = '" + provider + "';");
+                                                           "WHERE Id = '" + sqlImageId + "' " +
+                                                             "AND Key1 = '" + sqlKey1 + "' " +
+                                                             // (string.IsNullOrEmpty(key2) ? string.Empty : "AND Key2 = '" + sqlKey2 + "' ") +
+                                                                  sqlProvider + ";");
 
         if (sqLiteResultSet.Rows.Count > 0 && DatabaseUtility.GetAsInt(sqLiteResultSet, 0, 0) > 0)
         {
           SQL = "UPDATE Image SET Category = '" + sqlCategory + "', " +
                                  (subcategory == Utils.SubCategory.None ? string.Empty : "SubCategory = '" + sqlSubCategory + "', ") +
                                  "Provider = '" + provider + "', " +
-                                 "Key1 = '" + Utils.PatchSql(key1) + "', " +
-                                 "Key2 = '" + Utils.PatchSql(key2) + "', " +
+                                 "Key1 = '" + sqlKey1 + "', " +
+                                 "Key2 = '" + sqlKey2 + "', " +
                                  "FullPath = '" + Utils.PatchSql(diskImage) + "', " +
                                  "SourcePath = '" + Utils.PatchSql(sourceImage) + "', " +
                                  "Enabled = 1, " + // True
@@ -4201,7 +4212,7 @@ namespace FanartHandler
                                  "Time_Stamp = '" + now + "', " +
                                  "Last_Access = '" + now + "' " +
                                  ((string.IsNullOrEmpty(id)) ? string.Empty : ", MBID = '" + Utils.PatchSql(id) + "' ") +
-                "WHERE Id = '" + Utils.PatchSql(imageId) + "' AND " +
+                "WHERE Id = '" + sqlImageId + "' AND " +
                       "Provider = '" + provider + "';";
           lock (lockObject)
             dbClient.Execute(SQL);
@@ -4216,13 +4227,13 @@ namespace FanartHandler
            sqlSubCategory = string.Empty;
           }
           SQL = "INSERT INTO Image (Id, Category, SubCategory, Section, Provider, Key1, Key2, Info, FullPath, SourcePath, AvailableRandom, Enabled, DummyItem, Time_Stamp, MBID, Last_Access, Protected) " +
-                "VALUES ('" + Utils.PatchSql(imageId) + "'," +
+                "VALUES ('" + sqlImageId + "'," +
                         "'" + sqlCategory + "'," +
                         "'" + sqlSubCategory + "'," +
                         "''," +
                         "'" + provider + "'," +
-                        "'" + Utils.PatchSql(key1) + "'," +
-                        "'" + Utils.PatchSql(key2) + "'," +
+                        "'" + sqlKey1 + "'," +
+                        "'" + sqlKey2 + "'," +
                         "''," +
                         "'" + Utils.PatchSql(diskImage) + "'," +
                         "'" + Utils.PatchSql(sourceImage) + "'," +

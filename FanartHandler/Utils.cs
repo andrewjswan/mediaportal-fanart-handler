@@ -6576,7 +6576,7 @@ namespace FanartHandler
           logger.Debug(" - Fanart.TV: " + Check(MoviesClearArtDownload) + " ClearArt, " + Check(MoviesBannerDownload) + " Banner, " + Check(MoviesCDArtDownload) + " CD, " + Check(MoviesClearLogoDownload) + " ClearLogo");
         }
       }
-      logger.Debug("Artists pipes: [" + string.Join("][", PipesArray) + "]");
+      logger.Debug("Artists pipes: [" + string.Join("][", PipesArray) + "], " + Check(AddAdditionalSeparators) + " Add Additional Separators.");
       if (CleanUpOldFiles)
       {
         logger.Debug("Cleanup old images " + Check(CleanUpOldFiles) + ", " + Check(CleanUpDelete) + " Delete.");
