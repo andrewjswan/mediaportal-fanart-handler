@@ -562,7 +562,7 @@ namespace FanartHandler
         return string.Empty;
       }
 
-      const string MBURL     = "http://www.musicbrainz.org/ws/2/{0}/?query={1}:{2}";
+      const string MBURL     = "http://www.musicbrainz.org/ws/2/{0}/?query={1}:{2} {3} {4}:{5}";
       string URL = string.Empty;
 
       string artistMBID = string.Empty;
@@ -580,24 +580,23 @@ namespace FanartHandler
       if (string.IsNullOrEmpty(album))
       {
         logger.Debug("MusicBrainz: Trying to find MusicBrainz ID for Artist: {0}.", artist);
-        URL = String.Format(MBURL, "artist", "artist", @"""" + HttpUtility.UrlEncode(artist) + @"""");
+        URL = String.Format(MBURL, "artist", "artist", @"""" + HttpUtility.UrlEncode(artist) + @"""", "OR", "alias", @"""" + HttpUtility.UrlEncode(artist) + @"""");
       }
       else
       {
-        // Search MBID for Alnum
+        // Search MBID for Album
         if (string.IsNullOrEmpty(artistMBID))
         {
           // By Artist name - Album
           logger.Debug("MusicBrainz: Trying to find MusicBrainz ID for Album: {0} - {1}.", artist, album);
-          URL = String.Format(MBURL, "release-group", "artist", @"""" + HttpUtility.UrlEncode(artist) + @"""");
+          URL = String.Format(MBURL, "release-group", "artist", @"""" + HttpUtility.UrlEncode(artist) + @"""", "AND", "release", @"""" + HttpUtility.UrlEncode(album) + @"""");
         }
         else
         {
           // By Artist MBID - Album
           logger.Debug("MusicBrainz: Trying to find MusicBrainz ID for Album: {0}:{1} - {2}.", artistMBID, artist, album);
-          URL = String.Format(MBURL, "release-group", "arid", HttpUtility.UrlEncode(artistMBID));
+          URL = String.Format(MBURL, "release-group", "arid", HttpUtility.UrlEncode(artistMBID), "AND", "release", @"""" + HttpUtility.UrlEncode(album) + @"""");
         }
-        URL = URL + " AND release:" + @"""" + HttpUtility.UrlEncode(album) + @"""";
       }
 
       var html = string.Empty;
