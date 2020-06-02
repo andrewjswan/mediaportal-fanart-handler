@@ -1,4 +1,5 @@
 # mediaportal-fanart-handler
+[![Build status](https://ci.appveyor.com/api/projects/status/nxaec1dxq8iq5nnb/branch/master?svg=true)](https://ci.appveyor.com/project/andrewjswan79536/mediaportal-fanart-handler/branch/master)
 
 ## Introduction
 Fanart Handler is a plugin for **MediaPortal (MP)**. The plugin has two main purposes;
@@ -303,6 +304,22 @@ To the team behind the MP Moving Picture plugin. From who I have used some of th
   </section>
 ```
 - Allows you to change the priority of the search MBID by providers, as well as turn off the necessary ones (remove from the list).
+
+## Additional settings for Artists. (FanartHandler.xml)
+```xml
+  <section name="Advanced">
+    <entry name="SkipFeatArtist">yes</entry>
+  </section>
+```
+- SkipFeatArtist - When processing, skip feat Artists (Default: no - Don't skip)
+
+## Advanced debug Info (FanartHandler.xml)
+```xml
+  <section name="Debug">
+    <entry name="AdvancedDebug">yes</entry>
+  </section>
+```
+- Displays the maximum debug information in log (the amount of information depends on the plugin version).
 
 # Experemental function. (FanartHandler.xml)
 ## :warning: CAUTION: Use at your own risk
