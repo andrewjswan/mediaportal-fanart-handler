@@ -4253,6 +4253,7 @@ namespace FanartHandler
         string sqlKey1 = Utils.PatchSql(key1);
         string sqlKey2 = Utils.PatchSql(key2);
         string sqlImageId = Utils.PatchSql(imageId);
+        string sqlMBID = Utils.PatchSql(id);
 
         string sqlProvider = "AND Provider = '" + provider + "'";
         if (subcategory == Utils.SubCategory.MusicAlbumThumbScraped || subcategory == Utils.SubCategory.MusicArtistThumbScraped)
@@ -4280,7 +4281,7 @@ namespace FanartHandler
                                  "DummyItem = 0, " + // False
                                  "Time_Stamp = '" + now + "', " +
                                  "Last_Access = '" + now + "' " +
-                                 ((string.IsNullOrEmpty(id)) ? string.Empty : ", MBID = '" + Utils.PatchSql(id) + "' ") +
+                                 ((string.IsNullOrEmpty(id)) ? string.Empty : ", MBID = '" + sqlMBID + "' ") +
                 "WHERE Id = '" + sqlImageId + "' AND " +
                       "Provider = '" + provider + "';";
           lock (lockObject)
@@ -4308,7 +4309,7 @@ namespace FanartHandler
                         "'" + Utils.PatchSql(sourceImage) + "'," +
                         "1, 1, 0," +
                         "'" + now + "'," +
-                        "'" + Utils.PatchSql(id) + "'," +
+                        "'" + sqlMBID + "'," +
                         "'" + now + "'," +
                         "0);";
           lock (lockObject)
@@ -4316,6 +4317,25 @@ namespace FanartHandler
           // 3.7 
           Utils.CheckImageResolution(diskImage, false);
           logger.Info("Importing fanart into FanartHandler database (" + diskImage + ").");
+        }
+
+        if (!string.IsNullOrEmpty(id))
+        {
+          if (category == Utils.Category.MusicArtist || category == Utils.Category.MusicAlbum || 
+              category == Utils.Category.MusicFanart ||
+             (category == Utils.Category.FanartTV && (subcategory == Utils.SubCategory.FanartTVArtist || subcategory == Utils.SubCategory.FanartTVAlbum)))
+          {
+            lock (lockObject)
+              dbClient.Execute("UPDATE Image " +
+                               "SET MBID = '" + sqlMBID + "', " +
+                               "WHERE Key1 = '" + sqlKey1 + "' AND " +
+                                     "Key2 = '" + sqlKey2 + "' AND " +
+                                     "TRIM(MBID) = '';");
+            if (Utils.AdvancedDebug)
+            {
+              logger.Debug("*** Update MBID for {0} - {1} - {2}", key1, key2, id);
+            }
+          }
         }
       }
       catch (Exception ex)
@@ -4470,6 +4490,7 @@ namespace FanartHandler
       try
       {
         lock (lockObject)
+        /*
           dbClient.Execute("UPDATE Image " +
                            "SET MBID = '" + Utils.PatchSql(newmbid) + "', " +
                                "DummyItem = 1, " +
@@ -4477,6 +4498,14 @@ namespace FanartHandler
                            "WHERE Key1 = '" + Utils.PatchSql(artist) + "' AND " +
                                  "Key2 = '" + Utils.PatchSql(album) + "' AND " +
                                  "MBID = '" + Utils.PatchSql(oldmbid) + "';");
+        */
+          dbClient.Execute("UPDATE Image " +
+                           "SET MBID = '" + Utils.PatchSql(newmbid) + "', " +
+                               "DummyItem = 1, " +
+                               "SourcePath = '', " +
+                               "Time_Stamp = '" + DateTime.Today.AddDays(-30.0).ToString(dbDateFormat, CultureInfo.CurrentCulture) + "' " +
+                           "WHERE Key1 = '" + Utils.PatchSql(artist) + "' AND " +
+                                 "Key2 = '" + Utils.PatchSql(album) + "';");
       }
       catch (Exception ex)
       {
