@@ -1428,7 +1428,9 @@ namespace FanartHandler
                     sourceFilename = "http://htbackdrops.org/api/"+ApiKeyhtBackdrops+"/download/" + ((SearchResults) alSearchResults[index]).Id + "/fullsize";
                     if (!Utils.DBm.SourceImageExist(dbartist, null, sourceFilename, null, mbid, ((SearchResults) alSearchResults[index]).Id, Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartScraped, Utils.Provider.HtBackdrops))
                     {
-                      if (DownloadImage(new FanartArtist(mbid, dbartist), ((SearchResults) alSearchResults[index]).Id, sourceFilename, ref filename, Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartScraped))
+                      if (DownloadImage(new FanartArtist(mbid, dbartist), ((SearchResults) alSearchResults[index]).Id, sourceFilename, Utils.Provider.HtBackdrops,
+                                        ref filename, 
+                                        Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartScraped))
                       {
                         checked { ++num; }
                         Utils.DBm.LoadFanart(dbartist, null, mbid, ((SearchResults)alSearchResults[index]).Id, filename, sourceFilename, Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartScraped, Utils.Provider.HtBackdrops);
@@ -1502,7 +1504,9 @@ namespace FanartHandler
                     string mbid = ((SearchResults) alSearchResults[index]).MBID;
                     logger.Debug("HtBackdrops: Found thumbnail for Artist: " + artist + ". MBID: "+mbid);
                     var sourceFilename = "http://htbackdrops.org/api/"+ApiKeyhtBackdrops+"/download/" + ((SearchResults) alSearchResults[index]).Id + "/fullsize";
-                    if (DownloadImage(new FanartArtist(mbid, artist), sourceFilename, ref filename, Utils.Category.MusicArtist, Utils.SubCategory.MusicArtistThumbScraped))
+                    if (DownloadImage(new FanartArtist(mbid, artist), sourceFilename, Utils.Provider.HtBackdrops,
+                                      ref filename, 
+                                      Utils.Category.MusicArtist, Utils.SubCategory.MusicArtistThumbScraped))
                     {
                       checked { ++num; }
                       Utils.DBm.LoadFanart(dbartist, null, mbid, null, filename, sourceFilename, Utils.Category.MusicArtist, Utils.SubCategory.MusicArtistThumbScraped, Utils.Provider.HtBackdrops);
@@ -1868,7 +1872,8 @@ namespace FanartHandler
             }
             // logger.Debug("*** " + artist + " | " + dbartist + " | ["+ ((category == Utils.Category.MusicArtistThumbScraped) ? string.Empty : album) +"]");
             if (DownloadImage(key, 
-                              sourceFilename, 
+                              sourceFilename,
+                              Utils.Provider.LastFM,
                               ref filename, 
                               category, subcategory)) 
             {
@@ -2879,6 +2884,7 @@ namespace FanartHandler
 
         if (DownloadImage(key, fanartTVID, sIdx,
                           sourceFilename,
+                          Utils.Provider.FanartTV,
                           ref filename,
                           category, subcategory, type))
         {
@@ -3184,9 +3190,7 @@ namespace FanartHandler
                 }
             }
 
-            if (DownloadImage(key, 
-                              AudioDBID,
-                              sourceFilename, 
+            if (DownloadImage(key, AudioDBID, sourceFilename, Utils.Provider.TheAudioDB,
                               ref filename, 
                               category, subcategory))
             {
@@ -3557,6 +3561,7 @@ namespace FanartHandler
       {
         if (DownloadImage(key, "0", string.Empty,
                           sourceFilename,
+                          Utils.Provider.TheMovieDB,
                           ref filename,
                           category, subcategory, type))
         {
@@ -3675,7 +3680,7 @@ namespace FanartHandler
             dbartist = ((FanartArtist)key).DBArtist;
           }
 
-          if (DownloadImage(key, sourceFilename, ref filename, category, subcategory)) 
+          if (DownloadImage(key, sourceFilename, Utils.Provider.CoverArtArchive, ref filename, category, subcategory)) 
           {
             checked { ++num; }
             Utils.DBm.LoadFanart(dbartist, dbalbum, key.Id, null, filename, sourceFilename, category, subcategory, Utils.Provider.CoverArtArchive);
@@ -3795,7 +3800,8 @@ namespace FanartHandler
       try
       {
         if (DownloadImage(key, null,
-                          sourceFilename, 
+                          sourceFilename,
+                          Utils.Provider.Animated,
                           ref filename, 
                           Utils.Category.Animated, 
                           category)) 
@@ -3878,17 +3884,17 @@ namespace FanartHandler
     // End: GetHtml
 
     // Begin: Download Image
-    private bool DownloadImage(FanartClass key, string sourceFilename, ref string filename, params object[] categorys)
+    private bool DownloadImage(FanartClass key, string sourceFilename, Utils.Provider provider, ref string filename, params object[] categorys)
     {
-      return DownloadImage(key, null, sourceFilename, ref filename, categorys);
+      return DownloadImage(key, null, sourceFilename, provider, ref filename, categorys);
     }
 
-    private bool DownloadImage(FanartClass key, string sId, string sourceFilename, ref string filename, params object[] categorys)
+    private bool DownloadImage(FanartClass key, string sId, string sourceFilename, Utils.Provider provider, ref string filename, params object[] categorys)
     {
-      return DownloadImage(key, sId, null, sourceFilename, ref filename, categorys);
+      return DownloadImage(key, sId, null, sourceFilename, provider, ref filename, categorys);
     }
 
-    private bool DownloadImage(FanartClass key, string sId, string sNum, string sourceFilename, ref string filename, params object[] categorys)
+    private bool DownloadImage(FanartClass key, string sId, string sNum, string sourceFilename, Utils.Provider provider, ref string filename, params object[] categorys)
     {
       // if (!MediaPortal.Util.Win32API.IsConnectedToInternet())
       //   return false;
@@ -4242,7 +4248,15 @@ namespace FanartHandler
         }
       }
 
-      if (!Utils.RemoteFileExists(sourceFilename))
+      if (Utils.CheckFanartForDuplication && Utils.AddToBlacklist)
+      {
+        if (Utils.DBm.CheckForBlackList(sourceFilename))
+        {
+          DownloaderStatus = DownloadStatus.Blacklisted;
+        }
+      }
+
+      if (DownloaderStatus != DownloadStatus.Blacklisted && !Utils.RemoteFileExists(sourceFilename))
       {
         DownloaderStatus = DownloadStatus.NotFound;
       }
@@ -4345,9 +4359,10 @@ namespace FanartHandler
 
       if (DownloaderStatus == DownloadStatus.Success && File.Exists(tempFilename) && category == Utils.Category.MusicFanart)
       {
-        if (Utils.CheckImageForDuplication(key, tempFilename, logFilename))
+        if (Utils.CheckImageForDuplication(key, tempFilename, logFilename, sourceFilename))
         {
           DownloaderStatus = DownloadStatus.Skip;
+          Utils.DBm.SetOnlineProvider(category, subcategory, provider, sourceFilename, filename, sId);
           logger.Debug("Download: Image: " + filename + " already exists in fanart folder, will be deleted...");
         }
       }
@@ -4365,6 +4380,10 @@ namespace FanartHandler
       if (DownloaderStatus == DownloadStatus.NotFound)
       {
         logger.Debug("Download: Image for " + Text + " (" + sourceFilename + "): Not exists on source site.");
+      }
+      if (DownloaderStatus == DownloadStatus.Blacklisted)
+      {
+        logger.Debug("Download: Image for " + Text + " (" + sourceFilename + ") Blacklisted, Skipped.");
       }
       if (DownloaderStatus == DownloadStatus.Stop)
       {
@@ -4436,6 +4455,7 @@ namespace FanartHandler
       Stop,
       LessSize,
       NotFound,
+      Blacklisted,
     }
 
     public class WebClientWithTimeouts : WebClient

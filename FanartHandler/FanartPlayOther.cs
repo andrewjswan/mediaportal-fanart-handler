@@ -122,19 +122,21 @@ namespace FanartHandler
         var PictureList = new List<string>();
         var FileName = (string) null;
 
-        var strArray = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries)
-                             .Where(x => !string.IsNullOrWhiteSpace(x))
-                             .Select(s => s.Trim())
-                             .Distinct(StringComparer.CurrentCultureIgnoreCase)
-                             .ToArray();
+        string[] strArray = Utils.HandleMultipleKeysToArray(artist);
         if (strArray != null)
+        {
           foreach (string sartist in strArray)
           {
             FileName = Path.Combine(Utils.MusicClearArtFolder, MediaPortal.Util.Utils.MakeFileName(sartist) + ".png");
             if (File.Exists(FileName))
+            {
               if (!PictureList.Contains(FileName))
+              {
                 PictureList.Add(FileName);
+              }
+            }
           }
+        }
 
         FileName = string.Empty;
         if (PictureList != null && (PictureList.Count > 0))
@@ -188,19 +190,21 @@ namespace FanartHandler
         var PictureList = new List<string>();
         var FileName = (string) null;
 
-        var strArray = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries)
-                             .Where(x => !string.IsNullOrWhiteSpace(x))
-                             .Select(s => s.Trim())
-                             .Distinct(StringComparer.CurrentCultureIgnoreCase)
-                             .ToArray();
+        string[] strArray = Utils.HandleMultipleKeysToArray(artist);
         if (strArray != null)
+        {
           foreach (string sartist in strArray)
           {
             FileName = Path.Combine(Utils.MusicBannerFolder, MediaPortal.Util.Utils.MakeFileName(sartist) + ".png");
             if (File.Exists(FileName))
+            {
               if (!PictureList.Contains(FileName))
+              {
                 PictureList.Add(FileName);
+              }
+            }
           }
+        }
 
         FileName = string.Empty;
         if (PictureList != null && (PictureList.Count > 0))
@@ -256,11 +260,7 @@ namespace FanartHandler
 
         string _cd = Utils.GetProperty("#Play.Current.DiscID");
 
-        var strArray = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries)
-                             .Where(x => !string.IsNullOrWhiteSpace(x))
-                             .Select(s => s.Trim())
-                             .Distinct(StringComparer.CurrentCultureIgnoreCase)
-                             .ToArray();
+        string[] strArray = Utils.HandleMultipleKeysToArray(artist);
         if (strArray != null)
         {
           foreach (string sartist in strArray)
@@ -424,11 +424,7 @@ namespace FanartHandler
       try
       {
         // Get Artist name
-        var artists = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries)
-                            .Where(x => !string.IsNullOrWhiteSpace(x))
-                            .Select(s => s.Trim())
-                            .Distinct(StringComparer.CurrentCultureIgnoreCase)
-                            .ToArray();
+        string[] artists = Utils.HandleMultipleKeysToArray(artist);
         if (artists != null)
         {
           foreach (string sartist in artists)

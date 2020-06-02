@@ -354,26 +354,30 @@ namespace FanartHandler
       try
       {
         // Get Artist name
-        var artists = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries)
-                            .Where(x => !string.IsNullOrWhiteSpace(x))
-                            .Select(s => s.Trim())
-                            .Distinct(StringComparer.CurrentCultureIgnoreCase)
-                            .ToArray();
+        string[] artists = Utils.HandleMultipleKeysToArray(artist);
         if (artists != null)
         {
           foreach (string sartist in artists)
           {
             caFile = string.Empty;
             if (!string.IsNullOrEmpty(Utils.MusicClearArtFolder))
-              caFile = Path.Combine(Utils.MusicClearArtFolder, MediaPortal.Util.Utils.MakeFileName(sartist.Trim())+".png");
+            {
+              caFile = Path.Combine(Utils.MusicClearArtFolder, MediaPortal.Util.Utils.MakeFileName(sartist.Trim()) + ".png");
+            }
             if (!string.IsNullOrEmpty(caFile) && File.Exists(caFile))
+            {
               caFileNames.Add(caFile);
+            }
             //
             bnFile = string.Empty;
             if (!string.IsNullOrEmpty(Utils.MusicBannerFolder))
-              bnFile = Path.Combine(Utils.MusicBannerFolder, MediaPortal.Util.Utils.MakeFileName(sartist.Trim())+".png");
+            {
+              bnFile = Path.Combine(Utils.MusicBannerFolder, MediaPortal.Util.Utils.MakeFileName(sartist.Trim()) + ".png");
+            }
             if (!string.IsNullOrEmpty(bnFile) && File.Exists(bnFile))
+            {
               bnFileNames.Add(bnFile);
+            }
           }
 
           if (caFileNames.Count == 0)
@@ -435,11 +439,7 @@ namespace FanartHandler
       try
       {
         // Get Artist name
-        var artists = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries)
-                            .Where(x => !string.IsNullOrWhiteSpace(x))
-                            .Select(s => s.Trim())
-                            .Distinct(StringComparer.CurrentCultureIgnoreCase)
-                            .ToArray();
+        string[] artists = Utils.HandleMultipleKeysToArray(artist);
         if (artists != null)
         {
           foreach (string sartist in artists)
@@ -528,11 +528,7 @@ namespace FanartHandler
       try
       {
         // Get Artist name
-        var artists = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries)
-                            .Where(x => !string.IsNullOrWhiteSpace(x))
-                            .Select(s => s.Trim())
-                            .Distinct(StringComparer.CurrentCultureIgnoreCase)
-                            .ToArray();
+        string[] artists = Utils.HandleMultipleKeysToArray(artist);
         if (artists != null)
         {
           foreach (string sartist in artists)

@@ -669,9 +669,6 @@ namespace FanartHandler
           {
             if (htAny.Count > 0)
             {
-             // if (iFilePrev == -1)
-             //  Utils.Shuffle(ref htAny);
-
               var htAnyValues = htAny.Values;
               result = Utils.GetFanartFilename(ref iFilePrev, ref sFileNamePrev, ref htAnyValues);
             }
@@ -705,9 +702,6 @@ namespace FanartHandler
           {
             if (htAny.Count > 0)
             {
-             // if (iFilePrev == -1)
-             //  Utils.Shuffle(ref htAny);
-
               var htAnyValues = htAny.Values;
               result = Utils.GetFanartFilename(ref iFilePrev, ref sFileNamePrev, ref htAnyValues);
             }

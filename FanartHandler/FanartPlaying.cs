@@ -42,6 +42,7 @@ namespace FanartHandler
     private Hashtable CurrentArtistsImageNames;
 
     private bool NeedRunScrapper;
+    private bool FanartAvailableArtist;
 
     /// <summary>
     /// Fanart Control Visible
@@ -88,6 +89,7 @@ namespace FanartHandler
       CurrentGenreTag = string.Empty;
 
       FanartAvailable = false;
+      FanartAvailableArtist = false;
       DoShowImageOnePlay = true;
 
       PrevPlayMusic = -1;
@@ -140,12 +142,8 @@ namespace FanartHandler
 
       try
       {
-        var strArray = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries)
-                             .Where(x => !string.IsNullOrWhiteSpace(x))
-                             .Select(s => s.Trim())
-                             .Distinct(StringComparer.CurrentCultureIgnoreCase)
-                             .ToArray();
-        
+        string[] strArray = Utils.HandleMultipleKeysToArray(artist);
+
         // Get Album thumb name for Artists
         if (!string.IsNullOrEmpty(album))
         {
@@ -154,12 +152,17 @@ namespace FanartHandler
           {
             FileName = MediaPortal.Util.Utils.ConvertToLargeCoverArt(FileName);
             if (File.Exists(FileName))
+            {
               if (!PictureList.Contains(FileName))
+              {
                 PictureList.Add(FileName);
+              }
+            }
           }
 
-          // Get Artist name
+          // Get Artist names for Album
           if (strArray != null)
+          {
             foreach (string sartist in strArray)
             {
               // Get Album thumb name
@@ -168,12 +171,18 @@ namespace FanartHandler
               {
                 FileName = MediaPortal.Util.Utils.ConvertToLargeCoverArt(FileName);
                 if (File.Exists(FileName))
+                {
                   if (!PictureList.Contains(FileName))
+                  {
                     PictureList.Add(FileName);
+                  }
+                }
               }
             }
+          }
         }
 
+        // When Album thumbs not found, add Artist thumb to list
         if (PictureList != null && (PictureList.Count <= 0))
         {
           // Get Artist thumb name
@@ -183,14 +192,32 @@ namespace FanartHandler
               PictureList.Add(FileName);
 
           if (strArray != null)
+          {
+            bool haveVarious = false;
             foreach (string sartist in strArray)
             {
+              // Skip Various Artists
+              if (sartist.Equals(Utils.VariousArtists, StringComparison.InvariantCultureIgnoreCase))
+              {
+                haveVarious = true;
+                continue;
+              }
+
               // Get Artist thumb name
               FileName = Path.Combine(Utils.FAHMusicArtists, MediaPortal.Util.Utils.MakeFileName(sartist) + "L.jpg");
               if (File.Exists(FileName))
                 if (!PictureList.Contains(FileName))
                   PictureList.Add(FileName);
             }
+            if (haveVarious && PictureList.Count == 0)
+            {
+              // Add Various Artists
+              FileName = Path.Combine(Utils.FAHMusicArtists, MediaPortal.Util.Utils.MakeFileName(Utils.VariousArtists) + "L.jpg");
+              if (File.Exists(FileName))
+                if (!PictureList.Contains(FileName))
+                  PictureList.Add(FileName);
+            }
+          }
         }
         
         if (PictureList != null && (PictureList.Count > 0))
@@ -252,6 +279,11 @@ namespace FanartHandler
             SetCurrentArtistsImageNames(null);
           }
 
+          if (Utils.AdvancedDebug)
+          {
+            logger.Debug("*** RefreshMusicPlayingProperties: {0} - {1} - {2}", CurrentTrackTag, CurrentAlbumTag, CurrentGenreTag);
+          }
+
           var FileName = string.Empty;
           // My Pictures SlideShow
           if (Utils.UseMyPicturesSlideShow)
@@ -262,23 +294,44 @@ namespace FanartHandler
               FileName = Utils.GetRandomSlideShowImages(ref CurrPlayFanart, ref PrevPlayMusic);
             }
           }
+          // Without Various Artists
+          if (string.IsNullOrEmpty(FileName))
+          {
+            if (CurrentTrackTag.Contains(Utils.VariousArtists, StringComparison.InvariantCultureIgnoreCase))
+            {
+              // Artist without Various Artists
+              string sartist = System.Text.RegularExpressions.Regex.Replace(CurrentTrackTag, Utils.VariousArtists, string.Empty, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+              if (!string.IsNullOrEmpty(sartist))
+              {
+                FileName = GetFilename(sartist, CurrentAlbumTag, ref CurrPlayFanart, ref PrevPlayMusic, Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartScraped, NewArtist, true);
+                FanartAvailableArtist = !string.IsNullOrEmpty(FileName);
+              }
+            }
+          }
+          // All variants include Various Artists
           if (string.IsNullOrEmpty(FileName))
           {
             // Artist
             FileName = GetFilename(CurrentTrackTag, CurrentAlbumTag, ref CurrPlayFanart, ref PrevPlayMusic, Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartScraped, NewArtist, true);
+            FanartAvailableArtist = !string.IsNullOrEmpty(FileName);
             if (string.IsNullOrEmpty(FileName))
             {
               // Genre
               if (!string.IsNullOrEmpty(CurrentGenreTag) && Utils.UseGenreFanart)
-                FileName = GetFilename(Utils.GetGenres(CurrentGenreTag), null,  ref CurrPlayFanart, ref PrevPlayMusic, Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartScraped, NewArtist, true);
+              {
+                FileName = GetFilename(Utils.GetGenres(CurrentGenreTag), null, ref CurrPlayFanart, ref PrevPlayMusic, Utils.Category.MusicFanart, Utils.SubCategory.MusicFanartScraped, NewArtist, true);
+              }
+              // Random
               if (string.IsNullOrEmpty(FileName))
               {
-                // Random
                 FileName = Utils.GetRandomDefaultBackdrop(ref CurrPlayFanart, ref PrevPlayMusic);
               }
             }
           }
-          // logger.Debug("*** RefreshMusicPlayingProperties: " + CurrentTrackTag + " - " + CurrentAlbumTag + " - " + CurrentGenreTag + " | " + (File.Exists(FileName) ? "True" : "False") + " > " + FileName);
+          if (Utils.AdvancedDebug)
+          {
+            logger.Debug("*** RefreshMusicPlayingProperties: " + CurrentTrackTag + " - " + CurrentAlbumTag + " - " + CurrentGenreTag + " | " + (File.Exists(FileName) ? "True" : "False") + " > " + FileName);
+          }
 
           if (!string.IsNullOrEmpty(FileName))
           {
@@ -337,7 +390,10 @@ namespace FanartHandler
 
           if (Utils.ScraperMusicPlaying && (FanartHandlerSetup.Fh.MyScraperNowWorker != null && FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh))
           {
-            ForceRefreshTickCount();
+            if (!FanartAvailableArtist)
+            {
+              ForceRefreshTickCount();
+            }
             SetCurrentArtistsImageNames(null);
             FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh = false;
             // logger.Debug("*** RefreshMusicPlaying: Trigger refresh ...");
@@ -372,6 +428,7 @@ namespace FanartHandler
           else
           {
             FanartAvailable = false;
+            FanartAvailableArtist = false;
           }
         }
         if (rw != null)
@@ -415,10 +472,8 @@ namespace FanartHandler
           {
             // logger.Debug("*** GetFilename: Load new fanarts from DB: " + key + " --- " + (key2 == null ? "null" : key2));
             Utils.GetFanart(ref filenames, key, key2, category, subcategory, isMusic);
-            if (iFilePrev == -1)
-            { 
-              Utils.Shuffle(ref filenames);
-            }
+            Utils.Shuffle(ref filenames);
+
             SetCurrentArtistsImageNames(filenames);
           }
 
@@ -468,6 +523,7 @@ namespace FanartHandler
 
         SetCurrentArtistsImageNames(null);
         FanartAvailable = false;
+        FanartAvailableArtist = false;
         PrevPlayMusic = -1;
         RefreshTickCount = 0;
 

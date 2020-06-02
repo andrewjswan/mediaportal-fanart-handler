@@ -80,6 +80,8 @@ namespace FanartHandler
                                                                    " . "," . "," . "," . "," . "," . "," . "," . "," . "," . ",
                                                                    "  .","  .","  .","  .","  .","  .","  .","  .","  .","  ."};
 
+    public const string VariousArtists = "Various Artists";
+
     public static int MinWResolution;
     public static int MinHResolution;
 
@@ -164,9 +166,12 @@ namespace FanartHandler
     public static int HolidayEaster { get; set; }      // 0 - Auto, 1 - Western, 2 - Eastern
     public static bool CheckFanartForDuplication { get; set; }
     public static bool ReplaceFanartWhenBigger { get; set; }
+    public static bool AddToBlacklist { get; set; }
     public static int DuplicationThreshold; // Default 3
     public static int DuplicationPercentage; // Default 0, maybe 3 ...
     public static bool UseArtistException;
+    public static bool SkipFeatArtist;
+    public static bool AdvancedDebug;
     #endregion
 
     #region Cleanup
@@ -1605,51 +1610,84 @@ namespace FanartHandler
     public static string PatchSql(string s)
     {
       if (string.IsNullOrWhiteSpace(s))
+      {
         return string.Empty;
-      
+      }
       return s.Replace("'", "''");
     }
 
-    public static string HandleMultipleKeysForDBQuery(string inputKey)
+    public static string[] MultipleKeysToDistinctArray(string input, bool defaultPipes)
     {
-      if (string.IsNullOrWhiteSpace(inputKey))
-        return string.Empty;
-
-      var keys = "'" + inputKey.Trim() + "'";
-      var strArray = inputKey.ToLower().
-                              Trim().
-                              Split(PipesArray, StringSplitOptions.RemoveEmptyEntries);
-      var htUnique = new Hashtable();
-
-      foreach (var _key in strArray)
+      if (string.IsNullOrWhiteSpace(input))
       {
-        if (!string.IsNullOrWhiteSpace(_key))
-        {
-          if (!htUnique.Contains(_key))
-          {
-            keys = keys + "," + "'" + _key.Trim() + "'";
-            htUnique.Add(_key, _key);
-          }
-        }
+        return null;
       }
-      htUnique = null;
 
-      return keys;
+      string[] results = input.Split((defaultPipes ? new string[1] { "|" } : PipesArray), StringSplitOptions.RemoveEmptyEntries)
+                              .Where(x => !string.IsNullOrWhiteSpace(x))
+                              .Select(s => s.Trim())
+                              .Distinct(StringComparer.CurrentCultureIgnoreCase)
+                              .ToArray();
+      return results;
     }
 
-    public static string RemoveMPArtistPipes(string s) // ajs: WTF? That this procedure does? And why should she?
+    public static string HandleMultipleKeysToString(string input)
     {
-      if (string.IsNullOrEmpty(s))
+      if (string.IsNullOrWhiteSpace(input))
+      {
         return string.Empty;
-      else
-        return RemoveMPArtistPipe(s);
+      }
+
+      string keys = input.Trim();
+      string[] parts = MultipleKeysToDistinctArray(keys, false);
+      foreach (var part in parts)
+      {
+        keys = keys + "|" + part;
+      }
+
+      string[] results = MultipleKeysToDistinctArray(keys, true);
+      string result = string.Empty;
+      foreach (string str in results)
+      {
+        result = result + (string.IsNullOrEmpty(result) ? string.Empty : "|") + str;
+      }
+      return result;
+    }
+
+    public static string[] HandleMultipleKeysToArray(string input)
+    {
+      if (string.IsNullOrWhiteSpace(input))
+      {
+        return null;
+      }
+
+      string keys = HandleMultipleKeysToString(input);
+      string[] results = MultipleKeysToDistinctArray(keys, true);
+      return results;
+    }
+
+    public static string HandleMultipleKeysForDBQuery(string input)
+    {
+      if (string.IsNullOrWhiteSpace(input))
+      {
+        return string.Empty;
+      }
+
+      string[] results = HandleMultipleKeysToArray(input.ToLower());
+      string result = string.Empty;
+      foreach (string str in results)
+      {
+        result = result + (string.IsNullOrEmpty(result) ? string.Empty : ",") + "'" + str + "'";
+      }
+      return result;
     }
 
     public static string RemoveMPArtistPipe(string s)
     {
       if (string.IsNullOrEmpty(s))
+      {
         return string.Empty;
-
+      }
       s = s.Replace("|", " ").Replace(";", " ");
       s = s.Trim();
       return s;
@@ -2068,6 +2106,10 @@ namespace FanartHandler
       {
         return string.Empty;
       }
+      if (!SkipFeatArtist)
+      {
+        return self;
+      }
       string str = new Regex(@"(.+)\sfeat(\.|\s).+", RegexOptions.IgnoreCase).Replace(self, "$1").Trim();
       return (string.IsNullOrWhiteSpace(str) ? self : str);
     }
@@ -2084,8 +2126,7 @@ namespace FanartHandler
         var iPos = aStrippedArtist.IndexOf(',');
         if (iPos > 0)
         {
-          aStrippedArtist = String.Format("{0} {1}", aStrippedArtist.Substring(iPos + 2),
-                                          aStrippedArtist.Substring(0, iPos));
+          aStrippedArtist = String.Format("{0} {1}", aStrippedArtist.Substring(iPos + 2), aStrippedArtist.Substring(0, iPos));
         }
       }
 
@@ -2814,8 +2855,8 @@ namespace FanartHandler
               while (enumerator.MoveNext())
               {
                 // currSelectedMusicAlbum = enumerator.Current.m_song.Album.Trim();
-                // return RemoveMPArtistPipes(enumerator.Current.m_song.Artist)+"|"+enumerator.Current.m_song.Artist+"|"+enumerator.Current.m_song.AlbumArtist;
-                var _artists = RemoveMPArtistPipes(enumerator.Current.m_song.Artist).Trim();
+                // return RemoveMPArtistPipe(enumerator.Current.m_song.Artist)+"|"+enumerator.Current.m_song.Artist+"|"+enumerator.Current.m_song.AlbumArtist;
+                var _artists = RemoveMPArtistPipe(enumerator.Current.m_song.Artist).Trim();
                 if (!string.IsNullOrEmpty(_artists) && !htArtists.Contains(_artists))
                   htArtists.Add(_artists, _artists);
                 _artists = enumerator.Current.m_song.Artist.Trim();
@@ -2863,13 +2904,13 @@ namespace FanartHandler
           //
           var FoundArtist = (string) null;
           //
-          var SelArtist = MovePrefixToBack(RemoveMPArtistPipes(GetArtistLeftOfMinusSign(selItem)));
+          var SelArtist = MovePrefixToBack(RemoveMPArtistPipe(GetArtistLeftOfMinusSign(selItem)));
           var arrayList = new ArrayList();
           musicDB.GetAllArtists(ref arrayList);
           var index = 0;
           while (index < arrayList.Count)
           {
-            var MPArtist = MovePrefixToBack(RemoveMPArtistPipes(arrayList[index].ToString()));
+            var MPArtist = MovePrefixToBack(RemoveMPArtistPipe(arrayList[index].ToString()));
             if (SelArtist.IndexOf(MPArtist, StringComparison.InvariantCultureIgnoreCase) >= 0)
             {
               FoundArtist = MPArtist;
@@ -2907,7 +2948,7 @@ namespace FanartHandler
             return FoundArtist;
           }
           //
-          var SelArtistWithoutPipes = RemoveMPArtistPipes(SelArtist);
+          var SelArtistWithoutPipes = RemoveMPArtistPipe(SelArtist);
           arrayList = new ArrayList();
           if (musicDB.GetAlbums(3, SelArtistWithoutPipes, ref arrayList))
           {
@@ -2944,11 +2985,11 @@ namespace FanartHandler
             currSelectedMusicAlbum = musicTag.Album.Trim();
 
           if (!string.IsNullOrWhiteSpace(musicTag.Artist))
-            // selArtist = MovePrefixToBack(RemoveMPArtistPipes(musicTag.Artist)).Trim();
-            selArtist = RemoveMPArtistPipes(musicTag.Artist).Trim()+"|"+musicTag.Artist.Trim();
+            // selArtist = MovePrefixToBack(RemoveMPArtistPipe(musicTag.Artist)).Trim();
+            selArtist = RemoveMPArtistPipe(musicTag.Artist).Trim()+"|"+musicTag.Artist.Trim();
           if (!string.IsNullOrWhiteSpace(musicTag.AlbumArtist))
-            // selAlbumArtist = MovePrefixToBack(RemoveMPArtistPipes(musicTag.AlbumArtist)).Trim();
-            selAlbumArtist = RemoveMPArtistPipes(musicTag.AlbumArtist).Trim()+"|"+musicTag.AlbumArtist.Trim();
+            // selAlbumArtist = MovePrefixToBack(RemoveMPArtistPipe(musicTag.AlbumArtist)).Trim();
+            selAlbumArtist = RemoveMPArtistPipe(musicTag.AlbumArtist).Trim()+"|"+musicTag.AlbumArtist.Trim();
 
           // logger.Debug("*** GMAFLC: Selected List: ["+selArtist+"] ["+selAlbumArtist+"]");
           if (!string.IsNullOrWhiteSpace(selArtist))
@@ -2989,8 +3030,9 @@ namespace FanartHandler
               if (DefaultBackdropImages.Count > 0)
               {
                 if (iFilePrev == -1)
+                {
                   Shuffle(ref defaultBackdropImages);
-
+                }
                 var htValues = DefaultBackdropImages.Values;
                 result = GetFanartFilename(ref iFilePrev, ref currFile, ref htValues);
               }
@@ -3019,8 +3061,9 @@ namespace FanartHandler
               if (SlideShowImages.Count > 0)
               {
                 if (iFilePrev == -1)
+                {
                   Shuffle(ref slideshowImages);
-
+                }
                 var htValues = SlideShowImages.Values;
                 result = GetFanartFilename(ref iFilePrev, ref currFile, ref htValues);
               }
@@ -3135,6 +3178,11 @@ namespace FanartHandler
       if (!string.IsNullOrEmpty(result))
       {
         sFileNamePrev = result;
+      }
+
+      if (Utils.AdvancedDebug)
+      {
+        logger.Debug("*** GetFanartFilename: Found: {0}", string.IsNullOrEmpty(result) ? "<none>" : result);
       }
       return result;
     }
@@ -4282,7 +4330,7 @@ namespace FanartHandler
       return false;
     }
 
-    public static bool CheckImageForDuplication(FanartClass key, string filename, string logfilename)
+    public static bool CheckImageForDuplication(FanartClass key, string filename, string logfilename, string url)
     {
       if (!CheckFanartForDuplication)
       {
@@ -4321,6 +4369,10 @@ namespace FanartHandler
                       return false;
                     }
                   }
+                }
+                if (AddToBlacklist)
+                {
+                  DBm.AddImageToBlackList(fanartImage.DiskImage, url);
                 }
                 return true;
               }
@@ -4959,8 +5011,8 @@ namespace FanartHandler
         lang = CultureInfo.CurrentUICulture.EnglishName;
         if (!string.IsNullOrEmpty(lang))
         {
-		  lang = lang.IndexOf(" ") > -1 ? lang.Substring(0,lang.IndexOf(" ")) : lang;
-		}
+          lang = lang.IndexOf(" ") > -1 ? lang.Substring(0,lang.IndexOf(" ")) : lang;
+        }
       }
       if (string.IsNullOrEmpty(lang))
       {
@@ -5099,18 +5151,13 @@ namespace FanartHandler
       {
         return;
       }
-      Pictures = Pictures.Replace(@" / ","|");
+      Pictures = Pictures.Replace(@" / ","|").Replace(@";","|");
 
       // logger.Debug("*** FillFilesList: Pictures: {0} - {1} ", Pictures, PicturesType);
 
-      string[] pipesArray = new string[2] { "|", ";" };
       try
       {
-        var pictures = Pictures.Split(pipesArray, StringSplitOptions.RemoveEmptyEntries)
-                               .Where(x => !string.IsNullOrWhiteSpace(x))
-                               .Select(s => s.Trim())
-                               .Distinct(StringComparer.CurrentCultureIgnoreCase)
-                               .ToArray();
+        var pictures = MultipleKeysToDistinctArray(Pictures, true);
         if (pictures != null)
         {
           string _pictures = string.Empty;
@@ -5162,7 +5209,7 @@ namespace FanartHandler
 
             if (!string.IsNullOrWhiteSpace(_pictures))
             {
-              pictures = _pictures.Split(pipesArray, StringSplitOptions.RemoveEmptyEntries);
+              pictures = MultipleKeysToDistinctArray(_pictures, true);
             }
           }
         }
@@ -5269,7 +5316,7 @@ namespace FanartHandler
     {
       if (!string.IsNullOrWhiteSpace(sGenre))
       {
-        var genres = sGenre.Split(PipesArray, StringSplitOptions.RemoveEmptyEntries);
+        var genres = MultipleKeysToDistinctArray(sGenre, true);
         if (genres != null)
         {
           string _genres = sGenre;
@@ -6215,9 +6262,12 @@ namespace FanartHandler
       HolidayEaster = 0;
       CheckFanartForDuplication = false;
       ReplaceFanartWhenBigger = false;
+      AddToBlacklist = false;
       DuplicationThreshold = 3;
       DuplicationPercentage = 0;
       UseArtistException = false;
+      SkipFeatArtist = false;
+      AdvancedDebug = false;
       #endregion
       #region Cleanup
       CleanUpFanart = false;
@@ -6312,7 +6362,7 @@ namespace FanartHandler
 
       PipesArray = new string[2] { "|", ";" };
 
-      ArtistExceptionList = new List<string> { "Various Artists" };
+      ArtistExceptionList = new List<string> { VariousArtists };
       #endregion
 
       #region Language
@@ -6455,8 +6505,13 @@ namespace FanartHandler
           //
           CheckFanartForDuplication = settings.GetValueAsBool("Duplication", "CheckFanartForDuplication", CheckFanartForDuplication);
           ReplaceFanartWhenBigger = settings.GetValueAsBool("Duplication", "ReplaceFanartWhenBigger", ReplaceFanartWhenBigger);
+          AddToBlacklist = settings.GetValueAsBool("Duplication", "AddToBlacklist", AddToBlacklist);
           Int32.TryParse(settings.GetValueAsString("Duplication", "Threshold", DuplicationThreshold.ToString()), out DuplicationThreshold);
           Int32.TryParse(settings.GetValueAsString("Duplication", "Percentage", DuplicationPercentage.ToString()), out DuplicationPercentage);
+          //
+          SkipFeatArtist = settings.GetValueAsBool("Advanced", "SkipFeatArtist", SkipFeatArtist);
+          //
+          AdvancedDebug = settings.GetValueAsBool("Debug", "AdvancedDebug", AdvancedDebug);
           //
           if (AddAdditionalSeparators)
           {
@@ -6530,6 +6585,10 @@ namespace FanartHandler
       //
       #region Report Settings
       logger.Info("Fanart Handler is using: " + Check(UseFanart) + " Fanart, " + Check(UseArtist) + " Artist Thumbs, " + Check(UseAlbum) + " Album Thumbs, " + Check(UseGenreFanart) + " Genre Fanart, Min: " + MinResolution + ", " + Check(UseAspectRatio) + " Aspect Ratio >= 1.3");
+      if (AdvancedDebug)
+      {
+        logger.Warn("Fanart Handler in Advanced Debug mode!");
+      }
       logger.Debug("Images: " + ScraperMaxImages + " Show: " + ImageInterval + "s Random: " + (MaxRandomFanartImages > 0 ? MaxRandomFanartImages.ToString() : "All"));
       logger.Debug("Scan: " + Check(ScanMusicFoldersForFanart) + " Music Folders for Fanart, RegExp: " + MusicFoldersArtistAlbumRegex);
       logger.Debug("Scraper: " + Check(ScrapeFanart) + " Fanart, " + Check(ScraperMPDatabase) + " MP Databases , " + Check(ScrapeThumbnails) + " Artists Thumb , " + Check(ScrapeThumbnailsAlbum) + " Album Thumb, " + Check(UseMinimumResolutionForDownload) +
@@ -6553,7 +6612,7 @@ namespace FanartHandler
       }
       if (CheckFanartForDuplication)
       {
-        logger.Debug("Duplication: " + Check(CheckFanartForDuplication) + " Threshold: " + DuplicationThreshold + " Percentage: " + DuplicationPercentage + " " + Check(ReplaceFanartWhenBigger) + " Replace when bigger");
+        logger.Debug("Duplication: " + Check(CheckFanartForDuplication) + " Threshold: " + DuplicationThreshold + " Percentage: " + DuplicationPercentage + " " + Check(ReplaceFanartWhenBigger) + " Replace when bigger, " + Check(AddToBlacklist) + " Add to blacklist");
       }
       if (UseAnimated)
       {
@@ -6576,7 +6635,7 @@ namespace FanartHandler
           logger.Debug(" - Fanart.TV: " + Check(MoviesClearArtDownload) + " ClearArt, " + Check(MoviesBannerDownload) + " Banner, " + Check(MoviesCDArtDownload) + " CD, " + Check(MoviesClearLogoDownload) + " ClearLogo");
         }
       }
-      logger.Debug("Artists pipes: [" + string.Join("][", PipesArray) + "], " + Check(AddAdditionalSeparators) + " Add Additional Separators.");
+      logger.Debug("Artists pipes: [" + string.Join("][", PipesArray) + "], " + Check(AddAdditionalSeparators) + " Add Additional Separators. " + Check(SkipFeatArtist) + " Skip feat Artists.");
       if (CleanUpOldFiles)
       {
         logger.Debug("Cleanup old images " + Check(CleanUpOldFiles) + ", " + Check(CleanUpDelete) + " Delete.");
@@ -6656,6 +6715,8 @@ namespace FanartHandler
       string __str = "A'Studio-The BestL.jpg";
       logger.Debug("*** GetArtist: " + Utils.GetArtist(__str, Category.MusicAlbum, SubCategory.MusicAlbumThumbScraped));
       logger.Debug("*** GetAlbum: " + Utils.GetAlbum(__str, Category.MusicAlbum, SubCategory.MusicAlbumThumbScraped));
+      string __str = "Vera Klima feat.Max Mutzke| Vera Klima";
+      logger.Debug("*** GetArtist: " + Utils.GetArtist(__str, Category.MusicFanart, SubCategory.MusicFanartScraped));
       */
 
       #endregion
@@ -6778,6 +6839,7 @@ namespace FanartHandler
           //
           xmlwriter.SetValueAsBool("Duplication", "CheckFanartForDuplication", CheckFanartForDuplication);
           xmlwriter.SetValueAsBool("Duplication", "ReplaceFanartWhenBigger", ReplaceFanartWhenBigger);
+          xmlwriter.SetValueAsBool("Duplication", "AddToBlacklist", AddToBlacklist);
           xmlwriter.SetValue("Duplication", "Threshold", DuplicationThreshold);
           xmlwriter.SetValue("Duplication", "Percentage", DuplicationPercentage);
         }
@@ -7044,12 +7106,12 @@ namespace FanartHandler
       season = UppercaseFirst(season.Trim().ToLower());
 
       try
-	  {
+      {
         Seasons _season = (Seasons)Enum.Parse(typeof(Seasons), season);
       }
       catch
-	  {
-	    return string.Empty;  
+      {
+        return string.Empty;  
       }
 
       return season + weather; 

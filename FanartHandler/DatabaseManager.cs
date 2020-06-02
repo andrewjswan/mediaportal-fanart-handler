@@ -619,7 +619,7 @@ namespace FanartHandler
               FanartTVSeries fs = (FanartTVSeries)key;
               if (!string.IsNullOrEmpty(fs.Seasons))
               {
-                string[] seasons = fs.Seasons.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries);
+                string[] seasons = Utils.MultipleKeysToDistinctArray(fs.Seasons, true);
                 foreach (string season in seasons)
                 {
                   bFlagSeries = bFlagSeries || (type == Utils.FanartTV.SeriesSeasonBanner && Utils.SeriesSeasonBannerDownload && !Utils.FanartTVFileExists(fs.Id, null, season, type));
@@ -1023,26 +1023,25 @@ namespace FanartHandler
                   }
                 }
                 // Pipes Artists
-                string[] artists = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries)
-                                         .Where(x => !string.IsNullOrWhiteSpace(x))
-                                         .Select(s => s.Trim())
-                                         .Distinct(StringComparer.CurrentCultureIgnoreCase)
-                                         .ToArray();
-                foreach (string sartist in artists)
+                string[] artists = Utils.HandleMultipleKeysToArray(artist);
+                if (artists != null)
                 {
-                  if (!sartist.Equals(artist, StringComparison.CurrentCulture))
+                  foreach (string sartist in artists)
                   {
-                    dbartist = Utils.GetArtist(sartist);
-                    htArtist = Utils.UndoArtistPrefix(dbartist).ToUpperInvariant();
-                    if (!htFanart.Contains(htArtist))
+                    if (!sartist.Equals(artist, StringComparison.CurrentCulture))
                     {
-                      if (DoScrapeArtist(new FanartArtist(sartist)) > 0)
+                      dbartist = Utils.GetArtist(sartist);
+                      htArtist = Utils.UndoArtistPrefix(dbartist).ToUpperInvariant();
+                      if (!htFanart.Contains(htArtist))
                       {
-                        htFanart.Add(htArtist, 1);
-                        if (flag && FanartHandlerSetup.Fh.MyScraperNowWorker != null)
+                        if (DoScrapeArtist(new FanartArtist(sartist)) > 0)
                         {
-                          FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh = true;
-                          flag = false;
+                          htFanart.Add(htArtist, 1);
+                          if (flag && FanartHandlerSetup.Fh.MyScraperNowWorker != null)
+                          {
+                            FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh = true;
+                            flag = false;
+                          }
                         }
                       }
                     }
@@ -1187,29 +1186,27 @@ namespace FanartHandler
 
                 // Piped Artists
                 var pipedartist = musicDatabaseAlbums[index].Artist.Trim() + " | " + musicDatabaseAlbums[index].AlbumArtist.Trim();
-                // var chArray = new char[2] { '|', ';' };
-                string[] artists = pipedartist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries)
-                                              .Where(x => !string.IsNullOrWhiteSpace(x))
-                                              .Select(s => s.Trim())
-                                              .Distinct(StringComparer.CurrentCultureIgnoreCase)
-                                              .ToArray();
-                foreach (string sartist in artists)
+                string[] artists = Utils.HandleMultipleKeysToArray(pipedartist);
+                if (artists != null)
                 {
-                  dbartist = Utils.UndoArtistPrefix(Utils.GetArtist(sartist));
-                  htArtistAlbum = dbartist.ToUpperInvariant() + "-" + dbalbum.ToUpperInvariant();
-                  if (!htAlbums.Contains(htArtistAlbum))
+                  foreach (string sartist in artists)
                   {
-                    if (!StopScraper && !Utils.GetIsStopping())
+                    dbartist = Utils.UndoArtistPrefix(Utils.GetArtist(sartist));
+                    htArtistAlbum = dbartist.ToUpperInvariant() + "-" + dbalbum.ToUpperInvariant();
+                    if (!htAlbums.Contains(htArtistAlbum))
                     {
-                      CurrTextBeingScraped = string.Format(Utils.MusicMask, sartist, album);
-                      // logger.Debug("*** 3 "+CurrTextBeingScraped); 
-                      if (DoScrapeAlbumThumbs(new FanartAlbum(sartist, album, idiscs), true, false) > 0)
+                      if (!StopScraper && !Utils.GetIsStopping())
                       {
-                        htAlbums.Add(htArtistAlbum, 1);
+                        CurrTextBeingScraped = string.Format(Utils.MusicMask, sartist, album);
+                        // logger.Debug("*** 3 "+CurrTextBeingScraped); 
+                        if (DoScrapeAlbumThumbs(new FanartAlbum(sartist, album, idiscs), true, false) > 0)
+                        {
+                          htAlbums.Add(htArtistAlbum, 1);
+                        }
                       }
+                      else
+                        break;
                     }
-                    else
-                      break;
                   }
                 }
               }
@@ -1521,26 +1518,25 @@ namespace FanartHandler
                 }
 
                 // Piped Artist
-                string[] artists = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries)
-                                         .Where(x => !string.IsNullOrWhiteSpace(x))
-                                         .Select(s => s.Trim())
-                                         .Distinct(StringComparer.CurrentCultureIgnoreCase)
-                                         .ToArray();
-                foreach (string sartist in artists)
+                string[] artists = Utils.HandleMultipleKeysToArray(artist);
+                if (artists != null)
                 {
-                  if (!StopScraper && !Utils.GetIsStopping())
+                  foreach (string sartist in artists)
                   {
-                    var htArtist = Utils.UndoArtistPrefix(Utils.GetArtist(sartist)).ToUpperInvariant();
-                    if (!htFanart.Contains(htArtist))
+                    if (!StopScraper && !Utils.GetIsStopping())
                     {
-                      if (DoScrapeFanartTV(new FanartArtist(sartist), Utils.FanartTV.MusicBanner, Utils.FanartTV.MusicClearArt) > 0)
+                      var htArtist = Utils.UndoArtistPrefix(Utils.GetArtist(sartist)).ToUpperInvariant();
+                      if (!htFanart.Contains(htArtist))
                       {
-                        htFanart.Add(htArtist, 1);
+                        if (DoScrapeFanartTV(new FanartArtist(sartist), Utils.FanartTV.MusicBanner, Utils.FanartTV.MusicClearArt) > 0)
+                        {
+                          htFanart.Add(htArtist, 1);
+                        }
                       }
                     }
+                    else
+                      break;
                   }
-                  else
-                    break;
                 }
               }
               #region Report
@@ -1665,29 +1661,28 @@ namespace FanartHandler
 
                 // Piped Artists
                 var pipedartist = musicDatabaseAlbums[index].Artist.Trim() + " | " + musicDatabaseAlbums[index].AlbumArtist.Trim();
-                string[] artists = pipedartist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries)
-                                              .Where(x => !string.IsNullOrWhiteSpace(x))
-                                              .Select(s => s.Trim())
-                                              .Distinct(StringComparer.CurrentCultureIgnoreCase)
-                                              .ToArray();
-                foreach (string sartist in artists)
+                string[] artists = Utils.HandleMultipleKeysToArray(pipedartist);
+                if (artists != null)
                 {
-                  string wartist = sartist.Trim();
-                  htArtistAlbum = Utils.UndoArtistPrefix(Utils.GetArtist(wartist)).ToUpperInvariant() + "-" + dbalbum.ToUpperInvariant();
-
-                  if (!StopScraper && !Utils.GetIsStopping())
+                  foreach (string sartist in artists)
                   {
-                    if (!htAlbums.Contains(htArtistAlbum))
+                    string wartist = sartist.Trim();
+                    htArtistAlbum = Utils.UndoArtistPrefix(Utils.GetArtist(wartist)).ToUpperInvariant() + "-" + dbalbum.ToUpperInvariant();
+
+                    if (!StopScraper && !Utils.GetIsStopping())
                     {
-                      CurrTextBeingScraped = string.Format(Utils.MusicMask, wartist, album);
-                      if (DoScrapeFanartTV(new FanartAlbum(wartist, album, idiscs), Utils.FanartTV.MusicCDArt) > 0)
+                      if (!htAlbums.Contains(htArtistAlbum))
                       {
-                        htAlbums.Add(htArtistAlbum, 1);
+                        CurrTextBeingScraped = string.Format(Utils.MusicMask, wartist, album);
+                        if (DoScrapeFanartTV(new FanartAlbum(wartist, album, idiscs), Utils.FanartTV.MusicCDArt) > 0)
+                        {
+                          htAlbums.Add(htArtistAlbum, 1);
+                        }
                       }
                     }
+                    else
+                      break;
                   }
-                  else
-                    break;
                 }
               }
               if (StopScraper || Utils.GetIsStopping())
@@ -2241,17 +2236,18 @@ namespace FanartHandler
               else
                 break;
               // Piped Artists
-              string[] artists = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries)
-                                       .Where(x => !string.IsNullOrWhiteSpace(x))
-                                       .Select(s => s.Trim())
-                                       .Distinct(StringComparer.CurrentCultureIgnoreCase)
-                                       .ToArray();
-              foreach (string sartist in artists)
+              string[] artists = Utils.HandleMultipleKeysToArray(artist);
+              if (artists != null)
               {
-                if (!StopScraper && !Utils.GetIsStopping())
-                  DoScrapeArtistThumbs(new FanartArtist(sartist), onlyMissing);
-                else
-                  break;
+                foreach (string sartist in artists)
+                {
+                  if (!StopScraper && !Utils.GetIsStopping())
+                  {
+                    DoScrapeArtistThumbs(new FanartArtist(sartist), onlyMissing);
+                  }
+                  else
+                    break;
+                }
               }
               ++CurrArtistsBeingScraped;
               checked { ++index; }
@@ -2321,22 +2317,20 @@ namespace FanartHandler
                   }
                 // Piped Artists
                 var pipedartist = musicDatabaseAlbums[index].Artist.Trim() + " | " + musicDatabaseAlbums[index].AlbumArtist.Trim();
-                // var chArray = new char[2] { '|', ';' };
-                string[] artists = pipedartist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries)
-                                              .Where(x => !string.IsNullOrWhiteSpace(x))
-                                              .Select(s => s.Trim())
-                                              .Distinct(StringComparer.CurrentCultureIgnoreCase)
-                                              .ToArray();
-                foreach (string sartist in artists)
+                string[] artists = Utils.HandleMultipleKeysToArray(pipedartist);
+                if (artists != null)
                 {
-                  CurrTextBeingScraped = string.Format(Utils.MusicMask, sartist, album);
-                  dbartist = Utils.UndoArtistPrefix(Utils.GetArtist(sartist));
-                  if (!HasAlbumThumb(dbartist, dbalbum) || !onlyMissing)
+                  foreach (string sartist in artists)
                   {
-                    if (!StopScraper && !Utils.GetIsStopping())
-                      DoScrapeAlbumThumbs(new FanartAlbum(sartist, album, idiscs), false, false);
-                    else
-                      break;
+                    CurrTextBeingScraped = string.Format(Utils.MusicMask, sartist, album);
+                    dbartist = Utils.UndoArtistPrefix(Utils.GetArtist(sartist));
+                    if (!HasAlbumThumb(dbartist, dbalbum) || !onlyMissing)
+                    {
+                      if (!StopScraper && !Utils.GetIsStopping())
+                        DoScrapeAlbumThumbs(new FanartAlbum(sartist, album, idiscs), false, false);
+                      else
+                        break;
+                    }
                   }
                 }
               }
@@ -2412,17 +2406,17 @@ namespace FanartHandler
       try
       {
         logger.Info("--- NowPlaying --- Scrape for Artist(s): " + wartist + (fmp.Album.IsEmpty ? string.Empty : " Album: " + fmp.TrackAlbum + " Year: " + fmp.Album.Year + " Genre: " + fmp.Genre));
-
+        /*
         if (wartist.ToLower().Contains(" and "))
         {
           wartist = wartist + "|" + Regex.Replace(wartist, @"\sand\s", "|", RegexOptions.IgnoreCase);
           logger.Info("--- Updated: Scrape for Artist(s): " + wartist + (fmp.Album.IsEmpty ? string.Empty : " Album: " + fmp.TrackAlbum + " Year: " + fmp.Album.Year + " Genre: " + fmp.Genre));
         }
-        List<string> artists = wartist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries)
-                                      .Where(x => !string.IsNullOrWhiteSpace(x))
-                                      .Select(s => s.Trim())
-                                      .Distinct(StringComparer.CurrentCultureIgnoreCase)
-                                      .ToList();
+        */
+        wartist = wartist + "|" + fmp.TrackArtist + "|" + fmp.TrackAlbumArtist + "|" + fmp.TrackVideoArtist;
+        List<string> artists = Utils.HandleMultipleKeysToArray(wartist).ToList();
+        /*
+        List<string> artists = Utils.HandleMultipleKeysToArray(wartist).ToList();
         if (!fmp.Artist.IsEmpty && !fmp.TrackArtist.Contains("|") && !artists.Contains(fmp.TrackArtist))
         {
           artists.Add(fmp.TrackArtist);
@@ -2435,7 +2429,7 @@ namespace FanartHandler
         {
           artists.Add(fmp.TrackVideoArtist);
         }
-
+        */
         if (!fmp.Album.IsEmpty)
         {
           fmp.Album.CDs = GetDiscTotalAlbumInMPMusicDatabase(fmp.TrackArtist, fmp.TrackAlbumArtist, fmp.TrackAlbum);
@@ -2827,6 +2821,78 @@ namespace FanartHandler
       }
     }
 
+    /// <summary>
+    /// Change Local provider to Online provider and set source for filename
+    /// </summary> 
+    public void SetOnlineProvider(Utils.Category category, Utils.SubCategory subcategory, Utils.Provider provider, string sourcename, string filename, string id)
+    {
+      string sId = string.IsNullOrEmpty(id) ? Utils.PatchSql(filename) : Utils.PatchSql(id);
+      try
+      {
+        string SQL = "UPDATE Image Set Provider = '{0}',  SourcePath = '{1}', Id = '{2}' " +
+                     "WHERE FullPath = '{3}' AND Category = '{4}' AND SubCategory = '{5}' AND Provider = 'Local';";
+        SQL = string.Format(SQL, provider.ToString(), Utils.PatchSql(sourcename), sId, Utils.PatchSql(filename), category.ToString(), subcategory.ToString());
+        lock (lockObject)
+          dbClient.Execute(SQL);
+      }
+      catch (Exception ex)
+      {
+        logger.Error("SetOnlineProvider: " + ex);
+      }
+    }
+
+    #region Blacklist
+
+    public bool CheckForBlackList(string url)
+    {
+      try
+      {
+        string SQL = "SELECT filename FROM Blacklist WHERE onlinename = '" + Utils.PatchSql(url) + "';";
+
+        SQLiteResultSet sqLiteResultSet;
+        lock (lockObject)
+          sqLiteResultSet = dbClient.Execute(SQL);
+
+        return sqLiteResultSet.Rows.Count > 0;
+      }
+      catch (Exception ex)
+      {
+        logger.Error("CheckForBlackList: " + ex);
+      }
+      return false;
+    }
+
+    public void AddImageToBlackList(string filename, string url)
+    {
+      try
+      {
+        string SQL = "INSERT OR IGNORE INTO Blacklist (onlinename, filename) VALUES ('{0}', '{1}');";
+        SQL = string.Format(SQL, Utils.PatchSql(url), Utils.PatchSql(filename));
+        lock (lockObject)
+          dbClient.Execute(SQL);
+      }
+      catch (Exception ex)
+      {
+        logger.Error("AddImageToBlackList: " + ex);
+      }
+    }
+
+    public void DeleteBlackList()
+    {
+      try
+      {
+        string SQL = "DELETE FROM Blacklist;";
+        lock (lockObject)
+          dbClient.Execute(SQL);
+      }
+      catch (Exception ex)
+      {
+        logger.Error("DeleteBlackList: " + ex);
+      }
+    }
+
+    #endregion
+
     #region Delete fanarts ...
     public int DeleteRecordsWhereFileIsMissing()
     {
@@ -3108,20 +3174,18 @@ namespace FanartHandler
               htFanart.Add(htArtist, htArtist);
             }
 
-            // var chArray = new char[2] { '|', ';' };
-            string[] artists = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries)
-                                     .Where(x => !string.IsNullOrWhiteSpace(x))
-                                     .Select(s => s.Trim())
-                                     .Distinct(StringComparer.CurrentCultureIgnoreCase)
-                                     .ToArray();
-            foreach (string sartist in artists)
+            string[] artists = Utils.HandleMultipleKeysToArray(artist);
+            if (artists != null)
             {
-              dbartist = Utils.GetArtist(sartist);
-              htArtist = Utils.UndoArtistPrefix(dbartist.ToLower());
-
-              if (!htFanart.Contains(htArtist))
+              foreach (string sartist in artists)
               {
-                htFanart.Add(htArtist, htArtist);
+                dbartist = Utils.GetArtist(sartist);
+                htArtist = Utils.UndoArtistPrefix(dbartist.ToLower());
+
+                if (!htFanart.Contains(htArtist))
+                {
+                  htFanart.Add(htArtist, htArtist);
+                }
               }
             }
             #region Report
@@ -3263,19 +3327,18 @@ namespace FanartHandler
 
               // Piped Artists
               artist = musicDatabaseAlbums[index].Artist.Trim() + " | " + musicDatabaseAlbums[index].AlbumArtist.Trim();
-              string[] artists = artist.Split(Utils.PipesArray, StringSplitOptions.RemoveEmptyEntries)
-                                       .Where(x => !string.IsNullOrWhiteSpace(x))
-                                       .Select(s => s.Trim())
-                                       .Distinct(StringComparer.CurrentCultureIgnoreCase)
-                                       .ToArray();
-              foreach (string sartist in artists)
+              string[] artists = Utils.HandleMultipleKeysToArray(artist);
+              if (artists != null)
               {
-                dbartist = Utils.UndoArtistPrefix(Utils.GetArtist(sartist));
-                htArtistAlbum = dbartist + "-" + dbalbum;
+                foreach (string sartist in artists)
+                {
+                  dbartist = Utils.UndoArtistPrefix(Utils.GetArtist(sartist));
+                  htArtistAlbum = dbartist + "-" + dbalbum;
 
-                if (!string.IsNullOrEmpty(sartist))
-                  if (!htAlbums.Contains(htArtistAlbum))
-                    htAlbums.Add(htArtistAlbum, htArtistAlbum);
+                  if (!string.IsNullOrEmpty(sartist))
+                    if (!htAlbums.Contains(htArtistAlbum))
+                      htAlbums.Add(htArtistAlbum, htArtistAlbum);
+                }
               }
             }
             #region Report
@@ -4078,7 +4141,10 @@ namespace FanartHandler
                       // 3.7 
                       "((iWidth >= " + Utils.MinWResolution + " AND iHeight >= " + Utils.MinHResolution + (Utils.UseAspectRatio ? " AND Ratio >= 1.3 " : "") + ") OR (iWidth IS NULL AND iHeight IS NULL)) AND " +
                       sqlCategory + ";";
-          // logger.Debug("*** GetFanart: " + SQL);
+          if (Utils.AdvancedDebug)
+          { 
+            logger.Debug("*** GetFanart: " + SQL);
+          }
           lock (lockObject)
             sqLiteResultSet = dbClient.Execute(SQL);
         }
@@ -4093,7 +4159,10 @@ namespace FanartHandler
                                             sqLiteResultSet.GetField(index, 4).Trim(),
                                             sqLiteResultSet.GetField(index, 5).Trim());
           filenames.Add(index, fanartImage);
-          // logger.Debug("*** GetFanart: " + sqLiteResultSet.GetField(index, 2));
+          if (Utils.AdvancedDebug)
+          {
+            logger.Debug("*** GetFanart: " + sqLiteResultSet.GetField(index, 2));
+          }
           checked { ++index; }
         }
 
@@ -4123,7 +4192,7 @@ namespace FanartHandler
       {
         logger.Error("GetFanart: " + ex);
       }
-      // logger.Debug("*** Fanarts: "+filenames.Count);
+      // logger.Debug("*** Fanarts: " + filenames.Count);
       return filenames;
     }
 
@@ -5610,20 +5679,18 @@ namespace FanartHandler
 
       try
       {
-        strCategory = strCategory.Replace(@", ","|").Replace(@" / ","|");
-        string[] pipesArray = new string[1] { "|" };
-        var collections = strCategory.Split(pipesArray, StringSplitOptions.RemoveEmptyEntries)
-                                     .Where(x => !string.IsNullOrWhiteSpace(x))
-                                     .Select(s => s.Trim())
-                                     .Distinct(StringComparer.CurrentCultureIgnoreCase)
-                                     .ToArray();
-        foreach (string collection in collections)
+        strCategory = strCategory.Replace(@", ","|").Replace(@" / ","|").Replace(";","|");
+        string[] collections = Utils.MultipleKeysToDistinctArray(strCategory, true);
+        if (collections != null)
         {
-          ArrayList movieList = new ArrayList();
-          GetMoviesByCollectionOrUserGroup(collection, ref movieList, bCollection);
-          if (movieList != null && movieList.Count > 0)
+          foreach (string collection in collections)
           {
-            movies.AddRange(movieList);
+            ArrayList movieList = new ArrayList();
+            GetMoviesByCollectionOrUserGroup(collection, ref movieList, bCollection);
+            if (movieList != null && movieList.Count > 0)
+            {
+              movies.AddRange(movieList);
+            }
           }
         }
       }
@@ -8090,6 +8157,70 @@ namespace FanartHandler
             }
           }
           #endregion
+
+          #region 4.8
+          if (DBMinor == 7)
+          {
+            DBMinor++;
+            logger.Info("Bump Database version to {0}.{1}", DBMajor, DBMinor);
+          }
+          #endregion
+
+          #region 4.9
+
+          if (DBMinor == 8)
+          {
+            DBMinor++;
+            logger.Info("Upgrading Database to version {0}.{1}", DBMajor, DBMinor);
+
+            #region Maintenance
+            MaintenanceDBMain();
+            logger.Info("Upgrading: Step [1]: Finished.");
+            #endregion
+
+            #region Create table
+            logger.Debug("Upgrading: Step [2]: Create Blacklist...");
+            lock (lockObject)
+              dbClient.Execute("CREATE TABLE [Blacklist] (" +
+                                            "[OnlineName] TEXT COLLATE NOCASE NOT NULL UNIQUE, " +
+                                            "[FileName] TEXT COLLATE NOCASE NOT NULL);");
+            #endregion
+
+            #region Indexes
+            logger.Debug("Upgrading: Step [3]: Create Indexes...");
+            lock (lockObject)
+            {
+              dbClient.Execute("CREATE INDEX [idx_OnlineName] ON [Blacklist] ([OnlineName]);");
+              dbClient.Execute("CREATE INDEX [idx_FileName] ON [Blacklist] ([FileName]);");
+            }
+            #endregion
+
+            #region Trigger
+            logger.Debug("Upgrading: Step [4]: Create Triggers...");
+            lock (lockObject)
+            {
+              dbClient.Execute("CREATE TRIGGER Delete_Blacklisted AFTER DELETE ON Image FOR EACH ROW " +
+                               "BEGIN " +
+                               "  DELETE FROM Blacklist WHERE FileName = OLD.FullPath; " +
+                               "END;");
+            }
+            #endregion
+
+            #region Maintenance
+            MaintenanceDBMain();
+            #endregion
+
+            if (SetVersionDBMain(DBMajor, DBMinor))
+            {
+              logger.Info("Upgraded Database to version {0}.{1}", DBMajor, DBMinor);
+            }
+            else
+            {
+              throw new ArgumentException("Upgrade database", "Set Version failed!");
+            }
+          }
+          #endregion
+
         }
         #endregion
 

@@ -182,9 +182,9 @@ namespace FanartHandler
           album = Album.Trim();
 
         if (!string.IsNullOrEmpty(Artist))
-          Artist = Utils.RemoveMPArtistPipes(Artist).Trim()+"|"+Artist.Trim();
+          Artist = Utils.RemoveMPArtistPipe(Artist).Trim()+"|"+Artist.Trim();
         if (!string.IsNullOrEmpty(AlbumArtist))
-          AlbumArtist = Utils.RemoveMPArtistPipes(AlbumArtist).Trim()+"|"+AlbumArtist.Trim();
+          AlbumArtist = Utils.RemoveMPArtistPipe(AlbumArtist).Trim()+"|"+AlbumArtist.Trim();
 
         if (!string.IsNullOrEmpty(Artist))
           if (!string.IsNullOrEmpty(AlbumArtist))

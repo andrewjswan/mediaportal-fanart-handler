@@ -279,8 +279,7 @@ namespace FanartHandler
           if (newArtist || filenames == null || filenames.Count == 0)
           {
             Utils.GetFanart(ref filenames, key, key2, category, Utils.SubCategory.None, false);
-            if (iFilePrev == -1)
-              Utils.Shuffle(ref filenames);
+            Utils.Shuffle(ref filenames);
 
             SetCurrentSelectedImageNames(filenames, category);
           }

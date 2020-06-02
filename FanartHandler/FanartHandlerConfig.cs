@@ -210,6 +210,8 @@ namespace FanartHandler
     private CheckBox cbReplaceFanartWhenBigger;
     private Label label9;
     private CheckBox CheckBoxIgnoreMinimumResolutionForMusicThumbDownload;
+    private CheckBox cbAddImageToBlackList;
+    private Button btnDeleteBlacklisted;
     private Button button12;
 
     static FanartHandlerConfig()
@@ -377,9 +379,33 @@ namespace FanartHandler
       checkBoxThumbsDisabled.Checked = Utils.DisableMPTumbsForRandom;
       checkBoxEnableMusicFanart.Checked = Utils.UseSelectedMusicFanart;
       checkBoxEnableVideoFanart.Checked = Utils.UseSelectedOtherFanart;
-      comboBoxInterval.SelectedItem = Utils.ImageInterval;
-      comboBoxMinResolution.SelectedItem = Utils.MinResolution;
-      comboBoxMaxImages.SelectedItem = Utils.ScraperMaxImages;
+      if (comboBoxInterval.FindStringExact(Utils.ImageInterval) != -1)
+      {
+        comboBoxInterval.SelectedIndex = comboBoxInterval.FindStringExact(Utils.ImageInterval);
+      }
+      else
+      {
+        comboBoxInterval.Items.Add(Utils.ImageInterval);
+        comboBoxInterval.SelectedIndex = comboBoxInterval.FindStringExact(Utils.ImageInterval);
+      }
+      if (comboBoxMinResolution.FindStringExact(Utils.MinResolution) != -1)
+      {
+        comboBoxMinResolution.SelectedIndex = comboBoxMinResolution.FindStringExact(Utils.MinResolution);
+      }
+      else
+      {
+        comboBoxMinResolution.Items.Add(Utils.MinResolution);
+        comboBoxMinResolution.SelectedIndex = comboBoxMinResolution.FindStringExact(Utils.MinResolution);
+      }
+      if (comboBoxMaxImages.FindStringExact(Utils.ScraperMaxImages) != -1)
+      {
+        comboBoxMaxImages.SelectedIndex = comboBoxMaxImages.FindStringExact(Utils.ScraperMaxImages);
+      }
+      else
+      {
+        comboBoxMaxImages.Items.Add(Utils.ScraperMaxImages);
+        comboBoxMaxImages.SelectedIndex = comboBoxMaxImages.FindStringExact(Utils.ScraperMaxImages);
+      }
       checkBoxScraperMusicPlaying.Checked = Utils.ScraperMusicPlaying;
       checkBoxEnableScraperMPDatabase.Checked = Utils.ScraperMPDatabase;
       comboBoxScraperInterval.SelectedItem = Utils.ScraperInterval;
@@ -430,6 +456,7 @@ namespace FanartHandler
       //
       cbCheckFanartForDuplication.Checked = Utils.CheckFanartForDuplication;
       cbReplaceFanartWhenBigger.Checked = Utils.ReplaceFanartWhenBigger;
+      cbAddImageToBlackList.Checked = Utils.AddToBlacklist;
       udThreshold.Value = Utils.DuplicationThreshold;
       udPercentage.Value = Utils.DuplicationPercentage;
       //
@@ -533,6 +560,7 @@ namespace FanartHandler
       //
       Utils.CheckFanartForDuplication = cbCheckFanartForDuplication.Checked;
       Utils.ReplaceFanartWhenBigger = cbReplaceFanartWhenBigger.Checked;
+      Utils.AddToBlacklist = cbAddImageToBlackList.Checked;
       Utils.DuplicationThreshold = (int)udThreshold.Value;
       Utils.DuplicationPercentage = (int)udPercentage.Value;
       //
@@ -2423,6 +2451,7 @@ namespace FanartHandler
       this.tabControl6 = new System.Windows.Forms.TabControl();
       this.tabPage21 = new System.Windows.Forms.TabPage();
       this.groupBox10 = new System.Windows.Forms.GroupBox();
+      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload = new System.Windows.Forms.CheckBox();
       this.tabPage22 = new System.Windows.Forms.TabPage();
       this.button11 = new System.Windows.Forms.Button();
       this.button8 = new System.Windows.Forms.Button();
@@ -2476,6 +2505,8 @@ namespace FanartHandler
       this.gbExceptions = new System.Windows.Forms.GroupBox();
       this.cbUseArtistException = new System.Windows.Forms.CheckBox();
       this.gbDuplication = new System.Windows.Forms.GroupBox();
+      this.btnDeleteBlacklisted = new System.Windows.Forms.Button();
+      this.cbAddImageToBlackList = new System.Windows.Forms.CheckBox();
       this.label9 = new System.Windows.Forms.Label();
       this.cbReplaceFanartWhenBigger = new System.Windows.Forms.CheckBox();
       this.lblPercentage = new System.Windows.Forms.Label();
@@ -2535,7 +2566,6 @@ namespace FanartHandler
       this.toolStripStatusLabelToolTip = new System.Windows.Forms.ToolStripStatusLabel();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.timerProgress = new System.Windows.Forms.Timer(this.components);
-      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload = new System.Windows.Forms.CheckBox();
       this.tabPage13.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.dataGridViewUserManaged)).BeginInit();
@@ -3218,6 +3248,19 @@ namespace FanartHandler
       this.groupBox10.TabStop = false;
       this.groupBox10.Text = "Music Thumbnail Options";
       // 
+      // CheckBoxIgnoreMinimumResolutionForMusicThumbDownload
+      // 
+      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.AutoSize = true;
+      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.Checked = true;
+      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.Location = new System.Drawing.Point(12, 141);
+      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.Name = "CheckBoxIgnoreMinimumResolutionForMusicThumbDownload";
+      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.Size = new System.Drawing.Size(415, 20);
+      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.TabIndex = 4;
+      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.Text = "Ignore Minimum Resolution for Music Thumbnails when Download";
+      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.UseVisualStyleBackColor = true;
+      // 
       // tabPage22
       // 
       this.tabPage22.Controls.Add(this.button11);
@@ -3867,7 +3910,7 @@ namespace FanartHandler
       // 
       this.gbExceptions.Controls.Add(this.cbUseArtistException);
       this.gbExceptions.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.gbExceptions.Location = new System.Drawing.Point(6, 325);
+      this.gbExceptions.Location = new System.Drawing.Point(6, 362);
       this.gbExceptions.Name = "gbExceptions";
       this.gbExceptions.Size = new System.Drawing.Size(900, 54);
       this.gbExceptions.TabIndex = 3;
@@ -3891,6 +3934,8 @@ namespace FanartHandler
       // 
       // gbDuplication
       // 
+      this.gbDuplication.Controls.Add(this.btnDeleteBlacklisted);
+      this.gbDuplication.Controls.Add(this.cbAddImageToBlackList);
       this.gbDuplication.Controls.Add(this.label9);
       this.gbDuplication.Controls.Add(this.cbReplaceFanartWhenBigger);
       this.gbDuplication.Controls.Add(this.lblPercentage);
@@ -3901,10 +3946,34 @@ namespace FanartHandler
       this.gbDuplication.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.gbDuplication.Location = new System.Drawing.Point(6, 195);
       this.gbDuplication.Name = "gbDuplication";
-      this.gbDuplication.Size = new System.Drawing.Size(900, 127);
+      this.gbDuplication.Size = new System.Drawing.Size(900, 161);
       this.gbDuplication.TabIndex = 2;
       this.gbDuplication.TabStop = false;
       this.gbDuplication.Text = "Duplication Options";
+      // 
+      // btnDeleteBlacklisted
+      // 
+      this.btnDeleteBlacklisted.Location = new System.Drawing.Point(649, 118);
+      this.btnDeleteBlacklisted.Name = "btnDeleteBlacklisted";
+      this.btnDeleteBlacklisted.Size = new System.Drawing.Size(236, 32);
+      this.btnDeleteBlacklisted.TabIndex = 9;
+      this.btnDeleteBlacklisted.Text = "Delete Blacklisted Images";
+      this.btnDeleteBlacklisted.UseVisualStyleBackColor = true;
+      this.btnDeleteBlacklisted.Click += new System.EventHandler(this.btnDeleteBlacklisted_Click);
+      // 
+      // cbAddImageToBlackList
+      // 
+      this.cbAddImageToBlackList.AutoSize = true;
+      this.cbAddImageToBlackList.Checked = true;
+      this.cbAddImageToBlackList.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.cbAddImageToBlackList.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.cbAddImageToBlackList.Location = new System.Drawing.Point(9, 126);
+      this.cbAddImageToBlackList.Name = "cbAddImageToBlackList";
+      this.cbAddImageToBlackList.Size = new System.Drawing.Size(167, 20);
+      this.cbAddImageToBlackList.TabIndex = 8;
+      this.cbAddImageToBlackList.Text = "Add Images to Blacklist";
+      this.toolTip.SetToolTip(this.cbAddImageToBlackList, "Check this option if you want add duplication images to blacklist");
+      this.cbAddImageToBlackList.UseVisualStyleBackColor = true;
       // 
       // label9
       // 
@@ -4622,19 +4691,6 @@ namespace FanartHandler
       this.timerProgress.Interval = 500;
       this.timerProgress.Tick += new System.EventHandler(this.timerProgress_Tick);
       // 
-      // CheckBoxIgnoreMinimumResolutionForMusicThumbDownload
-      // 
-      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.AutoSize = true;
-      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.Checked = true;
-      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.Location = new System.Drawing.Point(12, 141);
-      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.Name = "CheckBoxIgnoreMinimumResolutionForMusicThumbDownload";
-      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.Size = new System.Drawing.Size(415, 20);
-      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.TabIndex = 4;
-      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.Text = "Ignore Minimum Resolution for Music Thumbnails when Download";
-      this.CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.UseVisualStyleBackColor = true;
-      // 
       // FanartHandlerConfig
       // 
       this.ClientSize = new System.Drawing.Size(979, 562);
@@ -4738,6 +4794,12 @@ namespace FanartHandler
       comboBoxMaxImages.Items.Add("6");
       comboBoxMaxImages.Items.Add("8");
       comboBoxMaxImages.Items.Add("10");
+      comboBoxMaxImages.Items.Add("15");
+      comboBoxMaxImages.Items.Add("20");
+      comboBoxMaxImages.Items.Add("25");
+      comboBoxMaxImages.Items.Add("30");
+      comboBoxMaxImages.Items.Add("40");
+      comboBoxMaxImages.Items.Add("50");
       //
       comboBoxScraperInterval.Enabled = true;
       comboBoxScraperInterval.Items.Clear();
@@ -4932,6 +4994,11 @@ namespace FanartHandler
       }
 
       Utils.DBm.DeleteDummys();
+    }
+
+    private void btnDeleteBlacklisted_Click(object sender, EventArgs e)
+    {
+      Utils.DBm.DeleteBlackList();
     }
   }
 

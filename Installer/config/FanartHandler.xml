@@ -39,11 +39,18 @@
     <entry name="sep0"> &amp; </entry>
     <entry name="sep1"> feat </entry>
     <entry name="sep2"> feat. </entry>
-    <entry name="sep3"> and </entry>
-    <entry name="sep4"> и </entry>
-    <entry name="sep5"> und </entry>
-    <entry name="sep6"> et </entry>
-    <entry name="sep7">,</entry>
+    <entry name="sep3"> featuring </entry>
+    <entry name="sep4"> pres </entry>
+    <entry name="sep5"> pres. </entry>
+    <entry name="sep6"> presents </entry>
+    <entry name="sep7"> vs </entry>
+    <entry name="sep8"> vs. </entry>
+    <entry name="sep9"> versus </entry>
+    <entry name="sep10"> and </entry>
+    <entry name="sep11"> и </entry>
+    <entry name="sep12"> und </entry>
+    <entry name="sep13"> et </entry>
+    <entry name="sep14">,</entry>
   </section>
   <section name="Providers">
     <entry name="UseFanartTV">yes</entry>
