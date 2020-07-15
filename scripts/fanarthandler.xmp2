@@ -791,13 +791,12 @@ ajs</Value>
        * push fanart for selected music or movie
        * push random images from selected folders</ExtensionDescription>
     <VersionDescription>Cosmetic ...
-Fixes:
-If Fanart was turned off, he was not checked for duplicate. Change GetFanartFilename (add prev picture check) ...
-Trigger refresh when fanart download from FanartTv site
+Small Fixes...
+
 </VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-{VERSION}.MPE1</OnlineLocation>
-    <ReleaseDate>2020-05-13T15:04:24</ReleaseDate>
+    <ReleaseDate>2020-07-15T15:04:24</ReleaseDate>
     <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios,animated</Tags>
     <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
     <Params>
