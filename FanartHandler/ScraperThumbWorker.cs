@@ -16,6 +16,14 @@ namespace FanartHandler
   {
     private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
+    private bool work;
+
+    public bool Work
+    {
+      get { return work; }
+      set { work = value; }
+    }
+
     static ScraperThumbWorker()
     {
     }
@@ -34,6 +42,8 @@ namespace FanartHandler
         {
           return;
         }
+
+        work = true;
 
         Utils.IsScraping = true;
         Utils.WaitForDB();        
@@ -66,6 +76,8 @@ namespace FanartHandler
 
     internal void OnRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
     {
+      work = false;
+
       try
       {
         Utils.ReleaseDelayStop("FanartHandlerSetup-ThumbScraper");

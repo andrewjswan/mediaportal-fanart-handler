@@ -19,6 +19,7 @@ namespace FanartHandler
     private string artist;
     private string genre;
 
+    private bool work;
     private bool triggerRefresh;
 
     public string Artist
@@ -45,6 +46,12 @@ namespace FanartHandler
       set { triggerRefresh = value; }
     }
 
+    public bool Work
+    {
+      get { return work; }
+      set { work = value; }
+    }
+
     static ScraperNowWorker()
     {
     }
@@ -63,6 +70,8 @@ namespace FanartHandler
         {
           return;
         }
+
+        work = true;
 
         Utils.IsScraping = true;
         Utils.WaitForDB();
@@ -158,6 +167,8 @@ namespace FanartHandler
 
     internal void OnRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
     {
+      work = false;
+
       // logger.Debug("*** ScraperNowPlaying: OnRunWorkerCompleted ...");
       try
       {

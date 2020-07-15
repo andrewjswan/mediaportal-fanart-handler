@@ -4803,26 +4803,31 @@ namespace FanartHandler
     internal static bool SetPropertyCache(string property, string cat, string key, Logo logoType, ref List<string> sFileNames, ref Hashtable PicturesCache)
     {
       if (string.IsNullOrWhiteSpace(property))
+      {
         return false;
+      }
 
       bool flag = false;
       string _key = key + logoType;
       try
       {
         var _picname = string.Empty;
-        if (ContainsID(PicturesCache, _key))
+        lock (Locker)
         {
-          _picname = (string)PicturesCache[_key];
-          // logger.Debug("*** Picture " + cat + ": " + _key + ", load from cache ..." + _picname);
-          flag = true;
-        }
-        else if (sFileNames.Count > 0)
-        {
-          _picname = Logos.BuildConcatImage(cat, sFileNames, logoType == Logo.Vertical);
-          if (!string.IsNullOrEmpty(_picname) && AddOtherPicturesToCache)
+          if (ContainsID(PicturesCache, _key))
           {
-            PicturesCache.Add(_key, _picname);
+            _picname = (string)PicturesCache[_key];
+            // logger.Debug("*** Picture " + cat + ": " + _key + ", load from cache ..." + _picname);
             flag = true;
+          }
+          else if (sFileNames.Count > 0)
+          {
+            _picname = Logos.BuildConcatImage(cat, sFileNames, logoType == Logo.Vertical);
+            if (!string.IsNullOrEmpty(_picname) && AddOtherPicturesToCache)
+            {
+              PicturesCache.Add(_key, _picname);
+              flag = true;
+            }
           }
         }
         SetProperty(property, _picname);
@@ -5357,7 +5362,7 @@ namespace FanartHandler
       {
         try
         {
-          // logger.Debug("*** " + sLine.ToLower(CultureInfo.InvariantCulture).RemoveDiacritics() + " - " + value.Key.ToString());
+          // logger.Debug("*** " + sLine.ToLower(CultureInfo.InvariantCulture).RemoveDiacritics() + " - " + value.Key.ToString() + " -> " + value.Value.ToString());
           if (sLine.ToLower(CultureInfo.InvariantCulture).RemoveDiacritics().Contains(value.Key.ToString(), true))
           {
             result = result + (string.IsNullOrWhiteSpace(result) ? string.Empty : "|") + value.Value; 
@@ -5365,6 +5370,7 @@ namespace FanartHandler
         }
         catch { }
       }
+      // logger.Debug("*** " + sLine + " -> " + result);
       return result;
     }
 
@@ -6595,7 +6601,7 @@ namespace FanartHandler
                    " Delete if less then " + MinResolution + ", " + Check(UseHighDefThumbnails) + " High Def Thumbs, Max Count [" + ScraperMaxImages + "]");
       if (IgnoreMinimumResolutionForMusicThumbDownload)
       {
-        logger.Debug("Scraper: " + Check(IgnoreMinimumResolutionForMusicThumbDownload) + "Ignore Minimum Resolution For Music Thumb Download");
+        logger.Debug("Scraper: " + Check(IgnoreMinimumResolutionForMusicThumbDownload) + " Ignore Minimum Resolution For Music Thumb Download");
       }
       if (UseArtistException)
       {

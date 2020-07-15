@@ -119,11 +119,16 @@
     <character name="howl's moving castle">steampunk</character>
     <character name="the illusionist">steampunk</character>
     <character name="doctor who">tardis</character>
-    <character name="s.h.i.e.l.d.">s h i e l d</character>
+    <character name="s.h.i.e.l.d">s-h-i-e-l-d</character>
+    <character name="s agents of s">s-h-i-e-l-d</character>
+    <character name="snowpiercer">snow|train</character>
+    <character name="ice age">snow|nut</character>
+    <character name="frozen">snow</character>
     <!-- UKRAINE -->
     <character name="киборги">ukraine|helmet</character>
     <!-- RUSSIAN -->
     <character name="мост">bridge</character>
+    <character name="снежная королева">snow</character>
     <!-- GERMAN -->
     <character name="liebesgrüsse aus moskau">007</character>
     <character name="feuerball">007</character>

@@ -630,16 +630,22 @@ namespace FanartHandler
         {
             Utils.DBm.TotArtistsBeingScraped = Total;
             Utils.DBm.CurrArtistsBeingScraped = 0.0;
-            if (FanartHandlerSetup.Fh.MyScraperNowWorker != null)
+            if (FanartHandlerSetup.Fh.MyScraperNowWorker != null && FanartHandlerSetup.Fh.MyScraperNowWorker.Work)
+            {
               FanartHandlerSetup.Fh.MyScraperNowWorker.ReportProgress(0, Utils.Progress.Start);
+            }
         }
         else
         {
             ++Utils.DBm.CurrArtistsBeingScraped;
-            if (Utils.DBm.CurrArtistsBeingScraped > Utils.DBm.TotArtistsBeingScraped) 
+            if (Utils.DBm.CurrArtistsBeingScraped > Utils.DBm.TotArtistsBeingScraped)
+            {
               Utils.DBm.TotArtistsBeingScraped = Utils.DBm.CurrArtistsBeingScraped;
-            if (Utils.DBm.TotArtistsBeingScraped > 0.0 && FanartHandlerSetup.Fh.MyScraperNowWorker != null)
+            }
+            if (Utils.DBm.TotArtistsBeingScraped > 0.0 && FanartHandlerSetup.Fh.MyScraperNowWorker != null && FanartHandlerSetup.Fh.MyScraperNowWorker.Work)
+            {
               FanartHandlerSetup.Fh.MyScraperNowWorker.ReportProgress(Utils.Percent(Utils.DBm.CurrArtistsBeingScraped, Utils.DBm.TotArtistsBeingScraped), Utils.Progress.Progress);
+            }
         }
       }
     }

@@ -17,6 +17,13 @@ namespace FanartHandler
     private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
     public bool TriggerRefresh { get; set; }
+    private bool work;
+
+    public bool Work
+    {
+      get { return work; }
+      set { work = value; }
+    }
 
     static ScraperWorker()
     {
@@ -36,6 +43,8 @@ namespace FanartHandler
         {
           return;
         }
+
+        work = true;
 
         Utils.IsScraping = true;
         Utils.WaitForDB();
@@ -203,6 +212,8 @@ namespace FanartHandler
 
     internal void OnRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
     {
+      work = false;
+
       try
       {
         Utils.ReleaseDelayStop("FanartHandlerSetup-StartScraper");

@@ -928,8 +928,10 @@ namespace FanartHandler
         var flag = true;
 
         Utils.SetProperty("scraper.task", Translation.ScrapeInitial + " - " + Translation.ScrapeInitializing);
-        if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+        if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+        {
           FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.Start);
+        }
 
         #region Artists
         if (Utils.ScrapeFanart && !StopScraper && !Utils.GetIsStopping())
@@ -938,8 +940,10 @@ namespace FanartHandler
           CurrArtistsBeingScraped = 0.0;
 
           Utils.SetProperty("scraper.task", Translation.ScrapeInitial + " - " + Translation.FHArtists);
-          if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+          if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+          {
             FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.Start);
+          }
 
           ArrayList musicDatabaseArtists = new ArrayList();
           m_db.GetAllArtists(ref musicDatabaseArtists);
@@ -1050,8 +1054,10 @@ namespace FanartHandler
                 //
                 #region Report
                 ++CurrArtistsBeingScraped;
-                if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+                if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+                {
                   FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(Utils.Percent(CurrArtistsBeingScraped, TotArtistsBeingScraped), Utils.Progress.Progress);
+                }
                 #endregion
                 checked { ++index; }
               }
@@ -1059,8 +1065,10 @@ namespace FanartHandler
                 break;
             }
             #region Report
-            if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+            if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+            {
               FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(100, Utils.Progress.Done);
+            }
             #endregion
             logger.Debug("InitialScrape done for Artists.");
           }
@@ -1078,8 +1086,10 @@ namespace FanartHandler
           TotArtistsBeingScraped = 0.0;
 
           Utils.SetProperty("scraper.task", Translation.ScrapeInitial + " - " + Translation.FHAlbums);
-          if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+          if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+          {
             FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.Start);
+          }
 
           List<AlbumInfo>  musicDatabaseAlbums = new List<AlbumInfo>();
           m_db.GetAllAlbums(ref musicDatabaseAlbums);
@@ -1212,14 +1222,18 @@ namespace FanartHandler
               }
               #region Report
               ++CurrArtistsBeingScraped;
-              if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+              if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+              {
                 FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(Utils.Percent(CurrArtistsBeingScraped, TotArtistsBeingScraped), Utils.Progress.Progress);
+              }
               #endregion
               checked { ++index; }
             }
             #region Report
-            if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+            if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+            {
               FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(100, Utils.Progress.Done);
+            }
             #endregion
             logger.Debug("InitialScrape done for Artists - Albums.");
           }
@@ -1235,8 +1249,10 @@ namespace FanartHandler
           TotArtistsBeingScraped = 0.0;
 
           Utils.SetProperty("scraper.task", Translation.ScrapeInitial + " - " + Translation.FHVideos);
-          if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+          if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+          {
             FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.Start);
+          }
 
           ArrayList videoDatabaseMovies = new ArrayList();
           VideoDatabase.GetMovies(ref videoDatabaseMovies);
@@ -1305,14 +1321,18 @@ namespace FanartHandler
               }
               #region Report
               ++CurrArtistsBeingScraped;
-              if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+              if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+              {
                 FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(Utils.Percent(CurrArtistsBeingScraped, TotArtistsBeingScraped), Utils.Progress.Progress);
+              }
               #endregion
               checked { ++index; }
             }
             #region Report
-            if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+            if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+            {
               FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(100, Utils.Progress.Done);
+            }
             #endregion
             logger.Debug("InitialScrape done for Movies.");
           }
@@ -1330,8 +1350,10 @@ namespace FanartHandler
           TotArtistsBeingScraped = 0.0;
 
           Utils.SetProperty("scraper.task", Translation.ScrapeInitial + " - " + Translation.FHCollections);
-          if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+          if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+          {
             FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.Start);
+          }
 
           ArrayList videoDatabaseMovies = new ArrayList();
           VideoDatabase.GetCollections(videoDatabaseMovies);
@@ -1383,14 +1405,18 @@ namespace FanartHandler
               }
               #region Report
               ++CurrArtistsBeingScraped;
-              if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+              if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+              {
                 FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(Utils.Percent(CurrArtistsBeingScraped, TotArtistsBeingScraped), Utils.Progress.Progress);
+              }
               #endregion
               checked { ++index; }
             }
             #region Report
-            if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+            if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+            {
               FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(100, Utils.Progress.Done);
+            }
             #endregion
             logger.Debug("InitialScrape done for Movies (Collections).");
           }
@@ -1430,8 +1456,10 @@ namespace FanartHandler
       }
 
       Utils.SetProperty("scraper.task", Translation.ScrapeInitialFanart + " - " + Translation.ScrapeInitializing);
-      if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+      if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+      {
         FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.Start);
+      }
 
       string strDateTwoWeeksAgo = DateTime.Today.AddDays(-14.0).ToString(dbDateFormat, CultureInfo.CurrentCulture);
 
@@ -1445,8 +1473,10 @@ namespace FanartHandler
           TotArtistsBeingScraped = 0.0;
 
           Utils.SetProperty("scraper.task", Translation.ScrapeInitialFanart + " - " + Translation.FHArtists);
-          if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+          if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+          {
             FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.Start);
+          }
 
           ArrayList musicDatabaseArtists = new ArrayList();
           m_db.GetAllArtists(ref musicDatabaseArtists);
@@ -1541,15 +1571,19 @@ namespace FanartHandler
               }
               #region Report
               ++CurrArtistsBeingScraped;
-              if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+              if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+              {
                 FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(Utils.Percent(CurrArtistsBeingScraped, TotArtistsBeingScraped), Utils.Progress.Progress);
+              }
               #endregion
               // logger.Debug("*** {0}/{1}", CurrArtistsBeingScraped, TotArtistsBeingScraped);
               checked { ++index; }
             }
             #region Report
-            if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+            if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+            {
               FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(100, Utils.Progress.Done);
+            }
             #endregion
             logger.Debug(Text + "done for Artists.");
           }
@@ -1565,8 +1599,10 @@ namespace FanartHandler
           TotArtistsBeingScraped = 0.0;
 
           Utils.SetProperty("scraper.task", Translation.ScrapeInitialFanart + " - " + Translation.FHAlbums);
-          if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+          if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+          {
             FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.Start);
+          }
 
           List<AlbumInfo> musicDatabaseAlbums = new List<AlbumInfo>();
           m_db.GetAllAlbums(ref musicDatabaseAlbums);
@@ -1692,14 +1728,18 @@ namespace FanartHandler
 
               #region Report
               ++CurrArtistsBeingScraped;
-              if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+              if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+              {
                 FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(Utils.Percent(CurrArtistsBeingScraped, TotArtistsBeingScraped), Utils.Progress.Progress);
+              }
               #endregion
               checked { ++index; }
             }
             #region Report
-            if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+            if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+            {
               FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(100, Utils.Progress.Done);
+            }
             #endregion
             logger.Debug(Text + "done for Artists - Albums.");
           }
@@ -1717,8 +1757,10 @@ namespace FanartHandler
           TotArtistsBeingScraped = 0.0;
 
           Utils.SetProperty("scraper.task", Translation.ScrapeInitialFanart + " - " + Translation.FHVideos);
-          if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+          if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+          {
             FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.Start);
+          }
 
           ArrayList videoDatabaseMovies = new ArrayList();
           VideoDatabase.GetMovies(ref videoDatabaseMovies);
@@ -1789,15 +1831,19 @@ namespace FanartHandler
               }
               #region Report
               ++CurrArtistsBeingScraped;
-              if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+              if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+              {
                 FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(Utils.Percent(CurrArtistsBeingScraped, TotArtistsBeingScraped), Utils.Progress.Progress);
+              }
               #endregion
               // logger.Debug("*** {0}/{1}", CurrArtistsBeingScraped, TotArtistsBeingScraped);
               checked { ++index; }
             }
             #region Report
-            if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+            if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+            {
               FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(100, Utils.Progress.Done);
+            }
             #endregion
             logger.Debug(Text + "done for Movies.");
           }
@@ -1813,8 +1859,10 @@ namespace FanartHandler
           TotArtistsBeingScraped = 0.0;
 
           Utils.SetProperty("scraper.task", Translation.ScrapeInitialFanart + " - " + Translation.FHCollections);
-          if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+          if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+          {
             FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.Start);
+          }
 
           ArrayList videoDatabaseMovies = new ArrayList();
           VideoDatabase.GetCollections(videoDatabaseMovies);
@@ -1866,14 +1914,18 @@ namespace FanartHandler
               }
               #region Report
               ++CurrArtistsBeingScraped;
-              if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+              if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+              {
                 FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(Utils.Percent(CurrArtistsBeingScraped, TotArtistsBeingScraped), Utils.Progress.Progress);
+              }
               #endregion
               checked { ++index; }
             }
             #region Report
-            if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+            if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+            {
               FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(100, Utils.Progress.Done);
+            }
             #endregion
             logger.Debug("InitialScrape done for Movies (Collections).");
           }
@@ -1891,8 +1943,10 @@ namespace FanartHandler
           TotArtistsBeingScraped = 0.0;
 
           Utils.SetProperty("scraper.task", Translation.ScrapeInitialFanart + " - " + Translation.FHSeries);
-          if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+          if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+          {
             FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.Start);
+          }
 
           var tvsDatabaseSeries = UtilsTVSeries.GetTVSeries(Utils.Category.TVSeries, Utils.SubCategory.TVSeriesScraped);
 
@@ -1947,14 +2001,18 @@ namespace FanartHandler
                 }
                 #region Report
                 ++CurrArtistsBeingScraped;
-                if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+                if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+                {
                   FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(Utils.Percent(CurrArtistsBeingScraped, TotArtistsBeingScraped), Utils.Progress.Progress);
+                }
                 #endregion
               }
             }
             #region Report
-            if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+            if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+            {
               FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(100, Utils.Progress.Done);
+            }
             #endregion
             logger.Debug(Text + "done for Series.");
           }
@@ -1970,8 +2028,10 @@ namespace FanartHandler
           TotArtistsBeingScraped = 0.0;
 
           Utils.SetProperty("scraper.task", Translation.ScrapeInitialFanart + " - " + Translation.FHLabels);
-          if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+          if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+          {
             FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.Start);
+          }
 
           var SQL = "SELECT DISTINCT mbid, name " +
                       "FROM Labels " + 
@@ -2018,14 +2078,18 @@ namespace FanartHandler
               }
               #region Report
               ++CurrArtistsBeingScraped;
-              if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+              if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+              {
                 FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(Utils.Percent(CurrArtistsBeingScraped, TotArtistsBeingScraped), Utils.Progress.Progress);
+              }
               #endregion
               checked { ++i; }
             }
             #region Report
-            if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+            if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+            {
               FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(100, Utils.Progress.Done);
+            }
             #endregion
             logger.Debug(Text + "done for Music Record Labels.");
           }
@@ -2062,8 +2126,10 @@ namespace FanartHandler
       }
 
       Utils.SetProperty("scraper.task", Translation.ScrapeInitialAnimated + " - " + Translation.ScrapeInitializing);
-      if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+      if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+      {
         FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.Start);
+      }
 
       string strDateTwoWeeksAgo = DateTime.Today.AddDays(-14.0).ToString(dbDateFormat, CultureInfo.CurrentCulture);
 
@@ -2081,8 +2147,10 @@ namespace FanartHandler
           TotArtistsBeingScraped = 0.0;
 
           Utils.SetProperty("scraper.task", Translation.ScrapeInitialAnimated + " - " + Translation.FHVideos);
-          if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+          if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+          {
             FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.Start);
+          }
 
           ArrayList videoDatabaseMovies = new ArrayList();
           logger.Debug(Text + "Add MyVideo movies...");
@@ -2154,15 +2222,19 @@ namespace FanartHandler
               }
               #region Report
               ++CurrArtistsBeingScraped;
-              if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+              if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+              {
                 FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(Utils.Percent(CurrArtistsBeingScraped, TotArtistsBeingScraped), Utils.Progress.Progress);
+              }
               #endregion
               // logger.Debug("*** {0}/{1}", CurrArtistsBeingScraped, TotArtistsBeingScraped);
               checked { ++index; }
             }
             #region Report
-            if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+            if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+            {
               FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(100, Utils.Progress.Done);
+            }
             #endregion
             logger.Debug(Text + "done for Movies.");
           }
@@ -3109,13 +3181,17 @@ namespace FanartHandler
         TotArtistsBeingScraped = 0.0;
 
         Utils.SetProperty("scraper.task", Translation.CleanupImages + " - " + Translation.ScrapeInitializing);
-        if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+        if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+        {
           FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.Start);
+        }
 
         #region Artists
         Utils.SetProperty("scraper.task", Translation.CleanupImages + " - " + Translation.FHArtists);
-        if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+        if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+        {
           FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.Start);
+        }
 
         ArrayList musicDatabaseArtists = new ArrayList();
         m_db.GetAllArtists(ref musicDatabaseArtists);
@@ -3190,8 +3266,10 @@ namespace FanartHandler
             }
             #region Report
             ++CurrArtistsBeingScraped;
-            if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+            if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+            {
               FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(Utils.Percent(CurrArtistsBeingScraped, TotArtistsBeingScraped), Utils.Progress.Progress);
+            }
             #endregion
             checked { ++index; }
 
@@ -3237,8 +3315,10 @@ namespace FanartHandler
               }
               #region Report
               ++CurrArtistsBeingScraped;
-              if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+              if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+              {
                 FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(Utils.Percent(CurrArtistsBeingScraped, TotArtistsBeingScraped), Utils.Progress.Progress);
+              }
               #endregion
               checked { ++num; }
 
@@ -3248,8 +3328,10 @@ namespace FanartHandler
               }
             }
           #region Report
-          if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+          if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+          {
             FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(100, Utils.Progress.Done);
+          }
           #endregion
           logger.Debug("Cleanup images: Done for Artists.");
         }
@@ -3261,8 +3343,10 @@ namespace FanartHandler
         TotArtistsBeingScraped = 0.0;
 
         Utils.SetProperty("scraper.task", Translation.CleanupImages + " - " + Translation.FHAlbums);
-        if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+        if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+        {
           FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.Start);
+        }
 
         List<AlbumInfo> musicDatabaseAlbums = new List<AlbumInfo>();
         m_db.GetAllAlbums(ref musicDatabaseAlbums);
@@ -3343,8 +3427,10 @@ namespace FanartHandler
             }
             #region Report
             ++CurrArtistsBeingScraped;
-            if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+            if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+            {
               FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(Utils.Percent(CurrArtistsBeingScraped, TotArtistsBeingScraped), Utils.Progress.Progress);
+            }
             #endregion
             checked { ++index; }
 
@@ -3386,8 +3472,10 @@ namespace FanartHandler
               }
               #region Report
               ++CurrArtistsBeingScraped;
-              if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+              if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+              {
                 FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(Utils.Percent(CurrArtistsBeingScraped, TotArtistsBeingScraped), Utils.Progress.Progress);
+              }
               #endregion
               checked { ++i; }
 
@@ -3397,8 +3485,10 @@ namespace FanartHandler
               }
             }
           #region Report
-          if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+          if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+          {
             FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(100, Utils.Progress.Done);
+          }
           #endregion
           logger.Debug("Cleanup images: Done for Artists - Albums.");
         }
@@ -3410,8 +3500,10 @@ namespace FanartHandler
         TotArtistsBeingScraped = 0.0;
 
         Utils.SetProperty("scraper.task", Translation.CleanupImages + " - " + Translation.FHVideos);
-        if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+        if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+        {
           FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.Start);
+        }
 
         ArrayList videoDatabaseMovies = new ArrayList();
         VideoDatabase.GetMovies(ref videoDatabaseMovies);
@@ -3458,8 +3550,10 @@ namespace FanartHandler
 
             #region Report
             ++CurrArtistsBeingScraped;
-            if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+            if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+            {
               FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(Utils.Percent(CurrArtistsBeingScraped, TotArtistsBeingScraped), Utils.Progress.Progress);
+            }
             #endregion
             checked { ++index; }
 
@@ -3479,8 +3573,10 @@ namespace FanartHandler
 
             #region Report
             ++CurrArtistsBeingScraped;
-            if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+            if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+            {
               FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(Utils.Percent(CurrArtistsBeingScraped, TotArtistsBeingScraped), Utils.Progress.Progress);
+            }
             #endregion
 
             if (StopScraper || Utils.GetIsStopping())
@@ -3499,8 +3595,10 @@ namespace FanartHandler
 
             #region Report
             ++CurrArtistsBeingScraped;
-            if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+            if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+            {
               FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(Utils.Percent(CurrArtistsBeingScraped, TotArtistsBeingScraped), Utils.Progress.Progress);
+            }
             #endregion
 
             if (StopScraper || Utils.GetIsStopping())
@@ -3541,8 +3639,10 @@ namespace FanartHandler
               }
               #region Report
               ++CurrArtistsBeingScraped;
-              if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+              if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+              {
                 FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(Utils.Percent(CurrArtistsBeingScraped, TotArtistsBeingScraped), Utils.Progress.Progress);
+              }
               #endregion
               checked { ++num; }
 
@@ -3552,8 +3652,10 @@ namespace FanartHandler
               }
             }
           #region Report
-          if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+          if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+          {
             FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(100, Utils.Progress.Done);
+          }
           #endregion
           logger.Debug("Cleanup images: Done for Videos.");
         }
@@ -3587,8 +3689,10 @@ namespace FanartHandler
           TotArtistsBeingScraped = 0.0;
 
           Utils.SetProperty("scraper.task", Translation.CleanupFanartImages + " - " + Translation.FHArtists);
-          if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+          if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+          {
             FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.Start);
+          }
 
           logger.Debug("Extra: Music Artists - Not implemented...");
           #endregion
@@ -3597,8 +3701,10 @@ namespace FanartHandler
           TotArtistsBeingScraped = 0.0;
 
           Utils.SetProperty("scraper.task", Translation.CleanupFanartImages + " - " + Translation.FHAlbums);
-          if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+          if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+          {
             FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.Start);
+          }
 
           // ....Add("cd.png");
 
@@ -3609,8 +3715,10 @@ namespace FanartHandler
           TotArtistsBeingScraped = 0.0;
 
           Utils.SetProperty("scraper.task", Translation.CleanupFanartImages + " - " + Translation.FHVideos);
-          if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+          if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+          {
             FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.Start);
+          }
 
           logger.Debug("Extra: Fanart.TV Movies...");
           ArrayList videoDatabaseMovies = new ArrayList();
@@ -3631,8 +3739,10 @@ namespace FanartHandler
           {
             CurrArtistsBeingScraped = 0.0;
             TotArtistsBeingScraped = (float)checked(videoDatabaseMovies.Count);
-            if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+            if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+            {
               FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.Progress);
+            }
 
             logger.Debug("Extra: Fanart.TV Movies found {0}", videoDatabaseMovies.Count);
             List<string> movieList = new List<string>();
@@ -3664,16 +3774,20 @@ namespace FanartHandler
               }
               #region Report
               ++CurrArtistsBeingScraped;
-              if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+              if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+              {
                 FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(Utils.Percent(CurrArtistsBeingScraped, TotArtistsBeingScraped), Utils.Progress.Progress);
+              }
               #endregion
               checked { ++index; }
             }
 
             if (movieList.Count > 0 && !Utils.GetIsStopping())
             {
-              if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+              if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+              {
                 FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.LongProgress);
+              }
 
               // ClearArt
               FindAndDeleteExtraFiles(Utils.MoviesClearArtFolder, "*.png", movieList, true);
@@ -3688,8 +3802,10 @@ namespace FanartHandler
               FindAndDeleteExtraFiles(Utils.MoviesCDArtFolder, "*.png", movieList, true);
             }
             #region Report
-            if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+            if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+            {
               FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(100, Utils.Progress.Done);
+            }
             #endregion
             logger.Debug("Extra: Fanart.TV Movies... Done.");
           }
@@ -3699,8 +3815,10 @@ namespace FanartHandler
           TotArtistsBeingScraped = 0.0;
 
           Utils.SetProperty("scraper.task", Translation.CleanupFanartImages + " - " + Translation.FHVideos);
-          if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+          if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+          {
             FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.Start);
+          }
 
           logger.Debug("Extra: Fanart.TV Movies (Collection)...");
           videoDatabaseMovies = new ArrayList();
@@ -3710,8 +3828,10 @@ namespace FanartHandler
           {
             CurrArtistsBeingScraped = 0.0;
             TotArtistsBeingScraped = (float)checked(videoDatabaseMovies.Count);
-            if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+            if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+            {
               FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.Progress);
+            }
 
             logger.Debug("Extra: Fanart.TV Movies (Collection) found {0}", videoDatabaseMovies.Count);
             List<string> movieList = new List<string>();
@@ -3739,16 +3859,20 @@ namespace FanartHandler
               }
               #region Report
               ++CurrArtistsBeingScraped;
-              if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+              if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+              {
                 FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(Utils.Percent(CurrArtistsBeingScraped, TotArtistsBeingScraped), Utils.Progress.Progress);
+              }
               #endregion
               checked { ++index; }
             }
 
             if (movieList.Count > 0 && !Utils.GetIsStopping())
             {
-              if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+              if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+              {
                 FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.LongProgress);
+              }
 
               // ClearArt
               FindAndDeleteExtraFiles(Utils.MoviesCollectionClearArtFolder, "*.png", movieList, true);
@@ -3763,8 +3887,10 @@ namespace FanartHandler
               FindAndDeleteExtraFiles(Utils.MoviesCollectionCDArtFolder, "*.png", movieList, true);
             }
             #region Report
-            if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+            if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+            {
               FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(100, Utils.Progress.Done);
+            }
             #endregion
             logger.Debug("Extra: Fanart.TV Movies (Collection)... Done.");
           }
@@ -3774,8 +3900,10 @@ namespace FanartHandler
           TotArtistsBeingScraped = 0.0;
 
           Utils.SetProperty("scraper.task", Translation.CleanupFanartImages + " - " + Translation.FHSeries);
-          if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+          if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+          {
             FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.Start);
+          }
 
           logger.Debug("Extra: TV-Series - Not implemented...");
           #endregion
@@ -3788,8 +3916,10 @@ namespace FanartHandler
           TotArtistsBeingScraped = 0.0;
 
           Utils.SetProperty("scraper.task", Translation.CleanupAnimatedImages + " - " + Translation.FHVideos);
-          if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+          if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+          {
             FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.Start);
+          }
 
           logger.Debug("Extra: Animated Movies...");
           // Movies
@@ -3812,8 +3942,10 @@ namespace FanartHandler
             logger.Debug("Extra: Animated Movies found {0}...", videoDatabaseMovies.Count);
             CurrArtistsBeingScraped = 0.0;
             TotArtistsBeingScraped = (float)checked(videoDatabaseMovies.Count);
-            if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+            if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+            {
               FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.Progress);
+            }
 
             List<string> movieList = new List<string>();
 
@@ -3844,16 +3976,20 @@ namespace FanartHandler
               }
               #region Report
               ++CurrArtistsBeingScraped;
-              if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+              if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+              {
                 FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(Utils.Percent(CurrArtistsBeingScraped, TotArtistsBeingScraped), Utils.Progress.Progress);
+              }
               #endregion
               checked { ++index; }
             }
 
             if (movieList.Count > 0 && !Utils.GetIsStopping())
             {
-              if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+              if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+              {
                 FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.LongProgress);
+              }
 
               // Poster
               FindAndDeleteExtraFiles(Utils.AnimatedMoviesPosterFolder, "*.gif", movieList, true);
@@ -3863,8 +3999,10 @@ namespace FanartHandler
             }
           }
           #region Report
-          if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+          if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+          {
             FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(100, Utils.Progress.Done);
+          }
           #endregion
           logger.Debug("Extra: Animated Movies... Done.");
         }
@@ -3912,8 +4050,10 @@ namespace FanartHandler
         {
           if (report)
           {
-            if (FanartHandlerSetup.Fh.MyScraperWorker != null)
+            if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
+            {
               FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(i, Utils.Progress.LongProgress);
+            }
           }
 
           string filename = folder + files[i];
@@ -4327,7 +4467,7 @@ namespace FanartHandler
           {
             lock (lockObject)
               dbClient.Execute("UPDATE Image " +
-                               "SET MBID = '" + sqlMBID + "', " +
+                               "SET MBID = '" + sqlMBID + "' " +
                                "WHERE Key1 = '" + sqlKey1 + "' AND " +
                                      "Key2 = '" + sqlKey2 + "' AND " +
                                      "TRIM(MBID) = '';");
@@ -5181,7 +5321,7 @@ namespace FanartHandler
       }
       catch (Exception ex)
       {
-        logger.Error("DeleteDummyItem: " + ex);
+        logger.Error("ClearLocalItem: " + ex);
       }
     }
 
