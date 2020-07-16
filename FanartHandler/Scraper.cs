@@ -34,7 +34,7 @@ namespace FanartHandler
 
     private static Regex[] StackRegExpressions = null;
     // private static bool _getLastfmCover = true;
-    private static string DefUserAgent = "Mozilla/5.0 (compatible; MSIE 8.0; Win32)";  // "Mozilla/5.0 (Windows; U; MSIE 7.0; Windows NT 6.0; en-US)";
+    private static string DefUserAgent = "Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36";
     
     // TODO
     // http://photography.nationalgeographic.com/photography/photo-of-the-day
@@ -4297,7 +4297,10 @@ namespace FanartHandler
             wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
             wc.UseDefaultCredentials = true;
             wc.Headers.Add("User-Agent", DefUserAgent);
-            
+            if (sourceFilename.Contains("gitlab.com"))
+            {
+              wc.Headers.Add("Referer","https://gitlab.com/andrewjswan");
+            }
             var uri = new Uri(sourceFilename);
             var servicePoint = ServicePointManager.FindServicePoint(uri);
             servicePoint.Expect100Continue = false;
