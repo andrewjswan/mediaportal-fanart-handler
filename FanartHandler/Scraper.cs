@@ -599,6 +599,11 @@ namespace FanartHandler
         }
       }
 
+      if (Utils.AdvancedDebug)
+      {
+        logger.Debug("*** GetMusicBrainzXML: Artist: {0}, Album: {1}, URL: {2}", artist, string.IsNullOrEmpty(album) ? "-" : album, URL);
+      }
+
       var html = string.Empty;
       GetHtml(URL, out html);
       return html;
