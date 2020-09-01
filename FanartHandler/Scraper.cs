@@ -8,6 +8,8 @@ using FHNLog.NLog;
 
 using MediaPortal.ExtensionMethods;
 
+using Newtonsoft.Json;
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -3602,26 +3604,42 @@ namespace FanartHandler
     #endregion
 
     #region CoverArtArchive.org
-    // Begin: Extract CoverArtArchive Front Thumb  URL
-    public string GetCoverArtFrontThumbURL (string AInputString)
+
+    public class CoverArtImage
     {
-      const string URLRE = @"Front[^\}]+?image.[^\""]+?\""(.+?)\""";
+        public bool approved { get; set; } 
+        public bool front { get; set; } 
+        public long id { get; set; } 
+        public string image { get; set; } 
+        public List<string> types { get; set; } 
+    }
+
+    public class CoverArtResult
+    {
+        public List<CoverArtImage> images { get; set; } 
+        public string release { get; set; } 
+    }
+
+    // Begin: Extract CoverArtArchive Front Thumb  URL
+    public string GetCoverArtFrontThumbURL (string json)
+    {
       var Result = string.Empty;         
-
-      if (string.IsNullOrEmpty(AInputString))
-        return Result;
-
-      Regex ru = new Regex(URLRE,RegexOptions.IgnoreCase);
-      MatchCollection mcu = ru.Matches(AInputString);
-      foreach(Match mu in mcu)
+      if (string.IsNullOrEmpty(json))
       {
-        Result = mu.Groups[1].Value.ToString();
-        if (Result.Length > 10)
+        return Result;
+      }
+
+      CoverArtResult Images = JsonConvert.DeserializeObject<CoverArtResult>(json);
+      foreach(CoverArtImage image in Images.images)
+      {
+        if (image.front)
         {
+          Result = image.image;
           logger.Debug("CoverArtArchive: Extract Front Thumb URL: " + Result);
           break;
         }
       }
+
       return Result;
     }
     // End: Extract CoverArtArchive Front Thumb  URL
@@ -3698,7 +3716,7 @@ namespace FanartHandler
             ExternalAccess.InvokeScraperCompleted(category.ToString(), subcategory.ToString(), dbartist);
           }
         }
-        logger.Debug("CoverArtArchive: Find thumbnail for "+Method+" complete. Found: "+num+" pictures.");
+        logger.Debug("CoverArtArchive: Find thumbnail for " + Method + " complete. Found: " + num + " pictures.");
         return num;
       }
       catch (Exception ex)
@@ -3708,6 +3726,7 @@ namespace FanartHandler
       return 0;
     }
     // End: CoverArtArchive Get Tumbnails for Artist/Album
+
     #endregion
 
     #region Label
