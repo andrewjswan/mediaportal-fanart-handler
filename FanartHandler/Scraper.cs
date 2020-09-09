@@ -423,11 +423,20 @@ namespace FanartHandler
         return Result;
       }
 
+      if (Utils.AdvancedDebug)
+      {
+        logger.Debug("*** ExtractMID: XML: {0}", AInputString);
+      }
+
       Regex ru = new Regex(URLRE,RegexOptions.IgnoreCase);
       MatchCollection mcu = ru.Matches(AInputString);
       foreach(Match mu in mcu)
       {
         Result = mu.Groups[1].Value.ToString();
+        if (Utils.AdvancedDebug)
+        {
+          logger.Debug("*** ExtractMID: Match: {0}", Result);
+        }
         if (Result.Length > 10)
         {
           logger.Debug("MusicBrainz: Extract ID: " + Result);
