@@ -3426,5 +3426,229 @@ Small Fixes...
       </ProjectSettings>
       <IsSkin>false</IsSkin>
     </PackageClass>
+    <PackageClass>
+      <Version>2.0</Version>
+      <Groups>
+        <Items>
+          <GroupItem Name="Default">
+            <DisplayName>Default</DisplayName>
+            <DefaulChecked>true</DefaulChecked>
+            <Description>Default</Description>
+            <Files>
+              <Items />
+            </Files>
+          </GroupItem>
+          <GroupItem Name="Images">
+            <DisplayName>Images</DisplayName>
+            <DefaulChecked>true</DefaulChecked>
+            <Description>Images</Description>
+            <Files>
+              <Items />
+            </Files>
+          </GroupItem>
+          <GroupItem Name="Language">
+            <DisplayName>Language</DisplayName>
+            <DefaulChecked>true</DefaulChecked>
+            <Description>Language</Description>
+            <Files>
+              <Items />
+            </Files>
+          </GroupItem>
+          <GroupItem Name="Skin images">
+            <DisplayName>Skin images</DisplayName>
+            <DefaulChecked>true</DefaulChecked>
+            <Description>Skin images</Description>
+            <Files>
+              <Items />
+            </Files>
+          </GroupItem>
+          <GroupItem Name="Awards">
+            <DisplayName>Awards</DisplayName>
+            <DefaulChecked>true</DefaulChecked>
+            <Description>Awards</Description>
+            <Files>
+              <Items />
+            </Files>
+          </GroupItem>
+          <GroupItem Name="Genres">
+            <DisplayName>Genres</DisplayName>
+            <DefaulChecked>true</DefaulChecked>
+            <Description>Genres</Description>
+            <Files>
+              <Items />
+            </Files>
+          </GroupItem>
+          <GroupItem Name="Studios">
+            <DisplayName>Studios</DisplayName>
+            <DefaulChecked>true</DefaulChecked>
+            <Description>Studios</Description>
+            <Files>
+              <Items />
+            </Files>
+          </GroupItem>
+          <GroupItem Name="Libraries">
+            <DisplayName>Libraries</DisplayName>
+            <DefaulChecked>true</DefaulChecked>
+            <Description>Libraries</Description>
+            <Files>
+              <Items />
+            </Files>
+          </GroupItem>
+          <GroupItem Name="Scripts">
+            <DisplayName>Scripts</DisplayName>
+            <DefaulChecked>true</DefaulChecked>
+            <Description>Scripts</Description>
+            <Files>
+              <Items />
+            </Files>
+          </GroupItem>
+        </Items>
+      </Groups>
+      <Sections>
+        <Items />
+      </Sections>
+      <Dependencies>
+        <Items>
+          <DependencyItem>
+            <Type>MediaPortal</Type>
+            <Id />
+            <MinVersion>
+              <Major>1</Major>
+              <Minor>1</Minor>
+              <Build>6</Build>
+              <Revision>27644</Revision>
+            </MinVersion>
+            <MaxVersion>
+              <Major>1</Major>
+              <Minor>1</Minor>
+              <Build>6</Build>
+              <Revision>27644</Revision>
+            </MaxVersion>
+            <WarnOnly>false</WarnOnly>
+            <Message>This version of FanartHandler requires MediaPortal 1.25 Pre</Message>
+            <Name>MediaPortal</Name>
+          </DependencyItem>
+          <DependencyItem>
+            <Type>Skin</Type>
+            <Id />
+            <MinVersion>
+              <Major>1</Major>
+              <Minor>4</Minor>
+              <Build>0</Build>
+              <Revision>0</Revision>
+            </MinVersion>
+            <MaxVersion>
+              <Major>1</Major>
+              <Minor>4</Minor>
+              <Build>0</Build>
+              <Revision>0</Revision>
+            </MaxVersion>
+            <WarnOnly>true</WarnOnly>
+            <Message>Requires Skin version 1.4.0.0 to 1.4.0.0.</Message>
+            <Name>Skin</Name>
+          </DependencyItem>
+          <DependencyItem>
+            <Type>Installer</Type>
+            <Id />
+            <MinVersion>
+              <Major>1</Major>
+              <Minor>24</Minor>
+              <Build>100</Build>
+              <Revision>0</Revision>
+            </MinVersion>
+            <MaxVersion>
+              <Major>1</Major>
+              <Minor>999</Minor>
+              <Build>999</Build>
+              <Revision>999</Revision>
+            </MaxVersion>
+            <WarnOnly>false</WarnOnly>
+            <Message>This version of FanartHandler requires MediaPortal 1.25 Pre</Message>
+            <Name>Installer</Name>
+          </DependencyItem>
+        </Items>
+      </Dependencies>
+      <PluginDependencies>
+        <Items>
+          <PluginDependencyItem AssemblyName="FanartHandler.dll">
+            <CompatibleVersion>
+              <Items>
+                <CompatibleVersionItem>
+                  <MinRequiredVersion>1.1.6.27644</MinRequiredVersion>
+                  <DesignedForVersion>1.1.6.27644</DesignedForVersion>
+                </CompatibleVersionItem>
+              </Items>
+            </CompatibleVersion>
+            <SubSystemsUsed>
+              <Items />
+            </SubSystemsUsed>
+          </PluginDependencyItem>
+        </Items>
+      </PluginDependencies>
+      <GeneralInfo>
+        <Name>Fanart Handler</Name>
+        <Id>814a6918-0183-4323-a3b4-c00fac11b4f6</Id>
+        <Author>ajs (maintained by yoavain, original by cul8er)</Author>
+        <HomePage>https://github.com/yoavain/mediaportal-fanart-handler</HomePage>
+        <ForumPage>http://forum.team-mediaportal.com/fanart-handler-535/</ForumPage>
+        <UpdateUrl>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/scripts/fanarthandler.xml</UpdateUrl>
+        <Version>
+          <Major>4</Major>
+          <Minor>0</Minor>
+          <Build>3</Build>
+          <Revision>305</Revision>
+        </Version>
+        <ExtensionDescription>Fanart Handler is a plugin for MediaPortal (MP). The plugin basically supports;
+    * Search and download music artist fanart or artist and album thumbnails (scrape) from the fanart.tv, htbackdrops, last.fm, coverartarchive site.
+       * for all artists stored in your MP music database.
+       * for any artist currently being played (on the fly).
+
+    * Push fanart that you store on your local harddrive to the current used MP skin.
+       * push fanart for now played music
+       * push fanart for selected music or movie
+       * push random images from selected folders</ExtensionDescription>
+        <VersionDescription>Fix DB Upgrade
+Add 1.27Pre support for MBID
+</VersionDescription>
+        <DevelopmentStatus>Stable</DevelopmentStatus>
+        <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-4.0.3.305.mpe1</OnlineLocation>
+        <ReleaseDate>2020-12-20T17:51:42.74282+02:00</ReleaseDate>
+        <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios,animated</Tags>
+        <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
+        <Params>
+          <Items>
+            <SectionParam Name="Online Icon">
+              <Value>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/FanartHandler_Icon.png</Value>
+              <ValueType>String</ValueType>
+              <Description>The icon file of the package stored online (jpg,png,bmp)</Description>
+            </SectionParam>
+            <SectionParam Name="Configuration file">
+              <Value>%Plugins%\process\fanarthandler.dll</Value>
+              <ValueType>Template</ValueType>
+              <Description>The file used to configure the extension.
+ If have .exe extension the will be executed
+ If have .dll extension used like MP plugin configuration</Description>
+            </SectionParam>
+            <SectionParam Name="Online Screenshots">
+              <Value>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshots/screenshot01.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshots/screenshot02.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshots/screenshot03.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshots/screenshot04.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshots/screenshot05.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshots/screenshot06.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshots/screenshot07.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshots/screenshot08.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshots/screenshot09.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshots/screenshot10.jpg</Value>
+              <ValueType>String</ValueType>
+              <Description>Online stored screenshot urls separated by ; </Description>
+            </SectionParam>
+            <SectionParam Name="Force to uninstall on update">
+              <Value>YES</Value>
+              <ValueType>Bool</ValueType>
+              <Description>Show dialog and force to uninstall previous version when updating an extension. Should only be disabled if you are using an NSIS/MSI installer.</Description>
+            </SectionParam>
+          </Items>
+        </Params>
+      </GeneralInfo>
+      <UniqueFileList>
+        <Items />
+      </UniqueFileList>
+      <ProjectSettings>
+        <FolderGroups />
+      </ProjectSettings>
+      <IsSkin>false</IsSkin>
+    </PackageClass>
   </Items>
 </ExtensionCollection>
