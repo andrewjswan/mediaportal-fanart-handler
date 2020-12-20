@@ -42,6 +42,7 @@ namespace FanartHandler
 
     private Scraper scraper;
     private bool DBIsInit = false;
+    private bool? DBhaveMBID = null;
 
     public bool IsScraping { get; set; }
     public bool StopScraper { get; set; }
@@ -4599,8 +4600,72 @@ namespace FanartHandler
 
     #region Music Brainz Id
     // Begin: GetDBMusicBrainzID
+    private string GetMusicDBMusicBrainzID(string artist, string album)
+    {
+      if (string.IsNullOrEmpty(artist))
+      {
+        return string.Empty;
+      }
+
+      try
+      {
+        if (!DBhaveMBID.HasValue)
+        {
+          DBhaveMBID = (MusicDatabase.DirectExecute("SELECT IIF(COUNT(*) > 0, 'Yes', 'No' ) Exist FROM pragma_table_info('tracks') " +
+                                                    "WHERE name='strMBArtistId';").GetField(0, 0) == "Yes");
+        }
+      } 
+      catch
+      {
+        DBhaveMBID = false;
+      }
+
+      if (DBhaveMBID == false)
+      {
+        return string.Empty;
+      }
+
+      string MBID = string.Empty;
+      try
+      {
+        if (string.IsNullOrEmpty(album))
+        {
+          MBID = MusicDatabase.DirectExecute("SELECT TRIM(strMBArtistId) FROM tracks " +
+                                             "WHERE strArtist LIKE '%| " + Utils.PatchSql(artist) + " |%'';").GetField(0, 0);
+          if (string.IsNullOrEmpty(MBID))
+          {
+            MBID = MusicDatabase.DirectExecute("SELECT TRIM(strMBReleaseArtistId) FROM tracks " +
+                                               "WHERE strAlbumArtist LIKE '%| " + Utils.PatchSql(artist) + " |%';").GetField(0, 0);
+          }
+        }
+        else
+        {
+          MBID = MusicDatabase.DirectExecute("SELECT TRIM(strMBReleaseGroupId) FROM tracks " +
+                                             "WHERE (strArtist LIKE '%| " + Utils.PatchSql(artist) + " |%' OR " +
+                                                    "strAlbumArtist LIKE '%| " + Utils.PatchSql(artist) + " |%') AND " +
+                                                    "strAlbum = '" + Utils.PatchSql(album) + "';").GetField(0, 0);
+          if (string.IsNullOrEmpty(MBID))
+          {
+            MBID = MusicDatabase.DirectExecute("SELECT TRIM(strMBReleaseId) FROM tracks " +
+                                               "WHERE (strArtist LIKE '%| " + Utils.PatchSql(artist) + " |%' OR " +
+                                                      "strAlbumArtist LIKE '%| " + Utils.PatchSql(artist) + " |%') AND " +
+                                                      "strAlbum = '" + Utils.PatchSql(album) + "';").GetField(0, 0);
+          }
+        }
+      }
+      catch { };
+
+      return MBID;
+    }
+
     public string GetDBMusicBrainzID(string artist, string album)
     {
+      string MBID = GetMusicDBMusicBrainzID(artist, album);
+      if (!string.IsNullOrEmpty(MBID))
+      {
+        return MBID;
+      }
+
       if (dbClient == null)
       {
         return null;
@@ -7690,8 +7755,8 @@ namespace FanartHandler
 
             lock (lockObject)
               dbClient.Execute("CREATE VIEW [Labels] AS " +
-                                 "SELECT [mbid], [name], [AlbumMBID] AS [ambid], [Time_Stamp] " +
-                                 "FROM [RecordLabelAlbum] LEFT JOIN [RecordLabel] ON [RecordLabelAlbum].[RecordLabelMBID] = [RecordLabel].[mbid];");
+                                      "SELECT [mbid], [name], [AlbumMBID] AS [ambid], [Time_Stamp] " +
+                                      "FROM [RecordLabelAlbum] LEFT JOIN [RecordLabel] ON [RecordLabelAlbum].[RecordLabelMBID] = [RecordLabel].[mbid];");
             logger.Info("Upgrading: Step [6]: Finished.");
 
             lock (lockObject)
@@ -8026,8 +8091,12 @@ namespace FanartHandler
               dbClient.Execute("INSERT INTO [RecordLabelNew] SELECT DISTINCT * FROM [RecordLabel];");
               dbClient.Execute("UPDATE RecordLabelNew SET Time_Stamp = '2000-01-01';");
 
+              dbClient.Execute("DROP VIEW Labels;");
               dbClient.Execute("DROP TABLE RecordLabel;");
               dbClient.Execute("ALTER TABLE RecordLabelNew RENAME TO RecordLabel;");
+              dbClient.Execute("CREATE VIEW [Labels] AS " +
+                                      "SELECT [mbid], [name], [AlbumMBID] AS [ambid], [Time_Stamp] " +
+                                      "FROM [RecordLabelAlbum] LEFT JOIN [RecordLabel] ON [RecordLabelAlbum].[RecordLabelMBID] = [RecordLabel].[mbid];");
             }
             lock (lockObject)
             {

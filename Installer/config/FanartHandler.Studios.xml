@@ -137,6 +137,9 @@
   <studio name="Antena-3 Films">Antena 3</studio>
   <studio name="Anton Capital Entertainment (ACE)">Anton Capital Entertainment</studio>
   <studio name="Apple Film Productions">Apple</studio>
+  <studio name="Apple+">Apple TV</studio>
+  <studio name="Apple +">Apple TV</studio>
+  <studio name="Apple Plus">Apple TV</studio>
   <studio name="Apple TV+">Apple TV</studio>
   <studio name="Apple TV Plus">Apple TV</studio>
   <studio name="Aramid Entertainment Fund">Aramid Entertainment</studio>
@@ -597,6 +600,7 @@
   <studio name="Fox Television Network">Fox</studio>
   <studio name="FOX_hd">FOX HD</studio>
   <studio name="FOXHD">FOX HD</studio>
+  <studio name="Fox Sports (AU)">Fox Sports</studio>
   <studio name="Fox Searchlight Pictures">Fox Searchlight</studio>
   <studio name="Searchlight">Fox Searchlight</studio>
   <studio name="France Télévision">France Television</studio>
@@ -1826,6 +1830,7 @@
   <studio name="World Wrestling Entertainment (WWE)">WWE</studio>
   <studio name="WWE Films">WWE</studio>
   <studio name="WWE Studios">WWE</studio>
+  <studio name="wwe-network">wwe network</studio>
   <studio name="X-Filme Creative Pool">X-Filme</studio>
   <studio name="Xfilme">X-Filme</studio>
   <studio name="Xebec M2">Xebec</studio>
@@ -1987,14 +1992,21 @@
   <studio name="Gosteleradio">Госкино</studio>
   <studio name="Gosteleradio USSR">Госкино</studio>
   <studio name="Дикий">Wild</studio>
-  <studio name="Студия Горького">Киностудия Горького</studio>
   <studio name="Ідас філм">Idas Film</studio>
   <studio name="Идас филм">Idas Film</studio>
   <studio name="Идасом филм">Idas Film</studio>
+  <studio name="Студия Горького">Киностудия Горького</studio>
   <studio name="Киностудия им. Горького">Киностудия Горького</studio>
   <studio name="Киностудия им. М. Горького">Киностудия Горького</studio>
   <studio name="Kinostudiya imeni Gorkogo">Киностудия Горького</studio>
   <studio name="Kinostudiya imeni M. Gorkogo">Киностудия Горького</studio>
+  <studio name="GorkyFilm">Киностудия Горького</studio>
+  <studio name="Gorky Film">Киностудия Горького</studio>
+  <studio name="Довженко">Киностудия Довженко</studio>
+  <studio name="Довженко Фильм">Киностудия Довженко</studio>
+  <studio name="Студия Довженко">Киностудия Довженко</studio>
+  <studio name="DovzhenkoFilm">Киностудия Довженко</studio>
+  <studio name="Dovzhenko Film">Киностудия Довженко</studio>
   <studio name="Тбилисская киностудия">Грузия-фильм</studio>
   <studio name="Третий Рим">3rome</studio>
   <studio name="Каскад фильм">Каскад</studio>
@@ -2067,6 +2079,7 @@
   <studio name="Odessa Studio">Одесская киностудия</studio>
   <studio name="Odessa Film">Одесская киностудия</studio>
   <studio name="Odessa Film Studio">Одесская киностудия</studio>
+  <studio name="OdessaFilm">Одесская киностудия</studio>
   <studio name="Среда-Фетисов Фильмс">Среда</studio>
   <studio name="Sreda">Среда</studio>
   <studio name="Sreda-Fetisov Films">Среда</studio>
