@@ -4631,7 +4631,7 @@ namespace FanartHandler
         if (string.IsNullOrEmpty(album))
         {
           MBID = MusicDatabase.DirectExecute("SELECT TRIM(strMBArtistId) FROM tracks " +
-                                             "WHERE strArtist LIKE '%| " + Utils.PatchSql(artist) + " |%'';").GetField(0, 0);
+                                             "WHERE strArtist LIKE '%| " + Utils.PatchSql(artist) + " |%';").GetField(0, 0);
           if (string.IsNullOrEmpty(MBID))
           {
             MBID = MusicDatabase.DirectExecute("SELECT TRIM(strMBReleaseArtistId) FROM tracks " +
