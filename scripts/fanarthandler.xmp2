@@ -790,9 +790,7 @@ ajs</Value>
        * push fanart for now played music
        * push fanart for selected music or movie
        * push random images from selected folders</ExtensionDescription>
-    <VersionDescription>Fix DB Upgrade
-Add 1.27Pre support for MBID
-</VersionDescription>
+    <VersionDescription>Fix SQL error when request MBID from Music DB</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-{VERSION}.MPE1</OnlineLocation>
     <ReleaseDate>2020-12-20T15:04:24</ReleaseDate>
