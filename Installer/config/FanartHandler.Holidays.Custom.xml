@@ -4,4 +4,12 @@
 		<Month>1</Month>
 		<Day>1</Day>
 	</Holiday-->
+	<!--Holiday name="Happy ...!" shortname="NameDays">
+		<Month>2</Month>
+		<Day>2</Day>
+	</Holiday-->
+    <!--Holiday name="Wedding ...!" shortname="Wedding">
+        <Month>3</Month>
+        <Day>3</Day>
+	</Holiday-->
 </Holidays>

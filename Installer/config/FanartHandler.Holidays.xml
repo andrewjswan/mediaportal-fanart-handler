@@ -10,6 +10,12 @@
 		<Day>2</Day>
 		<NameRU>Международный день научной фантастики</NameRU>
 	</Holiday>
+	<Holiday name="Christmas Eve" shortname="Christmas">
+		<Month>1</Month>
+		<Day>6</Day>
+		<NameRU>Рождественский сочельник</NameRU>
+		<CelebratedIn>RU</CelebratedIn>
+	</Holiday>
 	<Holiday name="Christmas Day" shortname="Christmas">
 		<Month>1</Month>
 		<Day>7</Day>
@@ -235,6 +241,11 @@
 		<Month>11</Month>
 		<Day>11</Day>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+	</Holiday>
+	<Holiday name="Christmas Eve" shortname="Christmas">
+		<Month>12</Month>
+		<Day>24</Day>
+		<NameRU>Рождественский сочельник</NameRU>
 	</Holiday>
 	<Holiday name="Christmas Day" shortname="Christmas">
 		<Month>12</Month>
