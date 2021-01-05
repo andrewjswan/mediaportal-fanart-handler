@@ -4519,7 +4519,7 @@ namespace FanartHandler
     private static string ApiKeyhtBackdrops = "02274c29b2cc898a726664b96dcc0e76";
     private static string ApiKeyLastFM = "7d97dee3440eec8b90c9cf5970eef5ca";
     private static string ApiKeyFanartTV = "e86c27a8ce58787020df5ea68bc72518";
-    private static string ApiKeyTheAudioDB = "2897410897123a8fssrsdsd";
+    private static string ApiKeyTheAudioDB = "523535";
     private static string ApiKeyTheMovieDB = "e224fe4f3fec5f7b5570641f7cd3df3a";
   }
 }
