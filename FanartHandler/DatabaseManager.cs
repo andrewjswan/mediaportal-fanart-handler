@@ -4673,9 +4673,11 @@ namespace FanartHandler
             if (string.IsNullOrEmpty(MBID))
             {
               MBID = MusicDatabase.DirectExecute(string.Format(SQL, "strMBArtistId", RequestWithDelimeters("strArtist", Utils.PipesArray), Utils.PatchSql(artist))).GetField(0, 0);
+              logger.Debug("MBID SQL: " + string.Format(SQL, "strMBArtistId", RequestWithDelimeters("strArtist", Utils.PipesArray), Utils.PatchSql(artist)));
               if (string.IsNullOrEmpty(MBID))
               {
                 MBID = MusicDatabase.DirectExecute(string.Format(SQL, "strMBReleaseArtistId", RequestWithDelimeters("strAlbumArtist", Utils.PipesArray), Utils.PatchSql(artist))).GetField(0, 0);
+                logger.Debug("MBID SQL: " + string.Format(SQL, "strMBReleaseArtistId", RequestWithDelimeters("strAlbumArtist", Utils.PipesArray), Utils.PatchSql(artist)));
               }
             }
           }
