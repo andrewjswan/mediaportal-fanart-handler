@@ -748,7 +748,7 @@ namespace FanartHandler
       FAHSSpotLight = Path.Combine(FAHSFolder, @"SpotLight\"); 
       logger.Debug("Fanart Handler Scraper SpotLight folder: "+FAHSSpotLight);
       W10SpotLight = Path.Combine(Environment.GetEnvironmentVariable("LocalAppData"), @"Packages\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\LocalState\Assets\");
-      logger.Debug("Windows 10 SpotLight folder: "+W10SpotLight);
+      logger.Debug("Windows 10 SpotLight folder: " + W10SpotLight.Replace(Environment.GetEnvironmentVariable("USERNAME"), "[USER]"));
       #endregion
 
       #region Fill.FanartFolders
