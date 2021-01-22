@@ -4665,6 +4665,7 @@ namespace FanartHandler
                          "SELECT sMBID " +
                          "FROM split " +
                          "WHERE sMBID != '' AND sActor = '{2}' " +
+                         "COLLATE NOCASE " +
                          "LIMIT 1;";
           MBID = MusicDatabase.DirectExecute(string.Format(SQL, "strMBArtistId", "strArtist", Utils.PatchSql(artist))).GetField(0, 0);
           if (string.IsNullOrEmpty(MBID))
@@ -4673,11 +4674,11 @@ namespace FanartHandler
             if (string.IsNullOrEmpty(MBID))
             {
               MBID = MusicDatabase.DirectExecute(string.Format(SQL, "strMBArtistId", RequestWithDelimeters("strArtist", Utils.PipesArray), Utils.PatchSql(artist))).GetField(0, 0);
-              logger.Debug("MBID SQL: " + string.Format(SQL, "strMBArtistId", RequestWithDelimeters("strArtist", Utils.PipesArray), Utils.PatchSql(artist)));
+              // logger.Debug("MBID SQL: " + string.Format(SQL, "strMBArtistId", RequestWithDelimeters("strArtist", Utils.PipesArray), Utils.PatchSql(artist)));
               if (string.IsNullOrEmpty(MBID))
               {
                 MBID = MusicDatabase.DirectExecute(string.Format(SQL, "strMBReleaseArtistId", RequestWithDelimeters("strAlbumArtist", Utils.PipesArray), Utils.PatchSql(artist))).GetField(0, 0);
-                logger.Debug("MBID SQL: " + string.Format(SQL, "strMBReleaseArtistId", RequestWithDelimeters("strAlbumArtist", Utils.PipesArray), Utils.PatchSql(artist)));
+                // logger.Debug("MBID SQL: " + string.Format(SQL, "strMBReleaseArtistId", RequestWithDelimeters("strAlbumArtist", Utils.PipesArray), Utils.PatchSql(artist)));
               }
             }
           }
