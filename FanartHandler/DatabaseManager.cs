@@ -4610,9 +4610,12 @@ namespace FanartHandler
         }
         if (pipe == ";")
         {
-          pipe = "; ";
+          result = "REPLACE(" + result + ", '" + pipe + " ', ' | ')"; 
         }
-        result = "REPLACE(" + result + ", '" + pipe + "', ' | ')";
+        else
+        {
+          result = "REPLACE(" + result + ", '" + pipe + "', ' | ')"; 
+        }
       }
       return result;
     }
