@@ -4664,7 +4664,7 @@ namespace FanartHandler
                          ") " +
                          "SELECT sMBID " +
                          "FROM split " +
-                         "WHERE sActor != '' AND sActor = '{2}' " +
+                         "WHERE sMBID != '' AND sActor = '{2}' " +
                          "LIMIT 1;";
           MBID = MusicDatabase.DirectExecute(string.Format(SQL, "strMBArtistId", "strArtist", Utils.PatchSql(artist))).GetField(0, 0);
           if (string.IsNullOrEmpty(MBID))
