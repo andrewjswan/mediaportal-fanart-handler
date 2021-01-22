@@ -203,6 +203,7 @@
   <studio name="The Avnet Kerner Company">Avnet-Kerner</studio>
   <studio name="The AvnetKerner Company">Avnet-Kerner</studio>
   <studio name="AVRO Television">AVRO</studio>
+  <studio name="AXN España">AXN Espana</studio>
   <studio name="B.A. Produktion GmbH">B.A. Produktion</studio>
   <studio name="Babelsberg Film Gmbh">Babelsberg Film</studio>
   <studio name="Babelsberg Studios">Babelsberg Film</studio>
@@ -236,7 +237,6 @@
   <studio name="BBC Natural History">BBC</studio>
   <studio name="BBC Prime">BBC</studio>
   <studio name="BBC Television Centre">BBC</studio>
-  <studio name="BBC iPlayer">BBC</studio>
   <studio name="BBC_HD">BBC HD</studio>
   <studio name="BBC Two HD">BBC HD</studio>
   <studio name="BBC Three HD">BBC HD</studio>
@@ -493,6 +493,7 @@
   <studio name="darkhorse">Dark Horse Films</studio>
   <studio name="Dawn's Light">Dawns Light</studio>
   <studio name="DC Comics">DC</studio>
+  <studio name="DC Films">DC</studio>
   <studio name="DC Entertainment">DC</studio>
   <studio name="De Laurentiis">DEG</studio>
   <studio name="De Laurentiis Entertainment Group">DEG</studio>
@@ -783,6 +784,7 @@
   <studio name="K. O. Paper Products">Kurtzman Orci Paper Products</studio>
   <studio name="K O Paper Products">Kurtzman Orci Paper Products</studio>
   <studio name="KO Paper Products">Kurtzman Orci Paper Products</studio>
+  <studio name="KOJO Entertainment">KOJO</studio>
   <studio name="Kaname Production">Ashi Productions</studio>
   <studio name="Kennedy Marshall Company">Kennedy Marshall Company</studio>
   <studio name="Kennedy Marshall Company The">Kennedy Marshall Company</studio>
@@ -928,6 +930,8 @@
   <studio name="Metro Goldwyn Mayer (MGM) Studios">MGM</studio>
   <studio name="Metro Goldwyn Mayer Distributing Corporation">MGM</studio>
   <studio name="Metro Goldwyn Mayer Distributing Corporation (MGM)">MGM</studio>
+  <studio name="Metro Goldwyn Mayer Entertainment">MGM</studio>
+  <studio name="Metro Goldwyn Mayer Entertainment (MGM)">MGM</studio>
   <studio name="Metro Goldwyn Mayer Home Entertainment">MGM</studio>
   <studio name="Metro Goldwyn Mayer Home Entertainment (MGM)">MGM</studio>
   <studio name="Metro Goldwyn Mayer Studios">MGM</studio>
@@ -938,8 +942,13 @@
   <studio name="Metro-Goldwyn-Mayer (MGM) Studios">MGM</studio>
   <studio name="Metro-Goldwyn-Mayer Distributing Corporation">MGM</studio>
   <studio name="Metro-Goldwyn-Mayer Distributing Corporation (MGM)">MGM</studio>
+  <studio name="Metro-Goldwyn-Mayer Entertainment">MGM</studio>
+  <studio name="Metro-Goldwyn-Mayer Entertainment (MGM)">MGM</studio>
   <studio name="Metro-Goldwyn-Mayer Home Entertainment">MGM</studio>
   <studio name="Metro-Goldwyn-Mayer Home Entertainment (MGM)">MGM</studio>
+  <studio name="MGM Studios">MGM</studio>
+  <studio name="MGM Entertainment">MGM</studio>
+  <studio name="MGM Home Entertainment">MGM</studio>
   <studio name="MGM/UA">MGM_UA</studio>
   <studio name="Mikezossproductions">Mike Zoss Productions</studio>
   <studio name="Milkshake Films">Milkshake</studio>
@@ -1053,6 +1062,7 @@
   <studio name="Nickelodeon Productions">Nickelodeon</studio>
   <studio name="Nickelodeon Studios">Nickelodeon</studio>
   <studio name="Nicktoons Network">Nicktoons</studio>
+  <studio name="Nitrogen Studios Canada">Nitrogen Studios</studio>
   <studio name="Nothing Studios">Nothing</studio>
   <studio name="Norddeutscher Rundfunk">NDR</studio>
   <studio name="Norddeutscher Rundfunk (NDR)">NDR</studio>
@@ -1191,6 +1201,7 @@
   <studio name="Radix Ace Entertainment">Radix</studio>
   <studio name="Radio Télévision Belge Francofone">RTBF</studio>
   <studio name="Radio Télévision Belge Francofone (RTBF)">RTBF</studio>
+  <studio name="Rai 1">RAI</studio>
   <studio name="Rai Cinema">RAI</studio>
   <studio name="Rai Cinemafiction">RAI</studio>
   <studio name="Rai Fiction">RAI</studio>
@@ -1232,6 +1243,7 @@
   <studio name="Regency Productions">Regency</studio>
   <studio name="Regency Television">Regency</studio>
   <studio name="New Regency Pictures">Regency</studio>
+  <studio name="New Regency Productions">Regency</studio>
   <studio name="Embassy International Pictures">Regency</studio>
   <studio name="Région Ile-de-France">Region Ile de France</studio>
   <studio name="Région Rhône-Alpes">Region Rhone Alpes</studio>
@@ -1280,6 +1292,8 @@
   <studio name="RTL 5">RTL 5</studio>
   <studio name="RTL 7">RTL 7</studio>
   <studio name="RTL 8">RTL 8</studio>
+  <studio name="RÚV">RUV</studio>
+  <studio name="S4/C">S4_C</studio>
   <studio name="Safran Company">The Safran Company</studio>
   <studio name="Safran Company The">The Safran Company</studio>
   <studio name="Safran Company, The">The Safran Company</studio>
@@ -1451,6 +1465,7 @@
   <studio name="Studios USA Television">Studios USA</studio>
   <studio name="Robert Simonds Company">STX</studio>
   <studio name="STX Entertainment">STX</studio>
+  <studio name="STX Films">STX</studio>
   <studio name="Sveriges Television">SVT</studio>
   <studio name="Sveriges Television (SVT)">SVT</studio>
   <studio name="Subversive Flix">Subversive</studio>
@@ -1490,6 +1505,7 @@
   <studio name="TMS Entertainment, Limited">TMS Entertainment</studio>
   <studio name="Téléfilm Canada">Telefilm Canada</studio>
   <studio name="Televisió de Catalunya">Televisio de Catalunya</studio>
+  <studio name="Televisión de Galicia">Television de Galicia</studio>
   <studio name="Tesela Producciones Cinematográficas">Tesela Producciones Cinematograficas</studio>
   <studio name="TF1 Films Production">TF1 Films Productions</studio>
   <studio name="Tokyo Movie">TMS Entertainment</studio>
@@ -1631,6 +1647,7 @@
   <studio name="tvp sa">TVP</studio>
   <studio name="Telewizja Polska (TVP)">TVP</studio>
   <studio name="Radio West">TV West</studio>
+  <studio name="TV4 (SE)">TV4</studio>
   <studio name="Twisted Pictures">Twisted</studio>
   <studio name="Twisted Media Inc">Twisted Media</studio>
   <studio name="Twisted Media Inc.">Twisted Media</studio>
@@ -1816,6 +1833,7 @@
   <studio name="The Weinstein Company LLC">Weinstein</studio>
   <studio name="Westdeutscher Rundfunk (WDR)">WDR</studio>
   <studio name="Wiedemann &amp; Berg">Wiedemann and Berg</studio>
+  <studio name="Wiedemann &amp; Berg Film">Wiedemann and Berg</studio>
   <studio name="Wiedemann &amp; Berg Filmproduktion">Wiedemann and Berg</studio>
   <studio name="Wild Bunch Benelux">Wild Bunch</studio>
   <studio name="Wild Bunch Distribution">Wild Bunch</studio>
@@ -1988,6 +2006,8 @@
   <studio name="Парадиз студия">Парадиз</studio>
   <studio name="Саспенс Філмс">Suspense Films</studio>
   <studio name="Гостелерадио">Госкино</studio>
+  <studio name="Гостелерадио СССР">Госкино</studio>
+  <studio name="Главная редакция литературно-драматических программ Гостелерадио СССР">Госкино</studio>
   <studio name="Goskino USSR">Госкино</studio>
   <studio name="Gosteleradio">Госкино</studio>
   <studio name="Gosteleradio USSR">Госкино</studio>
@@ -2073,6 +2093,7 @@
   <studio name="PRO взгляд">ПРОвзгляд</studio>
   <studio name="PROVzglyad">ПРОвзгляд</studio>
   <studio name="PROV zglyad">ПРОвзгляд</studio>
+  <studio name="Первая Видеокомпания">Первый канал</studio>
   <studio name="Продюсерский центр «Среда»">Среда</studio>
   <studio name="Продюсерский центр &quot;Среда&quot;">Среда</studio>
   <studio name="Продюсерский центр Среда">Среда</studio>
