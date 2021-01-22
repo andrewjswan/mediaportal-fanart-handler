@@ -4604,6 +4604,14 @@ namespace FanartHandler
       string result = field;
       foreach (string pipe in pipes)
       {
+        if (pipe == "|")
+        {
+          continue;
+        }
+        if (pipe == ";")
+        {
+          pipe = "; ";
+        }
         result = "REPLACE(" + result + ", '" + pipe + "', ' | ')";
       }
       return result;
