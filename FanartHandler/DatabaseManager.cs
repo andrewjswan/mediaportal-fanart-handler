@@ -4604,7 +4604,7 @@ namespace FanartHandler
       string result = field;
       foreach (string pipe in pipes)
       {
-        result = "REPLACE(" + result + ", '" + pipe + "', '|')";
+        result = "REPLACE(" + result + ", '" + pipe + "', ' | ')";
       }
       return result;
     }
@@ -4639,7 +4639,7 @@ namespace FanartHandler
       {
         if (string.IsNullOrEmpty(album))
         {
-          string SQL ="WITH RECURSIVE split({1}, actor, {0}, mbid) AS (" +
+          string SQL ="WITH RECURSIVE split(sActor, actor, sMBID, mbid) AS (" +
                            "SELECT DISTINCT '', RTRIM(LTRIM({1}, '| '),' |')||'|', '', REPLACE({0},'/','|')||'|' " +
                              "FROM tracks " +
                              "WHERE {1} LIKE '%| {2} |%' AND {0} NOT NULL AND TRIM({0}) != '' " +
@@ -4651,9 +4651,9 @@ namespace FanartHandler
                                "TRIM(SUBSTR(mbid, INSTR(mbid, '|') + 1)) " +
                            "FROM split WHERE actor != '' " +
                          ") " +
-                         "SELECT {0} " +
+                         "SELECT sMBID " +
                          "FROM split " +
-                         "WHERE {1} != '' AND {1} = '{2}' " +
+                         "WHERE sActor != '' AND sActor = '{2}' " +
                          "LIMIT 1;";
           MBID = MusicDatabase.DirectExecute(string.Format(SQL, "strMBArtistId", "strArtist", Utils.PatchSql(artist))).GetField(0, 0);
           if (string.IsNullOrEmpty(MBID))
