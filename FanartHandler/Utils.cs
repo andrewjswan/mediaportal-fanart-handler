@@ -61,7 +61,7 @@ namespace FanartHandler
 
     private static int scrapperTimerInterval = 3600000; // milliseconds
     private static int refreshTimerInterval = 250; // milliseconds
-    private static int maxRefreshTickCount = 120;  // 30sec - 120 / (1000 / 250)
+    private static int maxRefreshTickCount = 120;  // 30sec = 120 / (1000 / 250)
     private static int idleTimeInMillis = 250;
 
     private const int ThreadSleep = 0;
@@ -6606,7 +6606,7 @@ namespace FanartHandler
       {
         logger.Warn("Fanart Handler in Advanced Debug mode!");
       }
-      logger.Debug("Images: " + ScraperMaxImages + " Show: " + ImageInterval + "s Random: " + (MaxRandomFanartImages > 0 ? MaxRandomFanartImages.ToString() : "All"));
+      logger.Debug("Images: " + ScraperMaxImages + " Show: " + ImageInterval + "s [" + MaxRefreshTickCount.ToString() +"] Random: " + (MaxRandomFanartImages > 0 ? MaxRandomFanartImages.ToString() : "All"));
       logger.Debug("Scan: " + Check(ScanMusicFoldersForFanart) + " Music Folders for Fanart, RegExp: " + MusicFoldersArtistAlbumRegex);
       logger.Debug("Scraper: " + Check(ScrapeFanart) + " Fanart, " + Check(ScraperMPDatabase) + " MP Databases , " + Check(ScrapeThumbnails) + " Artists Thumb , " + Check(ScrapeThumbnailsAlbum) + " Album Thumb, " + Check(UseMinimumResolutionForDownload) +
                    " Delete if less then " + MinResolution + ", " + Check(UseHighDefThumbnails) + " High Def Thumbs, Max Count [" + ScraperMaxImages + "]");

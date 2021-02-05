@@ -53,6 +53,11 @@ namespace FanartHandler
       Thread.CurrentThread.Name = "RefreshWorker";
       Utils.AllocateDelayStop("RefreshWorker-OnDoWork");
 
+      if (Utils.AdvancedDebug)
+      { 
+        logger.Debug("*** RefreshWorker started...");
+      }
+
       try
       {
         FanartHandlerSetup.Fh.FPlay.RefreshMusicPlaying(this, e);
@@ -102,6 +107,11 @@ namespace FanartHandler
       catch (Exception ex)
       {
         logger.Error("OnRunWorkerCompleted: " + ex);
+      }
+
+      if (Utils.AdvancedDebug)
+      { 
+        logger.Debug("*** RefreshWorker complete...");
       }
     }
   }
