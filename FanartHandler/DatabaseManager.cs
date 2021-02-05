@@ -4645,6 +4645,21 @@ namespace FanartHandler
         return string.Empty;
       }
 
+      string key = "#" + artist + (!string.IsNullOrEmpty(album) ? "#" + album : "");
+      if (Utils.MediaportalMBIDCache == null)
+      {
+        Utils.MediaportalMBIDCache = new Hashtable();
+      }
+
+      if (Utils.MediaportalMBIDCache.Contains(key))
+      {
+        if (Utils.AdvancedDebug)
+        { 
+          logger.Debug("*** Mediaportal Cache: MusicBrainz DB ID: " + Utils.MediaportalMBIDCache[key]);
+        }
+        return Utils.MediaportalMBIDCache[key];
+      }
+
       string MBID = string.Empty;
       try
       {
@@ -4713,6 +4728,7 @@ namespace FanartHandler
       { 
         logger.Debug("*** Mediaportal: MusicBrainz DB ID: " + MBID);
       }
+      Utils.MediaportalMBIDCache.Add(key, MBID);
       return MBID;
     }
 

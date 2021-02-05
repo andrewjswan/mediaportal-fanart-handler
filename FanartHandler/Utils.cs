@@ -80,6 +80,8 @@ namespace FanartHandler
                                                                    " . "," . "," . "," . "," . "," . "," . "," . "," . "," . ",
                                                                    "  .","  .","  .","  .","  .","  .","  .","  .","  .","  ."};
 
+    public static Hashtable MediaportalMBIDCache;
+
     public const string VariousArtists = "Various Artists";
 
     public static int MinWResolution;

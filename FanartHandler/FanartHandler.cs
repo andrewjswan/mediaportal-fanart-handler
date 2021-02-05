@@ -958,6 +958,11 @@ namespace FanartHandler
           FPlayOther.EmptyAllPlayProperties();
           break;
         }
+        case GUIMessage.MessageType.GUI_MSG_DATABASE_SCAN_ENDED:
+        {
+          Utils.MediaportalMBIDCache = new Hashtable();
+          break;
+        }
       }
     }
 
@@ -1413,6 +1418,7 @@ namespace FanartHandler
         GUIWindowManager.Receivers -= new SendMessageHandler(GUIWindowManager_OnNewMessage);
         g_Player.PlayBackStarted -= new g_Player.StartedHandler(OnPlayBackStarted);
         g_Player.PlayBackEnded -= new g_Player.EndedHandler(OnPlayBackEnded);
+        MusicDatabase.DatabaseReorgChanged -= new MusicDBReorgEventHandler(ReorgStatusChange);
 
         var num = 0;
         while (Utils.GetDelayStop() && num < 20)
