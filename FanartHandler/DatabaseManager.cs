@@ -4650,51 +4650,52 @@ namespace FanartHandler
       {
         if (string.IsNullOrEmpty(album))
         {
-          string SQL ="WITH RECURSIVE split(sActor, actor, sMBID, mbid) AS (" +
-                           "SELECT DISTINCT '', RTRIM(LTRIM({1}, '| '),' |')||'|', '', REPLACE({0},'/','|')||'|' " +
-                             "FROM tracks " +
-                             "WHERE {1} LIKE '%| {2} |%' AND {0} NOT NULL AND TRIM({0}) != '' " +
-                           "UNION ALL " +
-                           "SELECT " +
-                               "TRIM(SUBSTR(actor, 0, INSTR(actor, '|'))), " +
-                               "TRIM(SUBSTR(actor, INSTR(actor, '|') + 1)), " +
-                               "TRIM(SUBSTR(mbid, 0, INSTR(mbid, '|'))), " +
-                               "TRIM(SUBSTR(mbid, INSTR(mbid, '|') + 1)) " +
-                           "FROM split WHERE actor != '' " +
-                         ") " +
-                         "SELECT sMBID " +
+          string SQL = "WITH RECURSIVE split(sActor, actor, sMBID, mbid) AS ( " +
+                         "SELECT DISTINCT '', RTRIM(LTRIM(strArtist, '| '),' |')||'|', '', REPLACE(strMBArtistId,'/','|')||'|' " +
+                           "FROM tracks " +
+                           "WHERE strArtist LIKE '%| {0} |%' AND strMBArtistId NOT NULL AND TRIM(strMBArtistId) != '' " +
+                         "UNION ALL " +
+                         "SELECT DISTINCT '', RTRIM(LTRIM(strAlbumArtist, '| '),' |')||'|', '', REPLACE(strMBReleaseArtistId,'/','|')||'|' " +
+                           "FROM tracks " +
+                           "WHERE strAlbumArtist LIKE '%| {0} |%' AND strMBReleaseArtistId NOT NULL AND TRIM(strMBReleaseArtistId) != '' " +
+                         "UNION ALL " +
+                         "SELECT DISTINCT '', RTRIM(LTRIM({1}, '| '),' |')||'|', '', REPLACE(strMBArtistId,'/','|')||'|' " +
+                           "FROM tracks " +
+                           "WHERE {1} LIKE '%| {0} |%' AND strMBArtistId NOT NULL AND TRIM(strMBArtistId) != '' " +
+                         "UNION ALL " +
+                         "SELECT DISTINCT '', RTRIM(LTRIM({2}, '| '),' |')||'|', '', REPLACE(strMBReleaseArtistId,'/','|')||'|' " +
+                           "FROM tracks " +
+                           "WHERE {2} LIKE '%| {0} |%' AND strMBReleaseArtistId NOT NULL AND TRIM(strMBReleaseArtistId) != '' " +
+                         "UNION ALL " +
+                         "SELECT " +
+                             "TRIM(SUBSTR(actor, 0, INSTR(actor, '|'))), " +
+                             "TRIM(SUBSTR(actor, INSTR(actor, '|') + 1)), " +
+                             "TRIM(SUBSTR(mbid, 0, INSTR(mbid, '|'))), " +
+                             "TRIM(SUBSTR(mbid, INSTR(mbid, '|') + 1)) " +
+                         "FROM split WHERE actor != '' " +
+                       ") SELECT sMBID " +
                          "FROM split " +
-                         "WHERE sMBID != '' AND sActor = '{2}' " +
-                         "COLLATE NOCASE " +
-                         "LIMIT 1;";
-          MBID = MusicDatabase.DirectExecute(string.Format(SQL, "strMBArtistId", "strArtist", Utils.PatchSql(artist))).GetField(0, 0);
-          if (string.IsNullOrEmpty(MBID))
-          {
-            MBID = MusicDatabase.DirectExecute(string.Format(SQL, "strMBReleaseArtistId", "strAlbumArtist", Utils.PatchSql(artist))).GetField(0, 0);
-            if (string.IsNullOrEmpty(MBID))
-            {
-              MBID = MusicDatabase.DirectExecute(string.Format(SQL, "strMBArtistId", RequestWithDelimeters("strArtist", Utils.PipesArray), Utils.PatchSql(artist))).GetField(0, 0);
-              // logger.Debug("MBID SQL: " + string.Format(SQL, "strMBArtistId", RequestWithDelimeters("strArtist", Utils.PipesArray), Utils.PatchSql(artist)));
-              if (string.IsNullOrEmpty(MBID))
-              {
-                MBID = MusicDatabase.DirectExecute(string.Format(SQL, "strMBReleaseArtistId", RequestWithDelimeters("strAlbumArtist", Utils.PipesArray), Utils.PatchSql(artist))).GetField(0, 0);
-                // logger.Debug("MBID SQL: " + string.Format(SQL, "strMBReleaseArtistId", RequestWithDelimeters("strAlbumArtist", Utils.PipesArray), Utils.PatchSql(artist)));
-              }
-            }
-          }
+                         "WHERE sMBID != '' AND sActor = '{0}' " +
+                       "COLLATE NOCASE ORDER BY LENGTH(sMBID) DESC LIMIT 1;";
+
+          MBID = MusicDatabase.DirectExecute(string.Format(SQL, Utils.PatchSql(artist), 
+                                                                RequestWithDelimeters("strArtist", Utils.PipesArray), 
+                                                                RequestWithDelimeters("strAlbumArtist", Utils.PipesArray))).GetField(0, 0);
         }
         else
         {
-          string SQL = "SELECT TRIM({0}) FROM tracks " +
-                       "WHERE (strArtist LIKE '%| {1} |%' OR " +
-                              "strAlbumArtist LIKE '%| {1} |%') AND " +
-                              "strAlbum = '{2}' AND " + 
-                              "{0} NOT NULL AND TRIM({0}) != '';";
-          MBID = MusicDatabase.DirectExecute(string.Format(SQL, "strMBReleaseGroupId", Utils.PatchSql(artist), Utils.PatchSql(album))).GetField(0, 0);
-          if (string.IsNullOrEmpty(MBID))
-          {
-            MBID = MusicDatabase.DirectExecute(string.Format(SQL, "strMBReleaseId", Utils.PatchSql(artist), Utils.PatchSql(album))).GetField(0, 0);
-          }
+          string SQL = "SELECT (MBID) FROM ( " +
+                         "SELECT TRIM(strMBReleaseGroupId) AS MBID " +
+                         "FROM tracks " +
+                         "WHERE (strArtist LIKE '%| {0} |%' OR strAlbumArtist LIKE '%| {0} |%') AND " +
+                                "strAlbum = '{1}' AND strMBReleaseGroupId NOT NULL AND TRIM(strMBReleaseGroupId) != '' " +
+                         "UNION ALL " +
+                         "SELECT TRIM(strMBReleaseId) " +
+                         "FROM tracks " +
+                         "WHERE (strArtist LIKE '%| {0} |%' OR strAlbumArtist LIKE '%| {0} |%') AND " +
+                                "strAlbum = '{1}' AND strMBReleaseId NOT NULL AND TRIM(strMBReleaseId) != '' " +
+                       ") WHERE MBID != '' COLLATE NOCASE ORDER BY LENGTH(MBID) LIMIT 1;";
+          MBID = MusicDatabase.DirectExecute(string.Format(SQL, Utils.PatchSql(artist), Utils.PatchSql(album))).GetField(0, 0);
         }
       }
       catch (Exception ex)
@@ -4703,7 +4704,7 @@ namespace FanartHandler
         logger.Debug(ex);
       }
 
-      if (string.IsNullOrEmpty(MBID) || (MBID.Length < 10))
+      if (!Utils.IsMBID(MBID))
       {
         return string.Empty;
       }

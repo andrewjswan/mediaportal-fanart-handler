@@ -87,11 +87,7 @@ namespace FanartHandler
       get { return base.Id; }
       set 
       {
-        if (string.IsNullOrEmpty(value))
-        {
-          base.Id = string.Empty;
-        }
-        else if (value.Length != 36)
+        if (!Utils.IsMBID(value))
         {
           base.Id = string.Empty;
         }

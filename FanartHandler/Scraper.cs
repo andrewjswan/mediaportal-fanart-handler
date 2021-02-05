@@ -437,13 +437,13 @@ namespace FanartHandler
         {
           logger.Debug("*** ExtractMID: Match: {0}", Result);
         }
-        if (Result.Length > 10)
+        if (Utils.IsMBID(Result))
         {
           logger.Debug("MusicBrainz: Extract ID: " + Result);
           break;
         }
       }
-      if (!string.IsNullOrEmpty(Result) && Result.Length < 10)
+      if (!Utils.IsMBID(Result))
       {
         Result = string.Empty;
       }
@@ -476,7 +476,7 @@ namespace FanartHandler
           break;
         }
       }
-      if (!string.IsNullOrEmpty(Result) && Result.Length < 10)
+      if (!Utils.IsMBID(Result))
       {
         Result = string.Empty;
       }
@@ -2964,7 +2964,7 @@ namespace FanartHandler
           break;
         }
       }
-      if (!string.IsNullOrEmpty(Result) && Result.Length < 10)
+      if (!Utils.IsMBID(Result))
       {
         Result = string.Empty;
       }

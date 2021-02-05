@@ -5985,6 +5985,15 @@ namespace FanartHandler
       }
     }
 
+    public static bool IsMBID (string mbid)
+    {
+      if (string.IsNullOrEmpty(mbid))
+      {
+        return false;
+      }
+      return Regex.Match(mbid, @"[0-9A-F]{8}\-[0-9A-F]{4}\-[0-9A-F]{4}\-[0-9A-F]{4}\-[0-9A-F]{12}", RegexOptions.IgnoreCase).Success;
+    }
+
     ///
     /// Checks the file exists or not.
     ///
@@ -6721,9 +6730,14 @@ namespace FanartHandler
       string __str = "A'Studio-The BestL.jpg";
       logger.Debug("*** GetArtist: " + Utils.GetArtist(__str, Category.MusicAlbum, SubCategory.MusicAlbumThumbScraped));
       logger.Debug("*** GetAlbum: " + Utils.GetAlbum(__str, Category.MusicAlbum, SubCategory.MusicAlbumThumbScraped));
-      string __str = "Vera Klima feat.Max Mutzke| Vera Klima";
+      string __str = "Vera Klima feat. Max Mutzke| Vera Klima";
       logger.Debug("*** GetArtist: " + Utils.GetArtist(__str, Category.MusicFanart, SubCategory.MusicFanartScraped));
       */
+      string __str = "Au/Ra";
+      logger.Debug("*** GetArtist: " + Utils.GetArtist(__str, Category.MusicFanart, SubCategory.MusicFanartScraped));
+      __str = "Jax Jones feat. Au/Ra";
+      logger.Debug("*** GetArtist: " + Utils.GetArtist(__str, Category.MusicFanart, SubCategory.MusicFanartScraped));
+      
 
       #endregion
     }
