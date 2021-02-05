@@ -4655,9 +4655,9 @@ namespace FanartHandler
       {
         if (Utils.AdvancedDebug)
         { 
-          logger.Debug("*** Mediaportal Cache: MusicBrainz DB ID: " + Utils.MediaportalMBIDCache[key]);
+          logger.Debug("*** Mediaportal Cache: MusicBrainz DB ID: " + (string)Utils.MediaportalMBIDCache[key]);
         }
-        return Utils.MediaportalMBIDCache[key];
+        return (string)Utils.MediaportalMBIDCache[key];
       }
 
       string MBID = string.Empty;
