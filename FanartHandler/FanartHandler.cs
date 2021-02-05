@@ -1418,7 +1418,6 @@ namespace FanartHandler
         GUIWindowManager.Receivers -= new SendMessageHandler(GUIWindowManager_OnNewMessage);
         g_Player.PlayBackStarted -= new g_Player.StartedHandler(OnPlayBackStarted);
         g_Player.PlayBackEnded -= new g_Player.EndedHandler(OnPlayBackEnded);
-        MusicDatabase.DatabaseReorgChanged -= new MusicDBReorgEventHandler(ReorgStatusChange);
 
         var num = 0;
         while (Utils.GetDelayStop() && num < 20)
