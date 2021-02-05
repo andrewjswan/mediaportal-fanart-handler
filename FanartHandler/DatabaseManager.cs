@@ -4709,7 +4709,10 @@ namespace FanartHandler
         return string.Empty;
       }
 
-      logger.Debug("Mediaportal: MusicBrainz DB ID: " + MBID);
+      if (Utils.AdvancedDebug)
+      { 
+        logger.Debug("*** Mediaportal: MusicBrainz DB ID: " + MBID);
+      }
       return MBID;
     }
 

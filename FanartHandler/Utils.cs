@@ -6732,12 +6732,11 @@ namespace FanartHandler
       logger.Debug("*** GetAlbum: " + Utils.GetAlbum(__str, Category.MusicAlbum, SubCategory.MusicAlbumThumbScraped));
       string __str = "Vera Klima feat. Max Mutzke| Vera Klima";
       logger.Debug("*** GetArtist: " + Utils.GetArtist(__str, Category.MusicFanart, SubCategory.MusicFanartScraped));
-      */
       string __str = "Au/Ra";
       logger.Debug("*** GetArtist: " + Utils.GetArtist(__str, Category.MusicFanart, SubCategory.MusicFanartScraped));
       __str = "Jax Jones feat. Au/Ra";
       logger.Debug("*** GetArtist: " + Utils.GetArtist(__str, Category.MusicFanart, SubCategory.MusicFanartScraped));
-      
+      */
 
       #endregion
     }
