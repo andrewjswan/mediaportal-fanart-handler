@@ -245,7 +245,10 @@ namespace FanartHandler
         {
           Utils.SetProperty("music.artisthumb.play", string.Empty);
         }
-        // logger.Debug("*** AddPlayingArtistThumbProperty: " + artist + " - " + album + " - " + FileName + "|" + (File.Exists(FileName) ? "True" : "False"));
+        if (Utils.AdvancedDebug)
+        {
+          logger.Debug("*** AddPlayingArtistThumbProperty: " + artist + " - " + album + " - " + FileName + "|" + (File.Exists(FileName) ? "True" : "False"));
+        }
       }
       catch (Exception ex)
       {
