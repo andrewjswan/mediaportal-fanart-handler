@@ -2649,6 +2649,10 @@ namespace FanartHandler
     #region Music Items                                                                                                         
     public static FanartVideoTrack GetCurrMusicPlayItem(ref string CurrentTrackTag, ref string CurrentAlbumTag, ref string CurrentGenreTag, ref string LastArtistTrack, ref string LastAlbumArtistTrack)
     {
+      if (Utils.AdvancedDebug)
+      {
+        logger.Debug("*** GetCurrMusicPlayItem: Started...");
+      }
       FanartVideoTrack fmp = new FanartVideoTrack();
       try
       {
@@ -2749,6 +2753,10 @@ namespace FanartHandler
             {
               CurrentAlbumTag = mvcAlbum;
             }
+          }
+          if (Utils.AdvancedDebug)
+          {
+            logger.Debug("*** GetCurrMusicPlayItem: Progress...");
           }
           fmp.TrackArtist = selArtist;
           fmp.TrackAlbumArtist = selAlbumArtist;

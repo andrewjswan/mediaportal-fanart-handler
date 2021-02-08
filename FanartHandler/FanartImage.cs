@@ -125,7 +125,6 @@ namespace FanartHandler
   // *** Fanart Artist
   internal class FanartArtist : FanartMusic
   {
-    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
     private string _artist;
     public string Artist 
     {
