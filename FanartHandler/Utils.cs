@@ -2710,6 +2710,10 @@ namespace FanartHandler
               CurrentAlbumTag = scraper.LastFMGetAlbum(selArtist, selTitle);
               scraper = null;
               LastArtistTrack = selArtist+"#"+selTitle;
+              if (Utils.AdvancedDebug)
+              {
+                logger.Debug("*** LastArtistTrack: {0} - {1}", LastArtistTrack, CurrentAlbumTag);
+              }
             }
           }
           if (!string.IsNullOrWhiteSpace(selAlbumArtist) && !string.IsNullOrWhiteSpace(selTitle) && string.IsNullOrWhiteSpace(CurrentAlbumTag))
@@ -2720,6 +2724,10 @@ namespace FanartHandler
               CurrentAlbumTag = scraper.LastFMGetAlbum(selAlbumArtist, selTitle);
               scraper = null;
               LastAlbumArtistTrack = selAlbumArtist+"#"+selTitle;
+              if (Utils.AdvancedDebug)
+              {
+                logger.Debug("*** LastAlbumArtistTrack: {0} - {1}", LastAlbumArtistTrack, CurrentAlbumTag);
+              }
             }
           }
           /*
@@ -2757,6 +2765,10 @@ namespace FanartHandler
       {
         logger.Error("GetCurrMusicPlayItem: " + ex);
         return null;
+      }
+      if (Utils.AdvancedDebug)
+      {
+        logger.Debug("*** GetCurrMusicPlayItem: Complete...");
       }
       return fmp;
     }
