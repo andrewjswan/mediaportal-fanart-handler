@@ -263,6 +263,11 @@ namespace FanartHandler
         var NewArtist = (!CurrPlayMusicArtist.Equals(CurrentTrackTag, StringComparison.CurrentCulture) ||
                          !CurrPlayMusicAlbum.Equals(CurrentAlbumTag, StringComparison.CurrentCulture));
 
+        if (Utils.AdvancedDebug)
+        {
+          logger.Debug("*** RefreshMusicPlayingProperties: {0} - {1} - {2}", NewArtist, RefreshTickCount, Utils.MaxRefreshTickCount);
+        }
+
         if (NewArtist || (RefreshTickCount >= Utils.MaxRefreshTickCount))
         {
           var StoreCurrPlayFanart = CurrPlayFanart;
@@ -387,6 +392,10 @@ namespace FanartHandler
         if (CheckValidWindowIDForFanart())
         {
           FanartVideoTrack fmp = Utils.GetCurrMusicPlayItem(ref CurrentTrackTag, ref CurrentAlbumTag, ref CurrentGenreTag, ref LastArtistTrack, ref LastAlbumArtistTrack);
+          if (Utils.AdvancedDebug)
+          {
+            logger.Debug("*** RefreshMusicPlaying: GetCurrMusicPlayItem {0} - {1} - {2} - {3} - {4}", CurrentTrackTag, CurrentAlbumTag, CurrentGenreTag, LastArtistTrack, LastAlbumArtistTrack);
+          }
 
           if (Utils.ScraperMusicPlaying && (FanartHandlerSetup.Fh.MyScraperNowWorker != null && FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh))
           {
@@ -396,7 +405,10 @@ namespace FanartHandler
             }
             SetCurrentArtistsImageNames(null);
             FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh = false;
-            // logger.Debug("*** RefreshMusicPlaying: Trigger refresh ...");
+            if (Utils.AdvancedDebug)
+            {
+               logger.Debug("*** RefreshMusicPlaying: Trigger refresh ...");
+            }
           }
 
           if (!string.IsNullOrEmpty(CurrentTrackTag) && (g_Player.Playing || g_Player.Paused))
