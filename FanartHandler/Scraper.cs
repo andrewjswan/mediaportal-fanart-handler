@@ -1925,6 +1925,20 @@ namespace FanartHandler
         return result;
       }
 
+      string key = "#" + Artist + "#" + Track;
+      if (Utils.LastFMAlbumCache == null)
+      {
+        Utils.LastFMAlbumCache = new Hashtable();
+      }
+      if (Utils.LastFMAlbumCache.Contains(key))
+      {
+        if (Utils.AdvancedDebug)
+        { 
+          logger.Debug("LastFM: Album from Cache: {0} - {1} : {2}", Artist, Track, (string)Utils.LastFMAlbumCache[key]);
+        }
+        return (string)Utils.LastFMAlbumCache[key];
+      }
+
       var URL = string.Empty;
       var POST = string.Empty;
 
@@ -1959,7 +1973,10 @@ namespace FanartHandler
                   Album = (string)albumElement.Element("title");
                   AlbumMusicBrainzId = (string)albumElement.Element("mbid");
                   result = Album;
-                  logger.Debug("Last.FM: Album for "+Artist+" - " + Track + " found: " + Album + " " + AlbumMusicBrainzId);
+                  if (Utils.AdvancedDebug)
+                  { 
+                    logger.Debug("Last.FM: Album for " + Artist + " - " + Track + " found: " + Album + " " + AlbumMusicBrainzId);
+                  }
                 }
               }
             }
@@ -1970,17 +1987,20 @@ namespace FanartHandler
           }            
         }
       }
-      catch (Exception ex) {
+      catch (Exception ex) 
+      {
         result = string.Empty;
         logger.Error("Last.FM: GetAlbum: " + ex);
       }
+
       if (string.IsNullOrEmpty(result))
       {
-        logger.Debug("Last.FM: Album for "+Artist+" - " + Track + " not found.");
+        logger.Debug("Last.FM: Album for " + Artist + " - " + Track + " not found.");
       }
       else
       {
-        logger.Debug("Last.FM: Album for "+Artist+" - " + Track + " found: " + result);
+        logger.Debug("Last.FM: Album for " + Artist + " - " + Track + " found: " + result);
+        Utils.LastFMAlbumCache.Add(key, result);
       }
       return result;
     }

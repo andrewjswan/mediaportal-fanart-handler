@@ -81,6 +81,7 @@ namespace FanartHandler
                                                                    "  .","  .","  .","  .","  .","  .","  .","  .","  .","  ."};
 
     public static Hashtable MediaportalMBIDCache;
+    public static Hashtable LastFMAlbumCache;
 
     public const string VariousArtists = "Various Artists";
 
