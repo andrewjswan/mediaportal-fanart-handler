@@ -790,10 +790,10 @@ ajs</Value>
        * push fanart for now played music
        * push fanart for selected music or movie
        * push random images from selected folders</ExtensionDescription>
-    <VersionDescription>TheAudioDB Fix</VersionDescription>
+    <VersionDescription>Optimize MBID determine from Mediaportal DB 1.27+</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-{VERSION}.MPE1</OnlineLocation>
-    <ReleaseDate>2021-01-05T15:04:24</ReleaseDate>
+    <ReleaseDate>2021-02-16T15:04:24</ReleaseDate>
     <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios,animated</Tags>
     <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
     <Params>
