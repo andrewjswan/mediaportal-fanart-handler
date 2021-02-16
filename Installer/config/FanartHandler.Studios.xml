@@ -110,6 +110,7 @@
   <studio name="Altitude">Altitude Film</studio>
   <studio name="Altitude Film Entertainment">Altitude Film</studio>
   <studio name="Altitude Film Distribution">Altitude Film</studio>
+  <studio name="AlJazeera">Al Jazeera</studio>
   <studio name="Ambience Entertainment">Ambience</studio>
   <studio name="Ambient Entertainment">Ambient Film</studio>
   <studio name="Ambient Entertainment GmbH">Ambient Film</studio>
@@ -315,6 +316,8 @@
   <studio name="Canal+ Productions">Canal+</studio>
   <studio name="Canal+ (FR)">Canal+</studio>
   <studio name="Canal+ [fr]">Canal+</studio>
+  <studio name="Canal+ (ES)">Canal+</studio>
+  <studio name="Canal+ [ES]">Canal+</studio>
   <studio name="Canadian Film or Video Production Tax Credit">CPTC</studio>
   <studio name="Canadian Film or Video Production Tax Credit (CPTC)">CPTC</studio>
   <studio name="Canadian Television">CTV</studio>
@@ -460,6 +463,7 @@
   <studio name="Constantin Film Produktions">Constantin</studio>
   <studio name="Constantin Films">Constantin</studio>
   <studio name="Content Film">ContentFilm</studio>
+  <studio name="Crave">CraveTV</studio>
   <studio name="Criterion Collection">Criterion</studio>
   <studio name="Criterion Collection The">Criterion</studio>
   <studio name="Criterion Collection, The">Criterion</studio>
@@ -606,6 +610,8 @@
   <studio name="Searchlight">Fox Searchlight</studio>
   <studio name="France Télévision">France Television</studio>
   <studio name="France Télévisions">France Television</studio>
+  <studio name="France.tv">France Television</studio>
+  <studio name="France TV">France Television</studio>
   <studio name="Franchise Pictures">Franchise</studio>
   <studio name="Fuji Television Network">Fuji</studio>
   <studio name="Fuji-Tv">Fuji</studio>
@@ -785,6 +791,9 @@
   <studio name="K O Paper Products">Kurtzman Orci Paper Products</studio>
   <studio name="KO Paper Products">Kurtzman Orci Paper Products</studio>
   <studio name="KOJO Entertainment">KOJO</studio>
+  <studio name="Kanal 4 (DK)">Kanal 4</studio>
+  <studio name="Kanal 5 (DK)">Kanal 5</studio>
+  <studio name="Kanal 5 (SE)">Kanal 5</studio>
   <studio name="Kaname Production">Ashi Productions</studio>
   <studio name="Kennedy Marshall Company">Kennedy Marshall Company</studio>
   <studio name="Kennedy Marshall Company The">Kennedy Marshall Company</studio>
@@ -1294,6 +1303,10 @@
   <studio name="RTL 8">RTL 8</studio>
   <studio name="RÚV">RUV</studio>
   <studio name="S4/C">S4_C</studio>
+  <studio name="S4 C">S4_C</studio>
+  <studio name="S4C~2">S4C2</studio>
+  <studio name="S4C 2">S4C2</studio>
+  <studio name="S4C/2">S4C2</studio>
   <studio name="Safran Company">The Safran Company</studio>
   <studio name="Safran Company The">The Safran Company</studio>
   <studio name="Safran Company, The">The Safran Company</studio>
@@ -1441,6 +1454,8 @@
   <studio name="Stage 6 Films">Stage 6</studio>
   <studio name="Stage 6 Productions">Stage 6</studio>
   <studio name="State Street Pictures">State Street</studio>
+  <studio name="Star Channel">Star</studio>
+  <studio name="Star Channel (Greece)">Star</studio>
   <studio name="Starz!">Starz</studio>
   <studio name="Starz_hd">Starz HD</studio>
   <studio name="Steamroller Productions">Steamroller</studio>
@@ -1468,6 +1483,8 @@
   <studio name="STX Films">STX</studio>
   <studio name="Sveriges Television">SVT</studio>
   <studio name="Sveriges Television (SVT)">SVT</studio>
+  <studio name="SVT 2">SVT2</studio>
+  <studio name="SVT B">SVTB</studio>
   <studio name="Subversive Flix">Subversive</studio>
   <studio name="Subversive Propaganda">Subversive</studio>
   <studio name="Summit Distribution">Summit</studio>
@@ -1475,6 +1492,7 @@
   <studio name="Summit International">Summit</studio>
   <studio name="Summit Media">Summit</studio>
   <studio name="SundanceTV">Sundance TV</studio>
+  <studio name="ΣΚΑΪ">Skai</studio>
   <studio name="Nippon Sunrise">Sunrise</studio>
   <studio name="Nippon Television Network">NTV</studio>
   <studio name="Nippon Television Network Corporation">NTV</studio>
@@ -2115,6 +2133,9 @@
   <studio name="ТО &quot;Экран&quot;">Экран</studio>
   <studio name="Телеканал «РОССИЯ 1»">Россия 1</studio>
   <studio name="Телеканал &quot;РОССИЯ 1&quot;">Россия 1</studio>
+  <studio name="Телесто">Telesto</studio>
+  <studio name="Кинокомпания «Телесто»">Telesto</studio>
+  <studio name="Кинокомпания &quot;Телесто&quot;">Telesto</studio>
   <studio name="Film.UA">Film UA</studio>
   <studio name="Central Partnership">Централ Партнершип</studio>
   <studio name="Централ Партнершип Classic">Централ Партнершип</studio>

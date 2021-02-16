@@ -343,7 +343,7 @@ namespace FanartHandler
     private string CommonGetMusicBrainzID(string artist, string album)
     {
       string res = Utils.DBm.GetDBMusicBrainzID(Utils.GetArtist(artist), (string.IsNullOrEmpty(album)) ? null : Utils.GetAlbum(album));
-      if (!string.IsNullOrEmpty(res) && (res.Length > 10))
+      if (Utils.IsMBID(res))
       {
         logger.Debug("Common: MusicBrainz DB ID: " + res);
         return res;
@@ -581,7 +581,7 @@ namespace FanartHandler
       {
         // Get from DB stored Artist MBID for Album
         string res = Utils.DBm.GetDBMusicBrainzID(Utils.GetArtist(artist), null);
-        if (!string.IsNullOrEmpty(res) && (res.Length > 10) && !res.Trim().Equals("<none>", StringComparison.CurrentCulture))
+        if (Utils.IsMBID(res))
         {
           artistMBID = res;
         }

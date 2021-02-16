@@ -398,6 +398,7 @@ namespace FanartHandler
           if (Utils.AdvancedDebug)
           {
             logger.Debug("*** RefreshMusicPlaying: GetCurrMusicPlayItem {0} - {1} - {2} - {3} - {4}", CurrentTrackTag, CurrentAlbumTag, CurrentGenreTag, LastArtistTrack, LastAlbumArtistTrack);
+            logger.Debug("*** RefreshMusicPlaying: GetCurrMusicPlayItem {0} - {1} - {2} - {3} - {4}", fmp.Artist.Id, fmp.AlbumArtist.Id, fmp.Album.Id, fmp.Album.Artist, fmp.Album.Album);
           }
 
           if (Utils.ScraperMusicPlaying && (FanartHandlerSetup.Fh.MyScraperNowWorker != null && FanartHandlerSetup.Fh.MyScraperNowWorker.TriggerRefresh))

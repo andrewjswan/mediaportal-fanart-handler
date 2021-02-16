@@ -17,6 +17,7 @@ using FHNLog.NLog;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -80,8 +81,10 @@ namespace FanartHandler
                                                                    " . "," . "," . "," . "," . "," . "," . "," . "," . "," . ",
                                                                    "  .","  .","  .","  .","  .","  .","  .","  .","  .","  ."};
 
+    public static Hashtable FanartHandlerMBIDCache;
     public static Hashtable MediaportalMBIDCache;
     public static Hashtable LastFMAlbumCache;
+    public static bool? MediaportalMBID = null;
 
     public const string VariousArtists = "Various Artists";
 
@@ -202,8 +205,9 @@ namespace FanartHandler
     public static bool UseCoverArtArchive { get; set; }
     public static bool UseTheAudioDB { get; set; }
     public static bool UseSpotLight { get; set; }
-    public static bool UseAnimated { get; set; }
     public static bool UseTheMovieDB { get; set; }
+    public static bool UseAnimated { get; set; }
+    public static bool UseAnimatedKyraDB { get; set; }
     #endregion
 
     #region Fanart.TV 
@@ -2649,10 +2653,12 @@ namespace FanartHandler
     #region Music Items                                                                                                         
     public static FanartVideoTrack GetCurrMusicPlayItem(ref string CurrentTrackTag, ref string CurrentAlbumTag, ref string CurrentGenreTag, ref string LastArtistTrack, ref string LastAlbumArtistTrack)
     {
+      Stopwatch stopWatch = new Stopwatch();
       if (Utils.AdvancedDebug)
       {
-        logger.Debug("*** GetCurrMusicPlayItem: Started...");
+        stopWatch.Start();
       }
+
       FanartVideoTrack fmp = new FanartVideoTrack();
       try
       {
@@ -2754,10 +2760,6 @@ namespace FanartHandler
               CurrentAlbumTag = mvcAlbum;
             }
           }
-          if (Utils.AdvancedDebug)
-          {
-            logger.Debug("*** GetCurrMusicPlayItem: Progress...");
-          }
           fmp.TrackArtist = selArtist;
           fmp.TrackAlbumArtist = selAlbumArtist;
           fmp.TrackVideoArtist = mvcArtist;
@@ -2775,10 +2777,14 @@ namespace FanartHandler
         logger.Error("GetCurrMusicPlayItem: " + ex);
         return null;
       }
+
       if (Utils.AdvancedDebug)
       {
-        logger.Debug("*** GetCurrMusicPlayItem: Complete...");
+        stopWatch.Stop();
+        TimeSpan ts = stopWatch.Elapsed;
+        logger.Debug("*** GetCurrMusicPlayItem: Complete time: {0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
       }
+
       return fmp;
     }
 
@@ -3928,6 +3934,10 @@ namespace FanartHandler
 
     public static string AnimatedKyraDBGetFilename(Utils.Animated type, FanartClass key)
     {
+      if (!UseAnimatedKyraDB)
+      {
+        return string.Empty;
+      }
       if (FHKyraDBAnimated == null)
       {
         return string.Empty;
@@ -6330,6 +6340,7 @@ namespace FanartHandler
       UseTheAudioDB = true;
       UseSpotLight = false;
       UseAnimated = false;
+      UseAnimatedKyraDB = false;
       UseTheMovieDB = true;
       #endregion
       #region Fanart.TV
@@ -6471,6 +6482,7 @@ namespace FanartHandler
           UseTheAudioDB = settings.GetValueAsBool("Providers", "UseTheAudioDB", UseTheAudioDB);
           UseSpotLight = settings.GetValueAsBool("Providers", "UseSpotLight", UseSpotLight);
           UseAnimated = settings.GetValueAsBool("Providers", "UseAnimated", UseAnimated);
+          UseAnimatedKyraDB = settings.GetValueAsBool("Providers", "UseAnimatedKyraDB", UseAnimatedKyraDB);
           UseTheMovieDB = settings.GetValueAsBool("Providers", "UseTheMovieDB", UseTheMovieDB);
           //
           AddAdditionalSeparators = settings.GetValueAsBool("Scraper", "AddAdditionalSeparators", AddAdditionalSeparators);
@@ -6656,6 +6668,7 @@ namespace FanartHandler
       {
         logger.Debug("Animated: Movie: " + Check(AnimatedMoviesPosterDownload) + " Poster, " + Check(AnimatedMoviesBackgroundDownload) + " Background");
         logger.Debug("Animated: Language: " + AnimatedLanguage + " - " + GetLangName());
+        logger.Debug("Animated: " + Check(UseAnimatedKyraDB) + " KyraDB");
       }
       if (UseTheMovieDB && TheMovieDBMovieNeedDownload)
       {
@@ -6816,8 +6829,9 @@ namespace FanartHandler
           xmlwriter.SetValueAsBool("Providers", "UseCoverArtArchive", UseCoverArtArchive);
           xmlwriter.SetValueAsBool("Providers", "UseTheAudioDB", UseTheAudioDB);
           xmlwriter.SetValueAsBool("Providers", "UseSpotLight", UseSpotLight);
-          xmlwriter.SetValueAsBool("Providers", "UseAnimated", UseAnimated);
           xmlwriter.SetValueAsBool("Providers", "UseTheMovieDB", UseTheMovieDB);
+          xmlwriter.SetValueAsBool("Providers", "UseAnimated", UseAnimated);
+          xmlwriter.SetValueAsBool("Providers", "UseAnimatedKyraDB", UseAnimatedKyraDB);
           //
           xmlwriter.SetValueAsBool("Scraper", "AddAdditionalSeparators", AddAdditionalSeparators);
           xmlwriter.SetValue("Scraper", "ScraperMaxImages", ScraperMaxImages);

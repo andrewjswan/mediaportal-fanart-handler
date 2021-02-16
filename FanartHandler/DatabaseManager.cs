@@ -16,11 +16,12 @@ using SQLite.NET;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
 using System.Linq;
-using System.Text.RegularExpressions;
+
 
 namespace FanartHandler
 {
@@ -42,7 +43,6 @@ namespace FanartHandler
 
     private Scraper scraper;
     private bool DBIsInit = false;
-    private bool? DBhaveMBID = null;
 
     public bool IsScraping { get; set; }
     public bool StopScraper { get; set; }
@@ -4476,6 +4476,7 @@ namespace FanartHandler
             {
               logger.Debug("*** Update MBID for {0} - {1} - {2}", key1, key2, id);
             }
+            Utils.FanartHandlerMBIDCache = new Hashtable();
           }
         }
       }
@@ -4629,56 +4630,73 @@ namespace FanartHandler
 
       try
       {
-        if (!DBhaveMBID.HasValue)
+        if (!Utils.MediaportalMBID.HasValue)
         {
-          DBhaveMBID = (MusicDatabase.DirectExecute("SELECT IIF(COUNT(*) > 0, 'Yes', 'No' ) Exist FROM pragma_table_info('tracks') " +
-                                                    "WHERE name='strMBArtistId';").GetField(0, 0) == "Yes");
+          Utils.MediaportalMBID = (MusicDatabase.DirectExecute("SELECT IIF(COUNT(*) > 0, 'Yes', 'No' ) Exist FROM pragma_table_info('tracks') " +
+                                                               "WHERE name='strMBArtistId';").GetField(0, 0) == "Yes");
         }
       } 
       catch
       {
-        DBhaveMBID = false;
+        Utils.MediaportalMBID = false;
       }
 
-      if (DBhaveMBID == false)
+      if (Utils.MediaportalMBID == false)
       {
+        if (Utils.AdvancedDebug)
+        {
+          logger.Debug("*** Mediaportal: Not have MBID fileds ...");
+        }
         return string.Empty;
       }
 
-      string key = "#" + artist + (!string.IsNullOrEmpty(album) ? "#" + album : "");
       if (Utils.MediaportalMBIDCache == null)
       {
         Utils.MediaportalMBIDCache = new Hashtable();
       }
 
+      string MBID = string.Empty;
+      string key = "#" + artist + (!string.IsNullOrEmpty(album) ? "#" + album : "");
+
       if (Utils.MediaportalMBIDCache.Contains(key))
       {
+        MBID = (string)Utils.MediaportalMBIDCache[key];
+        if (!Utils.IsMBID(MBID))
+        {
+          return string.Empty;
+        }
+
         if (Utils.AdvancedDebug)
         { 
-          logger.Debug("*** Mediaportal Cache: MusicBrainz DB ID: " + (string)Utils.MediaportalMBIDCache[key]);
+          logger.Debug("*** Mediaportal Cache: MusicBrainz DB ID: " + MBID);
         }
-        return (string)Utils.MediaportalMBIDCache[key];
+        return MBID;
       }
 
-      string MBID = string.Empty;
+      Stopwatch stopWatch = new Stopwatch();
+      if (Utils.AdvancedDebug)
+      {
+        stopWatch.Start();
+      }
+
       try
       {
         if (string.IsNullOrEmpty(album))
         {
           string SQL = "WITH RECURSIVE split(sActor, actor, sMBID, mbid) AS ( " +
-                         "SELECT DISTINCT '', RTRIM(LTRIM(strArtist, '| '),' |')||'|', '', REPLACE(strMBArtistId,'/','|')||'|' " +
+                         "SELECT DISTINCT '', RTRIM(LTRIM(strArtist, '| '),' |')||'|', '', strMBArtistId||'|' " +
                            "FROM tracks " +
                            "WHERE strArtist LIKE '%| {0} |%' AND strMBArtistId NOT NULL AND TRIM(strMBArtistId) != '' " +
                          "UNION ALL " +
-                         "SELECT DISTINCT '', RTRIM(LTRIM(strAlbumArtist, '| '),' |')||'|', '', REPLACE(strMBReleaseArtistId,'/','|')||'|' " +
+                         "SELECT DISTINCT '', RTRIM(LTRIM(strAlbumArtist, '| '),' |')||'|', '', strMBReleaseArtistId||'|' " +
                            "FROM tracks " +
                            "WHERE strAlbumArtist LIKE '%| {0} |%' AND strMBReleaseArtistId NOT NULL AND TRIM(strMBReleaseArtistId) != '' " +
                          "UNION ALL " +
-                         "SELECT DISTINCT '', RTRIM(LTRIM({1}, '| '),' |')||'|', '', REPLACE(strMBArtistId,'/','|')||'|' " +
+                         "SELECT DISTINCT '', RTRIM(LTRIM({1}, '| '),' |')||'|', '', strMBArtistId||'|' " +
                            "FROM tracks " +
                            "WHERE {1} LIKE '%| {0} |%' AND strMBArtistId NOT NULL AND TRIM(strMBArtistId) != '' " +
                          "UNION ALL " +
-                         "SELECT DISTINCT '', RTRIM(LTRIM({2}, '| '),' |')||'|', '', REPLACE(strMBReleaseArtistId,'/','|')||'|' " +
+                         "SELECT DISTINCT '', RTRIM(LTRIM({2}, '| '),' |')||'|', '', strMBReleaseArtistId||'|' " +
                            "FROM tracks " +
                            "WHERE {2} LIKE '%| {0} |%' AND strMBReleaseArtistId NOT NULL AND TRIM(strMBReleaseArtistId) != '' " +
                          "UNION ALL " +
@@ -4719,14 +4737,23 @@ namespace FanartHandler
         logger.Debug(ex);
       }
 
-      if (!Utils.IsMBID(MBID))
+      if (Utils.AdvancedDebug)
       {
-        return string.Empty;
+        stopWatch.Stop();
+        TimeSpan ts = stopWatch.Elapsed;
+        logger.Debug("*** Mediaportal: MusicBrainz DB ID: SQL Query time: {0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
       }
 
-      if (Utils.AdvancedDebug)
-      { 
-        logger.Debug("*** Mediaportal: MusicBrainz DB ID: " + MBID);
+      if (!Utils.IsMBID(MBID))
+      {
+        MBID = string.Empty;
+      }
+      else
+      {
+        if (Utils.AdvancedDebug)
+        {
+          logger.Debug("*** Mediaportal: MusicBrainz DB ID: " + MBID);
+        }
       }
       Utils.MediaportalMBIDCache.Add(key, MBID);
       return MBID;
@@ -4745,21 +4772,42 @@ namespace FanartHandler
         return null;
       }
 
+      if (Utils.FanartHandlerMBIDCache == null)
+      {
+        Utils.FanartHandlerMBIDCache = new Hashtable();
+      }
+
+      string key = "#" + artist + (!string.IsNullOrEmpty(album) ? "#" + album : "");
+      if (Utils.FanartHandlerMBIDCache.Contains(key))
+      {
+        return (string)Utils.FanartHandlerMBIDCache[key];
+      }
+
       try
       {
         lock (lockObject)
-          return dbClient.Execute("SELECT DISTINCT MBID " +
-                                   "FROM Image " +
-                                   "WHERE Key1 = '" + Utils.PatchSql(artist) + "' AND " +
-                                         "Key2 = '" + Utils.PatchSql(album) + "' AND " +
-                                         "TRIM(MBID) <> '' " +
-                                   " LIMIT 1;").GetField(0, 0);
+          MBID = dbClient.Execute("SELECT DISTINCT MBID " +
+                                  "FROM Image " +
+                                  "WHERE Key1 = '" + Utils.PatchSql(artist) + "' AND " +
+                                        "Key2 = '" + Utils.PatchSql(album) + "' AND " +
+                                        "TRIM(MBID) <> '' " +
+                                  "LIMIT 1;").GetField(0, 0);
+
+        if (!Utils.IsMBID(MBID))
+        {
+          MBID = string.Empty;
+        }
+        else
+        {
+          Utils.FanartHandlerMBIDCache.Add(key, MBID);
+        }
       }
       catch (Exception ex)
       {
         logger.Error("GetDBMusicBrainzID: " + ex);
+        MBID = string.Empty;
       }
-      return null;
+      return MBID;
     }
     // End: GetDBMusicBrainzID
 
@@ -4785,6 +4833,7 @@ namespace FanartHandler
                                "Time_Stamp = '" + DateTime.Today.AddDays(-30.0).ToString(dbDateFormat, CultureInfo.CurrentCulture) + "' " +
                            "WHERE Key1 = '" + Utils.PatchSql(artist) + "' AND " +
                                  "Key2 = '" + Utils.PatchSql(album) + "';");
+        Utils.FanartHandlerMBIDCache = new Hashtable();
       }
       catch (Exception ex)
       {
