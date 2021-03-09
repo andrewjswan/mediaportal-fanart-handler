@@ -4645,7 +4645,7 @@ namespace FanartHandler
       {
         if (Utils.AdvancedDebug)
         {
-          logger.Debug("*** Mediaportal: Not have MBID fileds ...");
+          logger.Debug("*** Mediaportal: Not have MBID fields ...");
         }
         return string.Empty;
       }
@@ -4668,7 +4668,7 @@ namespace FanartHandler
 
         if (Utils.AdvancedDebug)
         { 
-          logger.Debug("*** Mediaportal Cache: MusicBrainz DB ID: " + MBID);
+          logger.Debug("*** Mediaportal Cache: MusicBrainz DB ID: " + MBID + " for: " + key);
         }
         return MBID;
       }
@@ -4741,7 +4741,7 @@ namespace FanartHandler
       {
         stopWatch.Stop();
         TimeSpan ts = stopWatch.Elapsed;
-        logger.Debug("*** Mediaportal: MusicBrainz DB ID: SQL Query time: {0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
+        logger.Debug("*** Mediaportal: MusicBrainz DB ID: SQL Query time for {4}: {0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10, key);
       }
 
       if (!Utils.IsMBID(MBID))
@@ -4752,7 +4752,7 @@ namespace FanartHandler
       {
         if (Utils.AdvancedDebug)
         {
-          logger.Debug("*** Mediaportal: MusicBrainz DB ID: " + MBID);
+          logger.Debug("*** Mediaportal: MusicBrainz DB ID: " + MBID + " for: " + key );
         }
       }
       Utils.MediaportalMBIDCache.Add(key, MBID);

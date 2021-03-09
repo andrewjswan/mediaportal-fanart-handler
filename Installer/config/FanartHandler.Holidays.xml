@@ -4,23 +4,27 @@
 		<Month>1</Month>
 		<Day>1</Day>
 		<NameRU>Новый год!</NameRU>
+		<NameDE>Neujahr</NameDE>
 	</Holiday>
 	<Holiday name="National Science Fiction Day" shortname="ScienceFiction">
 		<Month>1</Month>
 		<Day>2</Day>
 		<NameRU>Международный день научной фантастики</NameRU>
+		<NameDE>Nationaler Science-Fiction Tag</NameDE>
 	</Holiday>
 	<Holiday name="Christmas Eve" shortname="Christmas">
 		<Month>1</Month>
 		<Day>6</Day>
 		<NameRU>Рождественский сочельник</NameRU>
 		<CelebratedIn>RU</CelebratedIn>
+		<NameDE>Heiligabend</NameDE>
 	</Holiday>
 	<Holiday name="Christmas Day" shortname="Christmas">
 		<Month>1</Month>
 		<Day>7</Day>
 		<NameRU>Рождество</NameRU>
 		<CelebratedIn>RU</CelebratedIn>
+		<NameDE>Weihnachtstag</NameDE>
 	</Holiday>
 	<Holiday name="Malanka - Schedry vecher" shortname="NewYear">
 		<Month>1</Month>
@@ -33,10 +37,12 @@
 		<DayOfWeek>1</DayOfWeek>
 		<WeekOfMonth>3</WeekOfMonth>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NameDE>Geburtstag Martin Luther King</NameDE>
 	</Holiday>
 	<Holiday name="World Beatles Day" shortname="Beatles">
 		<Month>1</Month>
 		<Day>16</Day>
+		<NameDE>Tag der Beatles</NameDE>
 	</Holiday>
 	<Holiday name="Inauguration Day">
 		<Month>1</Month>
@@ -48,54 +54,104 @@
 	<Holiday name="Chinese New Year" shortname="ChineseNewYear">
 		<ChineseNewYear />
 		<NameRU>Китайский Новый Год</NameRU>
+		<NameDE>Chinesisches Neujahr</NameDE>
 	</Holiday>
 	<Holiday name="President's Day">
 		<Month>2</Month>
 		<DayOfWeek>1</DayOfWeek>
 		<WeekOfMonth>3</WeekOfMonth>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NameDE>Tag des US-Präsidenten</NameDE>
 	</Holiday>
 	<Holiday name="Groundhog Day">
 		<Month>2</Month>
 		<Day>2</Day>
 		<NameRU>День сурка</NameRU>
+		<NameDE>Murmeltiertag</NameDE>
 	</Holiday>
 	<Holiday name="Lincoln's Birthday (Traditional)">
 		<Month>2</Month>
 		<Day>12</Day>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NameDE>Geburtstag Abraham Lincoln (Traditional)</NameDE>
 	</Holiday>
 	<Holiday name="Valentine's Day" shortname="Valentines">
 		<Month>2</Month>
 		<Day>14</Day>
 		<NameRU>День святого Валентина</NameRU>
+		<NameDE>Valentinstag</NameDE>
 	</Holiday>
 	<Holiday name="Washington's Birthday (Traditional)">
 		<Month>2</Month>
 		<Day>22</Day>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NameDE>Geburtstag George Washington (Traditional)</NameDE>
+	</Holiday>
+	<Holiday name="International Women's Day" shortname="WomensDay">
+		<Month>3</Month>
+		<Day>8</Day>
+		<NameRU>Международный женский день</NameRU>
+		<NameDE>Weltfrauentag</NameDE>
 	</Holiday>
 	<Holiday name="Pi Day" shortname="PiDay">
 		<Month>3</Month>
 		<Day>14</Day>
 		<NameRU>День числа Пи</NameRU>
+		<NameDE>Pi-Tag</NameDE>
 	</Holiday>
 	<Holiday name="St. Patrick's Day" shortname="StPatricks">
 		<Month>3</Month>
 		<Day>17</Day>
 		<NameRU>День святого Патрика</NameRU>
+		<NameDE>St. Patrick's Tag</NameDE>
 	</Holiday>
 	<Holiday name="Easter">
 		<Easter />
 		<NameRU>Пасха</NameRU>
 		<NameHE>פסח</NameHE>
+		<NameDE>Ostersonntag</NameDE>
+	</Holiday>
+  <Holiday name="Easter">
+		<DaysAfterHoliday Holiday="Easter">
+			<Days>1</Days>
+		</DaysAfterHoliday>
+		<NameDE>Ostermontag</NameDE>
+		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NotCelebratedIn>HE</NotCelebratedIn>
 	</Holiday>	
-    <Holiday name="Pesach">
+	<Holiday name="Vatertag" shortname="Vatertag">
+		<DaysAfterHoliday Holiday="Easter">
+			<Days>40</Days>
+		</DaysAfterHoliday>
+		<NameDE>Vatertag</NameDE>
+		<CelebratedIn>DE</CelebratedIn>
+		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NotCelebratedIn>HE</NotCelebratedIn>
+		<NotCelebratedIn>EN</NotCelebratedIn>
+	</Holiday>
+	<Holiday name="Pentecost">
+		<DaysAfterHoliday Holiday="Easter">
+			<Days>49</Days>
+		</DaysAfterHoliday>
+		<NameDE>Pfingstsonntag</NameDE>
+		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NotCelebratedIn>HE</NotCelebratedIn>
+	</Holiday>
+  <Holiday name="Pentecost">
+		<DaysAfterHoliday Holiday="Easter">
+			<Days>50</Days>
+		</DaysAfterHoliday>
+		<NameDE>Pfingstmontag</NameDE>
+		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NotCelebratedIn>HE</NotCelebratedIn>
+	</Holiday>
+	<Holiday name="Pesach">
 		<DaysAfterHoliday Holiday="Easter">
 			<Days>7</Days>
 		</DaysAfterHoliday>
 		<NameHE>פסח</NameHE>
 		<CelebratedIn>HE</CelebratedIn>
+		<NameDE>Pessach</NameDE>
 	</Holiday>
     <Holiday name="Maundy Thursday">
 		<DaysAfterHoliday Holiday="Good Friday">
@@ -103,6 +159,7 @@
 		</DaysAfterHoliday>
 		<NameRU>Чистый четверг</NameRU>
 		<NotCelebratedIn>HE</NotCelebratedIn>
+		<NameDE>Gründonnerstag</NameDE>
 	</Holiday>
     <Holiday name="Good Friday">
 		<DaysAfterHoliday Holiday="Easter">
@@ -110,6 +167,7 @@
 		</DaysAfterHoliday>
 		<NameRU>Великая пятница</NameRU>
 		<NotCelebratedIn>HE</NotCelebratedIn>
+		<NameDE>Karfreitag</NameDE>
 	</Holiday>
 	<Holiday name="Ash Wednesday">
 		<DaysAfterHoliday Holiday="Good Friday">
@@ -117,11 +175,13 @@
 		</DaysAfterHoliday>
 		<NameRU>Пепельная среда</NameRU>
 		<NotCelebratedIn>HE</NotCelebratedIn>
+		<NameDE>Aschermittwoch</NameDE>
 	</Holiday>
 	<Holiday name="April Fool's Day" shortname="AprilFools">
 		<Month>4</Month>
 		<Day>1</Day>
 		<NameRU>День дураков</NameRU>
+		<NameDE>1. April ;)</NameDE>
 	</Holiday>
 	<Holiday name="Administrative Assistants' Day">
 		<LastFullWeekOfMonth>
@@ -129,11 +189,13 @@
 			<DayOfWeek>3</DayOfWeek>
 		</LastFullWeekOfMonth>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NameDE>Tag der Verwaltungsassistenten</NameDE>
 	</Holiday>
 	<Holiday name="Cosmonautics Day" shortname="CosmonauticsDay">
 		<Month>4</Month>
 		<Day>12</Day>
 		<NameRU>День космонавтики</NameRU>
+		<NameDE>Tag der Kosmonauten</NameDE>
 	</Holiday>
 	<Holiday name="Tax Day">
 		<WeekdayOnOrAfter>
@@ -141,60 +203,77 @@
 			<Day>15</Day>
 		</WeekdayOnOrAfter>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NameDE>Tag der Steuer :(</NameDE>
 	</Holiday>
 	<Holiday name="Earth Day" shortname="EarthDay">
 		<Month>4</Month>
 		<Day>22</Day>
+		<NameDE>Tag der Erde</NameDE>
 	</Holiday>
 	<Holiday name="Alien Day" shortname="AlienDay">
 		<Month>4</Month>
 		<Day>26</Day>
+		<NameDE>Tag der Ausserirdischen</NameDE>
+	</Holiday>
+	<Holiday name="Workers' Day" shortname="WorkersDay">
+		<Month>5</Month>
+		<Day>1</Day>
+		<NameDE>Tag der Arbeit</NameDE>
 	</Holiday>
 	<Holiday name="May the 4th be with You!" shortname="StarWarsDay">
 		<Month>5</Month>
 		<Day>4</Day>
+		<NameDE>May the 4th be with you! (StarWars-Tag)</NameDE>
 	</Holiday>
 	<Holiday name="Mothers' Day" shortname="MothersDay">
 		<Month>5</Month>
 		<DayOfWeek>0</DayOfWeek>
 		<WeekOfMonth>2</WeekOfMonth>
+		<NameDE>Muttertag</NameDE>
 	</Holiday>	
 	<Holiday name="Armed Forces Day">
 		<Month>5</Month>
 		<DayOfWeek>6</DayOfWeek>
 		<WeekOfMonth>3</WeekOfMonth>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NameDE>Tag der Streitkräfte</NameDE>
 	</Holiday>
 	<Holiday name="Memorial Day">
 		<Month>5</Month>
 		<DayOfWeek>1</DayOfWeek>
 		<WeekOfMonth>5</WeekOfMonth>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NameDE>Gedenktag</NameDE>
 	</Holiday>
 	<Holiday name="Flag Day">
 		<Month>6</Month>
 		<Day>14</Day>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NameDE>Tag der Flaggen</NameDE>
 	</Holiday>	
 	<Holiday name="Fathers' Day" shortname="FathersDay">
 		<Month>6</Month>
 		<DayOfWeek>0</DayOfWeek>
 		<WeekOfMonth>3</WeekOfMonth>
+		<NameDE>Vatertag</NameDE>
 	</Holiday>
 	<Holiday name="Parents' Day">
 		<Month>7</Month>
 		<DayOfWeek>0</DayOfWeek>
 		<WeekOfMonth>4</WeekOfMonth>
+		<NameDE>Tag der Eltern</NameDE>
 	</Holiday>
 	<Holiday name="Independence Day">
 		<Month>7</Month>
 		<Day>4</Day>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NameDE>Unabhängigkeittag</NameDE>
 	</Holiday>
     <Holiday name="System Administrator Appreciation Day" shortname="SysAdminDay">
 		<Month>7</Month>
 		<DayOfWeek>5</DayOfWeek>
 		<WeekOfMonth>5</WeekOfMonth>
+		<NameDE>Tag der Systemadministratoren</NameDE>
 	</Holiday>
 	<Holiday name="Labor Day">
 		<Month>9</Month>
@@ -206,18 +285,22 @@
 		<DaysAfterHoliday Holiday="Labor Day">
 			<Days>6</Days>
 		</DaysAfterHoliday>
+		<NameDE>Tag der Grosseltern</NameDE>
 	</Holiday>
 	<Holiday name="The Emoticon's Birthday" shortname="EmoticonsBirthday">
 		<Month>9</Month>
 		<Day>19</Day>
+		<NameDE>Geburtstag der Emoticons</NameDE>
 	</Holiday>
 	<Holiday name="Day of the Programmer" shortname="ProgrammerDay">
 		<DayOfYear>256</DayOfYear>
+		<NameDE>Tag der Programmierer</NameDE>
 	</Holiday>
 	<Holiday name="United Nations Day">
 		<Month>10</Month>
 		<Day>24</Day>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NameDE>Tag der Vereinten Nationen</NameDE>
 	</Holiday>
 	<Holiday name="Halloween">
 		<Month>10</Month>
@@ -228,6 +311,7 @@
 		<DayOfWeek>1</DayOfWeek>
 		<WeekOfMonth>2</WeekOfMonth>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NameDE>Kolumbustag</NameDE>
 	</Holiday>
 	<Holiday name="Election Day">
 		<DayOfWeekOnOrAfter>
@@ -236,31 +320,38 @@
 			<Day>2</Day>
 		</DayOfWeekOnOrAfter>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NotCelebratedIn>DE</NotCelebratedIn>
 	</Holiday>
 	<Holiday name="Veterans Day">
 		<Month>11</Month>
 		<Day>11</Day>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NotCelebratedIn>DE</NotCelebratedIn>
 	</Holiday>
 	<Holiday name="Christmas Eve" shortname="Christmas">
 		<Month>12</Month>
 		<Day>24</Day>
 		<NameRU>Рождественский сочельник</NameRU>
+		<NameDE>Heiligabend</NameDE>
 	</Holiday>
 	<Holiday name="Christmas Day" shortname="Christmas">
 		<Month>12</Month>
 		<Day>25</Day>
 		<NameRU>Рождество</NameRU>
+		<NameDE>1. Weihnachtsfeiertag</NameDE>
 	</Holiday>
 	<Holiday name="New Year's race to us..." shortname="LastDay">
 		<Month>12</Month>
 		<Day>31</Day>
 		<NameRU>Новый год к нам мчится...</NameRU>
+		<NameDE>Silvester</NameDE>
 	</Holiday>
 	<Holiday name="Daylight Savings Time Begins" shortname="DaylightSavings|DaylightSavingsBegin">
 		<DSTStart />
+		<NameDE>Beginn der Sommerzeit</NameDE>
 	</Holiday>
 	<Holiday name="Daylight Savings Time Ends" shortname="DaylightSavings|DaylightSavingsEnd">
 		<DSTEnd />
+		<NameDE>Ende der Sommerzeit</NameDE>
 	</Holiday>
 </Holidays>

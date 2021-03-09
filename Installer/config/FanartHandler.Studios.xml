@@ -1483,6 +1483,7 @@
   <studio name="STX Films">STX</studio>
   <studio name="Sveriges Television">SVT</studio>
   <studio name="Sveriges Television (SVT)">SVT</studio>
+  <studio name="SVT 1">SVT1</studio>
   <studio name="SVT 2">SVT2</studio>
   <studio name="SVT B">SVTB</studio>
   <studio name="Subversive Flix">Subversive</studio>
@@ -1665,7 +1666,19 @@
   <studio name="tvp sa">TVP</studio>
   <studio name="Telewizja Polska (TVP)">TVP</studio>
   <studio name="Radio West">TV West</studio>
+  <studio name="TV 2">TV2</studio>
+  <studio name="TV2 (DK)">TV2</studio>
+  <studio name="TV 2 (DK)">TV2</studio>
+  <studio name="TV2 Danmark">TV2</studio>
+  <studio name="TV 2 Danmark">TV2</studio>
+  <studio name="TV 3">TV3</studio>
+  <studio name="TV 3+">TV3+</studio>
+  <studio name="TV 4">TV4</studio>
   <studio name="TV4 (SE)">TV4</studio>
+  <studio name="TV 4 (SE)">TV4</studio>
+  <studio name="TV 4 HD">TV4 HD</studio>
+  <studio name="TV 5 Monde">TV5 Monde</studio>
+  <studio name="TV 6">TV6</studio>
   <studio name="Twisted Pictures">Twisted</studio>
   <studio name="Twisted Media Inc">Twisted Media</studio>
   <studio name="Twisted Media Inc.">Twisted Media</studio>

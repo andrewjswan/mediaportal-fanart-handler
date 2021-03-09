@@ -1224,7 +1224,7 @@ namespace FanartHandler
       key = Regex.Replace(key, @"\svii(\b)", " 7$1");         
       key = Regex.Replace(key, @"\sviii(\b)", " 8$1");          
       key = Regex.Replace(key, @"\six(\b)", " 9$1");
-      key = Regex.Replace(key, @"\s(1)$", string.Empty);
+      // key = Regex.Replace(key, @"\s(1)$", string.Empty);
       key = Regex.Replace(key, @"[^\w|;&]", " ");                     
       key = TrimWhiteSpace(key);
       return key;
@@ -1552,9 +1552,7 @@ namespace FanartHandler
           key = key.Substring(0, key.IndexOf("-", StringComparison.CurrentCulture)).Trim();
         }
       }
-      else if (category == Category.MusicFanart && (key == "!" || key == "!!" || key == "!!!" || key == "?"))
-      {
-      }
+      else if (category == Category.MusicFanart && (key == "!" || key == "!!" || key == "!!!" || key == "?")) { }
       else
       {
         key = Equalize(key);
@@ -6773,6 +6771,14 @@ namespace FanartHandler
       __str = "Jax Jones feat. Au/Ra";
       logger.Debug("*** GetArtist: " + Utils.GetArtist(__str, Category.MusicFanart, SubCategory.MusicFanartScraped));
       */
+      string __str = "Artist 1 feat. Artist 2";
+      logger.Debug("*** GetArtist: " + Utils.GetArtist(__str, Category.MusicFanart, SubCategory.MusicFanartScraped));
+      __str = "Artist 1";
+      logger.Debug("*** GetArtist: " + Utils.GetArtist(__str, Category.MusicFanart, SubCategory.MusicFanartScraped));
+      __str = "Artist 2";
+      logger.Debug("*** GetArtist: " + Utils.GetArtist(__str, Category.MusicFanart, SubCategory.MusicFanartScraped));
+      __str = "Artist 3";
+      logger.Debug("*** GetArtist: " + Utils.GetArtist(__str, Category.MusicFanart, SubCategory.MusicFanartScraped));
 
       #endregion
     }

@@ -376,18 +376,18 @@ namespace FanartHandler
         // logger.Debug("*** MusicBrainz DB ID: Current Provider: {0}", provider);
         if (provider.Equals(Utils.MBIDProvider.TheAudioDB.ToString(), StringComparison.InvariantCultureIgnoreCase))
         {
-      res = TheAudioDBGetMusicBrainzID(artist, album);
+          res = TheAudioDBGetMusicBrainzID(artist, album);
           if (!string.IsNullOrEmpty(res))
-      {
+          {
             return res;
           }
           continue;
         }
         if (provider.Equals(Utils.MBIDProvider.LastFM.ToString(), StringComparison.InvariantCultureIgnoreCase))
         {
-        res = LastFMGetMusicBrainzID(artist, album);
+          res = LastFMGetMusicBrainzID(artist, album);
           if (!string.IsNullOrEmpty(res))
-        {
+          {
             return res;
           }
           continue;
@@ -541,7 +541,12 @@ namespace FanartHandler
     // Begin: GetMisicBrainzLabel
     private string GetMisicBrainzLabel(string artist, string album)
     {
-      return GetMisicBrainzLabel(GetMusicBrainzID(artist, album));
+      if (Utils.AdvancedDebug)
+      {
+        logger.Debug("*** GetMisicBrainzLabel: [{0}] [{1}]", artist, album);
+      }
+      // return GetMisicBrainzLabel(GetMusicBrainzID(artist, album));
+      return GetMisicBrainzLabel(CommonGetMusicBrainzID(artist, album));
     }
 
     private string GetMisicBrainzLabel(string mbid)
