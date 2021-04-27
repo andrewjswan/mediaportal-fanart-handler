@@ -105,6 +105,12 @@
 		<NameRU>День святого Патрика</NameRU>
 		<NameDE>St. Patrick's Tag</NameDE>
 	</Holiday>
+	<Holiday name="Anniversary of MediaPortal" shortname="MediaPortal">
+		<Month>4</Month>
+		<Day>18</Day>
+		<NameRU>День рождения Mediaportal</NameRU>
+		<NameDE>Geburtstag von MediaPortal!</NameDE>
+	</Holiday>
 	<Holiday name="Easter">
 		<Easter />
 		<NameRU>Пасха</NameRU>
@@ -121,13 +127,10 @@
 	</Holiday>	
 	<Holiday name="Vatertag" shortname="Vatertag">
 		<DaysAfterHoliday Holiday="Easter">
-			<Days>40</Days>
+			<Days>39</Days>
 		</DaysAfterHoliday>
 		<NameDE>Vatertag</NameDE>
 		<CelebratedIn>DE</CelebratedIn>
-		<NotCelebratedIn>RU</NotCelebratedIn>
-		<NotCelebratedIn>HE</NotCelebratedIn>
-		<NotCelebratedIn>EN</NotCelebratedIn>
 	</Holiday>
 	<Holiday name="Pentecost">
 		<DaysAfterHoliday Holiday="Easter">
