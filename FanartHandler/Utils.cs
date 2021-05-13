@@ -6770,7 +6770,6 @@ namespace FanartHandler
       logger.Debug("*** GetArtist: " + Utils.GetArtist(__str, Category.MusicFanart, SubCategory.MusicFanartScraped));
       __str = "Jax Jones feat. Au/Ra";
       logger.Debug("*** GetArtist: " + Utils.GetArtist(__str, Category.MusicFanart, SubCategory.MusicFanartScraped));
-      */
       string __str = "Artist 1 feat. Artist 2";
       logger.Debug("*** GetArtist: " + Utils.GetArtist(__str, Category.MusicFanart, SubCategory.MusicFanartScraped));
       __str = "Artist 1";
@@ -6779,6 +6778,7 @@ namespace FanartHandler
       logger.Debug("*** GetArtist: " + Utils.GetArtist(__str, Category.MusicFanart, SubCategory.MusicFanartScraped));
       __str = "Artist 3";
       logger.Debug("*** GetArtist: " + Utils.GetArtist(__str, Category.MusicFanart, SubCategory.MusicFanartScraped));
+      */
 
       #endregion
     }
@@ -7277,6 +7277,11 @@ namespace FanartHandler
           HolidayCalculator hc = new HolidayCalculator(date, FullFileName);
           foreach (HolidayCalculator.Holiday h in hc.OrderedHolidays)
           {
+            if (Utils.AdvancedDebug)
+            {
+              logger.Debug("*** Holiday: " + h.Name + " - " + h.Date.ToString());
+            }
+
             if (!string.IsNullOrEmpty(h.ShortName))
             {
               currentHolidays = currentHolidays + (string.IsNullOrEmpty(currentHolidays) ? string.Empty : "|") + h.ShortName;
@@ -7303,6 +7308,11 @@ namespace FanartHandler
           HolidayCalculator hc = new HolidayCalculator(date, FullFileName);
           foreach (HolidayCalculator.Holiday h in hc.OrderedHolidays)
           {
+            if (Utils.AdvancedDebug)
+            {
+              logger.Debug("*** Holiday Custom: " + h.Name + " - " + h.Date.ToString());
+            }
+
             if (!string.IsNullOrEmpty(h.ShortName))
             {
               currentHolidays = currentHolidays + (string.IsNullOrEmpty(currentHolidays) ? string.Empty : "|") + h.ShortName;

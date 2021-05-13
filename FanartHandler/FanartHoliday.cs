@@ -191,7 +191,7 @@ namespace FanartHandler
               PrevHoliday = -1;
               SetCurrentSelectedImageNames(null, Utils.Category.Holiday, Utils.SubCategory.None);
               FanartAvailable = false;
-              logger.Debug("Holiday: "+CurrHolidayText);
+              logger.Debug("Holiday: " + CurrHolidayText);
             }
 
             newFanart = GetFilename(SelectedItem, null, ref CurrHoliday, ref PrevHoliday, Utils.Category.Holiday, Utils.SubCategory.None, flag);

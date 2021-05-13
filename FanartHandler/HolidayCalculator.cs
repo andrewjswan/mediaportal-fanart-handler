@@ -12,6 +12,7 @@ namespace JayMuntzCom
   /// </summary>
   public class HolidayCalculator
   {
+
     #region Constructor
     /// <summary>
     /// Returns all of the holidays occuring in the year following the date that is passed in the constructor.  Holidays are defined in an XML file.
@@ -20,7 +21,8 @@ namespace JayMuntzCom
     /// <param name="xmlPath">The path to the XML file that contains the holiday definitions.</param>
     public HolidayCalculator(System.DateTime startDate, string xmlPath)
     {
-      this.startingDate = startDate;
+      this.startingDate = getFirstDayOfYear(startDate);
+      this.checkDate = startDate;
       orderedHolidays = new ArrayList();
       xHolidays = new XmlDocument();
       xHolidays.Load(xmlPath);
@@ -32,6 +34,7 @@ namespace JayMuntzCom
     private ArrayList orderedHolidays;
     private XmlDocument xHolidays;
     private DateTime startingDate;
+    private DateTime checkDate;
     #endregion
 
     #region Public Properties
@@ -54,7 +57,7 @@ namespace JayMuntzCom
       foreach (XmlNode n in xHolidays.SelectNodes("/Holidays/Holiday"))
       {
         Holiday h = this.processNode(n);
-        if (h.Date.Year > 1 && h.Date == startingDate)
+        if (h.Date == checkDate)
         {
           this.orderedHolidays.Add(h);
         }
@@ -265,7 +268,7 @@ namespace JayMuntzCom
     }
     
     /// <summary>
-    /// Determines the next occurance of Easter (western Christian).
+    /// Determines the next occurance of Easter.
     /// </summary>
     /// <returns></returns>
     private DateTime easter()
@@ -674,6 +677,16 @@ namespace JayMuntzCom
     private DateTime getFirstDayOfMonth(DateTime dt)
     {
       return new DateTime(dt.Year, dt.Month, 1);
+    }
+
+    /// <summary>
+    /// Returns the first day of the year for the specified date.
+    /// </summary>
+    /// <param name="dt"></param>
+    /// <returns></returns>
+    private DateTime getFirstDayOfYear(DateTime dt)
+    {
+      return new DateTime(dt.Year, 1, 1);
     }
     #endregion
 

@@ -117,7 +117,7 @@
 		<NameHE>פסח</NameHE>
 		<NameDE>Ostersonntag</NameDE>
 	</Holiday>
-  <Holiday name="Easter">
+    <Holiday name="Easter Monday" shortname="Easter">
 		<DaysAfterHoliday Holiday="Easter">
 			<Days>1</Days>
 		</DaysAfterHoliday>
@@ -125,7 +125,7 @@
 		<NotCelebratedIn>RU</NotCelebratedIn>
 		<NotCelebratedIn>HE</NotCelebratedIn>
 	</Holiday>	
-	<Holiday name="Vatertag" shortname="Vatertag">
+	<Holiday name="Vatertag">
 		<DaysAfterHoliday Holiday="Easter">
 			<Days>39</Days>
 		</DaysAfterHoliday>
@@ -140,7 +140,7 @@
 		<NotCelebratedIn>RU</NotCelebratedIn>
 		<NotCelebratedIn>HE</NotCelebratedIn>
 	</Holiday>
-  <Holiday name="Pentecost">
+    <Holiday name="Pentecost">
 		<DaysAfterHoliday Holiday="Easter">
 			<Days>50</Days>
 		</DaysAfterHoliday>
@@ -161,24 +161,24 @@
 			<Days>-1</Days>
 		</DaysAfterHoliday>
 		<NameRU>Чистый четверг</NameRU>
-		<NotCelebratedIn>HE</NotCelebratedIn>
 		<NameDE>Gründonnerstag</NameDE>
+		<NotCelebratedIn>HE</NotCelebratedIn>
 	</Holiday>
     <Holiday name="Good Friday">
 		<DaysAfterHoliday Holiday="Easter">
 			<Days>-2</Days>
 		</DaysAfterHoliday>
 		<NameRU>Великая пятница</NameRU>
-		<NotCelebratedIn>HE</NotCelebratedIn>
 		<NameDE>Karfreitag</NameDE>
+		<NotCelebratedIn>HE</NotCelebratedIn>
 	</Holiday>
 	<Holiday name="Ash Wednesday">
 		<DaysAfterHoliday Holiday="Good Friday">
 			<Days>-44</Days>
 		</DaysAfterHoliday>
 		<NameRU>Пепельная среда</NameRU>
-		<NotCelebratedIn>HE</NotCelebratedIn>
 		<NameDE>Aschermittwoch</NameDE>
+		<NotCelebratedIn>HE</NotCelebratedIn>
 	</Holiday>
 	<Holiday name="April Fool's Day" shortname="AprilFools">
 		<Month>4</Month>
@@ -191,8 +191,8 @@
 			<Month>4</Month>
 			<DayOfWeek>3</DayOfWeek>
 		</LastFullWeekOfMonth>
-		<NotCelebratedIn>RU</NotCelebratedIn>
 		<NameDE>Tag der Verwaltungsassistenten</NameDE>
+		<NotCelebratedIn>RU</NotCelebratedIn>
 	</Holiday>
 	<Holiday name="Cosmonautics Day" shortname="CosmonauticsDay">
 		<Month>4</Month>
