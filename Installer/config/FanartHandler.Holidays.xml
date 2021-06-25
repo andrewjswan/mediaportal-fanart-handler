@@ -125,7 +125,7 @@
 		<NotCelebratedIn>RU</NotCelebratedIn>
 		<NotCelebratedIn>HE</NotCelebratedIn>
 	</Holiday>	
-	<Holiday name="Vatertag">
+	<Holiday name="Vatertag" shortname="FathersDay">
 		<DaysAfterHoliday Holiday="Easter">
 			<Days>39</Days>
 		</DaysAfterHoliday>
@@ -248,6 +248,10 @@
 		<NotCelebratedIn>RU</NotCelebratedIn>
 		<NameDE>Gedenktag</NameDE>
 	</Holiday>
+	<Holiday name="Childrens' Day" shortname="ChildrensDay">
+		<Month>6</Month>
+		<Day>1</Day>
+	</Holiday>	
 	<Holiday name="Flag Day">
 		<Month>6</Month>
 		<Day>14</Day>
@@ -258,7 +262,7 @@
 		<Month>6</Month>
 		<DayOfWeek>0</DayOfWeek>
 		<WeekOfMonth>3</WeekOfMonth>
-		<NameDE>Vatertag</NameDE>
+		<NameDE>Vatertag (USA/Südamerika)</NameDE>
 	</Holiday>
 	<Holiday name="Parents' Day">
 		<Month>7</Month>

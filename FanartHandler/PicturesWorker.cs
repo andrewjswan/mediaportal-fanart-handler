@@ -128,7 +128,7 @@ namespace FanartHandler
       else
       {
         int MaximumShares = 250;
-        using (var xmlreader = new Settings(Config.GetFile((Config.Dir) 10, "MediaPortal.xml")))
+        using (Settings xmlreader = new MPSettings())
         {
           for (int index = 0; index < MaximumShares; index++)
           {

@@ -513,6 +513,9 @@
   <studio name="discoverychannel">Discovery</studio>
   <studio name="DIY">DIY Network</studio>
   <studio name="DNA Films">DNA</studio>
+  <studio name="Donners' Company">The Donners Company</studio>
+  <studio name="Donners Company">The Donners Company</studio>
+  <studio name="The Donners' Company">The Donners Company</studio>
   <studio name="Dor Film Produktionsgemeinschaft">Dor Film</studio>
   <studio name="Dor Film Produktionsgemeinschaft GmbH">Dor Film</studio>
   <studio name="Dor Film Produktionsgesellschaft">Dor Film</studio>
@@ -694,6 +697,7 @@
   <studio name="The History Channel">History</studio>
   <studio name="History Channel The">History</studio>
   <studio name="History Channel, The">History</studio>
+  <studio name="History (CA)">History</studio>
   <studio name="History_hd">History HD</studio>
   <studio name="Hollywood Pictures">Hollywood</studio>
   <studio name="Horizon Pictures (II)">Horizon Pictures</studio>
@@ -792,6 +796,7 @@
   <studio name="K O Paper Products">Kurtzman Orci Paper Products</studio>
   <studio name="KO Paper Products">Kurtzman Orci Paper Products</studio>
   <studio name="KOJO Entertainment">KOJO</studio>
+  <studio name="כאן 11">KAN 11</studio>
   <studio name="Kanal 4 (DK)">Kanal 4</studio>
   <studio name="Kanal 5 (DK)">Kanal 5</studio>
   <studio name="Kanal 5 (SE)">Kanal 5</studio>
@@ -1405,6 +1410,7 @@
   <studio name="Sky1">Sky 1</studio>
   <studio name="Sky2">Sky 2</studio>
   <studio name="Sky Atlantic (UK)">Sky Atlantic</studio>
+  <studio name="Sky Atlantic (IT)">Sky Atlantic</studio>
   <studio name="Sofica Manon 2">Sofica Manon</studio>
   <studio name="Sofica Manon 3">Sofica Manon</studio>
   <studio name="Sofica Manon 4">Sofica Manon</studio>

@@ -1045,7 +1045,7 @@ namespace FanartHandler
     {
       logger.Info("Refreshing local fanart for Music (Music folder Artist/Album Fanart) is starting.");
       int MaximumShares = 250;
-      using (var xmlreader = new Settings(Config.GetFile((Config.Dir) 10, "MediaPortal.xml")))
+      using (Settings xmlreader = new MPSettings())
       {
         for (int index = 0; index < MaximumShares; index++)
         {
@@ -6578,7 +6578,7 @@ namespace FanartHandler
       #region Mediaportal settings
       try
       {
-        using (var xmlreader = new Settings(Config.GetFile((Config.Dir) 10, "MediaPortal.xml")))
+        using (Settings xmlreader = new MPSettings())
         {
           _strippedPrefixes = xmlreader.GetValueAsBool("musicfiles", "stripartistprefixes", false);
           _artistPrefixes = xmlreader.GetValueAsString("musicfiles", "artistprefixes", _artistPrefixes);

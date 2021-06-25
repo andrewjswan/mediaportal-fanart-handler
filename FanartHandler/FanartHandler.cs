@@ -676,12 +676,17 @@ namespace FanartHandler
       };
       loggingConfiguration.AddTarget("fanart-handler", fileTarget);
 
-      Settings settings = new Settings(Config.GetFile((Config.Dir) 10, "MediaPortal.xml"));
-      string str = settings.GetValue("general", "ThreadPriority");
-      FHThreadPriority = str == null || !str.Equals("Normal", StringComparison.CurrentCulture) ? (str == null || !str.Equals("BelowNormal", StringComparison.CurrentCulture) ? Utils.Priority.BelowNormal : Utils.Priority.Lowest) : Utils.Priority.Lowest;
+      LogLevel logLevel = LogLevel.Debug;
+      string threadPriority = "Normal";
+      int intLogLevel = 3;
 
-      LogLevel logLevel;
-      switch ((int) (Level) settings.GetValueAsInt("general", "loglevel", 0))
+      using (Settings xmlreader = new MPSettings())
+      {
+        threadPriority = xmlreader.GetValueAsString("general", "ThreadPriority", threadPriority);
+        intLogLevel = xmlreader.GetValueAsInt("general", "loglevel", intLogLevel);
+      }
+
+      switch (intLogLevel)
       {
         case 0:
           logLevel = LogLevel.Error;
@@ -699,6 +704,12 @@ namespace FanartHandler
       #if DEBUG
       logLevel = LogLevel.Debug;
       #endif
+
+      FHThreadPriority = string.IsNullOrEmpty(threadPriority) || !threadPriority.Equals("Normal", StringComparison.CurrentCulture) ? 
+                          (string.IsNullOrEmpty(threadPriority) || !threadPriority.Equals("BelowNormal", StringComparison.CurrentCulture) ? 
+                            Utils.Priority.BelowNormal : 
+                            Utils.Priority.Lowest) : 
+                          Utils.Priority.Lowest;
 
       // var loggingRule = new LoggingRule("*", logLevel, fileTarget);
       LoggingRule loggingRule = new LoggingRule("FanartHandler.*", logLevel, fileTarget);

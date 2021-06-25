@@ -343,23 +343,35 @@ namespace FanartHandler
       fileTarget.Encoding = "utf-8";
       fileTarget.Layout = "${date:format=dd-MMM-yyyy HH\\:mm\\:ss} ${level:fixedLength=true:padding=5} [${logger:fixedLength=true:padding=20:shortName=true}]: ${message} ${exception:format=tostring}";
       loggingConfiguration.AddTarget("fanart-handler", fileTarget);
-      LogLevel minLevel;
-      switch ((int)(Level)new Settings(Config.GetFile((Config.Dir)10, "MediaPortal.xml")).GetValueAsInt("general", "loglevel", 0))
+
+      LogLevel logLevel = LogLevel.Debug;
+      int intLogLevel = 3;
+
+      using (Settings xmlreader = new MPSettings())
+      {
+        intLogLevel = xmlreader.GetValueAsInt("general", "loglevel", intLogLevel);
+      }
+
+      switch (intLogLevel)
       {
         case 0:
-          minLevel = LogLevel.Error;
+          logLevel = LogLevel.Error;
           break;
         case 1:
-          minLevel = LogLevel.Warn;
+          logLevel = LogLevel.Warn;
           break;
         case 2:
-          minLevel = LogLevel.Info;
+          logLevel = LogLevel.Info;
           break;
         default:
-          minLevel = LogLevel.Debug;
+          logLevel = LogLevel.Debug;
           break;
       }
-      var loggingRule = new LoggingRule("*", minLevel, fileTarget);
+      #if DEBUG
+      logLevel = LogLevel.Debug;
+      #endif
+
+      var loggingRule = new LoggingRule("*", logLevel, fileTarget);
       loggingConfiguration.LoggingRules.Add(loggingRule);
       LogManager.Configuration = loggingConfiguration;
     }
