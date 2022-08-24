@@ -5,38 +5,47 @@
 		<Day>1</Day>
 		<NameRU>Новый год!</NameRU>
 		<NameDE>Neujahr</NameDE>
+		<NameUA>Новий рік!</NameUA>
 	</Holiday>
 	<Holiday name="National Science Fiction Day" shortname="ScienceFiction">
 		<Month>1</Month>
 		<Day>2</Day>
 		<NameRU>Международный день научной фантастики</NameRU>
 		<NameDE>Nationaler Science-Fiction Tag</NameDE>
+		<NameUA>Міжнародний день наукової фантастики</NameUA>
 	</Holiday>
 	<Holiday name="Christmas Eve" shortname="Christmas">
 		<Month>1</Month>
 		<Day>6</Day>
 		<NameRU>Рождественский сочельник</NameRU>
+		<NameUA>Різдвяний святвечір</NameUA>
 		<CelebratedIn>RU</CelebratedIn>
+		<CelebratedIn>UA</CelebratedIn>
 		<NameDE>Heiligabend</NameDE>
 	</Holiday>
 	<Holiday name="Christmas Day" shortname="Christmas">
 		<Month>1</Month>
 		<Day>7</Day>
 		<NameRU>Рождество</NameRU>
+		<NameUA>Різдво</NameUA>
 		<CelebratedIn>RU</CelebratedIn>
+		<CelebratedIn>UA</CelebratedIn>
 		<NameDE>Weihnachtstag</NameDE>
 	</Holiday>
 	<Holiday name="Malanka - Schedry vecher" shortname="NewYear">
 		<Month>1</Month>
 		<Day>13</Day>
 		<NameRU>Маланка - Щедрый вечер - Старый Новый год</NameRU>
+		<NameUA>Маланка - Щедрий вечір - Старий Новий рік</NameUA>
 		<CelebratedIn>RU</CelebratedIn>
+		<CelebratedIn>UA</CelebratedIn>
 	</Holiday>
 	<Holiday name="Martin Luther King's Birthday">
 		<Month>1</Month>
 		<DayOfWeek>1</DayOfWeek>
 		<WeekOfMonth>3</WeekOfMonth>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NotCelebratedIn>UA</NotCelebratedIn>
 		<NameDE>Geburtstag Martin Luther King</NameDE>
 	</Holiday>
 	<Holiday name="World Beatles Day" shortname="Beatles">
@@ -50,10 +59,12 @@
 		<EveryXYears>4</EveryXYears>
 		<StartYear>1940</StartYear>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NotCelebratedIn>UA</NotCelebratedIn>
 	</Holiday>
 	<Holiday name="Chinese New Year" shortname="ChineseNewYear">
 		<ChineseNewYear />
 		<NameRU>Китайский Новый Год</NameRU>
+		<NameUA>Китайський Новий рік</NameUA>
 		<NameDE>Chinesisches Neujahr</NameDE>
 	</Holiday>
 	<Holiday name="President's Day">
@@ -61,59 +72,69 @@
 		<DayOfWeek>1</DayOfWeek>
 		<WeekOfMonth>3</WeekOfMonth>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NotCelebratedIn>UA</NotCelebratedIn>
 		<NameDE>Tag des US-Präsidenten</NameDE>
 	</Holiday>
 	<Holiday name="Groundhog Day">
 		<Month>2</Month>
 		<Day>2</Day>
 		<NameRU>День сурка</NameRU>
+		<NameUA>День Бабака</NameUA>
 		<NameDE>Murmeltiertag</NameDE>
 	</Holiday>
 	<Holiday name="Lincoln's Birthday (Traditional)">
 		<Month>2</Month>
 		<Day>12</Day>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NotCelebratedIn>UA</NotCelebratedIn>
 		<NameDE>Geburtstag Abraham Lincoln (Traditional)</NameDE>
 	</Holiday>
 	<Holiday name="Valentine's Day" shortname="Valentines">
 		<Month>2</Month>
 		<Day>14</Day>
 		<NameRU>День святого Валентина</NameRU>
+		<NameUA>День Святого Валентина</NameUA>
 		<NameDE>Valentinstag</NameDE>
 	</Holiday>
 	<Holiday name="Washington's Birthday (Traditional)">
 		<Month>2</Month>
 		<Day>22</Day>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NotCelebratedIn>UA</NotCelebratedIn>
 		<NameDE>Geburtstag George Washington (Traditional)</NameDE>
 	</Holiday>
 	<Holiday name="International Women's Day" shortname="WomensDay">
 		<Month>3</Month>
 		<Day>8</Day>
 		<NameRU>Международный женский день</NameRU>
+		<NameUA>Міжнародний жіночий день</NameUA>
 		<NameDE>Weltfrauentag</NameDE>
 	</Holiday>
 	<Holiday name="Pi Day" shortname="PiDay">
 		<Month>3</Month>
 		<Day>14</Day>
 		<NameRU>День числа Пи</NameRU>
+		<NameUA>День числа Пі</NameUA>
 		<NameDE>Pi-Tag</NameDE>
 	</Holiday>
 	<Holiday name="St. Patrick's Day" shortname="StPatricks">
 		<Month>3</Month>
 		<Day>17</Day>
 		<NameRU>День святого Патрика</NameRU>
+		<NameUA>День Святого Патрика</NameUA>
 		<NameDE>St. Patrick's Tag</NameDE>
 	</Holiday>
 	<Holiday name="Anniversary of MediaPortal" shortname="MediaPortal">
 		<Month>4</Month>
 		<Day>18</Day>
 		<NameRU>День рождения Mediaportal</NameRU>
+		<NameUA>День народження Mediaportal</NameUA>
 		<NameDE>Geburtstag von MediaPortal!</NameDE>
 	</Holiday>
 	<Holiday name="Easter">
 		<Easter />
 		<NameRU>Пасха</NameRU>
+		<NameUA>Великдень</NameUA>
 		<NameHE>פסח</NameHE>
 		<NameDE>Ostersonntag</NameDE>
 	</Holiday>
@@ -124,6 +145,7 @@
 		<NameDE>Ostermontag</NameDE>
 		<NotCelebratedIn>RU</NotCelebratedIn>
 		<NotCelebratedIn>HE</NotCelebratedIn>
+		<NotCelebratedIn>UA</NotCelebratedIn>
 	</Holiday>	
 	<Holiday name="Vatertag" shortname="FathersDay">
 		<DaysAfterHoliday Holiday="Easter">
@@ -139,6 +161,7 @@
 		<NameDE>Pfingstsonntag</NameDE>
 		<NotCelebratedIn>RU</NotCelebratedIn>
 		<NotCelebratedIn>HE</NotCelebratedIn>
+		<NotCelebratedIn>UA</NotCelebratedIn>
 	</Holiday>
     <Holiday name="Pentecost">
 		<DaysAfterHoliday Holiday="Easter">
@@ -147,6 +170,7 @@
 		<NameDE>Pfingstmontag</NameDE>
 		<NotCelebratedIn>RU</NotCelebratedIn>
 		<NotCelebratedIn>HE</NotCelebratedIn>
+		<NotCelebratedIn>UA</NotCelebratedIn>
 	</Holiday>
 	<Holiday name="Pesach">
 		<DaysAfterHoliday Holiday="Easter">
@@ -161,6 +185,7 @@
 			<Days>-1</Days>
 		</DaysAfterHoliday>
 		<NameRU>Чистый четверг</NameRU>
+		<NameUA>Чистий четвер</NameUA>
 		<NameDE>Gründonnerstag</NameDE>
 		<NotCelebratedIn>HE</NotCelebratedIn>
 	</Holiday>
@@ -169,6 +194,7 @@
 			<Days>-2</Days>
 		</DaysAfterHoliday>
 		<NameRU>Великая пятница</NameRU>
+		<NameUA>Велика п'ятниця</NameUA>
 		<NameDE>Karfreitag</NameDE>
 		<NotCelebratedIn>HE</NotCelebratedIn>
 	</Holiday>
@@ -177,6 +203,7 @@
 			<Days>-44</Days>
 		</DaysAfterHoliday>
 		<NameRU>Пепельная среда</NameRU>
+		<NameUA>Попільна середа</NameUA>
 		<NameDE>Aschermittwoch</NameDE>
 		<NotCelebratedIn>HE</NotCelebratedIn>
 	</Holiday>
@@ -184,6 +211,7 @@
 		<Month>4</Month>
 		<Day>1</Day>
 		<NameRU>День дураков</NameRU>
+		<NameUA>День дурнів</NameUA>
 		<NameDE>1. April ;)</NameDE>
 	</Holiday>
 	<Holiday name="Administrative Assistants' Day">
@@ -193,11 +221,13 @@
 		</LastFullWeekOfMonth>
 		<NameDE>Tag der Verwaltungsassistenten</NameDE>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NotCelebratedIn>UA</NotCelebratedIn>
 	</Holiday>
 	<Holiday name="Cosmonautics Day" shortname="CosmonauticsDay">
 		<Month>4</Month>
 		<Day>12</Day>
 		<NameRU>День космонавтики</NameRU>
+		<NameUA>День космонавтики</NameUA>
 		<NameDE>Tag der Kosmonauten</NameDE>
 	</Holiday>
 	<Holiday name="Tax Day">
@@ -206,6 +236,7 @@
 			<Day>15</Day>
 		</WeekdayOnOrAfter>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NotCelebratedIn>UA</NotCelebratedIn>
 		<NameDE>Tag der Steuer :(</NameDE>
 	</Holiday>
 	<Holiday name="Earth Day" shortname="EarthDay">
@@ -239,6 +270,7 @@
 		<DayOfWeek>6</DayOfWeek>
 		<WeekOfMonth>3</WeekOfMonth>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NotCelebratedIn>UA</NotCelebratedIn>
 		<NameDE>Tag der Streitkräfte</NameDE>
 	</Holiday>
 	<Holiday name="Memorial Day">
@@ -246,6 +278,7 @@
 		<DayOfWeek>1</DayOfWeek>
 		<WeekOfMonth>5</WeekOfMonth>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NotCelebratedIn>UA</NotCelebratedIn>
 		<NameDE>Gedenktag</NameDE>
 	</Holiday>
 	<Holiday name="Childrens' Day" shortname="ChildrensDay">
@@ -256,6 +289,7 @@
 		<Month>6</Month>
 		<Day>14</Day>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NotCelebratedIn>UA</NotCelebratedIn>
 		<NameDE>Tag der Flaggen</NameDE>
 	</Holiday>	
 	<Holiday name="Fathers' Day" shortname="FathersDay">
@@ -274,6 +308,7 @@
 		<Month>7</Month>
 		<Day>4</Day>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NotCelebratedIn>UA</NotCelebratedIn>
 		<NameDE>Unabhängigkeittag</NameDE>
 	</Holiday>
     <Holiday name="System Administrator Appreciation Day" shortname="SysAdminDay">
@@ -282,11 +317,26 @@
 		<WeekOfMonth>5</WeekOfMonth>
 		<NameDE>Tag der Systemadministratoren</NameDE>
 	</Holiday>
+	<Holiday name="Day of the State Flag of Ukraine" shortname="Ukraine">
+		<Month>8</Month>
+		<Day>23</Day>
+		<CelebratedIn>UA</CelebratedIn>
+		<NameRU>День Государственного флага Украины</NameRU>
+		<NameUA>День Державного прапора України</NameUA>
+	</Holiday>
+	<Holiday name="Independence Day" shortname="Ukraine">
+		<Month>8</Month>
+		<Day>24</Day>
+		<CelebratedIn>UA</CelebratedIn>
+		<NameRU>День независимости Украины</NameRU>
+		<NameUA>День Незалежності України</NameUA>
+	</Holiday>
 	<Holiday name="Labor Day">
 		<Month>9</Month>
 		<DayOfWeek>1</DayOfWeek>
 		<WeekOfMonth>1</WeekOfMonth>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NotCelebratedIn>UA</NotCelebratedIn>
 	</Holiday>
 	<Holiday name="Grandparents' Day">
 		<DaysAfterHoliday Holiday="Labor Day">
@@ -307,6 +357,7 @@
 		<Month>10</Month>
 		<Day>24</Day>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NotCelebratedIn>UA</NotCelebratedIn>
 		<NameDE>Tag der Vereinten Nationen</NameDE>
 	</Holiday>
 	<Holiday name="Halloween">
@@ -318,6 +369,7 @@
 		<DayOfWeek>1</DayOfWeek>
 		<WeekOfMonth>2</WeekOfMonth>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NotCelebratedIn>UA</NotCelebratedIn>
 		<NameDE>Kolumbustag</NameDE>
 	</Holiday>
 	<Holiday name="Election Day">
@@ -327,12 +379,14 @@
 			<Day>2</Day>
 		</DayOfWeekOnOrAfter>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NotCelebratedIn>UA</NotCelebratedIn>
 		<NotCelebratedIn>DE</NotCelebratedIn>
 	</Holiday>
 	<Holiday name="Veterans Day">
 		<Month>11</Month>
 		<Day>11</Day>
 		<NotCelebratedIn>RU</NotCelebratedIn>
+		<NotCelebratedIn>UA</NotCelebratedIn>
 		<NotCelebratedIn>DE</NotCelebratedIn>
 	</Holiday>
 	<Holiday name="Christmas Eve" shortname="Christmas">
@@ -351,6 +405,7 @@
 		<Month>12</Month>
 		<Day>31</Day>
 		<NameRU>Новый год к нам мчится...</NameRU>
+		<NameUA>Новий рік мчить до нас...</NameUA>
 		<NameDE>Silvester</NameDE>
 	</Holiday>
 	<Holiday name="Daylight Savings Time Begins" shortname="DaylightSavings|DaylightSavingsBegin">

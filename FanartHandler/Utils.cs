@@ -266,6 +266,7 @@ namespace FanartHandler
 
     #region Holiday
     public static string HolidayLanguage { get; set; }
+    public static string HolidayCountry { get; set; }
     #endregion
 
     public static bool WatchFullThumbFolder { get; set; }
@@ -6393,6 +6394,7 @@ namespace FanartHandler
       #endregion
       #region Holiday
       HolidayLanguage = "EN";
+      HolidayCountry = "EN";
       #endregion
 
       #region Internal
@@ -6418,6 +6420,7 @@ namespace FanartHandler
       AnimatedLanguageFull = GetLangName().ToLower();
       AwardsLanguage = GetLang().ToUpper();
       HolidayLanguage = GetLang().ToUpper();
+      HolidayCountry = HolidayLanguage;
       MovieDBLanguage = GetLang().ToUpper();
       #endregion
 
@@ -6472,6 +6475,7 @@ namespace FanartHandler
           HolidayShow = settings.GetValueAsInt("FanartHandler", "HolidayShow", HolidayShow);
           HolidayShowAllDay = settings.GetValueAsBool("FanartHandler", "HolidayShowAllDay", HolidayShowAllDay);
           HolidayEaster = settings.GetValueAsInt("FanartHandler", "HolidayEaster", HolidayEaster);
+          HolidayCountry = settings.GetValueAsString("FanartHandler", "HolidayCountry", HolidayCountry);
           //
           UseFanartTV = settings.GetValueAsBool("Providers", "UseFanartTV", UseFanartTV);
           UseHtBackdrops = settings.GetValueAsBool("Providers", "UseHtBackdrops", UseHtBackdrops);
@@ -6707,7 +6711,7 @@ namespace FanartHandler
       }
       if (HolidayEaster == 0)
       {
-        HolidayEaster = (HolidayLanguage == "RU" ? 2 : HolidayLanguage == "HE" ? 3 : 1);
+        HolidayEaster = (HolidayCountry == "RU" || HolidayCountry == "UA" ? 2 : HolidayCountry == "HE" ? 3 : 1);
       }
       #endregion
       //

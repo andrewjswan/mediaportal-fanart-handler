@@ -818,7 +818,7 @@ namespace FanartHandler
         logger.Debug(" Random: " + Utils.Check(FRandom.WindowsUsingFanartRandom.Count > 0) + " Fanart");
         logger.Debug(" Random Latests: " + Utils.Check(FRandom.WindowsUsingFanartLatestsRandom.Count > 0) + " Fanart");
         logger.Debug(" Weather: " + Utils.Check(FWeather.WindowsUsingFanartWeather.Count > 0) + " Fanart, Season: " + Utils.GetWeatherCurrentSeason().ToString());
-        logger.Debug(" Holiday: " + Utils.Check(FHoliday.WindowsUsingFanartHoliday.Count > 0) + Utils.Check(FHoliday.WindowsUsingFanartHolidayText.Count > 0) + " Fanart, " + Utils.Check(Utils.HolidayShowAllDay) + " All Day, Show: " + Utils.HolidayShow + "min Language: " + Utils.HolidayLanguage + " Easter: " + (Utils.HolidayLanguage == "RU" ? "Orthodox" : Utils.HolidayLanguage == "HE" ? "Pesach" : "Catholic"));
+        logger.Debug(" Holiday: " + Utils.Check(FHoliday.WindowsUsingFanartHoliday.Count > 0) + Utils.Check(FHoliday.WindowsUsingFanartHolidayText.Count > 0) + " Fanart, " + Utils.Check(Utils.HolidayShowAllDay) + " All Day, Show: " + Utils.HolidayShow + "min Country: " + Utils.HolidayCountry + " Language: " + Utils.HolidayLanguage + " Easter: " + (Utils.HolidayEaster == 2 ? "Orthodox" : Utils.HolidayEaster == 3 ? "Pesach" : "Catholic"));
         //
         Utils.InitiateDbm(Utils.DB.Start);
         Utils.StopScraper = false;

@@ -275,6 +275,14 @@ To the team behind the MP Moving Picture plugin. From who I have used some of th
 91919284 - Holiday Fanart Available
 </pre>
 
+## Additional settings for Holidays. (FanartHandler.xml)
+```xml
+  <section name="FanartHandler">
+    <entry name="HolidayCountry">UA</entry>
+  </section>
+```
+- HolidayCountry - The country of the holiday coincides, defaults to the language selected in the Mediaportal. (UA, DE, HE, RU, etc)
+
 ## Additional settings for displaying pictures. (FanartHandler.xml)
 ```xml
   <section name="OtherPicturesView">

@@ -84,6 +84,8 @@
   <studio name="ABC1 (Australia)">ABC1</studio>
   <studio name="ABCFamily">ABC Family</studio>
   <studio name="ABC News">ABC</studio>
+  <studio name="ABC (JA)">ABC Japan</studio>
+  <studio name="ABC (Japan)">ABC Japan</studio>
   <studio name="Actas Inc.">Actas</studio>
   <studio name="Karaku">Actas</studio>
   <studio name="AdriAlpe-Media OEG">AdriAlpe-Media</studio>
@@ -210,6 +212,7 @@
   <studio name="Babelsberg Studios">Babelsberg Film</studio>
   <studio name="Studio Babelsberg Motion Pictures GmbH">Babelsberg Film</studio>
   <studio name="Babylonian Productions">Babylonian</studio>
+  <studio name="Baby Cow Productions">Baby Cow</studio>
   <studio name="Babieka Films">Babieka</studio>
   <studio name="Babieka Entertainment">Babieka</studio>
   <studio name="Bad Cop Film">Bad Cop</studio>
@@ -283,6 +286,7 @@
   <studio name="Boies/Schiller Film">Boies-Schiller Film</studio>
   <studio name="Boies/Schiller Film Group">Boies-Schiller Film</studio>
   <studio name="Boies-Schiller Film Group">Boies-Schiller Film</studio>
+  <studio name="BR-Alpha">BR Alpha</studio>
   <studio name="Bravo">Bravo!</studio>
   <studio name="Bravo (US)">Bravo!</studio>
   <studio name="Brain&apos;s Base">Brains Base</studio>
@@ -347,6 +351,7 @@
   <studio name="cartoonnetwork">Cartoon</studio>
   <studio name="Cartoon Network_HD">Cartoon Network HD</studio>
   <studio name="Cartoon Network-HD">Cartoon Network HD</studio>
+  <studio name="Castel Film">Castel Films</studio>
   <studio name="Castel Film Romania">Castel Films</studio>
   <studio name="Castel Film Studio">Castel Films</studio>
   <studio name="Castle Rock Entertainment">Castle Rock</studio>
@@ -539,6 +544,10 @@
   <studio name="eleven a music company">Eleven</studio>
   <studio name="Elevenmedia">Eleven</studio>
   <studio name="Elfte Babelsberg Film">Babelsberg Film</studio>
+  <studio name="Essanay Film">Essanay</studio>
+  <studio name="Essanay Film Manufacturing Company">Essanay</studio>
+  <studio name="The Essanay Film Manufacturing Company">Essanay</studio>
+  <studio name="Essanay Film Manufacturing Company, The">Essanay</studio>
   <studio name="Toro Pictures El">El Toro</studio>
   <studio name="Toro Pictures, El">El Toro</studio>
   <studio name="Toro Pictures">El Toro</studio>
@@ -622,6 +631,8 @@
   <studio name="Fuji TV">Fuji</studio>
   <studio name="Fulcrum Media Finance">Fulcrum Media</studio>
   <studio name="Fulcrum Media Services">Fulcrum Media</studio>
+  <studio name="FUNimation Channel">FUNimation</studio>
+  <studio name="FUNimation Entertainment">FUNimation</studio>
   <studio name="Furla Films">Emmett Furla Films</studio>
   <studio name="FX Digital">FX</studio>
   <studio name="FX Networks">FX</studio>
@@ -699,6 +710,8 @@
   <studio name="History Channel, The">History</studio>
   <studio name="History (CA)">History</studio>
   <studio name="History_hd">History HD</studio>
+  <studio name="H2">History 2</studio>
+  <studio name="History2">History 2</studio>
   <studio name="Hollywood Pictures">Hollywood</studio>
   <studio name="Horizon Pictures (II)">Horizon Pictures</studio>
   <studio name="House of Curves The">House of Curves</studio>
@@ -797,6 +810,7 @@
   <studio name="KO Paper Products">Kurtzman Orci Paper Products</studio>
   <studio name="KOJO Entertainment">KOJO</studio>
   <studio name="כאן 11">KAN 11</studio>
+  <studio name="11 כאן">KAN 11</studio>
   <studio name="Kanal 4 (DK)">Kanal 4</studio>
   <studio name="Kanal 5 (DK)">Kanal 5</studio>
   <studio name="Kanal 5 (SE)">Kanal 5</studio>
@@ -825,6 +839,9 @@
   <studio name="Kushner-Locke Company The">Kushner-Locke Company</studio>
   <studio name="Kushner-Locke Company, The">Kushner-Locke Company</studio>
   <studio name="The Kushner-Locke Company">Kushner-Locke Company</studio>
+  <studio name="Khara Inc">khara</studio>
+  <studio name="Khara Inc.">khara</studio>
+  <studio name="Studio Khara">khara</studio>
   <studio name="Ladd Company">Ladd</studio>
   <studio name="Ladd Company The">Ladd</studio>
   <studio name="Ladd Company, The">Ladd</studio>
@@ -989,6 +1006,8 @@
   <studio name="Millenium Entertainment">Millennium Entertainment</studio>
   <studio name="Millennium Ent.">Millennium Entertainment</studio>
   <studio name="Mindseye">Minds Eye Films</studio>
+  <studio name="Minds Eye">Minds Eye Films</studio>
+  <studio name="Minds Eye Entertainment">Minds Eye Films</studio>
   <studio name="Ministère des Affaires Étrangères">Ministere des Affaires Etrangeres</studio>
   <studio name="Ministero per i Beni e le Attività Culturali">MiBAC</studio>
   <studio name="Miramax Films">Miramax</studio>
@@ -1032,6 +1051,7 @@
   <studio name="Mosaic Productions">Mosaic</studio>
   <studio name="Motion Picture Corporation of America">MPCA</studio>
   <studio name="Motion Picture Corporation of America (MPCA)">MPCA</studio>
+  <studio name="Motor Trend On Demand">MotorTrendOnDemand</studio>
   <studio name="Motorvision TV">Motorvision</studio>
   <studio name="Movie Central Network">Movie Central</studio>
   <studio name="Movistar+">Movistar Plus</studio>
@@ -1070,6 +1090,7 @@
   <studio name="Newmarket Capital Group">Newmarket</studio>
   <studio name="Newmarket Films">Newmarket</studio>
   <studio name="Next Generation TV &amp; Film Limited">Next Generation TV &amp; Film</studio>
+  <studio name="NHK Enterprises">NHK</studio>
   <studio name="NGC">National Geographic</studio>
   <studio name="National Geographic (UK)">National Geographic</studio>
   <studio name="National Geographic (US)">National Geographic</studio>
@@ -1158,6 +1179,7 @@
   <studio name="Paramountvantage">Paramount Vantage</studio>
   <studio name="Participant Productions">Participant</studio>
   <studio name="Pathé">Pathe</studio>
+  <studio name="Pathé!">Pathe</studio>
   <studio name="Pathé Consortium Cinéma">Pathe</studio>
   <studio name="Pathé Distribution">Pathe</studio>
   <studio name="Pathé Exchange">Pathe</studio>
@@ -1332,6 +1354,7 @@
   <studio name="Saul Zaentz Company The">Saul Zaentz Company</studio>
   <studio name="Saul Zaentz Company, The">Saul Zaentz Company</studio>
   <studio name="The Saul Zaentz Company">Saul Zaentz Company</studio>
+  <studio name="SAT.1">SAT1</studio>
   <studio name="SBS (KR)">SBS</studio>
   <studio name="SBS6">SBS 6</studio>
   <studio name="Science Fiction">SciFi</studio>
@@ -1411,6 +1434,8 @@
   <studio name="Sky2">Sky 2</studio>
   <studio name="Sky Atlantic (UK)">Sky Atlantic</studio>
   <studio name="Sky Atlantic (IT)">Sky Atlantic</studio>
+  <studio name="Sky Atlantic (DE)">Sky Atlantic</studio>
+  <studio name="SKY Perfec TV!">SKY PerfecTV!</studio>
   <studio name="Sofica Manon 2">Sofica Manon</studio>
   <studio name="Sofica Manon 3">Sofica Manon</studio>
   <studio name="Sofica Manon 4">Sofica Manon</studio>
@@ -1509,6 +1534,7 @@
   <studio name="Nippon Television Network">NTV</studio>
   <studio name="Nippon Television Network Corporation">NTV</studio>
   <studio name="Nippon Television Network Corporation (NTV)">NTV</studio>
+  <studio name="Nippon TV">NTV (JP)</studio>
   <studio name="Bridge">Sunrise</studio>
   <studio name="Superstation WGN">WGN</studio>
   <studio name="Svensk Filmindustri (SF)">Svensk Filmindustri</studio>
@@ -1912,10 +1938,12 @@
   <studio name="Yellow, Black &amp; White">Yellow Black White</studio>
   <studio name="Yellow Black and White">Yellow Black White</studio>
   <studio name="Yellow, Black and White">Yellow Black White</studio>
+  <studio name="Yomiuri Telecasting Corporation">Yomiuri Telecasting</studio>
   <studio name="Zanuck Company The">Zanuck Company</studio>
   <studio name="Zanuck Company, The">Zanuck Company</studio>
   <studio name="The Zanuck Company">Zanuck Company</studio>
   <studio name="ZDF Enterprises">ZDF</studio>
+  <studio name="ZDF neo">ZDFneo</studio>
   <studio name="ZDF/Arte">ZDF|Arte</studio>
   <studio name="Zentropa International">Zentropa</studio>
   <studio name="Zentropa International Norway">Zentropa</studio>
@@ -2149,6 +2177,9 @@
   <studio name="Студия Казахфильм">Казахфильм</studio>
   <studio name="Студия Кадр">KADR</studio>
   <studio name="KADR Studio">KADR</studio>
+  <studio name="SverdlovskFilm">Свердловская киностудия</studio>
+  <studio name="Sverdlovsk Film">Свердловская киностудия</studio>
+  <studio name="Sverdlovsk Film Studios">Свердловская киностудия</studio>
   <studio name="Союз Видео">Союз</studio>
   <studio name="Союз-Видео">Союз</studio>
   <studio name="Синема Продакшн">Cinema Production</studio>

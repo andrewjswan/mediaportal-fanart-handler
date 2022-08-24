@@ -245,7 +245,7 @@ namespace JayMuntzCom
         string sCelebratedIn = n.SelectSingleNode("./CelebratedIn").InnerXml.ToString();
         if (!string.IsNullOrEmpty(sCelebratedIn))
         {
-          if (!sCelebratedIn.Contains(Utils.HolidayLanguage))
+          if (!sCelebratedIn.Contains(Utils.HolidayCountry))
           {
             h.Date = DateTime.MinValue;
           }
@@ -257,7 +257,7 @@ namespace JayMuntzCom
         string sNotCelebratedIn = n.SelectSingleNode("./NotCelebratedIn").InnerXml.ToString();
         if (!string.IsNullOrEmpty(sNotCelebratedIn))
         {
-          if (sNotCelebratedIn.Contains(Utils.HolidayLanguage))
+          if (sNotCelebratedIn.Contains(Utils.HolidayCountry))
           {
             h.Date = DateTime.MinValue;
           }
