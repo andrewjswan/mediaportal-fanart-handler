@@ -7,14 +7,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FanartHandler", "FanartHand
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|x86 = Debug|x86
-		Release|x86 = Release|x86
+		Debug|AnyCPU = Debug|AnyCPU
+		Release|AnyCPU = Release|AnyCPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4E7B5EA7-A01E-4E5A-A0CE-A3684A68376B}.Debug|x86.ActiveCfg = Debug|x86
-		{4E7B5EA7-A01E-4E5A-A0CE-A3684A68376B}.Debug|x86.Build.0 = Debug|x86
-		{4E7B5EA7-A01E-4E5A-A0CE-A3684A68376B}.Release|x86.ActiveCfg = Release|x86
-		{4E7B5EA7-A01E-4E5A-A0CE-A3684A68376B}.Release|x86.Build.0 = Release|x86
+		{4E7B5EA7-A01E-4E5A-A0CE-A3684A68376B}.Debug|AnyCPU.ActiveCfg = Debug|AnyCPU
+		{4E7B5EA7-A01E-4E5A-A0CE-A3684A68376B}.Debug|AnyCPU.Build.0 = Debug|AnyCPU
+		{4E7B5EA7-A01E-4E5A-A0CE-A3684A68376B}.Release|AnyCPU.ActiveCfg = Release|AnyCPU
+		{4E7B5EA7-A01E-4E5A-A0CE-A3684A68376B}.Release|AnyCPU.Build.0 = Release|AnyCPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

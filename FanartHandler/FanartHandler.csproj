@@ -2,7 +2,7 @@
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{4E7B5EA7-A01E-4E5A-A0CE-A3684A68376B}</ProjectGuid>
@@ -33,7 +33,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <TargetFrameworkProfile />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -44,7 +44,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -63,18 +63,15 @@
       <HintPath>..\External\Common.Utils.dll</HintPath>
     </Reference>
     <Reference Include="Core">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\External\Core.dll</HintPath>
     </Reference>
-    <Reference Include="Cornerstone, Version=1.2.0.1188, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Cornerstone">
       <HintPath>..\External\Cornerstone.dll</HintPath>
     </Reference>
     <Reference Include="CSScriptLibrary">
       <HintPath>..\External\CSScriptLibrary.dll</HintPath>
     </Reference>
     <Reference Include="Databases">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\External\Databases.dll</HintPath>
     </Reference>
     <Reference Include="GUIPictures">
@@ -83,27 +80,22 @@
     <Reference Include="LastFMLibrary">
       <HintPath>..\External\LastFMLibrary.dll</HintPath>
     </Reference>
-    <Reference Include="MovingPictures, Version=1.2.0.1188, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="MovingPictures">
       <HintPath>..\External\MovingPictures.dll</HintPath>
     </Reference>
     <Reference Include="MP-TVSeries">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\External\MP-TVSeries.dll</HintPath>
     </Reference>
     <Reference Include="LatestMediaHandler">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\External\LatestMediaHandler.dll</HintPath>
     </Reference>
     <Reference Include="MyFilms">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\External\MyFilms.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\External\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NLog">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\External\NLog.dll</HintPath>
       <Aliases>FHNLog</Aliases>
     </Reference>
@@ -118,7 +110,6 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Utils">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\External\Utils.dll</HintPath>
     </Reference>
   </ItemGroup>
@@ -267,5 +258,8 @@ copy $(ProjectDir)..\scripts\merge.bat .
 copy $(ProjectDir)..\scripts\Tools\ILMerge.exe .
 merge.bat
 del /q merge.bat ILMerge.exe</PostBuildEvent>
+    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+        None
+    </ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
   </PropertyGroup>
 </Project>
