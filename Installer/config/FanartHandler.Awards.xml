@@ -23,12 +23,12 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#userreview|#awards</searchProperty>
-      <searchRegex>Won[^*]+?-.Oscar</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)Oscar</searchRegex>
     </rule>
     <rule>
       <winID>614</winID>
       <searchProperty>#Actor.Biography</searchProperty>
-      <searchRegex>Won[^*]+?-.Oscar</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)Oscar</searchRegex>
     </rule>
   </award>
 
@@ -49,12 +49,12 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#userreview|#awards</searchProperty>
-      <searchRegex>Won[^*]+?-.Golden Globe</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)Golden Globe</searchRegex>
     </rule>
     <rule>
       <winID>614</winID>
       <searchProperty>#Actor.Biography</searchProperty>
-      <searchRegex>Won[^*]+?-.Golden Globe</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)Golden Globe</searchRegex>
     </rule>
   </award>
 
@@ -76,12 +76,12 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#userreview|#awards</searchProperty>
-      <searchRegex>Won[^*]+?-.MTV</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)MTV</searchRegex>
     </rule>
     <rule>
       <winID>614</winID>
       <searchProperty>#Actor.Biography</searchProperty>
-      <searchRegex>Won[^*]+?-.MTV</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)MTV</searchRegex>
     </rule>
   </award>
 
@@ -103,12 +103,12 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#userreview|#awards</searchProperty>
-      <searchRegex>Won[^*]+?-.Raspberry</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)Raspberry</searchRegex>
     </rule>
     <rule>
       <winID>614</winID>
       <searchProperty>#Actor.Biography</searchProperty>
-      <searchRegex>Won[^*]+?-.Raspberry</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)Raspberry</searchRegex>
     </rule>
   </award>
 
@@ -157,12 +157,12 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#userreview|#awards</searchProperty>
-      <searchRegex>Won[^*]+?-.Golden Lion</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)Golden Lion</searchRegex>
     </rule>
     <rule>
       <winID>614</winID>
       <searchProperty>#Actor.Biography</searchProperty>
-      <searchRegex>Won[^*]+?-.Golden Lion</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)Golden Lion</searchRegex>
     </rule>
   </award>
 
@@ -184,12 +184,12 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#userreview|#awards</searchProperty>
-      <searchRegex>Won[^*]+?-.Golden Berlin Bear</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)Golden Berlin Bear</searchRegex>
     </rule>
     <rule>
       <winID>614</winID>
       <searchProperty>#Actor.Biography</searchProperty>
-      <searchRegex>Won[^*]+?-.Golden Berlin Bear</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)Golden Berlin Bear</searchRegex>
     </rule>
   </award>
 
@@ -211,12 +211,12 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#userreview|#awards</searchProperty>
-      <searchRegex>Won[^*]+?-.Cannes</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)Cannes</searchRegex>
     </rule>
     <rule>
       <winID>614</winID>
       <searchProperty>#Actor.Biography</searchProperty>
-      <searchRegex>Won[^*]+?-.Cannes</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)Cannes</searchRegex>
     </rule>
   </award>
 
@@ -238,12 +238,12 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#userreview|#awards</searchProperty>
-      <searchRegex>Won[^*]+?-.Asian</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)Asian</searchRegex>
     </rule>
     <rule>
       <winID>614</winID>
       <searchProperty>#Actor.Biography</searchProperty>
-      <searchRegex>Won[^*]+?-.Asian</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)Asian</searchRegex>
     </rule>
   </award>
 
@@ -265,12 +265,12 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#userreview|#awards</searchProperty>
-      <searchRegex>Won[^*]+?-.BAFTA</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)BAFTA</searchRegex>
     </rule>
     <rule>
       <winID>614</winID>
       <searchProperty>#Actor.Biography</searchProperty>
-      <searchRegex>Won[^*]+?-.BAFTA</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)BAFTA</searchRegex>
     </rule>
   </award>
 
@@ -292,12 +292,12 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#userreview|#awards</searchProperty>
-      <searchRegex>Won[^*]+?-[^*]+?Emmy</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)[^*]+?Emmy</searchRegex>
     </rule>
     <rule>
       <winID>614</winID>
       <searchProperty>#Actor.Biography</searchProperty>
-      <searchRegex>Won[^*]+?-[^*]+?Emmy</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)[^*]+?Emmy</searchRegex>
     </rule>
   </award>
 
@@ -346,12 +346,12 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#userreview|#awards</searchProperty>
-      <searchRegex>Won[^*]+?-[^*]+?Saturn</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)[^*]+?Saturn</searchRegex>
     </rule>
     <rule>
       <winID>614</winID>
       <searchProperty>#Actor.Biography</searchProperty>
-      <searchRegex>Won[^*]+?-[^*]+?Saturn</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)[^*]+?Saturn</searchRegex>
     </rule>
   </award>
 
@@ -373,12 +373,12 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#userreview|#awards</searchProperty>
-      <searchRegex>Won[^*]+?-[^*]+?Nika</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)[^*]+?Nika</searchRegex>
     </rule>
     <rule>
       <winID>614</winID>
       <searchProperty>#Actor.Biography</searchProperty>
-      <searchRegex>Won[^*]+?-[^*]+?Nika</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)[^*]+?Nika</searchRegex>
     </rule>
   </award>
 
@@ -454,12 +454,12 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#userreview|#awards</searchProperty>
-      <searchRegex>Won[^*]+?-[^*]+?Goya</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)[^*]+?Goya</searchRegex>
     </rule>
     <rule>
       <winID>614</winID>
       <searchProperty>#Actor.Biography</searchProperty>
-      <searchRegex>Won[^*]+?-[^*]+?Goya</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)[^*]+?Goya</searchRegex>
     </rule>
   </award>
 
@@ -481,12 +481,12 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#userreview|#awards</searchProperty>
-      <searchRegex>Won[^*]+?-[^*]+?César</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)[^*]+?César</searchRegex>
     </rule>
     <rule>
       <winID>614</winID>
       <searchProperty>#Actor.Biography</searchProperty>
-      <searchRegex>Won[^*]+?-[^*]+?César</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)[^*]+?César</searchRegex>
     </rule>
   </award>
 
@@ -535,12 +535,12 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#userreview|#awards</searchProperty>
-      <searchRegex>Won[^*]+?-[^*]+?Georges</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)[^*]+?Georges</searchRegex>
     </rule>
     <rule>
       <winID>614</winID>
       <searchProperty>#Actor.Biography</searchProperty>
-      <searchRegex>Won[^*]+?-[^*]+?Georges</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)[^*]+?Georges</searchRegex>
     </rule>
   </award>
 
@@ -599,12 +599,12 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#userreview|#awards</searchProperty>
-      <searchRegex>Won[^*]+?-[^*]+?Golden Seashell</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)[^*]+?Golden Seashell</searchRegex>
     </rule>
     <rule>
       <winID>614</winID>
       <searchProperty>#Actor.Biography</searchProperty>
-      <searchRegex>Won[^*]+?-[^*]+?Golden Seashell</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)[^*]+?Golden Seashell</searchRegex>
     </rule>
   </award>
 
@@ -625,12 +625,12 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#userreview|#awards</searchProperty>
-      <searchRegex>Won[^*]+?-[^*]+?Golden Duke</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)[^*]+?Golden Duke</searchRegex>
     </rule>
     <rule>
       <winID>614</winID>
       <searchProperty>#Actor.Biography</searchProperty>
-      <searchRegex>Won[^*]+?-[^*]+?Golden Duke</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)[^*]+?Golden Duke</searchRegex>
     </rule>
   </award>
 
@@ -651,12 +651,12 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#userreview|#awards</searchProperty>
-      <searchRegex>Won[^*]+?-[^*]+?Golden Eagle</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)[^*]+?Golden Eagle</searchRegex>
     </rule>
     <rule>
       <winID>614</winID>
       <searchProperty>#Actor.Biography</searchProperty>
-      <searchRegex>Won[^*]+?-[^*]+?Golden Eagle</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)[^*]+?Golden Eagle</searchRegex>
     </rule>
   </award>
 
@@ -677,12 +677,12 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#userreview|#awards</searchProperty>
-      <searchRegex>Won[^*]+?-[^*]+?Golden Dziga</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)[^*]+?Golden Dziga</searchRegex>
     </rule>
     <rule>
       <winID>614</winID>
       <searchProperty>#Actor.Biography</searchProperty>
-      <searchRegex>Won[^*]+?-[^*]+?Golden Dziga</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)[^*]+?Golden Dziga</searchRegex>
     </rule>
   </award>
 
@@ -703,12 +703,12 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#userreview|#awards</searchProperty>
-      <searchRegex>Won[^*]+?-[^*]+?Golden Pyramid</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)[^*]+?Golden Pyramid</searchRegex>
     </rule>
     <rule>
       <winID>614</winID>
       <searchProperty>#Actor.Biography</searchProperty>
-      <searchRegex>Won[^*]+?-[^*]+?Golden Pyramid</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)[^*]+?Golden Pyramid</searchRegex>
     </rule>
   </award>
 
@@ -729,12 +729,12 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#userreview|#awards</searchProperty>
-      <searchRegex>Won[^*]+?-[^*]+?Golden Peacock</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)[^*]+?Golden Peacock</searchRegex>
     </rule>
     <rule>
       <winID>614</winID>
       <searchProperty>#Actor.Biography</searchProperty>
-      <searchRegex>Won[^*]+?-[^*]+?Golden Peacock</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)[^*]+?Golden Peacock</searchRegex>
     </rule>
   </award>
 
@@ -754,12 +754,12 @@
     <rule>
       <winID>6|25|2003</winID>
       <searchProperty>#userreview|#awards</searchProperty>
-      <searchRegex>Won[^*]+?-[^*]+?Prize Trieste</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)[^*]+?Prize Trieste</searchRegex>
     </rule>
     <rule>
       <winID>614</winID>
       <searchProperty>#Actor.Biography</searchProperty>
-      <searchRegex>Won[^*]+?-[^*]+?Prize Trieste</searchRegex>
+      <searchRegex>Won[^*]+?-(\s|\s\d{4}\s)[^*]+?Prize Trieste</searchRegex>
     </rule>
   </award>
 </awards>

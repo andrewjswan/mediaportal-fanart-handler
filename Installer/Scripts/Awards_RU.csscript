@@ -20,7 +20,7 @@ using System.Web;
 internal class AwardsGrabber : Grabbers.Movies.IAwardsGrabber
 {
   const string strGrabber = "FH:KP/IMDB";
-  const string strGrabberVersion = "20191019.I";
+  const string strGrabberVersion = "20230427.I";
 
   string Grabbers.Movies.IAwardsGrabber.GetName()
   {
@@ -83,7 +83,7 @@ internal class AwardsGrabber : Grabbers.Movies.IAwardsGrabber
 
   #region IMDB Parameters
 
-  private const string IMDB_BaseUrl = "http://www.imdb.com/title/{0}/";
+  private const string IMDB_BaseUrl = "https://www.imdb.com/title/{0}/";
 
   #endregion IMDB Parameters
 
@@ -496,6 +496,9 @@ internal class AwardsGrabber : Grabbers.Movies.IAwardsGrabber
 
   private static string GetKinopoiskResponse(string url)
   {
+    Log.Debug("{0} GetKinopoiskResponse: Disabled.", strGrabber);
+    return string.Empty;
+
     // Log.Debug("{0} GetKinopoiskResponse: {1}", strGrabber, url);
 
     string salt = "IDATevHDS7";
