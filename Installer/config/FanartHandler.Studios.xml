@@ -2,12 +2,19 @@
 <!-- https://github.com/andrewjswan/mediaportal.images.studios/tree/master/studios -->
 <studios>
   <studio name="@Max">@ Max</studio>
+  <studio name="10.80">10.80 Films</studio>
   <studio name="1492">1492 Pictures</studio>
   <studio name="16:14">16-14 Entertainment</studio>
   <studio name="16:14 Entertainment">16-14 Entertainment</studio>
+  <studio name="24 25">24 25 Films</studio>
   <studio name="3 Ring Circus Films">3 Ring Circus</studio>
   <studio name="4th Wall Entertainment">4th Wall</studio>
   <studio name="6ch">Cinemax</studio>
+  <studio name="6th and Idaho">6th &amp; Idaho</studio>
+  <studio name="6th and Idaho Motion Picture">6th &amp; Idaho</studio>
+  <studio name="6th and Idaho Motion Picture Company">6th &amp; Idaho</studio>
+  <studio name="6th &amp; Idaho Motion Picture">6th &amp; Idaho</studio>
+  <studio name="6th &amp; Idaho Motion Picture Company">6th &amp; Idaho</studio>
   <studio name="20 Steps Productions">20 Steps</studio>
   <studio name="20th Century">20th Century Fox</studio>
   <studio name="20th Century Fox Home Entertainment">20th Century Fox</studio>
@@ -95,6 +102,9 @@
   <studio name="AIC Build">AIC</studio>
   <studio name="AIC Digital">AIC</studio>
   <studio name="AIC Plus+">AIC</studio>
+  <studio name="AJOZ">A.J.O.Z. Films</studio>
+  <studio name="A.J.O.Z.">A.J.O.Z. Films</studio>
+  <studio name="AJOZ Films">A.J.O.Z. Films</studio>
   <studio name="Alberta Film Entertainment">Alberta Film</studio>
   <studio name="Alcon Films">Alcon</studio>
   <studio name="Alcon Entertainment">Alcon</studio>
@@ -388,6 +398,11 @@
   <studio name="ChannelFour">Channel 4</studio>
   <studio name="Channel Four">Channel 4</studio>
   <studio name="Channel Four Productions">Channel Four Films</studio>
+  <studio name="Chaos, a Film Company">Chaos a Film Company</studio>
+  <studio name="Chaos, a Film Company inc">Chaos a Film Company</studio>
+  <studio name="Chaos, a Film Company inc.">Chaos a Film Company</studio>
+  <studio name="Chaos a Film Company inc">Chaos a Film Company</studio>
+  <studio name="Chaos a Film Company inc.">Chaos a Film Company</studio>
   <studio name="Cheyenne Enterprises">Cheyenne</studio>
   <studio name="Cheyenne Studios">Cheyenne</studio>
   <studio name="Cheyenne Films">Cheyenne</studio>
@@ -556,6 +571,7 @@
   <studio name="El Toro Pictures">El Toro</studio>
   <studio name="Emmedia">EM Media</studio>
   <studio name="Emmett/Furla Films">Emmett Furla Films</studio>
+  <studio name="Furla Films">Emmett Furla Films</studio>
   <studio name="End Game Productions Inc.">End Game</studio>
   <studio name="EndGame Productions Inc.">End Game</studio>
   <studio name="End Game Productions">End Game</studio>
@@ -621,6 +637,7 @@
   <studio name="Fox Sports (AU)">Fox Sports</studio>
   <studio name="Fox Searchlight Pictures">Fox Searchlight</studio>
   <studio name="Searchlight">Fox Searchlight</studio>
+  <studio name="FoxTelecolumbia">Fox Telecolumbia</studio>
   <studio name="France Télévision">France Television</studio>
   <studio name="France Télévisions">France Television</studio>
   <studio name="France.tv">France Television</studio>
@@ -633,7 +650,6 @@
   <studio name="Fulcrum Media Services">Fulcrum Media</studio>
   <studio name="FUNimation Channel">FUNimation</studio>
   <studio name="FUNimation Entertainment">FUNimation</studio>
-  <studio name="Furla Films">Emmett Furla Films</studio>
   <studio name="FX Digital">FX</studio>
   <studio name="FX Networks">FX</studio>
   <studio name="fxnetworks">FX</studio>
@@ -743,6 +759,7 @@
   <studio name="Ilion Animation Studios">Ilion Animation</studio>
   <studio name="Illumination">Illumination Entertainment</studio>
   <studio name="ImageMovers">Image Movers</studio>
+  <studio name="Imagenation Abu Dhabi FZ">Imagenation Abu Dhabi</studio>
   <studio name="Imagine Entertainment">Imagine</studio>
   <studio name="Imagine Films Entertainment">Imagine</studio>
   <studio name="Imagine Television">Imagine</studio>
@@ -1545,6 +1562,9 @@
   <studio name="SynergySP">Synergy Japan</studio>
   <studio name="Syrena Film">Syrena</studio>
   <studio name="Syrena Films">Syrena</studio>
+  <studio name="T Street">T-Street Productions</studio>
+  <studio name="T-Street">T-Street Productions</studio>
+  <studio name="T Street Productions">T-Street Productions</studio>
   <studio name="Tatsunoko Productions Company">Tatsunoko Production</studio>
   <studio name="Anime Friend">Tatsunoko Production</studio>
   <studio name="Tartan Films">Palisades Tartan</studio>
@@ -1722,6 +1742,9 @@
   <studio name="Twisted Media Incorporated">Twisted Media</studio>
   <studio name="Two for Flinching Productions LLC">Two For Flinching Pictures</studio>
   <studio name="Tyo Animations">Tyo</studio>
+  <studio name="Ubisoft">Ubisoft Film &amp; Television</studio>
+  <studio name="Ubisoft Film">Ubisoft Film &amp; Television</studio>
+  <studio name="Ubisoft Film and Television">Ubisoft Film &amp; Television</studio>
   <studio name="Unified Film Organization">Unified Film Organization (UFO)</studio>
   <studio name="UFO">Unified Film Organization (UFO)</studio>
   <studio name="UGC-Fox Distribution">UGC</studio>
@@ -1867,6 +1890,8 @@
   <studio name="Warner Bros. Archives">Warner</studio>
   <studio name="Warner Bros. Entertainment">Warner</studio>
   <studio name="Warner Bros. Home Video">Warner</studio>
+  <studio name="Warner Bros Home Entertainment Group">Warner</studio>
+  <studio name="Warner Bros. Home Entertainment Group">Warner</studio>
   <studio name="Warner Bros. Motion Picture Imaging">Warner</studio>
   <studio name="Warner Bros. Studio Facilities">Warner</studio>
   <studio name="Warner Bros. Studios">Warner</studio>
@@ -1876,13 +1901,13 @@
   <studio name="Warner Brothers Entertainment">Warner</studio>
   <studio name="Warner Brothers First National Films">Warner</studio>
   <studio name="Warner Brothers Post-Production Services">Warner</studio>
+  <studio name="Warner Brothers Home Entertainment Group">Warner</studio>
   <studio name="Warner Premiere">Warner</studio>
   <studio name="Warner Bros Pictures">Warner</studio>
   <studio name="Warner Bros. Pictures">Warner</studio>
   <studio name="Warner Brothers Pictures">Warner</studio>
   <studio name="Warner Bros. GmbH">Warner</studio>
   <studio name="Warner Bros. Pictures Co.">Warner</studio>
-  <studio name="Warner Animation Group">Warner</studio>
   <studio name="Warner Channel">Warner TV</studio>
   <studio name="Warner Independent Pictures">WIP</studio>
   <studio name="Warner Independent Pictures (WIP)">WIP</studio>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PackageClass xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<PackageClass xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Version>2.0</Version>
   <Groups>
     <Items>
@@ -773,7 +773,7 @@ ajs</Value>
     <Id>814a6918-0183-4323-a3b4-c00fac11b4f6</Id>
     <Author>ajs (maintained by yoavain, original by cul8er)</Author>
     <HomePage>https://github.com/yoavain/mediaportal-fanart-handler</HomePage>
-    <ForumPage>http://forum.team-mediaportal.com/fanart-handler-535/</ForumPage>
+    <ForumPage>https://forum.team-mediaportal.com/fanart-handler-535/</ForumPage>
     <UpdateUrl>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/scripts/fanarthandler.xml</UpdateUrl>
     <Version>
       <Major>4</Major>
@@ -790,12 +790,12 @@ ajs</Value>
        * push fanart for now played music
        * push fanart for selected music or movie
        * push random images from selected folders</ExtensionDescription>
-    <VersionDescription>Update IMDB Awards Support
+    <VersionDescription>Fix DST for Holidays
 
 *** We Stand with Ukraine ***</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-{VERSION}.MPE1</OnlineLocation>
-    <ReleaseDate>2023-05-01T15:04:24</ReleaseDate>
+    <ReleaseDate>2023-11-09T15:04:24</ReleaseDate>
     <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios,animated</Tags>
     <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
     <Params>

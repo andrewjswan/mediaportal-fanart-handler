@@ -449,6 +449,10 @@ namespace JayMuntzCom
     private DateTime dststart(int y)
     {
       TimeZoneInfo timeZoneInfo = TimeZoneInfo.Local;
+      if (!timeZoneInfo.SupportsDaylightSavingTime )
+      {
+        return DateTime.MinValue;
+      }
       TimeZoneInfo.AdjustmentRule[] adjustmentRules = timeZoneInfo.GetAdjustmentRules();
 
       DateTime dst = this.GetDaylightSavingsStartDateForYear(adjustmentRules, y);
@@ -470,6 +474,10 @@ namespace JayMuntzCom
     private DateTime dstend(int y)
     {
       TimeZoneInfo timeZoneInfo = TimeZoneInfo.Local;
+      if (!timeZoneInfo.SupportsDaylightSavingTime )
+      {
+        return DateTime.MinValue;
+      }
       TimeZoneInfo.AdjustmentRule[] adjustmentRules = timeZoneInfo.GetAdjustmentRules();
 
       DateTime dst = this.GetDaylightSavingsEndDateForYear(adjustmentRules, y);
