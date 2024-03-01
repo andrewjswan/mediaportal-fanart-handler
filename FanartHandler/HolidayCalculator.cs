@@ -240,6 +240,14 @@ namespace JayMuntzCom
         }
       }
 
+      if (childNodes.Contains("Year"))
+      {
+        int y = Int32.Parse(n.SelectSingleNode("./Year").InnerXml.ToString());
+        y = dt.Year - y;
+        h.Name = h.Name.Replace("%A", y.ToString());
+        h.LocalName = h.LocalName.Replace("%A", y.ToString());
+      }
+
       if (childNodes.Contains("CelebratedIn"))
       {
         string sCelebratedIn = n.SelectSingleNode("./CelebratedIn").InnerXml.ToString();
