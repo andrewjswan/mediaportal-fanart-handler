@@ -245,30 +245,45 @@ namespace JayMuntzCom
         int y = Int32.Parse(n.SelectSingleNode("./Year").InnerXml.ToString());
         y = h.Date.Year - y;
         h.Name = h.Name.Replace("%A", y.ToString());
-        h.LocalName = h.LocalName.Replace("%A", y.ToString());
+        if (!string.IsNullOrEmpty(h.LocalName))
+        {
+          h.LocalName = h.LocalName.Replace("%A", y.ToString());
+        }
       }
 
       if (childNodes.Contains("CelebratedIn"))
       {
-        string sCelebratedIn = n.SelectSingleNode("./CelebratedIn").InnerXml.ToString();
-        if (!string.IsNullOrEmpty(sCelebratedIn))
+        bool flag = false;
+        foreach (XmlNode c in n.SelectNodes("./CelebratedIn"))
         {
-          if (!sCelebratedIn.Contains(Utils.HolidayCountry))
+          string sCelebratedIn = c.InnerXml.ToString();
+          if (!string.IsNullOrEmpty(sCelebratedIn))
           {
-            h.Date = DateTime.MinValue;
+            flag = flag || sCelebratedIn.Contains(Utils.HolidayCountry);
           }
+        }
+        if (!flag)
+        {
+          
+          h.Date = DateTime.MinValue;
         }
       }
 
       if (childNodes.Contains("NotCelebratedIn"))
       {
-        string sNotCelebratedIn = n.SelectSingleNode("./NotCelebratedIn").InnerXml.ToString();
-        if (!string.IsNullOrEmpty(sNotCelebratedIn))
+        bool flag = false;
+        foreach (XmlNode c in n.SelectNodes("./NotCelebratedIn"))
         {
-          if (sNotCelebratedIn.Contains(Utils.HolidayCountry))
+          string sNotCelebratedIn = c.InnerXml.ToString();
+          if (!string.IsNullOrEmpty(sNotCelebratedIn))
           {
-            h.Date = DateTime.MinValue;
+            flag = flag || sNotCelebratedIn.Contains(Utils.HolidayCountry);
           }
+        }
+        if (flag)
+        {
+
+          h.Date = DateTime.MinValue;
         }
       }
 
