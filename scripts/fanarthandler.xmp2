@@ -469,7 +469,7 @@
   </Groups>
   <Sections>
     <Items>
-      <SectionItem Guid="b770d7d5-f63a-41d7-b6b8-0220a1775440" Name="Welcome Screen" ConditionGroup="">
+      <SectionItem Guid="b770d7d5-f63a-41d7-b6b8-0220a1775440" Name="Welcome Screen" ConditionGroup="" Condition="None">
         <Params>
           <Items>
             <SectionParam Name="Header text">
@@ -508,7 +508,7 @@ ajs</Value>
         <PanelName>Welcome Screen</PanelName>
         <WizardButtonsEnum>NextCancel</WizardButtonsEnum>
       </SectionItem>
-      <SectionItem Guid="7c466564-1819-4011-92ef-6dc2a449d8e5" Name="Tree View Selector" ConditionGroup="">
+      <SectionItem Guid="7c466564-1819-4011-92ef-6dc2a449d8e5" Name="Tree View Selector" ConditionGroup="" Condition="None">
         <Params>
           <Items>
             <SectionParam Name="Header Title">
@@ -546,7 +546,7 @@ ajs</Value>
         <PanelName>Tree View Selector</PanelName>
         <WizardButtonsEnum>BackNextCancel</WizardButtonsEnum>
       </SectionItem>
-      <SectionItem Guid="0188a113-f17c-430b-aa7d-5c26614eb2b5" Name="Install Section" ConditionGroup="">
+      <SectionItem Guid="0188a113-f17c-430b-aa7d-5c26614eb2b5" Name="Install Section" ConditionGroup="" Condition="None">
         <Params>
           <Items>
             <SectionParam Name="Header Title">
@@ -568,13 +568,13 @@ ajs</Value>
         </Params>
         <Actions>
           <Items>
-            <ActionItem Name="InstallFiles" ActionType="InstallFiles" ConditionGroup="">
+            <ActionItem Name="InstallFiles" ActionType="InstallFiles" ConditionGroup="" Condition="None">
               <Params>
                 <Items />
               </Params>
               <ExecuteLocation>AfterPanelShow</ExecuteLocation>
             </ActionItem>
-            <ActionItem Name="Extension Installer" ActionType="Extension Installer" ConditionGroup="Awards">
+            <ActionItem Name="Extension Installer" ActionType="Extension Installer" ConditionGroup="Awards" Condition="None">
               <Params>
                 <Items>
                   <SectionParam Name="Extension package">
@@ -601,7 +601,7 @@ ajs</Value>
               </Params>
               <ExecuteLocation>AfterPanelShow</ExecuteLocation>
             </ActionItem>
-            <ActionItem Name="Extension Installer" ActionType="Extension Installer" ConditionGroup="Genres">
+            <ActionItem Name="Extension Installer" ActionType="Extension Installer" ConditionGroup="Genres" Condition="None">
               <Params>
                 <Items>
                   <SectionParam Name="Extension package">
@@ -628,7 +628,7 @@ ajs</Value>
               </Params>
               <ExecuteLocation>AfterPanelShow</ExecuteLocation>
             </ActionItem>
-            <ActionItem Name="Extension Installer" ActionType="Extension Installer" ConditionGroup="Studios">
+            <ActionItem Name="Extension Installer" ActionType="Extension Installer" ConditionGroup="Studios" Condition="None">
               <Params>
                 <Items>
                   <SectionParam Name="Extension package">
@@ -661,7 +661,7 @@ ajs</Value>
         <PanelName>Install Section</PanelName>
         <WizardButtonsEnum>Next</WizardButtonsEnum>
       </SectionItem>
-      <SectionItem Guid="40cda7e4-74e7-4326-aa2f-5634e5c1d081" Name="Setup Complete" ConditionGroup="">
+      <SectionItem Guid="40cda7e4-74e7-4326-aa2f-5634e5c1d081" Name="Setup Complete" ConditionGroup="" Condition="None">
         <Params>
           <Items>
             <SectionParam Name="Header text">
@@ -696,20 +696,21 @@ ajs</Value>
         <Type>MediaPortal</Type>
         <Id />
         <MinVersion>
-          <Major>1</Major>
-          <Minor>1</Minor>
-          <Build>6</Build>
-          <Revision>27644</Revision>
+          <Major>*</Major>
+          <Minor>*</Minor>
+          <Build>*</Build>
+          <Revision>*</Revision>
         </MinVersion>
         <MaxVersion>
-          <Major>1</Major>
-          <Minor>1</Minor>
-          <Build>6</Build>
-          <Revision>27644</Revision>
+          <Major>*</Major>
+          <Minor>*</Minor>
+          <Build>*</Build>
+          <Revision>*</Revision>
         </MaxVersion>
         <WarnOnly>false</WarnOnly>
-        <Message>This version of FanartHandler requires MediaPortal 1.25 Pre</Message>
+        <Message />
         <Name>MediaPortal</Name>
+        <Condition>None</Condition>
       </DependencyItem>
       <DependencyItem>
         <Type>Skin</Type>
@@ -729,6 +730,7 @@ ajs</Value>
         <WarnOnly>true</WarnOnly>
         <Message>Requires Skin version 1.4.0.0 to 1.4.0.0.</Message>
         <Name>Skin</Name>
+        <Condition>None</Condition>
       </DependencyItem>
       <DependencyItem>
         <Type>Installer</Type>
@@ -748,6 +750,7 @@ ajs</Value>
         <WarnOnly>false</WarnOnly>
         <Message>This version of FanartHandler requires MediaPortal 1.25 Pre</Message>
         <Name>Installer</Name>
+        <Condition>None</Condition>
       </DependencyItem>
     </Items>
   </Dependencies>
@@ -790,13 +793,15 @@ ajs</Value>
        * push fanart for now played music
        * push fanart for selected music or movie
        * push random images from selected folders</ExtensionDescription>
-    <VersionDescription>Fix DST for Holidays
+    <VersionDescription>Holidays update and Rework
+Add %A for Age in Name
 
 *** We Stand with Ukraine ***</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-{VERSION}.MPE1</OnlineLocation>
-    <ReleaseDate>2023-11-09T15:04:24</ReleaseDate>
+    <ReleaseDate>2024-03-01T15:04:24</ReleaseDate>
     <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios,animated</Tags>
+    <PlatformCompatibility>x86</PlatformCompatibility>
     <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
     <Params>
       <Items>
