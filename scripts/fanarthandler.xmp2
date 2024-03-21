@@ -465,6 +465,24 @@
           </Items>
         </Files>
       </GroupItem>
+      <GroupItem Name="Holidays">
+        <ParentGroup>Skin images</ParentGroup>
+        <DisplayName>Holidays</DisplayName>
+        <DefaulChecked>true</DefaulChecked>
+        <Description>Holidays</Description>
+        <Files>
+          <Items />
+        </Files>
+      </GroupItem>
+      <GroupItem Name="Weather">
+        <ParentGroup>Skin images</ParentGroup>
+        <DisplayName>Weather</DisplayName>
+        <DefaulChecked>true</DefaulChecked>
+        <Description>Weather</Description>
+        <Files>
+          <Items />
+        </Files>
+      </GroupItem>
     </Items>
   </Groups>
   <Sections>
@@ -541,7 +559,9 @@ ajs</Value>
           <string>Skin images</string>
           <string>Awards</string>
           <string>Genres</string>
+          <string>Holidays</string>
           <string>Studios</string>
+          <string>Weather</string>
         </IncludedGroups>
         <PanelName>Tree View Selector</PanelName>
         <WizardButtonsEnum>BackNextCancel</WizardButtonsEnum>
@@ -648,6 +668,60 @@ ajs</Value>
                   </SectionParam>
                   <SectionParam Name="Silent Install">
                     <Value>YES</Value>
+                    <ValueType>Bool</ValueType>
+                    <Description>Silent install, No wizard screen will be displayed </Description>
+                  </SectionParam>
+                </Items>
+              </Params>
+              <ExecuteLocation>AfterPanelShow</ExecuteLocation>
+            </ActionItem>
+            <ActionItem Name="Extension Installer" ActionType="Extension Installer" ConditionGroup="Holidays" Condition="None">
+              <Params>
+                <Items>
+                  <SectionParam Name="Extension package">
+                    <Value />
+                    <ValueType>File</ValueType>
+                    <Description>Location of the extension package</Description>
+                  </SectionParam>
+                  <SectionParam Name="Extension Id">
+                    <Value>910e1703-317a-4e69-9ce9-682130eb4d4f</Value>
+                    <ValueType>String</ValueType>
+                    <Description>Global Id of the extension package - it will be downloaded when no file is set.</Description>
+                  </SectionParam>
+                  <SectionParam Name="Extension Version">
+                    <Value>0.0.0.0</Value>
+                    <ValueType>String</ValueType>
+                    <Description>Minimum Version of the extension package - older versions will be updated (only used when downloading via Id).</Description>
+                  </SectionParam>
+                  <SectionParam Name="Silent Install">
+                    <Value />
+                    <ValueType>Bool</ValueType>
+                    <Description>Silent install, No wizard screen will be displayed </Description>
+                  </SectionParam>
+                </Items>
+              </Params>
+              <ExecuteLocation>AfterPanelShow</ExecuteLocation>
+            </ActionItem>
+            <ActionItem Name="Extension Installer" ActionType="Extension Installer" ConditionGroup="Weather" Condition="None">
+              <Params>
+                <Items>
+                  <SectionParam Name="Extension package">
+                    <Value />
+                    <ValueType>File</ValueType>
+                    <Description>Location of the extension package</Description>
+                  </SectionParam>
+                  <SectionParam Name="Extension Id">
+                    <Value>2bbbfaea-1953-4672-b5ca-804f05369472</Value>
+                    <ValueType>String</ValueType>
+                    <Description>Global Id of the extension package - it will be downloaded when no file is set.</Description>
+                  </SectionParam>
+                  <SectionParam Name="Extension Version">
+                    <Value>0.0.0.0</Value>
+                    <ValueType>String</ValueType>
+                    <Description>Minimum Version of the extension package - older versions will be updated (only used when downloading via Id).</Description>
+                  </SectionParam>
+                  <SectionParam Name="Silent Install">
+                    <Value />
                     <ValueType>Bool</ValueType>
                     <Description>Silent install, No wizard screen will be displayed </Description>
                   </SectionParam>
@@ -793,7 +867,8 @@ ajs</Value>
        * push fanart for now played music
        * push fanart for selected music or movie
        * push random images from selected folders</ExtensionDescription>
-    <VersionDescription>Change Extensions Link to MPE ID
+    <VersionDescription>Add Holidays package
+Add Weather package
 
 *** We Stand with Ukraine ***</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
