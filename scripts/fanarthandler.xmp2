@@ -849,13 +849,13 @@ ajs</Value>
     <Name>Fanart Handler</Name>
     <Id>814a6918-0183-4323-a3b4-c00fac11b4f6</Id>
     <Author>ajs (maintained by yoavain, original by cul8er)</Author>
-    <HomePage>https://github.com/yoavain/mediaportal-fanart-handler</HomePage>
+    <HomePage>https://github.com/andrewjswan/mediaportal-fanart-handler</HomePage>
     <ForumPage>https://forum.team-mediaportal.com/fanart-handler-535/</ForumPage>
-    <UpdateUrl>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/scripts/fanarthandler.xml</UpdateUrl>
+    <UpdateUrl>https://raw.githubusercontent.com/andrewjswan/mediaportal-fanart-handler/master/scripts/fanarthandler.xml</UpdateUrl>
     <Version>
       <Major>4</Major>
       <Minor>0</Minor>
-      <Build>2</Build>
+      <Build>3</Build>
       <Revision>0</Revision>
     </Version>
     <ExtensionDescription>Fanart Handler is a plugin for MediaPortal (MP). The plugin basically supports;
@@ -869,14 +869,16 @@ ajs</Value>
        * push random images from selected folders</ExtensionDescription>
     <VersionDescription>Add Holidays package
 Add Weather package
+Moving to new Repository
+Migrate to Github Action
 
 *** We Stand with Ukraine ***</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
-    <OnlineLocation>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/builds/FanartHandler-{VERSION}.MPE1</OnlineLocation>
-    <ReleaseDate>2024-03-21T15:04:24</ReleaseDate>
+    <OnlineLocation>https://raw.githubusercontent.com/andrewjswan/mediaportal-fanart-handler/master/builds/FanartHandler-[Version].mpe1</OnlineLocation>
+    <ReleaseDate>2024-03-24T14:14:14</ReleaseDate>
     <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios,animated</Tags>
     <PlatformCompatibility>AnyCPU</PlatformCompatibility>
-    <Location>..\builds\FanartHandler-MAJOR.MINOR.BUILD.REVISION.MPE1</Location>
+    <Location>..\builds\FanartHandler-[Version].mpe1</Location>
     <Params>
       <Items>
         <SectionParam Name="Icon">
@@ -885,7 +887,7 @@ Add Weather package
           <Description>The icon file of the package (jpg,png,bmp)</Description>
         </SectionParam>
         <SectionParam Name="Online Icon">
-          <Value>https://github.com/yoavain/mediaportal-fanart-handler/raw/master/FanartHandler_Icon.png</Value>
+          <Value>https://github.com/andrewjswan/mediaportal-fanart-handler/raw/master/FanartHandler_Icon.png</Value>
           <ValueType>String</ValueType>
           <Description>The icon file of the package stored online (jpg,png,bmp)</Description>
         </SectionParam>
@@ -897,7 +899,7 @@ Add Weather package
  If have .dll extension used like MP plugin configuration</Description>
         </SectionParam>
         <SectionParam Name="Online Screenshots">
-          <Value>https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshots/screenshot01.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshots/screenshot02.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshots/screenshot03.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshots/screenshot04.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshots/screenshot05.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshots/screenshot06.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshots/screenshot07.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshots/screenshot08.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshots/screenshot09.jpg;https://raw.githubusercontent.com/yoavain/mediaportal-fanart-handler/master/screenshots/screenshot10.jpg</Value>
+          <Value>https://raw.githubusercontent.com/andrewjswan/mediaportal-fanart-handler/master/screenshots/screenshot01.jpg;https://raw.githubusercontent.com/andrewjswan/mediaportal-fanart-handler/master/screenshots/screenshot02.jpg;https://raw.githubusercontent.com/andrewjswan/mediaportal-fanart-handler/master/screenshots/screenshot03.jpg;https://raw.githubusercontent.com/andrewjswan/mediaportal-fanart-handler/master/screenshots/screenshot04.jpg;https://raw.githubusercontent.com/andrewjswan/mediaportal-fanart-handler/master/screenshots/screenshot05.jpg;https://raw.githubusercontent.com/andrewjswan/mediaportal-fanart-handler/master/screenshots/screenshot06.jpg;https://raw.githubusercontent.com/andrewjswan/mediaportal-fanart-handler/master/screenshots/screenshot07.jpg;https://raw.githubusercontent.com/andrewjswan/mediaportal-fanart-handler/master/screenshots/screenshot08.jpg;https://raw.githubusercontent.com/andrewjswan/mediaportal-fanart-handler/master/screenshots/screenshot09.jpg;https://raw.githubusercontent.com/andrewjswan/mediaportal-fanart-handler/master/screenshots/screenshot10.jpg</Value>
           <ValueType>String</ValueType>
           <Description>Online stored screenshot urls separated by ; </Description>
         </SectionParam>
@@ -1301,7 +1303,7 @@ Add Weather package
   <ProjectSettings>
     <FolderGroups />
     <ProjectFilename>fanarthandler.xmp2</ProjectFilename>
-    <UpdatePath1>fanarthandler-{VERSION}.xml</UpdatePath1>
+    <UpdatePath1>fanarthandler.xml</UpdatePath1>
     <UpdatePath2 />
     <UpdatePath3 />
   </ProjectSettings>
