@@ -855,7 +855,7 @@ ajs</Value>
     <Version>
       <Major>4</Major>
       <Minor>0</Minor>
-      <Build>3</Build>
+      <Build>5</Build>
       <Revision>0</Revision>
     </Version>
     <ExtensionDescription>Fanart Handler is a plugin for MediaPortal (MP). The plugin basically supports;
