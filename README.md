@@ -1,5 +1,11 @@
 # mediaportal-fanart-handler
+[![MP AnyCPU](https://img.shields.io/badge/MP-AnyCPU-blue?logo=windows&logoColor=white)](https://github.com/andrewjswan/mediaportal-fanart-handler/releases)
 [![Build status](https://ci.appveyor.com/api/projects/status/nxaec1dxq8iq5nnb/branch/master?svg=true)](https://ci.appveyor.com/project/andrewjswan79536/mediaportal-fanart-handler/branch/master)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/andrewjswan/mediaportal-fanart-handler/build.yml?logo=github)](https://github.com/andrewjswan/mediaportal-fanart-handler/actions)
+[![GitHub](https://img.shields.io/github/license/andrewjswan/mediaportal-fanart-handler?color=blue)](https://github.com/andrewjswan/mediaportal-fanart-handler/blob/master/LICENSE)
+[![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/andrewjswan/mediaportal-fanart-handler?include_prereleases)](https://github.com/andrewjswan/mediaportal-fanart-handler/releases)
+[![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/downloads-pre/andrewjswan/mediaportal-fanart-handler/latest/total?label=release@downloads)](https://github.com/andrewjswan/mediaportal-fanart-handler/releases)
+[![StandWithUkraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://github.com/vshymanskyy/StandWithUkraine/blob/main/docs/README.md)
 
 ## Introduction
 Fanart Handler is a plugin for **MediaPortal (MP)**. The plugin has two main purposes;
