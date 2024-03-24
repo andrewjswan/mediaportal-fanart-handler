@@ -874,7 +874,7 @@ Migrate to Github Action
 
 *** We Stand with Ukraine ***</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
-    <OnlineLocation>https://raw.githubusercontent.com/andrewjswan/mediaportal-fanart-handler/master/builds/FanartHandler-[Version].mpe1</OnlineLocation>
+    <OnlineLocation>https://github.com/andrewjswan/mediaportal-fanart-handler/releases/download/v[Version]/FanartHandler-[Version].mpe1</OnlineLocation>
     <ReleaseDate>2024-03-24T14:14:14</ReleaseDate>
     <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios,animated</Tags>
     <PlatformCompatibility>AnyCPU</PlatformCompatibility>
