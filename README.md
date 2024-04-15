@@ -77,11 +77,11 @@ push cycling fanart from the following folders for use anywhere in a skin for<br
 NOTE! This plugin only supports JPG images.
 
 ## Additional for Skin
-Studios - https://github.com/andrewjswan/mediaportal.images.studios
-Genres - https://github.com/andrewjswan/mediaportal.images.genres
-Awards - https://github.com/andrewjswan/mediaportal.images.awards
-Weather - https://github.com/andrewjswan/mediaportal.images.weather
-Holiday - https://github.com/andrewjswan/mediaportal.images.holidays
+- Studios - https://github.com/andrewjswan/mediaportal.images.studios
+- Genres - https://github.com/andrewjswan/mediaportal.images.genres
+- Awards - https://github.com/andrewjswan/mediaportal.images.awards
+- Weather - https://github.com/andrewjswan/mediaportal.images.weather
+- Holiday - https://github.com/andrewjswan/mediaportal.images.holidays
 
 ## Supported Skins
 Titan ( full support in ajs Theme for Titan - https://github.com/andrewjswan/mediaportal-skin-themes )
