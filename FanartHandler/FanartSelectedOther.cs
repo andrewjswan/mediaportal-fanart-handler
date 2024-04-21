@@ -159,6 +159,7 @@ namespace FanartHandler
                 SelectedItem.StartsWith("Previous ") && SelectedItem.EndsWith(" Days"))
             {
               IsSelectedVideo = true;
+              Utils.SetProperty("#Trakt.Movie.ImdbId","");
             }
 
             if (isVideo)
