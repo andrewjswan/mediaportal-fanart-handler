@@ -147,7 +147,6 @@ namespace FanartHandler
               if (!string.IsNullOrEmpty(selectedTitle))
               {
                 SelectedItem = selectedTitle;
-                Utils.SetProperty("#Trakt.Movie.ImdbId","");
               }
             }
             AddSelectedGenreProperty(SelectedGenre, SelectedItem, property);
