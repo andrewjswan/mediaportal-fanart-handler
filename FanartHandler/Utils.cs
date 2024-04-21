@@ -2568,7 +2568,7 @@ namespace FanartHandler
         }
         else if (iActiveWindow == 96742)     // Moving Pictures
         {
-          SelectedItem = Utils.GetProperty("#selecteditem");
+          SelectedItem = Utils.GetProperty("#MovingPictures.SelectedMovie.title");
           SelectedStudios = Utils.GetProperty("#MovingPictures.SelectedMovie.studios");
           SelectedGenre = Utils.GetProperty("#MovingPictures.SelectedMovie.genres");
           // logger.Debug("*** "+SelectedItem+" - "+SelectedStudios+" - "+SelectedGenre);

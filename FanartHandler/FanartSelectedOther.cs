@@ -151,6 +151,15 @@ namespace FanartHandler
             }
             AddSelectedGenreProperty(SelectedGenre, SelectedItem, property);
 
+            // Trakt remove ClearArt for pages
+            if (SelectedItem == "Next Page" ||
+                SelectedItem == "Previous Page" ||
+                SelectedItem.StartsWith("Next ") && SelectedItem.EndsWith(" Days") ||
+                SelectedItem.StartsWith("Previous ") && SelectedItem.EndsWith(" Days"))
+            {
+              IsSelectedVideo = true;
+            }
+
             if (isVideo)
             {
               AddSelectedMoviePropertys();
@@ -304,6 +313,15 @@ namespace FanartHandler
               Utils.ContainsID(WindowsUsingFanartSelectedAwardMovie))
           {
             IsSelectedVideo = true;
+            if (Utils.iActiveWindow == 87266 || // Trakt Trending Movies
+                Utils.iActiveWindow == 87700 || // Trakt Calendar Movies
+                Utils.iActiveWindow == 87101 || // Trakt Popular Movies
+                Utils.iActiveWindow == 87263 || // Trakt Recommendations Movies
+                Utils.iActiveWindow == 87605 || // Trakt Anticipated Movies
+                Utils.iActiveWindow == 87607) // Trakt Box Office
+            {
+                IsSelectedVideo = false;
+            }
             RefreshGenericSelectedProperties(Utils.SelectedType.Movie, 
                                              ref CurrSelectedMovie, 
                                              ref CurrSelectedMovieTitle);
@@ -848,6 +866,10 @@ namespace FanartHandler
       if (string.IsNullOrEmpty(strIMDBID))
       {
         strIMDBID = Utils.GetProperty("#myfilms.db.imdb_id.value");
+      }
+      if (string.IsNullOrEmpty(strIMDBID))
+      {
+        strIMDBID = Utils.GetProperty("#Trakt.Movie.ImdbId");
       }
 
       if (!string.IsNullOrEmpty(strIMDBID))
