@@ -152,18 +152,25 @@ namespace FanartHandler
             AddSelectedGenreProperty(SelectedGenre, SelectedItem, property);
 
             // Trakt remove ClearArt for pages
-            if (SelectedItem == "Next Page" ||
-                SelectedItem == "Previous Page" ||
-                SelectedItem.StartsWith("Next ") && SelectedItem.EndsWith(" Days") ||
-                SelectedItem.StartsWith("Previous ") && SelectedItem.EndsWith(" Days"))
+            var window = GUIWindowManager.GetWindow(Utils.iActiveWindow);
+            if (window != null)
             {
-              IsSelectedVideo = true;
-              Utils.SetProperty("#Trakt.Movie.ImdbId","");
-            }
-
-            if (isVideo)
-            {
-              AddSelectedMoviePropertys();
+                var selectedListItem = GUIControl.GetSelectedListItem(Utils.iActiveWindow, window.GetFocusControlId());
+                if (selectedListItem != null)
+                {
+                    if (selectedListItem.IsFolder)
+                    {
+                        IsSelectedVideo = true;
+                        ClearSelectedMoviePropertys();
+                    }
+                    else
+                    {
+                        if (isVideo)
+                        {
+                            AddSelectedMoviePropertys();
+                        }
+                    }
+                }
             }
 
             ResetRefreshTickCount();
@@ -319,7 +326,14 @@ namespace FanartHandler
                 Utils.iActiveWindow == 87101 || // Trakt Popular Movies
                 Utils.iActiveWindow == 87263 || // Trakt Recommendations Movies
                 Utils.iActiveWindow == 87605 || // Trakt Anticipated Movies
-                Utils.iActiveWindow == 87607) // Trakt Box Office
+                Utils.iActiveWindow == 87607 || // Trakt Box Office
+                Utils.iActiveWindow == 87265 || // Trakt Trending Series
+                Utils.iActiveWindow == 87102 || // Trakt Popular Series
+                Utils.iActiveWindow == 87262 || // Trakt Recommendations Series
+                Utils.iActiveWindow == 87259 || // Trakt Calendar Series
+                Utils.iActiveWindow == 87606 || // Trakt Anticipated Series
+                Utils.iActiveWindow == 87281 || // Trakt Series Seasons
+                Utils.iActiveWindow == 87282) // Trakt Series Episodes
             {
                 IsSelectedVideo = false;
             }
@@ -872,6 +886,11 @@ namespace FanartHandler
       {
         strIMDBID = Utils.GetProperty("#Trakt.Movie.ImdbId");
       }
+      string strTVDBID = Utils.GetProperty("#Trakt.Show.TvdbId");
+      if (string.IsNullOrEmpty(strTVDBID))
+      {
+        strTVDBID = Utils.GetProperty("#TVSeries.Series.ID");
+      }
 
       if (!string.IsNullOrEmpty(strIMDBID))
       {
@@ -889,7 +908,14 @@ namespace FanartHandler
         Utils.SetProperty("movie.cd.selected", 
                            Utils.FanartTVFileExists(strIMDBID, null, null, Utils.FanartTV.MoviesCDArt) ? Utils.GetFanartTVFileName(strIMDBID, null, null, Utils.FanartTV.MoviesCDArt) : string.Empty);
       }
-      else
+      if (!string.IsNullOrEmpty(strTVDBID))
+      {
+        Utils.SetProperty("series.clearart.selected",
+                           Utils.FanartTVFileExists(strTVDBID, null, null, Utils.FanartTV.SeriesClearArt) ? Utils.GetFanartTVFileName(strTVDBID, null, null, Utils.FanartTV.SeriesClearArt) : string.Empty);
+        Utils.SetProperty("series.clearlogo.selected",
+                           Utils.FanartTVFileExists(strTVDBID, null, null, Utils.FanartTV.SeriesClearLogo) ? Utils.GetFanartTVFileName(strTVDBID, null, null, Utils.FanartTV.SeriesClearLogo) : string.Empty);
+      }
+      if (string.IsNullOrEmpty(strIMDBID) && string.IsNullOrEmpty(strTVDBID))
       {
         ClearSelectedMoviePropertys();
       }
@@ -903,6 +929,9 @@ namespace FanartHandler
       Utils.SetProperty("movie.clearlogo.selected", string.Empty);
       Utils.SetProperty("movie.banner.selected", string.Empty);
       Utils.SetProperty("movie.cd.selected", string.Empty);
+
+      Utils.SetProperty("series.clearart.selected", string.Empty);
+      Utils.SetProperty("series.clearlogo.selected", string.Empty);
     }
 
     private void EmptyMusicProperties(bool currClean = true)
