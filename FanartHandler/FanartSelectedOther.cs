@@ -13,6 +13,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using WindowPlugins.GUITVSeries;
 
 namespace FanartHandler
 {
@@ -38,6 +39,7 @@ namespace FanartHandler
     public int RefreshTickCount { get; set; }
 
     public Hashtable WindowsUsingFanartSelectedClearArtMusic { get; set; }
+    public Hashtable WindowsUsingFanartSelectedClearArtMovie { get; set; }
 
     public Hashtable WindowsUsingFanartSelectedGenreMusic { get; set; }
     public Hashtable WindowsUsingFanartSelectedLabelMusic { get; set; }
@@ -62,6 +64,7 @@ namespace FanartHandler
       RefreshTickCount = 0;
 
       WindowsUsingFanartSelectedClearArtMusic = new Hashtable();
+      WindowsUsingFanartSelectedClearArtMovie = new Hashtable();
 
       WindowsUsingFanartSelectedGenreMusic = new Hashtable();
       WindowsUsingFanartSelectedLabelMusic = new Hashtable();
@@ -97,6 +100,7 @@ namespace FanartHandler
               Utils.ContainsID(WindowsUsingFanartSelectedGenreMovie) || 
               Utils.ContainsID(WindowsUsingFanartSelectedStudioMovie) || 
               Utils.ContainsID(WindowsUsingFanartSelectedClearArtMusic) ||
+              Utils.ContainsID(WindowsUsingFanartSelectedClearArtMovie) ||
               Utils.ContainsID(WindowsUsingFanartSelectedAwardMovie)
              );
     }
@@ -151,26 +155,10 @@ namespace FanartHandler
             }
             AddSelectedGenreProperty(SelectedGenre, SelectedItem, property);
 
-            // Trakt remove ClearArt for pages
-            var window = GUIWindowManager.GetWindow(Utils.iActiveWindow);
-            if (window != null)
+            if (isVideo)
             {
-                var selectedListItem = GUIControl.GetSelectedListItem(Utils.iActiveWindow, window.GetFocusControlId());
-                if (selectedListItem != null)
-                {
-                    if (selectedListItem.IsFolder)
-                    {
-                        IsSelectedVideo = true;
-                        ClearSelectedMoviePropertys();
-                    }
-                    else
-                    {
-                        if (isVideo)
-                        {
-                            AddSelectedMoviePropertys();
-                        }
-                    }
-                }
+                Console.WriteLine(Utils.iActiveWindow.ToString());
+                AddSelectedMoviePropertys();
             }
 
             ResetRefreshTickCount();
@@ -318,25 +306,10 @@ namespace FanartHandler
         {
           if (Utils.ContainsID(WindowsUsingFanartSelectedGenreMovie) || 
               Utils.ContainsID(WindowsUsingFanartSelectedStudioMovie) ||
-              Utils.ContainsID(WindowsUsingFanartSelectedAwardMovie))
+              Utils.ContainsID(WindowsUsingFanartSelectedAwardMovie) ||
+              Utils.ContainsID(WindowsUsingFanartSelectedClearArtMovie))
           {
             IsSelectedVideo = true;
-            if (Utils.iActiveWindow == 87266 || // Trakt Trending Movies
-                Utils.iActiveWindow == 87700 || // Trakt Calendar Movies
-                Utils.iActiveWindow == 87101 || // Trakt Popular Movies
-                Utils.iActiveWindow == 87263 || // Trakt Recommendations Movies
-                Utils.iActiveWindow == 87605 || // Trakt Anticipated Movies
-                Utils.iActiveWindow == 87607 || // Trakt Box Office
-                Utils.iActiveWindow == 87265 || // Trakt Trending Series
-                Utils.iActiveWindow == 87102 || // Trakt Popular Series
-                Utils.iActiveWindow == 87262 || // Trakt Recommendations Series
-                Utils.iActiveWindow == 87259 || // Trakt Calendar Series
-                Utils.iActiveWindow == 87606 || // Trakt Anticipated Series
-                Utils.iActiveWindow == 87281 || // Trakt Series Seasons
-                Utils.iActiveWindow == 87282) // Trakt Series Episodes
-            {
-                IsSelectedVideo = false;
-            }
             RefreshGenericSelectedProperties(Utils.SelectedType.Movie, 
                                              ref CurrSelectedMovie, 
                                              ref CurrSelectedMovieTitle);
@@ -891,6 +864,23 @@ namespace FanartHandler
       {
         strTVDBID = Utils.GetProperty("#TVSeries.Series.ID");
       }
+      if (string.IsNullOrEmpty(strTVDBID))
+      {
+        // TV Series ID
+        var window = GUIWindowManager.GetWindow(Utils.iActiveWindow);
+        if (window != null)
+        {
+            var selectedListItem = GUIControl.GetSelectedListItem(Utils.iActiveWindow, window.GetFocusControlId());
+            if (selectedListItem != null)
+            {
+                DBSeries series = selectedListItem.TVTag as DBSeries;
+                if (series != null)
+                {
+                    strTVDBID = series[DBOnlineSeries.cID];
+                }
+            }
+        }
+      }
 
       if (!string.IsNullOrEmpty(strIMDBID))
       {
@@ -907,6 +897,13 @@ namespace FanartHandler
                            Utils.FanartTVFileExists(strIMDBID, null, null, Utils.FanartTV.MoviesBanner) ? Utils.GetFanartTVFileName(strIMDBID, null, null, Utils.FanartTV.MoviesBanner) : string.Empty);
         Utils.SetProperty("movie.cd.selected", 
                            Utils.FanartTVFileExists(strIMDBID, null, null, Utils.FanartTV.MoviesCDArt) ? Utils.GetFanartTVFileName(strIMDBID, null, null, Utils.FanartTV.MoviesCDArt) : string.Empty);
+        FanartAvailable = FanartAvailable || 
+                                     Utils.AnimatedFileExists(strIMDBID, null, null, Utils.Animated.MoviesPoster) ||
+                                     Utils.AnimatedFileExists(strIMDBID, null, null, Utils.Animated.MoviesBackground) ||
+                                     Utils.FanartTVFileExists(strIMDBID, null, null, Utils.FanartTV.MoviesClearArt) ||
+                                     Utils.FanartTVFileExists(strIMDBID, null, null, Utils.FanartTV.MoviesClearLogo) ||
+                                     Utils.FanartTVFileExists(strIMDBID, null, null, Utils.FanartTV.MoviesBanner) ||
+                                     Utils.FanartTVFileExists(strIMDBID, null, null, Utils.FanartTV.MoviesCDArt);
       }
       if (!string.IsNullOrEmpty(strTVDBID))
       {
@@ -914,6 +911,9 @@ namespace FanartHandler
                            Utils.FanartTVFileExists(strTVDBID, null, null, Utils.FanartTV.SeriesClearArt) ? Utils.GetFanartTVFileName(strTVDBID, null, null, Utils.FanartTV.SeriesClearArt) : string.Empty);
         Utils.SetProperty("series.clearlogo.selected",
                            Utils.FanartTVFileExists(strTVDBID, null, null, Utils.FanartTV.SeriesClearLogo) ? Utils.GetFanartTVFileName(strTVDBID, null, null, Utils.FanartTV.SeriesClearLogo) : string.Empty);
+        FanartAvailable = FanartAvailable || 
+                                     Utils.FanartTVFileExists(strTVDBID, null, null, Utils.FanartTV.SeriesClearArt) ||
+                                     Utils.FanartTVFileExists(strTVDBID, null, null, Utils.FanartTV.SeriesClearLogo);
       }
       if (string.IsNullOrEmpty(strIMDBID) && string.IsNullOrEmpty(strTVDBID))
       {

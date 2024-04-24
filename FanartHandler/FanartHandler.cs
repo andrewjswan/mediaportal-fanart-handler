@@ -810,6 +810,7 @@ namespace FanartHandler
                                      Utils.Check(FSelected.WindowsUsingFanartSelectedPictures.Count > 0) + " Pictures Fanart, " +
                                      Utils.Check(FSelected.WindowsUsingFanartSelectedScoreCenter.Count > 0) + " ScoreCenter Fanart");
         logger.Debug("           " + Utils.Check(FSelectedOther.WindowsUsingFanartSelectedClearArtMusic.Count > 0) + " Music ClearArt, " + 
+                                     Utils.Check(FSelectedOther.WindowsUsingFanartSelectedClearArtMovie.Count > 0) + " Movie ClearArt, " +
                                      Utils.Check(FSelectedOther.WindowsUsingFanartSelectedGenreMusic.Count > 0) + " Music Genres, " +
                                      Utils.Check(FSelectedOther.WindowsUsingFanartSelectedLabelMusic.Count > 0) + " Music Labels");
         logger.Debug("           " + Utils.Check(FSelectedOther.WindowsUsingFanartSelectedStudioMovie.Count > 0) + " Movie Studios, " + 
@@ -1643,6 +1644,7 @@ namespace FanartHandler
 
           var _flagClearArt = false;
           var _flagClearArtPlay = false;
+          var _flagClearArtMovies = false;
 
           var _flagLabelMusic = false;
           var _flagLabelPlay = false;
@@ -1666,7 +1668,7 @@ namespace FanartHandler
                                                            ref _flag1Movie, ref _flag2Movie, 
                                                            ref _flag1Picture, ref _flag2Picture, 
                                                            ref _flagPlay,
-                                                           ref _flagClearArt, ref _flagClearArtPlay,
+                                                           ref _flagClearArt, ref _flagClearArtPlay, ref _flagClearArtMovies,
                                                            ref _flagGenrePlay, ref _flagGenrePlaySingle, ref _flagGenrePlayAll, ref _flagGenrePlayVertical, 
                                                            ref _flagGenreMusic, ref _flagGenreMusicSingle, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
                                                            ref _flagGenreMovie, ref _flagGenreMovieSingle, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
@@ -1690,7 +1692,7 @@ namespace FanartHandler
                                                            ref _flag1Movie, ref _flag2Movie, 
                                                            ref _flag1Picture, ref _flag2Picture, 
                                                            ref _flagPlay, 
-                                                           ref _flagClearArt, ref _flagClearArtPlay,
+                                                           ref _flagClearArt, ref _flagClearArtPlay, ref _flagClearArtMovies,
                                                            ref _flagGenrePlay, ref _flagGenrePlaySingle, ref _flagGenrePlayAll, ref _flagGenrePlayVertical, 
                                                            ref _flagGenreMusic, ref _flagGenreMusicSingle, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
                                                            ref _flagGenreMovie, ref _flagGenreMovieSingle, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
@@ -1709,7 +1711,7 @@ namespace FanartHandler
                                                                ref _flag1Movie, ref _flag2Movie, 
                                                                ref _flag1Picture, ref _flag2Picture, 
                                                                ref _flagPlay, 
-                                                               ref _flagClearArt, ref _flagClearArtPlay,
+                                                               ref _flagClearArt, ref _flagClearArtPlay, ref _flagClearArtMovies,
                                                                ref _flagGenrePlay, ref _flagGenrePlaySingle, ref _flagGenrePlayAll, ref _flagGenrePlayVertical, 
                                                                ref _flagGenreMusic, ref _flagGenreMusicSingle, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
                                                                ref _flagGenreMovie, ref _flagGenreMovieSingle, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
@@ -1730,7 +1732,7 @@ namespace FanartHandler
                                                              ref _flag1Movie, ref _flag2Movie, 
                                                              ref _flag1Picture, ref _flag2Picture, 
                                                              ref _flagPlay, 
-                                                             ref _flagClearArt, ref _flagClearArtPlay,
+                                                             ref _flagClearArt, ref _flagClearArtPlay, ref _flagClearArtMovies,
                                                              ref _flagGenrePlay, ref _flagGenrePlaySingle, ref _flagGenrePlayAll, ref _flagGenrePlayVertical, 
                                                              ref _flagGenreMusic, ref _flagGenreMusicSingle, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
                                                              ref _flagGenreMovie, ref _flagGenreMovieSingle, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
@@ -1759,7 +1761,7 @@ namespace FanartHandler
                                                            ref _flag1Movie, ref _flag2Movie, 
                                                            ref _flag1Picture, ref _flag2Picture, 
                                                            ref _flagPlay, 
-                                                           ref _flagClearArt, ref _flagClearArtPlay,
+                                                           ref _flagClearArt, ref _flagClearArtPlay, ref _flagClearArtMovies,
                                                            ref _flagGenrePlay, ref _flagGenrePlaySingle, ref _flagGenrePlayAll, ref _flagGenrePlayVertical, 
                                                            ref _flagGenreMusic, ref _flagGenreMusicSingle, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
                                                            ref _flagGenreMovie, ref _flagGenreMovieSingle, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
@@ -1778,7 +1780,7 @@ namespace FanartHandler
                                                                ref _flag1Movie, ref _flag2Movie, 
                                                                ref _flag1Picture, ref _flag2Picture, 
                                                                ref _flagPlay, 
-                                                               ref _flagClearArt, ref _flagClearArtPlay,
+                                                               ref _flagClearArt, ref _flagClearArtPlay, ref _flagClearArtMovies,
                                                                ref _flagGenrePlay, ref _flagGenrePlaySingle, ref _flagGenrePlayAll, ref _flagGenrePlayVertical, 
                                                                ref _flagGenreMusic, ref _flagGenreMusicSingle, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
                                                                ref _flagGenreMovie, ref _flagGenreMovieSingle, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
@@ -1799,7 +1801,7 @@ namespace FanartHandler
                                                              ref _flag1Movie, ref _flag2Movie, 
                                                              ref _flag1Picture, ref _flag2Picture, 
                                                              ref _flagPlay, 
-                                                             ref _flagClearArt, ref _flagClearArtPlay,
+                                                             ref _flagClearArt, ref _flagClearArtPlay, ref _flagClearArtMovies,
                                                              ref _flagGenrePlay, ref _flagGenrePlaySingle, ref _flagGenrePlayAll, ref _flagGenrePlayVertical, 
                                                              ref _flagGenreMusic, ref _flagGenreMusicSingle, ref _flagGenreMusicAll, ref _flagGenreMusicVertical, 
                                                              ref _flagGenreMovie, ref _flagGenreMovieSingle, ref _flagGenreMovieAll, ref _flagGenreMovieVertical, 
@@ -1847,6 +1849,11 @@ namespace FanartHandler
             if (_flagClearArt && !Utils.ContainsID(FSelectedOther.WindowsUsingFanartSelectedClearArtMusic, nodeValue))
             {
               FSelectedOther.WindowsUsingFanartSelectedClearArtMusic.Add(nodeValue, nodeValue);
+            }
+            // Selected Movie ClearArt
+            if (_flagClearArtMovies && !Utils.ContainsID(FSelectedOther.WindowsUsingFanartSelectedClearArtMovie, nodeValue))
+            {
+              FSelectedOther.WindowsUsingFanartSelectedClearArtMovie.Add(nodeValue, nodeValue);
             }
             #endregion
 
@@ -2047,7 +2054,7 @@ namespace FanartHandler
                                   ref bool _flag1Movie, ref bool _flag2Movie,
                                   ref bool _flag1Picture, ref bool _flag2Picture, 
                                   ref bool _flagPlay, 
-                                  ref bool _flagClearArt, ref bool _flagClearArtPlay,   
+                                  ref bool _flagClearArt, ref bool _flagClearArtPlay, ref bool _flagClearArtMovies,
                                   ref bool _flagGenrePlay, ref bool _flagGenrePlaySingle, ref bool _flagGenrePlayAll, ref bool _flagGenrePlayVertical, 
                                   ref bool _flagGenreMusic, ref bool _flagGenreMusicSingle, ref bool _flagGenreMusicAll, ref bool _flagGenreMusicVertical, 
                                   ref bool _flagGenreMovie, ref bool _flagGenreMovieSingle, ref bool _flagGenreMovieAll, ref bool _flagGenreMovieVertical, 
@@ -2134,6 +2141,12 @@ namespace FanartHandler
       if (_xml.Contains("#fanarthandler.music.artistclearart.selected") || _xml.Contains("#fanarthandler.music.artistbanner.selected") || _xml.Contains("#fanarthandler.music.albumcd.selected"))
       {
         _flagClearArt = true;
+      }
+
+      // ClearArt Movies
+      if (_xml.Contains("#fanarthandler.movie.clearart.selected") || _xml.Contains("#fanarthandler.movie.clearlogo.selected") || _xml.Contains("#fanarthandler.movie.cd.selected") || _xml.Contains("#fanarthandler.series.clearart.selected") || _xml.Contains("#fanarthandler.series.clearlogo.selected"))
+      {
+        _flagClearArtMovies = true;
       }
 
       // Labels

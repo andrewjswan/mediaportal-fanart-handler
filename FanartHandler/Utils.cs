@@ -2634,6 +2634,32 @@ namespace FanartHandler
           }
           catch { }
         }
+        else if (iActiveWindow == 87266 || // Trakt Trending Movies
+                iActiveWindow == 87700 || // Trakt Calendar Movies
+                iActiveWindow == 87101 || // Trakt Popular Movies
+                iActiveWindow == 87263 || // Trakt Recommendations Movies
+                iActiveWindow == 87605 || // Trakt Anticipated Movies
+                iActiveWindow == 87607 || // Trakt Box Office
+                iActiveWindow == 87265 || // Trakt Trending Series
+                iActiveWindow == 87102 || // Trakt Popular Series
+                iActiveWindow == 87262 || // Trakt Recommendations Series
+                iActiveWindow == 87259 || // Trakt Calendar Series
+                iActiveWindow == 87606 || // Trakt Anticipated Series
+                iActiveWindow == 87281 || // Trakt Series Seasons
+                iActiveWindow == 87282) // Trakt Series Episodes
+        {
+            SelectedItem = Utils.GetProperty("#selecteditem");
+            // Remove ClearArt on Trakt Folders
+            var window = GUIWindowManager.GetWindow(Utils.iActiveWindow);
+            if (window != null)
+            {
+                var selectedListItem = GUIControl.GetSelectedListItem(Utils.iActiveWindow, window.GetFocusControlId());
+                if (selectedListItem == null || selectedListItem.IsFolder)
+                {
+                    SelectedItem = string.Empty;
+                }
+            }
+        }
         else
           SelectedItem = Utils.GetProperty("#selecteditem");
 
