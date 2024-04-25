@@ -13,7 +13,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using WindowPlugins.GUITVSeries;
 
 namespace FanartHandler
 {
@@ -157,7 +156,7 @@ namespace FanartHandler
 
             if (isVideo)
             {
-                AddSelectedMoviePropertys();
+              AddSelectedMoviePropertys(SelectedItem);
             }
 
             ResetRefreshTickCount();
@@ -843,7 +842,7 @@ namespace FanartHandler
       FanartAvailable = FanartAvailable || picFound;
     }
     
-    public void AddSelectedMoviePropertys()
+    public void AddSelectedMoviePropertys(string SelectedItem)
     {
       string strIMDBID = Utils.GetProperty("#imdbnumber");
       if (string.IsNullOrEmpty(strIMDBID))
@@ -855,14 +854,9 @@ namespace FanartHandler
         strIMDBID = Utils.GetProperty("#myfilms.db.imdb_id.value");
       }
 
-      var window = GUIWindowManager.GetWindow(Utils.iActiveWindow);
-      GUIListItem selectedListItem = null;
-      if (window != null)
-      {
-        selectedListItem = GUIControl.GetSelectedListItem(Utils.iActiveWindow, window.GetFocusControlId());
-        if (selectedListItem == null && string.IsNullOrEmpty(strIMDBID))
-          return;
-      }
+      // Trakt does not clear the #Trakt.Movie.ImdbId value so exit function when Trakt page and SelectedItem is null, or ClearArt will turn up when it should not
+      if (SelectedItem == "TraktIsNull")
+        return;
 
       if (string.IsNullOrEmpty(strIMDBID))
       {
@@ -874,18 +868,11 @@ namespace FanartHandler
       {
         strTVDBID = Utils.GetProperty("#TVSeries.Series.ID");
       }
-      if (string.IsNullOrEmpty(strTVDBID))
-      {
-        // TV Series ID
-        if (selectedListItem != null)
-        {
-          DBSeries series = selectedListItem.TVTag as DBSeries;
-          if (series != null)
-          {
-            strTVDBID = series[DBOnlineSeries.cID];
-          }
-        }
-      }
+      //if (string.IsNullOrEmpty(strTVDBID))
+      //{
+      //  // TV Series ID
+      //  strTVDBID = UtilsTVSeries.GetTVSeriesID(50);
+      //}
 
       if (!string.IsNullOrEmpty(strIMDBID))
       {

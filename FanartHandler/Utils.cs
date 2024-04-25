@@ -2666,24 +2666,29 @@ namespace FanartHandler
                 iActiveWindow == 87281 || // Trakt Series Seasons
                 iActiveWindow == 87282) // Trakt Series Episodes
         {
-            SelectedItem = Utils.GetProperty("#selecteditem");
-            // Remove ClearArt on Trakt Folders
-            var window = GUIWindowManager.GetWindow(Utils.iActiveWindow);
-            if (window != null)
+          SelectedItem = Utils.GetProperty("#selecteditem");
+          // Remove ClearArt on Trakt Folders
+          var window = GUIWindowManager.GetWindow(Utils.iActiveWindow);
+          if (window != null)
+          {
+            var selectedListItem = GUIControl.GetSelectedListItem(Utils.iActiveWindow, window.GetFocusControlId());
+            if (selectedListItem != null) // (selectedListItem != null || selectedListItem.IsFolder)
             {
-                var selectedListItem = GUIControl.GetSelectedListItem(Utils.iActiveWindow, window.GetFocusControlId());
-                if (selectedListItem != null)
+              if (selectedListItem.IsFolder)
                 {
-                    if (selectedListItem.IsFolder)
-                    {
-                        GUIControl cntl = window.GetControl(50);
-                        if (cntl is GUIFacadeControl)
-                        {
-                            SelectedItem = string.Empty;
-                        }
-                    }
+                  GUIControl cntl = window.GetControl(50);
+                  if (cntl is GUIFacadeControl)
+                  {
+                    SelectedItem = string.Empty;
+                  }
                 }
             }
+            else
+            {
+              // Trakt menu is a null SelectedItem but we dont want to clear the SelectedItem when a movie is selected
+              SelectedItem = "TraktIsNull";
+            }
+          }
         }
         else
           SelectedItem = Utils.GetProperty("#selecteditem");
