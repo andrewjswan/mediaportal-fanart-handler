@@ -524,7 +524,7 @@ namespace FanartHandler
       Utils.UseDefaultBackdrop = CheckBoxUseDefaultBackdrop.Checked;
       Utils.DefaultBackdropMask = edtDefaultBackdropMask.Text.Trim();
       Utils.DeleteMissing = CheckBoxDeleteMissing.Checked;
-      Utils.FanartTVPersonalAPIKey = Regex.Replace(edtFanartTVPersonalAPIKey.Text, "[^A-F0-9 -]", string.Empty, RegexOptions.IgnoreCase).Trim();
+      Utils.FanartTVPersonalAPIKey = Regex.Replace(edtFanartTVPersonalAPIKey.Text, "[^A-F0-9]", string.Empty, RegexOptions.IgnoreCase).Trim();
       Utils.UseHighDefThumbnails = checkBoxUseHighDefThumbnails.Checked;
       Utils.UseMinimumResolutionForDownload = CheckBoxUseMinimumResolutionForDownload.Checked;
       Utils.IgnoreMinimumResolutionForMusicThumbDownload = CheckBoxIgnoreMinimumResolutionForMusicThumbDownload.Checked;
