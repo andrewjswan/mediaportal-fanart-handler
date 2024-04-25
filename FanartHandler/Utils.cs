@@ -823,7 +823,13 @@ namespace FanartHandler
       {
         MoviesClearArtFolder = Path.Combine(MPThumbsFolder, @"Movies\ClearArt\FullSize\"); // DVDArt
         if (!Directory.Exists(MoviesClearArtFolder) || IsDirectoryEmpty(MoviesClearArtFolder))
-          MoviesClearArtFolder = string.Empty;
+        {
+          MoviesClearArtFolder = Path.Combine(MPThumbsFolder, @"MovingPictures\ClearArt\FullSize\"); // Moving Pictures
+          if (!Directory.Exists(MoviesClearArtFolder) || IsDirectoryEmpty(MoviesClearArtFolder))
+          {
+            MoviesClearArtFolder = string.Empty;
+          }
+        }
       }
       if (!string.IsNullOrEmpty(MoviesClearArtFolder))
       {
@@ -847,7 +853,13 @@ namespace FanartHandler
       {
         MoviesCDArtFolder = Path.Combine(MPThumbsFolder, @"Movies\DVDArt\FullSize\"); // DVDArt
         if (!Directory.Exists(MoviesCDArtFolder) || IsDirectoryEmpty(MoviesCDArtFolder))
-          MoviesCDArtFolder = string.Empty;
+        {
+          MoviesCDArtFolder = Path.Combine(MPThumbsFolder, @"MovingPictures\DVDArt\FullSize\"); // Moving Pictures
+          if (!Directory.Exists(MoviesCDArtFolder) || IsDirectoryEmpty(MoviesCDArtFolder))
+          {
+            MoviesCDArtFolder = string.Empty;
+          }
+        }
       }
       if (!string.IsNullOrEmpty(MoviesCDArtFolder))
       {
@@ -859,7 +871,13 @@ namespace FanartHandler
       {
         MoviesClearLogoFolder = Path.Combine(MPThumbsFolder, @"Movies\ClearLogo\FullSize\"); // DVDArt
         if (!Directory.Exists(MoviesClearLogoFolder) || IsDirectoryEmpty(MoviesClearLogoFolder))
-          MoviesClearLogoFolder = string.Empty;
+        {
+          MoviesClearLogoFolder = Path.Combine(MPThumbsFolder, @"MovingPictures\ClearLogo\FullSize\"); // Moving Pictures
+          if (!Directory.Exists(MoviesClearLogoFolder) || IsDirectoryEmpty(MoviesClearLogoFolder))
+          {
+            MoviesClearLogoFolder = string.Empty;
+          }
+        }
       }
       if (!string.IsNullOrEmpty(MoviesClearLogoFolder))
       {
