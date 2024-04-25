@@ -157,7 +157,6 @@ namespace FanartHandler
 
             if (isVideo)
             {
-                Console.WriteLine(Utils.iActiveWindow.ToString());
                 AddSelectedMoviePropertys();
             }
 
@@ -855,10 +854,21 @@ namespace FanartHandler
       {
         strIMDBID = Utils.GetProperty("#myfilms.db.imdb_id.value");
       }
+
+      var window = GUIWindowManager.GetWindow(Utils.iActiveWindow);
+      GUIListItem selectedListItem = null;
+      if (window != null)
+      {
+        selectedListItem = GUIControl.GetSelectedListItem(Utils.iActiveWindow, window.GetFocusControlId());
+        if (selectedListItem == null && string.IsNullOrEmpty(strIMDBID))
+          return;
+      }
+
       if (string.IsNullOrEmpty(strIMDBID))
       {
         strIMDBID = Utils.GetProperty("#Trakt.Movie.ImdbId");
       }
+
       string strTVDBID = Utils.GetProperty("#Trakt.Show.TvdbId");
       if (string.IsNullOrEmpty(strTVDBID))
       {
@@ -867,18 +877,13 @@ namespace FanartHandler
       if (string.IsNullOrEmpty(strTVDBID))
       {
         // TV Series ID
-        var window = GUIWindowManager.GetWindow(Utils.iActiveWindow);
-        if (window != null)
+        if (selectedListItem != null)
         {
-            var selectedListItem = GUIControl.GetSelectedListItem(Utils.iActiveWindow, window.GetFocusControlId());
-            if (selectedListItem != null)
-            {
-                DBSeries series = selectedListItem.TVTag as DBSeries;
-                if (series != null)
-                {
-                    strTVDBID = series[DBOnlineSeries.cID];
-                }
-            }
+          DBSeries series = selectedListItem.TVTag as DBSeries;
+          if (series != null)
+          {
+            strTVDBID = series[DBOnlineSeries.cID];
+          }
         }
       }
 

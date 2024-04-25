@@ -2654,9 +2654,16 @@ namespace FanartHandler
             if (window != null)
             {
                 var selectedListItem = GUIControl.GetSelectedListItem(Utils.iActiveWindow, window.GetFocusControlId());
-                if (selectedListItem == null || selectedListItem.IsFolder)
+                if (selectedListItem != null)
                 {
-                    SelectedItem = string.Empty;
+                    if (selectedListItem.IsFolder)
+                    {
+                        GUIControl cntl = window.GetControl(50);
+                        if (cntl is GUIFacadeControl)
+                        {
+                            SelectedItem = string.Empty;
+                        }
+                    }
                 }
             }
         }
