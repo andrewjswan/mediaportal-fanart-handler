@@ -209,32 +209,41 @@ namespace FanartHandler
       return result;
     }
 
-    internal static string GetTVSeriesID(int ControlID)  // -> TV Series ID ...
+    internal static string GetTVSeriesID()  // -> Selected TV Series ID ...
     {
       if (!Utils.TVSeriesEnabled)
       {
         return string.Empty;
       }
+
       if (Utils.iActiveWindow != 9811 &&    // TVSeries
           Utils.iActiveWindow != 9813)      // TVSeries Playlist
       {
         return string.Empty;
       }
-      var window = GUIWindowManager.GetWindow(Utils.iActiveWindow);
-      GUIControl cntl = window.GetControl(50);
-      if (cntl != null && cntl is GUIFacadeControl)
+
+      try
       {
-         GUIListItem selectedListItem = (cntl as GUIFacadeControl).SelectedListItem;
-         if (selectedListItem != null)
-         {
-           DBSeries series = selectedListItem.TVTag as DBSeries;
-           if (series != null)
+        var window = GUIWindowManager.GetWindow(Utils.iActiveWindow);
+        GUIControl cntl = window.GetControl(50); // 50 - GUIFacadeControl
+        if (cntl != null && cntl is GUIFacadeControl)
+        {
+           GUIListItem selectedListItem = (cntl as GUIFacadeControl).SelectedListItem;
+           if (selectedListItem != null)
            {
-             return series[DBOnlineSeries.cID];
+             DBSeries series = selectedListItem.TVTag as DBSeries;
+             if (series != null)
+             {
+               return series[DBOnlineSeries.cID];
+             }
            }
-         }
+        }
       }
-        return string.Empty;
+      catch (Exception ex)
+      {
+        logger.Error("GetTVSeriesID: " + ex);
+      }
+      return string.Empty;
     }
 
     internal static string GetTVSeriesAttributes(GUIListItem currentitem, ref string sGenre, ref string sStudio) // -> TV Series name ...

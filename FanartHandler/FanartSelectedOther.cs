@@ -842,8 +842,14 @@ namespace FanartHandler
       FanartAvailable = FanartAvailable || picFound;
     }
     
+    public void AddSelectedMoviePropertys()
+    {
+      AddSelectedMoviePropertys(string.Empty);
+    }
+
     public void AddSelectedMoviePropertys(string SelectedItem)
     {
+      // Movies
       string strIMDBID = Utils.GetProperty("#imdbnumber");
       if (string.IsNullOrEmpty(strIMDBID))
       {
@@ -856,57 +862,62 @@ namespace FanartHandler
 
       // Trakt does not clear the #Trakt.Movie.ImdbId value so exit function when Trakt page and SelectedItem is null, or ClearArt will turn up when it should not
       if (SelectedItem == "TraktIsNull")
+      {
         return;
-
+      }
       if (string.IsNullOrEmpty(strIMDBID))
       {
         strIMDBID = Utils.GetProperty("#Trakt.Movie.ImdbId");
       }
 
+      if (!string.IsNullOrEmpty(strIMDBID))
+      {
+        bool picFound = Utils.AnimatedFileExists(strIMDBID, null, null, Utils.Animated.MoviesPoster);
+        FanartAvailable = FanartAvailable || picFound;
+        Utils.SetProperty("movie.animated.selected.thumb", 
+                           picFound ? Utils.GetAnimatedFileName(strIMDBID, null, null, Utils.Animated.MoviesPoster) : string.Empty);
+        picFound = Utils.AnimatedFileExists(strIMDBID, null, null, Utils.Animated.MoviesBackground);
+        FanartAvailable = FanartAvailable || picFound;
+        Utils.SetProperty("movie.animated.selected.background", 
+                           picFound ? Utils.GetAnimatedFileName(strIMDBID, null, null, Utils.Animated.MoviesBackground) : string.Empty);
+
+        picFound = Utils.FanartTVFileExists(strIMDBID, null, null, Utils.FanartTV.MoviesClearArt);
+        FanartAvailable = FanartAvailable || picFound;
+        Utils.SetProperty("movie.clearart.selected", 
+                           picFound ? Utils.GetFanartTVFileName(strIMDBID, null, null, Utils.FanartTV.MoviesClearArt) : string.Empty);
+        picFound = Utils.FanartTVFileExists(strIMDBID, null, null, Utils.FanartTV.MoviesClearLogo);
+        FanartAvailable = FanartAvailable || picFound;
+        Utils.SetProperty("movie.clearlogo.selected", 
+                           picFound ? Utils.GetFanartTVFileName(strIMDBID, null, null, Utils.FanartTV.MoviesClearLogo) : string.Empty);
+        picFound = Utils.FanartTVFileExists(strIMDBID, null, null, Utils.FanartTV.MoviesBanner);
+        FanartAvailable = FanartAvailable || picFound;
+        Utils.SetProperty("movie.banner.selected", 
+                           picFound ? Utils.GetFanartTVFileName(strIMDBID, null, null, Utils.FanartTV.MoviesBanner) : string.Empty);
+        picFound = Utils.FanartTVFileExists(strIMDBID, null, null, Utils.FanartTV.MoviesCDArt);
+        FanartAvailable = FanartAvailable || picFound;
+        Utils.SetProperty("movie.cd.selected", 
+                           picFound ? Utils.GetFanartTVFileName(strIMDBID, null, null, Utils.FanartTV.MoviesCDArt) : string.Empty);
+      }
+
+      // TV Series
       string strTVDBID = Utils.GetProperty("#Trakt.Show.TvdbId");
       if (string.IsNullOrEmpty(strTVDBID))
       {
         strTVDBID = Utils.GetProperty("#TVSeries.Series.ID");
       }
-      //if (string.IsNullOrEmpty(strTVDBID))
-      //{
-      //  // TV Series ID
-      //  strTVDBID = UtilsTVSeries.GetTVSeriesID(50);
-      //}
 
-      if (!string.IsNullOrEmpty(strIMDBID))
-      {
-        Utils.SetProperty("movie.animated.selected.thumb", 
-                           Utils.AnimatedFileExists(strIMDBID, null, null, Utils.Animated.MoviesPoster) ? Utils.GetAnimatedFileName(strIMDBID, null, null, Utils.Animated.MoviesPoster) : string.Empty);
-        Utils.SetProperty("movie.animated.selected.background", 
-                           Utils.AnimatedFileExists(strIMDBID, null, null, Utils.Animated.MoviesBackground) ? Utils.GetAnimatedFileName(strIMDBID, null, null, Utils.Animated.MoviesBackground) : string.Empty);
-
-        Utils.SetProperty("movie.clearart.selected", 
-                           Utils.FanartTVFileExists(strIMDBID, null, null, Utils.FanartTV.MoviesClearArt) ? Utils.GetFanartTVFileName(strIMDBID, null, null, Utils.FanartTV.MoviesClearArt) : string.Empty);
-        Utils.SetProperty("movie.clearlogo.selected", 
-                           Utils.FanartTVFileExists(strIMDBID, null, null, Utils.FanartTV.MoviesClearLogo) ? Utils.GetFanartTVFileName(strIMDBID, null, null, Utils.FanartTV.MoviesClearLogo) : string.Empty);
-        Utils.SetProperty("movie.banner.selected", 
-                           Utils.FanartTVFileExists(strIMDBID, null, null, Utils.FanartTV.MoviesBanner) ? Utils.GetFanartTVFileName(strIMDBID, null, null, Utils.FanartTV.MoviesBanner) : string.Empty);
-        Utils.SetProperty("movie.cd.selected", 
-                           Utils.FanartTVFileExists(strIMDBID, null, null, Utils.FanartTV.MoviesCDArt) ? Utils.GetFanartTVFileName(strIMDBID, null, null, Utils.FanartTV.MoviesCDArt) : string.Empty);
-        FanartAvailable = FanartAvailable || 
-                                     Utils.AnimatedFileExists(strIMDBID, null, null, Utils.Animated.MoviesPoster) ||
-                                     Utils.AnimatedFileExists(strIMDBID, null, null, Utils.Animated.MoviesBackground) ||
-                                     Utils.FanartTVFileExists(strIMDBID, null, null, Utils.FanartTV.MoviesClearArt) ||
-                                     Utils.FanartTVFileExists(strIMDBID, null, null, Utils.FanartTV.MoviesClearLogo) ||
-                                     Utils.FanartTVFileExists(strIMDBID, null, null, Utils.FanartTV.MoviesBanner) ||
-                                     Utils.FanartTVFileExists(strIMDBID, null, null, Utils.FanartTV.MoviesCDArt);
-      }
       if (!string.IsNullOrEmpty(strTVDBID))
       {
+        bool picFound = Utils.FanartTVFileExists(strTVDBID, null, null, Utils.FanartTV.SeriesClearArt);
+        FanartAvailable = FanartAvailable || picFound;
         Utils.SetProperty("series.clearart.selected",
-                           Utils.FanartTVFileExists(strTVDBID, null, null, Utils.FanartTV.SeriesClearArt) ? Utils.GetFanartTVFileName(strTVDBID, null, null, Utils.FanartTV.SeriesClearArt) : string.Empty);
+                           picFound ? Utils.GetFanartTVFileName(strTVDBID, null, null, Utils.FanartTV.SeriesClearArt) : string.Empty);
+        picFound = Utils.FanartTVFileExists(strTVDBID, null, null, Utils.FanartTV.SeriesClearLogo);
+        FanartAvailable = FanartAvailable || picFound;
         Utils.SetProperty("series.clearlogo.selected",
-                           Utils.FanartTVFileExists(strTVDBID, null, null, Utils.FanartTV.SeriesClearLogo) ? Utils.GetFanartTVFileName(strTVDBID, null, null, Utils.FanartTV.SeriesClearLogo) : string.Empty);
-        FanartAvailable = FanartAvailable || 
-                                     Utils.FanartTVFileExists(strTVDBID, null, null, Utils.FanartTV.SeriesClearArt) ||
-                                     Utils.FanartTVFileExists(strTVDBID, null, null, Utils.FanartTV.SeriesClearLogo);
+                           picFound ? Utils.GetFanartTVFileName(strTVDBID, null, null, Utils.FanartTV.SeriesClearLogo) : string.Empty);
       }
+
       if (string.IsNullOrEmpty(strIMDBID) && string.IsNullOrEmpty(strTVDBID))
       {
         ClearSelectedMoviePropertys();

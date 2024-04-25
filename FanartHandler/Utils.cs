@@ -2525,10 +2525,10 @@ namespace FanartHandler
           SelectedItem = GetArtistLeftOfMinusSign(SelectedItem);
         }
         else if (iActiveWindow == 2003 ||  // Dialog Video Info
-                 iActiveWindow == 6 ||     // My Video
-                 iActiveWindow == 25 ||    // My Video Title
-                 iActiveWindow == 614 ||   // Dialog Video Artist Info
-                 iActiveWindow == 28 ||    // My Video Play List
+                 iActiveWindow == 6    ||  // My Video
+                 iActiveWindow == 25   ||  // My Video Title
+                 iActiveWindow == 614  ||  // Dialog Video Artist Info
+                 iActiveWindow == 28   ||  // My Video Play List
                  iActiveWindow == 99555    // My Video Importer
                 )
         {
@@ -2584,15 +2584,15 @@ namespace FanartHandler
             }
           }
         }
-        else if (iActiveWindow == 96742)     // Moving Pictures
+        else if (iActiveWindow == 96742)   // Moving Pictures
         {
           SelectedItem = Utils.GetProperty("#MovingPictures.SelectedMovie.title");
           SelectedStudios = Utils.GetProperty("#MovingPictures.SelectedMovie.studios");
           SelectedGenre = Utils.GetProperty("#MovingPictures.SelectedMovie.genres");
           // logger.Debug("*** "+SelectedItem+" - "+SelectedStudios+" - "+SelectedGenre);
         }
-        else if (iActiveWindow == 9811 ||    // TVSeries
-                 iActiveWindow == 9813)      // TVSeries Playlist
+        else if (iActiveWindow == 9811 ||  // TVSeries
+                 iActiveWindow == 9813)    // TVSeries Playlist
         {
           SelectedItem = UtilsTVSeries.GetTVSeriesAttributes(ref SelectedGenre, ref SelectedStudios);
           if (string.IsNullOrWhiteSpace(SelectedItem))
@@ -2625,7 +2625,7 @@ namespace FanartHandler
             isMusicVideo = true;
           }
         }
-        else if (iActiveWindow == 25650)     // Radio Time
+        else if (iActiveWindow == 25650)   // Radio Time
         {
           SelectedItem = Utils.GetProperty("#RadioTime.Selected.Subtext"); // Artist - Track || TODO for: Artist - Album - Track
           SelectedItem = GetArtistLeftOfMinusSign(SelectedItem, true);
@@ -2653,18 +2653,18 @@ namespace FanartHandler
           catch { }
         }
         else if (iActiveWindow == 87266 || // Trakt Trending Movies
-                iActiveWindow == 87700 || // Trakt Calendar Movies
-                iActiveWindow == 87101 || // Trakt Popular Movies
-                iActiveWindow == 87263 || // Trakt Recommendations Movies
-                iActiveWindow == 87605 || // Trakt Anticipated Movies
-                iActiveWindow == 87607 || // Trakt Box Office
-                iActiveWindow == 87265 || // Trakt Trending Series
-                iActiveWindow == 87102 || // Trakt Popular Series
-                iActiveWindow == 87262 || // Trakt Recommendations Series
-                iActiveWindow == 87259 || // Trakt Calendar Series
-                iActiveWindow == 87606 || // Trakt Anticipated Series
-                iActiveWindow == 87281 || // Trakt Series Seasons
-                iActiveWindow == 87282) // Trakt Series Episodes
+                 iActiveWindow == 87700 || // Trakt Calendar Movies
+                 iActiveWindow == 87101 || // Trakt Popular Movies
+                 iActiveWindow == 87263 || // Trakt Recommendations Movies
+                 iActiveWindow == 87605 || // Trakt Anticipated Movies
+                 iActiveWindow == 87607 || // Trakt Box Office
+                 iActiveWindow == 87265 || // Trakt Trending Series
+                 iActiveWindow == 87102 || // Trakt Popular Series
+                 iActiveWindow == 87262 || // Trakt Recommendations Series
+                 iActiveWindow == 87259 || // Trakt Calendar Series
+                 iActiveWindow == 87606 || // Trakt Anticipated Series
+                 iActiveWindow == 87281 || // Trakt Series Seasons
+                 iActiveWindow == 87282)   // Trakt Series Episodes
         {
           SelectedItem = Utils.GetProperty("#selecteditem");
           // Remove ClearArt on Trakt Folders
@@ -2672,16 +2672,16 @@ namespace FanartHandler
           if (window != null)
           {
             var selectedListItem = GUIControl.GetSelectedListItem(Utils.iActiveWindow, window.GetFocusControlId());
-            if (selectedListItem != null) // (selectedListItem != null || selectedListItem.IsFolder)
+            if (selectedListItem != null)
             {
               if (selectedListItem.IsFolder)
+              {
+                GUIControl cntl = window.GetControl(50);
+                if (cntl is GUIFacadeControl)
                 {
-                  GUIControl cntl = window.GetControl(50);
-                  if (cntl is GUIFacadeControl)
-                  {
-                    SelectedItem = string.Empty;
-                  }
+                  SelectedItem = string.Empty;
                 }
+              }
             }
             else
             {
@@ -2691,7 +2691,9 @@ namespace FanartHandler
           }
         }
         else
+        {
           SelectedItem = Utils.GetProperty("#selecteditem");
+        }
 
         SelectedAlbum   = (string.IsNullOrWhiteSpace(SelectedAlbum) ? null : SelectedAlbum); 
         SelectedGenre   = (string.IsNullOrWhiteSpace(SelectedGenre) ? null : SelectedGenre.Replace(" / ", "|").Replace(", ", "|")); 
