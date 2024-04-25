@@ -823,7 +823,13 @@ namespace FanartHandler
       {
         MoviesClearArtFolder = Path.Combine(MPThumbsFolder, @"Movies\ClearArt\FullSize\"); // DVDArt
         if (!Directory.Exists(MoviesClearArtFolder) || IsDirectoryEmpty(MoviesClearArtFolder))
-          MoviesClearArtFolder = string.Empty;
+        {
+          MoviesClearArtFolder = Path.Combine(MPThumbsFolder, @"MovingPictures\ClearArt\FullSize\"); // Moving Pictures
+          if (!Directory.Exists(MoviesClearArtFolder) || IsDirectoryEmpty(MoviesClearArtFolder))
+          {
+            MoviesClearArtFolder = string.Empty;
+          }
+        }
       }
       if (!string.IsNullOrEmpty(MoviesClearArtFolder))
       {
@@ -847,7 +853,13 @@ namespace FanartHandler
       {
         MoviesCDArtFolder = Path.Combine(MPThumbsFolder, @"Movies\DVDArt\FullSize\"); // DVDArt
         if (!Directory.Exists(MoviesCDArtFolder) || IsDirectoryEmpty(MoviesCDArtFolder))
-          MoviesCDArtFolder = string.Empty;
+        {
+          MoviesCDArtFolder = Path.Combine(MPThumbsFolder, @"MovingPictures\DVDArt\FullSize\"); // Moving Pictures
+          if (!Directory.Exists(MoviesCDArtFolder) || IsDirectoryEmpty(MoviesCDArtFolder))
+          {
+            MoviesCDArtFolder = string.Empty;
+          }
+        }
       }
       if (!string.IsNullOrEmpty(MoviesCDArtFolder))
       {
@@ -859,7 +871,13 @@ namespace FanartHandler
       {
         MoviesClearLogoFolder = Path.Combine(MPThumbsFolder, @"Movies\ClearLogo\FullSize\"); // DVDArt
         if (!Directory.Exists(MoviesClearLogoFolder) || IsDirectoryEmpty(MoviesClearLogoFolder))
-          MoviesClearLogoFolder = string.Empty;
+        {
+          MoviesClearLogoFolder = Path.Combine(MPThumbsFolder, @"MovingPictures\ClearLogo\FullSize\"); // Moving Pictures
+          if (!Directory.Exists(MoviesClearLogoFolder) || IsDirectoryEmpty(MoviesClearLogoFolder))
+          {
+            MoviesClearLogoFolder = string.Empty;
+          }
+        }
       }
       if (!string.IsNullOrEmpty(MoviesClearLogoFolder))
       {
@@ -2568,7 +2586,7 @@ namespace FanartHandler
         }
         else if (iActiveWindow == 96742)     // Moving Pictures
         {
-          SelectedItem = Utils.GetProperty("#selecteditem");
+          SelectedItem = Utils.GetProperty("#MovingPictures.SelectedMovie.title");
           SelectedStudios = Utils.GetProperty("#MovingPictures.SelectedMovie.studios");
           SelectedGenre = Utils.GetProperty("#MovingPictures.SelectedMovie.genres");
           // logger.Debug("*** "+SelectedItem+" - "+SelectedStudios+" - "+SelectedGenre);
@@ -2633,6 +2651,44 @@ namespace FanartHandler
               SelectedItem = ((GUIFadeLabel) GUIWindowManager.GetWindow(iActiveWindow).GetControl(1)).Label;
           }
           catch { }
+        }
+        else if (iActiveWindow == 87266 || // Trakt Trending Movies
+                iActiveWindow == 87700 || // Trakt Calendar Movies
+                iActiveWindow == 87101 || // Trakt Popular Movies
+                iActiveWindow == 87263 || // Trakt Recommendations Movies
+                iActiveWindow == 87605 || // Trakt Anticipated Movies
+                iActiveWindow == 87607 || // Trakt Box Office
+                iActiveWindow == 87265 || // Trakt Trending Series
+                iActiveWindow == 87102 || // Trakt Popular Series
+                iActiveWindow == 87262 || // Trakt Recommendations Series
+                iActiveWindow == 87259 || // Trakt Calendar Series
+                iActiveWindow == 87606 || // Trakt Anticipated Series
+                iActiveWindow == 87281 || // Trakt Series Seasons
+                iActiveWindow == 87282) // Trakt Series Episodes
+        {
+          SelectedItem = Utils.GetProperty("#selecteditem");
+          // Remove ClearArt on Trakt Folders
+          var window = GUIWindowManager.GetWindow(Utils.iActiveWindow);
+          if (window != null)
+          {
+            var selectedListItem = GUIControl.GetSelectedListItem(Utils.iActiveWindow, window.GetFocusControlId());
+            if (selectedListItem != null) // (selectedListItem != null || selectedListItem.IsFolder)
+            {
+              if (selectedListItem.IsFolder)
+                {
+                  GUIControl cntl = window.GetControl(50);
+                  if (cntl is GUIFacadeControl)
+                  {
+                    SelectedItem = string.Empty;
+                  }
+                }
+            }
+            else
+            {
+              // Trakt menu is a null SelectedItem but we dont want to clear the SelectedItem when a movie is selected
+              SelectedItem = "TraktIsNull";
+            }
+          }
         }
         else
           SelectedItem = Utils.GetProperty("#selecteditem");
