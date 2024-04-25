@@ -867,15 +867,15 @@ ajs</Value>
        * push fanart for now played music
        * push fanart for selected music or movie
        * push random images from selected folders</ExtensionDescription>
-    <VersionDescription>Add Holidays package
-Add Weather package
-Moving to new Repository
-Migrate to Github Action
+    <VersionDescription>Update for Trakt to use FanartHandler ClearArt paths for Movies and Series
+Update for TVSeries to use FanartHandler ClearArt paths
+Fix for MovingPictures
+CWE-134: Uncontrolled format string - Fix
 
 *** We Stand with Ukraine ***</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>https://github.com/andrewjswan/mediaportal-fanart-handler/releases/download/v[Version]/FanartHandler-[Version].mpe1</OnlineLocation>
-    <ReleaseDate>2024-03-24T14:14:14</ReleaseDate>
+    <ReleaseDate>2024-04-25T14:14:14</ReleaseDate>
     <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios,animated</Tags>
     <PlatformCompatibility>AnyCPU</PlatformCompatibility>
     <Location>..\builds\FanartHandler-[Version].mpe1</Location>
