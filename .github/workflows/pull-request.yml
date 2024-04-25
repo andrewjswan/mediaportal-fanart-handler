@@ -3,6 +3,13 @@ name: Test / Fanart Handler
 on:
   workflow_dispatch:
   pull_request:
+    types: 
+      - opened
+      - synchronize
+      - edited
+      - ready_for_review
+    branches:
+      - master
 
 jobs:
   build:
