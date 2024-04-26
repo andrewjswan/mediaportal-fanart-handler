@@ -2144,7 +2144,8 @@ namespace FanartHandler
       }
 
       // ClearArt Movies
-      if (_xml.Contains("#fanarthandler.movie.clearart.selected") || _xml.Contains("#fanarthandler.movie.clearlogo.selected") || _xml.Contains("#fanarthandler.movie.cd.selected") || _xml.Contains("#fanarthandler.series.clearart.selected") || _xml.Contains("#fanarthandler.series.clearlogo.selected"))
+      if (_xml.Contains("#fanarthandler.movie.clearart.selected") || _xml.Contains("#fanarthandler.movie.clearlogo.selected") || _xml.Contains("#fanarthandler.movie.cd.selected") || 
+          _xml.Contains("#fanarthandler.tvseries.clearart.selected") || _xml.Contains("#fanarthandler.tvseries.clearlogo.selected"))
       {
         _flagClearArtMovies = true;
       }
