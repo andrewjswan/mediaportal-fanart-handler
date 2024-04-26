@@ -133,6 +133,9 @@ To the team behind the MP Moving Picture plugin. From who I have used some of th
 #fanarthandler.movie.awards.selected.text
 #fanarthandler.movie.animated.selected.thumb
 #fanarthandler.movie.animated.selected.background
+#fanarthandler.movie.clearart.selected
+#fanarthandler.movie.clearlogo.selected
+#fanarthandler.movie.cd.selected
 
 #fanarthandler.movingpicture.latests.available
 #fanarthandler.movingpicture.available
@@ -197,6 +200,8 @@ To the team behind the MP Moving Picture plugin. From who I have used some of th
 #fanarthandler.tvseries.backdrop2.any
 #fanarthandler.tvseries.latests.backdrop1.any
 #fanarthandler.tvseries.latests.backdrop2.any
+#fanarthandler.tvseries.clearart.selected
+#fanarthandler.tvseries.clearlogo.selected
 
 #fanarthandler.tv.userdef.available
 #fanarthandler.tv.userdef.backdrop1.any
