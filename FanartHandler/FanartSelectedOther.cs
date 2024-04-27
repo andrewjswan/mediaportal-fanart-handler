@@ -181,6 +181,7 @@ namespace FanartHandler
           if (isVideo)
           {
             ClearSelectedMoviePropertys();
+            ClearSelectedSeriesPropertys();
           }
 
           currSelectedGenericTitle = string.Empty;

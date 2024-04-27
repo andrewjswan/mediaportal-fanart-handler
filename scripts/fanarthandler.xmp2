@@ -876,7 +876,7 @@ Normalizing property names, restructure
 *** We Stand with Ukraine ***</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>https://github.com/andrewjswan/mediaportal-fanart-handler/releases/download/v[Version]/FanartHandler-[Version].mpe1</OnlineLocation>
-    <ReleaseDate>2024-04-25T23:23:23</ReleaseDate>
+    <ReleaseDate>2024-04-27T23:23:23</ReleaseDate>
     <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios,animated</Tags>
     <PlatformCompatibility>AnyCPU</PlatformCompatibility>
     <Location>..\builds\FanartHandler-[Version].mpe1</Location>
