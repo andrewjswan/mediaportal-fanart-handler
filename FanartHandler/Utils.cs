@@ -2690,6 +2690,14 @@ namespace FanartHandler
             }
           }
         }
+        else if (iActiveWindow == 2005)  // VideoFullScreen
+        {
+          SelectedItem = Utils.GetProperty("#Play.Current.IMDBNumber");  // Movies
+          if (string.IsNullOrEmpty(SelectedItem))
+          {
+            SelectedItem = Utils.GetProperty("#TVSeries.Play.ClearArt");  // TVSeries
+          }
+        }
         else
         {
           SelectedItem = Utils.GetProperty("#selecteditem");
