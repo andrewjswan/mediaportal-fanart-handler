@@ -2695,7 +2695,7 @@ namespace FanartHandler
           SelectedItem = Utils.GetProperty("#Play.Current.IMDBNumber");  // Movies
           if (string.IsNullOrEmpty(SelectedItem))
           {
-            SelectedItem = Utils.GetProperty("#TVSeries.Play.ClearArt");  // TVSeries
+            SelectedItem = Utils.GetProperty("#Play.Current.Title");  // TVSeries
           }
         }
         else
