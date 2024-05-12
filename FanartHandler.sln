@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.9.34728.123
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FanartHandler", "FanartHandler\FanartHandler.csproj", "{4E7B5EA7-A01E-4E5A-A0CE-A3684A68376B}"
 EndProject
@@ -13,8 +13,8 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{4E7B5EA7-A01E-4E5A-A0CE-A3684A68376B}.Debug|AnyCPU.ActiveCfg = Debug|AnyCPU
 		{4E7B5EA7-A01E-4E5A-A0CE-A3684A68376B}.Debug|AnyCPU.Build.0 = Debug|AnyCPU
-		{4E7B5EA7-A01E-4E5A-A0CE-A3684A68376B}.Release|AnyCPU.ActiveCfg = Release|Any CPU
-		{4E7B5EA7-A01E-4E5A-A0CE-A3684A68376B}.Release|AnyCPU.Build.0 = Release|Any CPU
+		{4E7B5EA7-A01E-4E5A-A0CE-A3684A68376B}.Release|AnyCPU.ActiveCfg = Release|AnyCPU
+		{4E7B5EA7-A01E-4E5A-A0CE-A3684A68376B}.Release|AnyCPU.Build.0 = Release|AnyCPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
