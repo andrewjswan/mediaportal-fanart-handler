@@ -858,25 +858,22 @@ ajs</Value>
       <Build>5</Build>
       <Revision>0</Revision>
     </Version>
-    <ExtensionDescription>Fanart Handler is a plugin for MediaPortal (MP). The plugin basically supports;
-    * Search and download music artist fanart or artist and album thumbnails (scrape) from the fanart.tv, htbackdrops, last.fm, coverartarchive site.
-       * for all artists stored in your MP music database.
-       * for any artist currently being played (on the fly).
-
-    * Push fanart that you store on your local harddrive to the current used MP skin.
-       * push fanart for now played music
-       * push fanart for selected music or movie
+    <ExtensionDescription>Fanart Handler is a plugin for MediaPortal (MP). The plugin basically supports;
+    * Search and download music artist fanart or artist and album thumbnails (scrape) from the fanart.tv, htbackdrops, last.fm, coverartarchive site.
+       * for all artists stored in your MP music database.
+       * for any artist currently being played (on the fly).
+
+    * Push fanart that you store on your local harddrive to the current used MP skin.
+       * push fanart for now played music
+       * push fanart for selected music or movie
        * push random images from selected folders</ExtensionDescription>
-    <VersionDescription>Update for Trakt to use FanartHandler ClearArt paths for Movies and Series
-Update for TVSeries to use FanartHandler ClearArt paths
-Fix for MovingPictures
-CWE-134: Uncontrolled format string - Fix
-Normalizing property names, restructure
-
+    <VersionDescription>* Add VideoFullScreen to SelectedItem list and clear TVSeries clearart when movie playing
+* Changed value on Utils.cs to #Play.Current.Title. Resolved issue with Release Configuration
+
 *** We Stand with Ukraine ***</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>https://github.com/andrewjswan/mediaportal-fanart-handler/releases/download/v[Version]/FanartHandler-[Version].mpe1</OnlineLocation>
-    <ReleaseDate>2024-04-27T23:23:23</ReleaseDate>
+    <ReleaseDate>2024-05-13T23:23:23</ReleaseDate>
     <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios,animated</Tags>
     <PlatformCompatibility>AnyCPU</PlatformCompatibility>
     <Location>..\builds\FanartHandler-[Version].mpe1</Location>
