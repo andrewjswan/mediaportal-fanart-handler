@@ -928,6 +928,13 @@ namespace FanartHandler
       {
         return;
       }
+      
+      // If imdb number then it's a movie playing
+      if (SelectedItem.StartsWith("tt") && char.IsDigit(SelectedItem.Last()))
+      {
+        ClearSelectedSeriesPropertys();
+        return;
+      }
 
       string strTVDBID = Utils.GetProperty("#Trakt.Show.TvdbId");
       if (string.IsNullOrEmpty(strTVDBID))
