@@ -69,6 +69,11 @@
 		<NotCelebratedIn>DE</NotCelebratedIn>
 		<NotCelebratedIn>AU</NotCelebratedIn>
 	</Holiday>
+	<Holiday name="Australia Day" shortname="AustraliaDay">
+		<Month>1</Month>
+		<Day>26</Day>
+		<CelebratedIn>AU</CelebratedIn>
+	</Holiday>
 	<Holiday name="Chinese New Year" shortname="ChineseNewYear">
 		<ChineseNewYear />
 		<NameRU>Китайский Новый Год</NameRU>
@@ -228,6 +233,12 @@
 		<NotCelebratedIn>HE</NotCelebratedIn>
 		<NotCelebratedIn>AU</NotCelebratedIn>
 	</Holiday>
+	<Holiday name="Daylight Savings Time Ends" shortname="DaylightSavings|DaylightSavingsEnd">
+		<Month>4</Month>
+		<DayOfWeek>0</DayOfWeek>
+		<WeekOfMonth>1</WeekOfMonth>
+		<CelebratedIn>AU</CelebratedIn>
+	</Holiday>
 	<Holiday name="April Fool's Day" shortname="AprilFools">
 		<Month>4</Month>
 		<Day>1</Day>
@@ -270,6 +281,11 @@
 		<Day>22</Day>
 		<NameDE>Tag der Erde</NameDE>
 	</Holiday>
+	<Holiday name="Anzac Day" shortname="Anzac">
+		<Month>4</Month>
+		<Day>25</Day>
+		<CelebratedIn>AU</CelebratedIn>
+	</Holiday>
 	<Holiday name="Alien Day" shortname="AlienDay">
 		<Month>4</Month>
 		<Day>26</Day>
@@ -292,6 +308,12 @@
 		<WeekOfMonth>2</WeekOfMonth>
 		<NameDE>Muttertag</NameDE>
 	</Holiday>	
+	<Holiday name="Labor Day">
+		<Month>5</Month>
+		<DayOfWeek>1</DayOfWeek>
+		<WeekOfMonth>1</WeekOfMonth>
+		<CelebratedIn>AU</CelebratedIn>
+	</Holiday>
 	<Holiday name="Armed Forces Day">
 		<Month>5</Month>
 		<DayOfWeek>6</DayOfWeek>
@@ -333,12 +355,6 @@
 		<NameDE>Vatertag (USA/Südamerika)</NameDE>
 		<NotCelebratedIn>AU</NotCelebratedIn>
 	</Holiday>
-	<Holiday name="Fathers' Day" shortname="FathersDay">
-		<Month>9</Month>
-		<DayOfWeek>0</DayOfWeek>
-		<WeekOfMonth>1</WeekOfMonth>
-		<CelebratedIn>AU</CelebratedIn>
-	</Holiday>
 	<Holiday name="Parents' Day">
 		<Month>7</Month>
 		<DayOfWeek>0</DayOfWeek>
@@ -361,6 +377,11 @@
 		<WeekOfMonth>5</WeekOfMonth>
 		<NameDE>Tag der Systemadministratoren</NameDE>
 	</Holiday>
+	<Holiday name="Ekka Show Day" shortname="ShowDay">
+		<Month>8</Month>
+		<Day>12</Day>
+		<CelebratedIn>AU</CelebratedIn>
+	</Holiday>
 	<Holiday name="Day of the State Flag of Ukraine" shortname="Ukraine">
 		<Month>8</Month>
 		<Day>23</Day>
@@ -375,6 +396,12 @@
 		<NameUA>День Незалежності України</NameUA>
 		<CelebratedIn>UA</CelebratedIn>
 	</Holiday>
+	<Holiday name="Fathers' Day" shortname="FathersDay">
+		<Month>9</Month>
+		<DayOfWeek>0</DayOfWeek>
+		<WeekOfMonth>1</WeekOfMonth>
+		<CelebratedIn>AU</CelebratedIn>
+	</Holiday>
 	<Holiday name="Labor Day">
 		<Month>9</Month>
 		<DayOfWeek>1</DayOfWeek>
@@ -383,12 +410,6 @@
 		<NotCelebratedIn>UA</NotCelebratedIn>
 		<NotCelebratedIn>DE</NotCelebratedIn>
 		<NotCelebratedIn>AU</NotCelebratedIn>
-	</Holiday>
-	<Holiday name="Labor Day">
-		<Month>5</Month>
-		<DayOfWeek>1</DayOfWeek>
-		<WeekOfMonth>1</WeekOfMonth>
-		<CelebratedIn>AU</CelebratedIn>
 	</Holiday>
 	<Holiday name="Grandparents' Day">
 		<DaysAfterHoliday Holiday="Labor Day">
@@ -407,6 +428,18 @@
 		<DayOfYear>256</DayOfYear>
 		<NameDE>Tag der Programmierer</NameDE>
 	</Holiday>
+	<Holiday name="Daylight Savings Time Begins" shortname="DaylightSavings|DaylightSavingsBegin">
+		<Month>10</Month>
+		<DayOfWeek>0</DayOfWeek>
+		<WeekOfMonth>1</WeekOfMonth>
+		<CelebratedIn>AU</CelebratedIn>
+	</Holiday>
+	<Holiday name="King's Birthday" shortname="KingsBirthday">
+		<Month>10</Month>
+		<DayOfWeek>1</DayOfWeek>
+		<WeekOfMonth>1</WeekOfMonth>
+		<CelebratedIn>AU</CelebratedIn>
+	</Holiday>
 	<Holiday name="United Nations Day">
 		<Month>10</Month>
 		<Day>24</Day>
@@ -418,6 +451,12 @@
 	<Holiday name="Halloween">
 		<Month>10</Month>
 		<Day>31</Day>
+	</Holiday>
+	<Holiday name="Melbourne Cup" shortname="MelbourneCup">
+		<Month>11</Month>
+		<DayOfWeek>2</DayOfWeek>
+		<WeekOfMonth>1</WeekOfMonth>
+		<CelebratedIn>AU</CelebratedIn>
 	</Holiday>
 	<Holiday name="Columbus Day">
 		<Month>10</Month>
@@ -479,44 +518,5 @@
 		<DSTEnd />
 		<NameDE>Ende der Sommerzeit</NameDE>
 		<NotCelebratedIn>AU</NotCelebratedIn>
-	</Holiday>
-	<Holiday name="Daylight Savings Time Begins" shortname="DaylightSavings|DaylightSavingsBegin">
-		<Month>10</Month>
-		<DayOfWeek>0</DayOfWeek>
-		<WeekOfMonth>1</WeekOfMonth>
-		<CelebratedIn>AU</CelebratedIn>
-	</Holiday>
-	<Holiday name="Daylight Savings Time Ends" shortname="DaylightSavings|DaylightSavingsEnd">
-		<Month>4</Month>
-		<DayOfWeek>0</DayOfWeek>
-		<WeekOfMonth>1</WeekOfMonth>
-		<CelebratedIn>AU</CelebratedIn>
-	</Holiday>
-	<Holiday name="King's Birthday" shortname="KingsBirthday">
-		<Month>10</Month>
-		<DayOfWeek>1</DayOfWeek>
-		<WeekOfMonth>1</WeekOfMonth>
-		<CelebratedIn>AU</CelebratedIn>
-	</Holiday>
-	<Holiday name="Australia Day" shortname="AustraliaDay">
-		<Month>1</Month>
-		<Day>26</Day>
-		<CelebratedIn>AU</CelebratedIn>
-	</Holiday>
-	<Holiday name="Melbourne Cup" shortname="MelbourneCup">
-		<Month>11</Month>
-		<DayOfWeek>2</DayOfWeek>
-		<WeekOfMonth>1</WeekOfMonth>
-		<CelebratedIn>AU</CelebratedIn>
-	</Holiday>
-	<Holiday name="Anzac Day" shortname="Anzac">
-		<Month>4</Month>
-		<Day>25</Day>
-		<CelebratedIn>AU</CelebratedIn>
-	</Holiday>
-	<Holiday name="Ekka Show Day" shortname="ShowDay">
-		<Month>8</Month>
-		<Day>12</Day>
-		<CelebratedIn>AU</CelebratedIn>
 	</Holiday>
 </Holidays>
