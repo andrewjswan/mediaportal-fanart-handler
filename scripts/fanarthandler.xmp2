@@ -867,13 +867,12 @@ ajs</Value>
        * push fanart for now played music
        * push fanart for selected music or movie
        * push random images from selected folders</ExtensionDescription>
-    <VersionDescription>* Add VideoFullScreen to SelectedItem list and clear TVSeries clearart when movie playing
-* Changed value on Utils.cs to #Play.Current.Title. Resolved issue with Release Configuration
+    <VersionDescription>* Added changes for Australian Holidays
 
 *** We Stand with Ukraine ***</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>https://github.com/andrewjswan/mediaportal-fanart-handler/releases/download/v[Version]/FanartHandler-[Version].mpe1</OnlineLocation>
-    <ReleaseDate>2024-05-13T23:23:23</ReleaseDate>
+    <ReleaseDate>2024-05-17T13:13:13</ReleaseDate>
     <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios,animated</Tags>
     <PlatformCompatibility>AnyCPU</PlatformCompatibility>
     <Location>..\builds\FanartHandler-[Version].mpe1</Location>
