@@ -233,12 +233,6 @@
 		<NotCelebratedIn>HE</NotCelebratedIn>
 		<NotCelebratedIn>AU</NotCelebratedIn>
 	</Holiday>
-	<Holiday name="Daylight Savings Time Ends" shortname="DaylightSavings|DaylightSavingsEnd">
-		<Month>4</Month>
-		<DayOfWeek>0</DayOfWeek>
-		<WeekOfMonth>1</WeekOfMonth>
-		<CelebratedIn>AU</CelebratedIn>
-	</Holiday>
 	<Holiday name="April Fool's Day" shortname="AprilFools">
 		<Month>4</Month>
 		<Day>1</Day>
@@ -428,12 +422,6 @@
 		<DayOfYear>256</DayOfYear>
 		<NameDE>Tag der Programmierer</NameDE>
 	</Holiday>
-	<Holiday name="Daylight Savings Time Begins" shortname="DaylightSavings|DaylightSavingsBegin">
-		<Month>10</Month>
-		<DayOfWeek>0</DayOfWeek>
-		<WeekOfMonth>1</WeekOfMonth>
-		<CelebratedIn>AU</CelebratedIn>
-	</Holiday>
 	<Holiday name="King's Birthday" shortname="KingsBirthday">
 		<Month>10</Month>
 		<DayOfWeek>1</DayOfWeek>
@@ -512,11 +500,9 @@
 	<Holiday name="Daylight Savings Time Begins" shortname="DaylightSavings|DaylightSavingsBegin">
 		<DSTStart />
 		<NameDE>Beginn der Sommerzeit</NameDE>
-		<NotCelebratedIn>AU</NotCelebratedIn>
 	</Holiday>
 	<Holiday name="Daylight Savings Time Ends" shortname="DaylightSavings|DaylightSavingsEnd">
 		<DSTEnd />
 		<NameDE>Ende der Sommerzeit</NameDE>
-		<NotCelebratedIn>AU</NotCelebratedIn>
 	</Holiday>
 </Holidays>
