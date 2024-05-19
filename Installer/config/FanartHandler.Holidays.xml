@@ -195,6 +195,7 @@
 		<NameDE>Pfingstmontag</NameDE>
 		<NotCelebratedIn>RU</NotCelebratedIn>
 		<NotCelebratedIn>HE</NotCelebratedIn>
+		<NotCelebratedIn>AU</NotCelebratedIn>
 	</Holiday>
 	<Holiday name="Pesach">
 		<DaysAfterHoliday Holiday="Easter">
