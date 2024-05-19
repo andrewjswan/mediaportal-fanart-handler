@@ -858,21 +858,30 @@ ajs</Value>
       <Build>5</Build>
       <Revision>0</Revision>
     </Version>
-    <ExtensionDescription>Fanart Handler is a plugin for MediaPortal (MP). The plugin basically supports;
-    * Search and download music artist fanart or artist and album thumbnails (scrape) from the fanart.tv, htbackdrops, last.fm, coverartarchive site.
-       * for all artists stored in your MP music database.
-       * for any artist currently being played (on the fly).
-
-    * Push fanart that you store on your local harddrive to the current used MP skin.
-       * push fanart for now played music
-       * push fanart for selected music or movie
+    <ExtensionDescription>Fanart Handler is a plugin for MediaPortal (MP). The plugin basically supports;
+
+    * Search and download music artist fanart or artist and album thumbnails (scrape) from the fanart.tv, htbackdrops, last.fm, coverartarchive site.
+
+       * for all artists stored in your MP music database.
+
+       * for any artist currently being played (on the fly).
+
+
+
+    * Push fanart that you store on your local harddrive to the current used MP skin.
+
+       * push fanart for now played music
+
+       * push fanart for selected music or movie
+
        * push random images from selected folders</ExtensionDescription>
     <VersionDescription>* Added changes for Australian Holidays
-
+
+
 *** We Stand with Ukraine ***</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>https://github.com/andrewjswan/mediaportal-fanart-handler/releases/download/v[Version]/FanartHandler-[Version].mpe1</OnlineLocation>
-    <ReleaseDate>2024-05-17T13:13:13</ReleaseDate>
+    <ReleaseDate>2024-05-19T13:13:13</ReleaseDate>
     <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios,animated</Tags>
     <PlatformCompatibility>AnyCPU</PlatformCompatibility>
     <Location>..\builds\FanartHandler-[Version].mpe1</Location>
