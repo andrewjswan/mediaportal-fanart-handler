@@ -164,6 +164,7 @@ namespace FanartHandler
                 details.TMDBNumber = string.Empty;
                 details.Title = current.Title;
                 details.Year = current.Year;
+                details.FanartURL = current.BackdropFullPath.Trim();
                 movies.Add(details);
               }
               else

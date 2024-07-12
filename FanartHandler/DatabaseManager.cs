@@ -3747,6 +3747,7 @@ namespace FanartHandler
 
             logger.Debug("Extra: Fanart.TV Movies found {0}", videoDatabaseMovies.Count);
             List<string> movieList = new List<string>();
+            List<string> movieJpgList = new List<string>();
 
             var index = 0;
             while (index < videoDatabaseMovies.Count)
@@ -3755,8 +3756,18 @@ namespace FanartHandler
               details = (IMDBMovie)videoDatabaseMovies[index];
               var movieID = details.ID.ToString().ToLower();
               var movieIMDBID = details.IMDBNumber.Trim().ToLowerInvariant().Replace("unknown", string.Empty);
+              var movieFanartURL = details.FanartURL;
               var movieTitle = details.Title.Trim();
               CurrTextBeingScraped = movieIMDBID + " - " + movieTitle;
+
+              if (!string.IsNullOrEmpty(movieFanartURL))
+              {
+                movieFanartURL = Path.GetFileName(details.FanartURL);
+                if (!movieJpgList.Contains(movieFanartURL))
+                {
+                  movieJpgList.Add(movieFanartURL);
+                }
+              }
 
               if (!string.IsNullOrEmpty(movieIMDBID))
               {
@@ -3788,6 +3799,12 @@ namespace FanartHandler
               if (FanartHandlerSetup.Fh.MyScraperWorker != null && FanartHandlerSetup.Fh.MyScraperWorker.Work)
               {
                 FanartHandlerSetup.Fh.MyScraperWorker.ReportProgress(0, Utils.Progress.LongProgress);
+              }
+              
+              // Moving Pictures Background
+              if (Utils.MovingPicturesEnabled)
+              {
+                FindAndDeleteExtraFiles(Utils.FAHMovingPictures, "*.jpg", movieJpgList, true);
               }
 
               // ClearArt
