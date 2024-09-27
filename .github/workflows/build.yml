@@ -3,7 +3,7 @@ name: Build / Fanart Handler
 on:
   push:
     # On Push to Master branch
-    branches: 
+    branches:
       - master
     # Ignore all Tags / Release
     tags-ignore:
@@ -76,7 +76,7 @@ jobs:
     name: CodeQL
     if: ${{ needs.changes.outputs.changes == 'true' }}
     uses: andrewjswan/MPE/.github/workflows/codeql.yml@master
-    needs: 
+    needs:
       - build
       - changes
     permissions:
@@ -243,9 +243,9 @@ jobs:
       contents: write
     outputs:
       changes: ${{ needs.mpe.outputs.changes }}
-    
+
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Download Artifacts
         uses: actions/download-artifact@v4
@@ -314,7 +314,7 @@ jobs:
       - name: Failure
         if: ${{ contains(needs.*.result, 'failure') }}
         run: exit 1
-  
+
   cache-clear:
     name: Clear cache
     runs-on: ubuntu-latest
