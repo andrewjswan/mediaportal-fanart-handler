@@ -75,7 +75,7 @@ jobs:
   codeql:
     name: CodeQL
     if: ${{ needs.changes.outputs.changes == 'true' }}
-    uses: andrewjswan/MPE/.github/workflows/codeql.yml@master
+    uses: Mediaportal-Plugin-Team/Mediaportal-Tools/.github/workflows/codeql.yml@master
     needs:
       - build
       - changes
@@ -102,7 +102,7 @@ jobs:
       - name: Git Checkout / MPE / XPath
         uses: actions/checkout@v4
         with:
-          repository: andrewjswan/MPE
+          repository: Mediaportal-Plugin-Team/Mediaportal-Tools
           path: MPE
 
       - name: MP folder for MPEMaker
