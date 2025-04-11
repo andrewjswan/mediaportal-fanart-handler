@@ -1779,14 +1779,16 @@ namespace FanartHandler
             while (num < thumbImages.Rows.Count)
             {
               var field1 = thumbImages.GetField(num, 0);
-              var field2 = thumbImages.GetField(num, 1);
-              var field3 = thumbImages.GetField(num, 2);
-              var field4 = thumbImages.GetField(num, 3);
-              var field5 = thumbImages.GetField(num, 4);
               if (!field1.Contains("_tmp"))
               {
-                var row = myDataTableThumbs.NewRow();
+                var field2 = thumbImages.GetField(num, 1);
+                var field3 = thumbImages.GetField(num, 2);
+                var field4 = thumbImages.GetField(num, 3);
+                var field5 = thumbImages.GetField(num, 4);
+
                 var fileName = Utils.GetFileName(field1);
+
+                var row = myDataTableThumbs.NewRow();
                 row["Artist"] = field4;
                 row["Album"] = field5;
                 var str = string.Empty;
