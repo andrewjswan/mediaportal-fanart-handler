@@ -343,6 +343,9 @@
   <studio name="Cannon Home Video">Cannon</studio>
   <studio name="Cannon International">Cannon</studio>
   <studio name="Cannon Video">Cannon</studio>
+  <studio name="The Cannon Group">Cannon</studio>
+  <studio name="Cannon Group The">Cannon</studio>
+  <studio name="Cannon Group, The">Cannon</studio>
   <studio name="Cameron Mackintosh Ltd">Cameron Mackintosh</studio>
   <studio name="Cameron Mackintosh Ltd.">Cameron Mackintosh</studio>
   <studio name="Cameron Mackintosh Limited">Cameron Mackintosh</studio>
@@ -680,6 +683,8 @@
   <studio name="Golden Harvest Pictures China">Golden Harvest</studio>
   <studio name="Golden Harvest Pictures (China)">Golden Harvest</studio>
   <studio name="Golden Harvest Promotions">Golden Harvest</studio>
+  <studio name="Golden Way">Golden Way Films</studio>
+  <studio name="Golden Way Films Ltd.">Golden Way Films</studio>
   <studio name="Gonzo Digimation">Gonzo</studio>
   <studio name="Gramercy Pictures">Gramercy</studio>
   <studio name="Gramercy Pictures (I)">Gramercy</studio>
@@ -1017,11 +1022,12 @@
   <studio name="Millenium Films">Millennium</studio>
   <studio name="Millenium Pictures">Millennium</studio>
   <studio name="Millenium Productions">Millennium</studio>
+  <studio name="Millenium Entertainment">Millennium Entertainment</studio>
   <studio name="Millennium Films">Millennium</studio>
   <studio name="Millennium Pictures">Millennium</studio>
   <studio name="Millennium Productions">Millennium</studio>
-  <studio name="Millenium Entertainment">Millennium Entertainment</studio>
   <studio name="Millennium Ent.">Millennium Entertainment</studio>
+  <studio name="Millenium Media">Millennium Media</studio>
   <studio name="Mindseye">Minds Eye Films</studio>
   <studio name="Minds Eye">Minds Eye Films</studio>
   <studio name="Minds Eye Entertainment">Minds Eye Films</studio>
@@ -1042,7 +1048,10 @@
   <studio name="Mitteldeutsche Medienförderung">MDM</studio>
   <studio name="Mitteldeutsche Medienförderung (MDM)">MDM</studio>
   <studio name="MK2 Productions">MK2</studio>
+  <studio name="Möbius">Mobius Entertainment</studio>
   <studio name="Möbius Entertainment">Mobius Entertainment</studio>
+  <studio name="Mö Bius">Mobius Entertainment</studio>
+  <studio name="MöBius Entertainment">Mobius Entertainment</studio>
   <studio name="Molinare Studios">Molinare</studio>
   <studio name="Molinare Investment">Molinare</studio>
   <studio name="Monolith Films">Monolith</studio>
@@ -1163,6 +1172,7 @@
   <studio name="Österreichischer Rundfunk (ORF)">ORF</studio>
   <studio name="Pacific Data Images">PDI</studio>
   <studio name="Pacific Data Images (PDI)">PDI</studio>
+  <studio name="Pacific Film and Television">Pacific Film and Television Commission</studio>
   <studio name="Palatine Étoile">Palatine Etoile</studio>
   <studio name="Palatine Étoile 9">Palatine Etoile</studio>
   <studio name="Palatine Étoile 10">Palatine Etoile</studio>
