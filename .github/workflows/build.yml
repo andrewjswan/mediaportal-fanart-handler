@@ -76,6 +76,9 @@ jobs:
     name: CodeQL
     if: ${{ needs.changes.outputs.changes == 'true' }}
     uses: Mediaportal-Plugin-Team/Mediaportal-Tools/.github/workflows/codeql.yml@master
+    with:
+      build-file: Build_GIT.bat
+      build-path: scripts
     needs:
       - build
       - changes
