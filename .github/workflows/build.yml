@@ -24,13 +24,8 @@ on:
 jobs:
   build:
     name: Fanart Handler / Build
-    runs-on: windows-2019
+    runs-on: windows-2022
     steps:
-      - name: Setup Visual Studio 2019
-        uses: microsoft/setup-msbuild@v2
-        with:
-          vs-version: 16.11
-
       - name: Git Checkout
         uses: actions/checkout@v4
         with:
@@ -64,13 +59,13 @@ jobs:
     outputs:
       changes: ${{ steps.changes.outputs.xmp }}
     steps:
-    - uses: actions/checkout@v4
-    - uses: dorny/paths-filter@v3
-      id: changes
-      with:
-        filters: |
-          xmp:
-            - '**.xmp2'
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            xmp:
+              - '**.xmp2'
 
   codeql:
     name: CodeQL
@@ -88,7 +83,7 @@ jobs:
 
   mpe:
     name: Fanart Handler / MPE
-    runs-on: windows-2019
+    runs-on: windows-2022
     needs:
       - build
       - changes
@@ -233,8 +228,8 @@ jobs:
       - name: Delete XML Artifact
         uses: geekyeggo/delete-artifact@v5
         with:
-            name: FanartHandler XML
-            failOnError: false
+          name: FanartHandler XML
+          failOnError: false
 
   release:
     name: Fanart Handler / Release

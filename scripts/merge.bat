@@ -10,4 +10,4 @@ if "%programfiles(x86)%XXX"=="XXX" goto 32BIT
 
 if exist FanartHandler_UNMERGED.dll del FanartHandler_UNMERGED.dll
 ren FanartHandler.dll FanartHandler_UNMERGED.dll 
-ilmerge.exe /out:FanartHandler.dll FanartHandler_UNMERGED.dll Nlog.dll /target:dll /targetplatform:"v4,%PROGS%\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0" /wildcards
+ilmerge.exe /out:FanartHandler.dll FanartHandler_UNMERGED.dll Nlog.dll /target:dll /targetplatform:"v4,%PROGS%\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2" /wildcards
