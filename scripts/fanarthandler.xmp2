@@ -811,8 +811,8 @@ ajs</Value>
         <Id />
         <MinVersion>
           <Major>1</Major>
-          <Minor>24</Minor>
-          <Build>100</Build>
+          <Minor>38</Minor>
+          <Build>0</Build>
           <Revision>0</Revision>
         </MinVersion>
         <MaxVersion>
@@ -822,7 +822,7 @@ ajs</Value>
           <Revision>999</Revision>
         </MaxVersion>
         <WarnOnly>false</WarnOnly>
-        <Message>This version of FanartHandler requires MediaPortal 1.25 Pre</Message>
+        <Message>This version of FanartHandler requires MediaPortal 1.38 Final</Message>
         <Name>Installer</Name>
         <Condition>None</Condition>
       </DependencyItem>
@@ -875,13 +875,15 @@ ajs</Value>
        * push fanart for selected music or movie
 
        * push random images from selected folders</ExtensionDescription>
-    <VersionDescription>* Configuration tune
+    <VersionDescription>* Mediaportal 1.38 | Tatiana &amp; Leo
+
+* CSScriptLibrary 3.30.5.2
 
 
 *** We Stand with Ukraine ***</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>https://github.com/andrewjswan/mediaportal-fanart-handler/releases/download/v[Version]/FanartHandler-[Version].mpe1</OnlineLocation>
-    <ReleaseDate>2025-04-11T13:13:13</ReleaseDate>
+    <ReleaseDate>2025-07-15T13:13:13</ReleaseDate>
     <Tags>fanart,music,movies,thumbs,clearart,clearlogo,banner,cdart,dvdart,scraper,awards,genres,studios,animated</Tags>
     <PlatformCompatibility>AnyCPU</PlatformCompatibility>
     <Location>..\builds\FanartHandler-[Version].mpe1</Location>
