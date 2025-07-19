@@ -239,6 +239,7 @@ jobs:
       - xml
     permissions:
       contents: write
+      discussions: write
     outputs:
       changes: ${{ needs.mpe.outputs.changes }}
 
@@ -271,6 +272,7 @@ jobs:
           generate_release_notes: true
           files: |
             release-files/*.mpe1
+          discussion_category_name: Announcements
 
       - name: Delete MPE1 Artifact
         uses: geekyeggo/delete-artifact@v5
