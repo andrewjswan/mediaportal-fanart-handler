@@ -214,7 +214,7 @@ jobs:
           fetch-depth: 0
 
       - name: Download Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: FanartHandler XML
           path: ${{ github.workspace }}/scripts/
@@ -247,13 +247,13 @@ jobs:
 
     steps:
       - name: Download Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: FanartHandler MPE1
           path: release-files
 
       - name: Download Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: FanartHandler Version Description
           path: release-description
