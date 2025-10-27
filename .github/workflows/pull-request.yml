@@ -28,7 +28,7 @@ jobs:
         shell: cmd
 
       - name: Upload Artifact / Plugin
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: ${{ success() }}
         with:
           name: FanartHandler
