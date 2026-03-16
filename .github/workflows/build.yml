@@ -226,7 +226,7 @@ jobs:
           add: '${{ github.workspace }}/scripts/fanarthandler.xml'
 
       - name: Delete XML Artifact
-        uses: geekyeggo/delete-artifact@v5
+        uses: geekyeggo/delete-artifact@v6
         with:
           name: FanartHandler XML
           failOnError: false
@@ -275,13 +275,13 @@ jobs:
           discussion_category_name: Announcements
 
       - name: Delete MPE1 Artifact
-        uses: geekyeggo/delete-artifact@v5
+        uses: geekyeggo/delete-artifact@v6
         with:
           name: FanartHandler MPE1
           failOnError: false
 
       - name: Delete Version Description Artifact
-        uses: geekyeggo/delete-artifact@v5
+        uses: geekyeggo/delete-artifact@v6
         with:
           name: FanartHandler Version Description
           failOnError: false
