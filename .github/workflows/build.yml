@@ -220,7 +220,7 @@ jobs:
           path: ${{ github.workspace }}/scripts/
 
       - name: Update / MPE1 XML
-        uses: EndBug/add-and-commit@v9
+        uses: EndBug/add-and-commit@v10
         with:
           message: 'Fanart Handler ${{needs.mpe.outputs.version}} / Release'
           add: '${{ github.workspace }}/scripts/fanarthandler.xml'
