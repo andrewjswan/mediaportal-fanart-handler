@@ -20,7 +20,7 @@ using System.Web;
 internal class AwardsGrabber : Grabbers.Movies.IAwardsGrabber
 {
   const string strGrabber = "FH:KP/IMDB";
-  const string strGrabberVersion = "20230427.I";
+  const string strGrabberVersion = "20260413.I";
 
   string Grabbers.Movies.IAwardsGrabber.GetName()
   {
@@ -83,7 +83,7 @@ internal class AwardsGrabber : Grabbers.Movies.IAwardsGrabber
 
   #region IMDB Parameters
 
-  private const string IMDB_BaseUrl = "https://www.imdb.com/title/{0}/";
+  private const string IMDB_BaseUrl = "https://web.archive.org/web/2/https://www.imdb.com/title/{0}/";
 
   #endregion IMDB Parameters
 
