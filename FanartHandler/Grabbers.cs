@@ -94,7 +94,7 @@ namespace FanartHandler
           try
           {
             Environment.CurrentDirectory = Config.GetFolder(Config.Dir.Base);
-            _asmHelper = new AsmHelper(CSScript.Load(scriptFileName, null, false));
+            _asmHelper = new AsmHelper(CSScript.LoadFile(scriptFileName, null, false));
             _awardsGrabber = (IAwardsGrabber)_asmHelper.CreateObject("AwardsGrabber");
             logger.Debug("Grabbers LoadScript(): Awards grabber: {0}: {1} loaded...", _awardsGrabber.GetName(), scriptFileName);
           }
